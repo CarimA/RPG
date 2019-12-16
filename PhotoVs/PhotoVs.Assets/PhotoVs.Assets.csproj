@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F20CCDA5-7287-4C0D-A6AB-F46FB3847B4E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PhotoVs.Assets</RootNamespace>
+    <AssemblyName>PhotoVs.Assets</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssetLoaders\AssetLoader.cs" />
+    <Compile Include="AssetLoaders\HotReloadAssetLoader.cs" />
+    <Compile Include="AssetLoaders\IAssetLoader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamProviders\FileSystemStreamProvider.cs" />
+    <Compile Include="StreamProviders\IStreamProvider.cs" />
+    <Compile Include="TypeLoaders\BitmapFontTypeLoader.cs" />
+    <Compile Include="TypeLoaders\EffectTypeLoader.cs" />
+    <Compile Include="TypeLoaders\ITypeLoader.cs" />
+    <Compile Include="TypeLoaders\MapTypeLoader.cs" />
+    <Compile Include="TypeLoaders\TextTypeLoader.cs" />
+    <Compile Include="TypeLoaders\Texture2DTypeLoader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoVs.Graphics\PhotoVs.Graphics.csproj">
+      <Project>{37f3c50f-757a-409e-938a-80b329e5a536}</Project>
+      <Name>PhotoVs.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.Logs\PhotoVs.Logs.csproj">
+      <Project>{3063E736-A632-48A9-A44C-B60E97F734D2}</Project>
+      <Name>PhotoVs.Logs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.TiledMaps\PhotoVs.TiledMaps.csproj">
+      <Project>{474C8372-CDFB-4564-A668-9F4CFF8AC700}</Project>
+      <Name>PhotoVs.TiledMaps</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{27A4E1F7-464A-4BDE-A2FD-EF1AFC3A8F0E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PhotoVs.Collision</RootNamespace>
+    <AssemblyName>PhotoVs.Collision</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CollisionGameEventArgs.cs" />
+    <Compile Include="CollisionResult.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SCollisionDebugRender.cs" />
+    <Compile Include="SCollisionResolution.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoVs.Assets\PhotoVs.Assets.csproj">
+      <Project>{F20CCDA5-7287-4C0D-A6AB-F46FB3847B4E}</Project>
+      <Name>PhotoVs.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic\PhotoVs.CommonGameLogic.csproj">
+      <Project>{3E437C0C-4984-4AC2-B0F9-7D00150B517E}</Project>
+      <Name>PhotoVs.CommonGameLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.ECS\PhotoVs.ECS.csproj">
+      <Project>{8676E645-4A87-47E5-898B-F985727C30F6}</Project>
+      <Name>PhotoVs.ECS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.Events\PhotoVs.Events.csproj">
+      <Project>{DB380E0E-67F5-4276-AF7D-7CFF3BBBE990}</Project>
+      <Name>PhotoVs.Events</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.Math\PhotoVs.Math.csproj">
+      <Project>{95FC5E86-507D-4C80-9B96-04831819AAC9}</Project>
+      <Name>PhotoVs.Math</Name>
+    </ProjectReference>
+    <ProjectReference Include="PhotoVs.WorldZoning.csproj">
+      <Project>{252A1CC4-9D24-4A14-8CBF-9E7ADC27DFD0}</Project>
+      <Name>PhotoVs.WorldZoning</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

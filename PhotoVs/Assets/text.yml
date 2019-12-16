@@ -1,0 +1,46 @@
+
+
+# Intro Cutscene
+
+intro:
+  en-uk: |-
+    [outline Black]Hang on, now.[wait 1.5]
+    Give me just a sec.[.].[.].[.][eop]
+    Hi!
+    Nice to see you again, and once again, congrats on your new job at the [color Yellow]Museum of Natural Arts[/color]![eop]
+    That's [color Yellow]M[.]o[.]N[.]A[.][/color] for short, by the way.[eop]
+    As you know, at the [color Yellow]MoNA[/color], we research historical artefacts and depictions of primarily Photons in past times.[eop]
+    Your role will involve assisting in this research work, alongside tracking forgeries and art thefts.[eop]
+    Having to relocate is a bit of a pain, isn't it?[eop]
+    I'm sure you'll love it here, though![eop]
+    Over here in [color Yellow]Chroma City[/color], we live pretty peacefully with the mysterious creatures known as [color HotPink]Photons[/color].[eop]
+    We complement each other pretty well, help each other to accomplish difficult tasks...even having Photons battle each other is particularly popular![eop]
+    The bonds between people and Photons are pretty tight![eop]
+    All right. I just need some information about you, so I can have your curator license ready.[eop]
+    Let's start with your picture, mind sending me one?[/outline]
+
+intro_picture:
+  en-uk: |-
+    Just to check, this is the one you want?
+
+intro_picture_no:
+  en-uk: |-
+    No? Okay, just send me a different one.
+
+intro_picture_yes:
+  en-uk: |-
+    Great!\nAnd now, mind spelling out your name in the chat for me?
+
+intro_name:
+  en-uk: |-
+    So, you go by [color Cyan][flag my_name][/color]?
+
+intro_name_no:
+  en-uk: |-
+    Typo? That's fine, just correct it for me.
+
+intro_name_yes:
+  en-uk: |-
+    Alright. And...that's it!
+    I'll get that sent off to the [color Yellow]Photon Commission[/yellow], then.[eop]
+    I'll send [color Cyan][flag friend_name][/cyan] to come pick you up at the station. I can't wait to see you in person!

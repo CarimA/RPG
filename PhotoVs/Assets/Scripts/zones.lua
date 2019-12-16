@@ -1,0 +1,4 @@
+zones = {}
+zones[''] = function ()
+
+end

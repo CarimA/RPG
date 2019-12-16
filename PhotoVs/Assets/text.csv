@@ -1,0 +1,3 @@
+id,english
+some_str,Hello!
+another_str,Here is a str reference: [text some_str]
