@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E674272F-1137-42B5-B714-123A473CA88A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PhotoVs.Logic</RootNamespace>
+    <AssemblyName>PhotoVs.Logic</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet, Version=8.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.8.0.0\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Camera\SCamera.cs" />
+    <Compile Include="Camera\ScreenShake.cs" />
+    <Compile Include="Collision\CollisionResult.cs" />
+    <Compile Include="Collision\SCollisionDebugRender.cs" />
+    <Compile Include="Collision\SCollisionResolution.cs" />
+    <Compile Include="Input\CInput.cs" />
+    <Compile Include="Input\GameInput.cs" />
+    <Compile Include="Input\InputActions.cs" />
+    <Compile Include="Input\SProcessInput.cs" />
+    <Compile Include="MainGame.cs" />
+    <Compile Include="Movement\SProcessMovement.cs" />
+    <Compile Include="Movement\SProcessVelocity.cs" />
+    <Compile Include="PlayerData\Player.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scenes\OverworldScene.cs" />
+    <Compile Include="Scenes\SceneMachine.cs" />
+    <Compile Include="Text\Database.cs" />
+    <Compile Include="Transforms\CCollisionBound.cs" />
+    <Compile Include="Transforms\CPosition.cs" />
+    <Compile Include="Transforms\CSize.cs" />
+    <Compile Include="Transforms\CVelocity.cs" />
+    <Compile Include="WorldZoning\ChunkedMap.cs" />
+    <Compile Include="WorldZoning\CScript.cs" />
+    <Compile Include="WorldZoning\CSolid.cs" />
+    <Compile Include="WorldZoning\CZone.cs" />
+    <Compile Include="WorldZoning\SMapBoundaryGeneration.cs" />
+    <Compile Include="WorldZoning\SMapRenderer.cs" />
+    <Compile Include="WorldZoning\World.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoVs.Engine\PhotoVs.Engine.csproj">
+      <Project>{8e796fad-2926-4edd-8783-94e5cd1081a9}</Project>
+      <Name>PhotoVs.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.Models\PhotoVs.Models.csproj">
+      <Project>{e19d9244-64f0-4aa4-b8ee-12d2c34651cb}</Project>
+      <Name>PhotoVs.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.Utils\PhotoVs.Utils.csproj">
+      <Project>{b132c6ee-6429-4d25-a5ec-c4f9bd41b960}</Project>
+      <Name>PhotoVs.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

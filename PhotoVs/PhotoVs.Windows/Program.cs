@@ -1,5 +1,5 @@
 ﻿using System;
-using PhotoVs.GameInstance;
+using PhotoVs.Logic;
 
 namespace PhotoVs
 {

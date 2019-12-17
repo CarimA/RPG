@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8E796FAD-2926-4EDD-8783-94E5CD1081A9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PhotoVs.Engine</RootNamespace>
+    <AssemblyName>PhotoVs.Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\AssetLoaders\AssetLoader.cs" />
+    <Compile Include="Assets\AssetLoaders\HotReloadAssetLoader.cs" />
+    <Compile Include="Assets\StreamProviders\FileSystemStreamProvider.cs" />
+    <Compile Include="Assets\TypeLoaders\BitmapFontTypeLoader.cs" />
+    <Compile Include="Assets\TypeLoaders\EffectTypeLoader.cs" />
+    <Compile Include="Assets\TypeLoaders\MapTypeLoader.cs" />
+    <Compile Include="Assets\TypeLoaders\TextTypeLoader.cs" />
+    <Compile Include="Assets\TypeLoaders\Texture2DTypeLoader.cs" />
+    <Compile Include="Audio\DummyAudio.cs" />
+    <Compile Include="ECS\Components\ComponentCollection.cs" />
+    <Compile Include="ECS\Components\NoComponentRequired.cs" />
+    <Compile Include="ECS\GameObjects\GameObject.cs" />
+    <Compile Include="ECS\GameObjects\GameObjectCollection.cs" />
+    <Compile Include="ECS\Systems\SystemCollection.cs" />
+    <Compile Include="FSM\Scenes\SceneManager.cs" />
+    <Compile Include="FSM\States\StateMachine.cs" />
+    <Compile Include="GameInput\Input.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFont.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontChar.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontCommon.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontExtensions.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontFile.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontInfo.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontKerning.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontPage.cs" />
+    <Compile Include="Graphics\BitmapFonts\BitmapFontRegion.cs" />
+    <Compile Include="Graphics\CanvasSize.cs" />
+    <Compile Include="Graphics\ColorGrading.cs" />
+    <Compile Include="Graphics\PolygonPrimitive.cs" />
+    <Compile Include="Graphics\Renderer.cs" />
+    <Compile Include="Graphics\RenderMode.cs" />
+    <Compile Include="Graphics\ShakingBox.cs" />
+    <Compile Include="Graphics\TextureAtlases\NinePatchRegion2D.cs" />
+    <Compile Include="Graphics\TextureAtlases\TextureAtlasExtensions.cs" />
+    <Compile Include="Graphics\TextureAtlases\TextureRegion2D.cs" />
+    <Compile Include="Graphics\VirtualRenderTarget2D.cs" />
+    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\PluginProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TiledMaps\ExternalTileset.cs" />
+    <Compile Include="TiledMaps\Frame.cs" />
+    <Compile Include="TiledMaps\Helpers.cs" />
+    <Compile Include="TiledMaps\ITileset.cs" />
+    <Compile Include="TiledMaps\LayerConverter.cs" />
+    <Compile Include="TiledMaps\Layers\BaseLayer.cs" />
+    <Compile Include="TiledMaps\Layers\ImageLayer.cs" />
+    <Compile Include="TiledMaps\Layers\ObjectLayer.cs" />
+    <Compile Include="TiledMaps\Layers\TileLayer.cs" />
+    <Compile Include="TiledMaps\LayerType.cs" />
+    <Compile Include="TiledMaps\Map.cs" />
+    <Compile Include="TiledMaps\Objects\BaseObject.cs" />
+    <Compile Include="TiledMaps\Objects\EllipseObject.cs" />
+    <Compile Include="TiledMaps\Objects\ObjectConverter.cs" />
+    <Compile Include="TiledMaps\Objects\PointObject.cs" />
+    <Compile Include="TiledMaps\Objects\PolygonObject.cs" />
+    <Compile Include="TiledMaps\Objects\PolyLineObject.cs" />
+    <Compile Include="TiledMaps\Objects\RectangleObject.cs" />
+    <Compile Include="TiledMaps\Objects\TileObject.cs" />
+    <Compile Include="TiledMaps\Orientation.cs" />
+    <Compile Include="TiledMaps\Position.cs" />
+    <Compile Include="TiledMaps\PropertyExtensions.cs" />
+    <Compile Include="TiledMaps\RenderOrder.cs" />
+    <Compile Include="TiledMaps\StaggerAxis.cs" />
+    <Compile Include="TiledMaps\StaggerIndex.cs" />
+    <Compile Include="TiledMaps\Tile.cs" />
+    <Compile Include="TiledMaps\TileOffset.cs" />
+    <Compile Include="TiledMaps\TileOrientation.cs" />
+    <Compile Include="TiledMaps\Tileset.cs" />
+    <Compile Include="TiledMaps\TilesetConverter.cs" />
+    <Compile Include="TiledMaps\TmxLayers.cs" />
+    <Compile Include="TiledMaps\TmxMap.cs" />
+    <Compile Include="TiledMaps\TmxMisc.cs" />
+    <Compile Include="TiledMaps\TmxProperties.cs" />
+    <Compile Include="TiledMaps\Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="TiledMaps\packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoVs.Models\PhotoVs.Models.csproj">
+      <Project>{e19d9244-64f0-4aa4-b8ee-12d2c34651cb}</Project>
+      <Name>PhotoVs.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.Utils\PhotoVs.Utils.csproj">
+      <Project>{b132c6ee-6429-4d25-a5ec-c4f9bd41b960}</Project>
+      <Name>PhotoVs.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

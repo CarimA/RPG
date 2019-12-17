@@ -65,9 +65,9 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PhotoVs.GameInstance\PhotoVs.GameInstance.csproj">
-      <Project>{bb71d2a9-c199-423b-b5de-f986ec518dd2}</Project>
-      <Name>PhotoVs.GameInstance</Name>
+    <ProjectReference Include="..\PhotoVs.Logic\PhotoVs.Logic.csproj">
+      <Project>{e674272f-1137-42b5-b714-123a473ca88a}</Project>
+      <Name>PhotoVs.Logic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Assets\Assets.projitems" Label="Shared" />
