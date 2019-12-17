@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine;
 using PhotoVs.Engine.FSM.States;
 using PhotoVs.Logic.Camera;
-using PhotoVs.Models;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.FSM;
 

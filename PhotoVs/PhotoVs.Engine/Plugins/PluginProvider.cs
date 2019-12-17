@@ -1,5 +1,4 @@
-﻿using PhotoVs.Models;
-using PhotoVs.Utils.Extensions;
+﻿using PhotoVs.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;

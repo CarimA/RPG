@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PhotoVs.Models
+namespace PhotoVs.Engine
 {
     public sealed class Events
     {
@@ -15,10 +15,7 @@ namespace PhotoVs.Models
         public event CollisionEventHandler OnCollision;
         public void RaiseOnCollision(IGameObject moving, IGameObject stationary)
         {
-            if (OnCollision != null)
-            {
-                OnCollision(moving, stationary);
-            }
+            OnCollision?.Invoke(moving, stationary);
         }
     }
 }
