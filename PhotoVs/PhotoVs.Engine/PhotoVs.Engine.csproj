@@ -70,6 +70,7 @@
     <Compile Include="ECS\GameObjects\GameObject.cs" />
     <Compile Include="ECS\GameObjects\GameObjectCollection.cs" />
     <Compile Include="ECS\Systems\SystemCollection.cs" />
+    <Compile Include="Events.cs" />
     <Compile Include="FSM\Scenes\SceneManager.cs" />
     <Compile Include="FSM\States\StateMachine.cs" />
     <Compile Include="GameInput\Input.cs" />
@@ -92,7 +93,7 @@
     <Compile Include="Graphics\TextureAtlases\TextureAtlasExtensions.cs" />
     <Compile Include="Graphics\TextureAtlases\TextureRegion2D.cs" />
     <Compile Include="Graphics\VirtualRenderTarget2D.cs" />
-    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\PluginProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TiledMaps\ExternalTileset.cs" />

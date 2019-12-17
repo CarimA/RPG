@@ -1,4 +1,5 @@
 ﻿using PhotoVs.Utils.Extensions;
+using PhotoVs.Utils.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,31 +18,39 @@ namespace PhotoVs.Engine.Plugins
             _plugins = new List<IPlugin>();
             _gameEvents = gameEvents;
 
-            try
+            if (Directory.Exists(directory))
             {
-                Directory
-                    .GetFiles(directory)
-                    .ForEach(file => Assembly
-                        .LoadFrom(file)
-                        .GetTypes()
-                        .Where(type => type.IsAssignableFrom(typeof(IPlugin)))
-                        .ForEach(LoadAssembly));
+                var dlls = Directory.GetFiles(directory);
+                foreach (var dll in dlls)
+                {
+                    try
+                    {
+                        var assembly = Assembly.LoadFrom(dll);
+                        var types = assembly.GetTypes();
+                        var plugins = types.Where(type
+                            => type.GetInterfaces().Contains(typeof(IPlugin)));
+                        plugins.ForEach(LoadAssembly);
+                        Debug.Log.Info($"Loaded plugin: {dll}");
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log.Error($"Could not load plugin: {dll}");
+                        Debug.Log.Error(e.ToString());
+                    }
+                }
             }
-            catch (Exception e)
+            else
             {
+                Debug.Log.Error($"Could not find {directory}");
             }
-
-            BindPlugins(gameEvents);
+            Debug.Log.Info($"Loaded {_plugins.Count} plugin(s)");
         }
 
         private void LoadAssembly(Type type)
         {
-            _plugins.Add((IPlugin)Activator.CreateInstance(type, _gameEvents));
-        }
-
-        private void BindPlugins(Events gameEvents)
-        {
-            _plugins.ForEach(plugin => plugin.Bind(gameEvents));
+            var plugin = (IPlugin)Activator.CreateInstance(type, _gameEvents);
+            plugin.Bind(_gameEvents);
+            _plugins.Add(plugin);
         }
     }
 }

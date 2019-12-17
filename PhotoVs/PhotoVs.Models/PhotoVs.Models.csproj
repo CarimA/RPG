@@ -61,7 +61,6 @@
     <Compile Include="ECS\ISystem.cs" />
     <Compile Include="ECS\ISystemCollection.cs" />
     <Compile Include="ECS\IUpdateableSystem.cs" />
-    <Compile Include="Events.cs" />
     <Compile Include="FSM\IDrawableScene.cs" />
     <Compile Include="FSM\IScene.cs" />
     <Compile Include="FSM\ISceneManager.cs" />
