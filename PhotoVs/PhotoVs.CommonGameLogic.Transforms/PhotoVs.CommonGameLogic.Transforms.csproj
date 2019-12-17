@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{27A4E1F7-464A-4BDE-A2FD-EF1AFC3A8F0E}</ProjectGuid>
+    <ProjectGuid>{95ADE627-A2AE-4196-A6DC-CD00A38228AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PhotoVs.Collision</RootNamespace>
-    <AssemblyName>PhotoVs.Collision</AssemblyName>
+    <RootNamespace>PhotoVs.CommonGameLogic.Transforms</RootNamespace>
+    <AssemblyName>PhotoVs.CommonGameLogic.Transforms</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,7 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,40 +45,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CollisionGameEventArgs.cs" />
-    <Compile Include="CollisionResult.cs" />
+    <Compile Include="CCollisionBound.cs" />
+    <Compile Include="CPosition.cs" />
+    <Compile Include="CSize.cs" />
+    <Compile Include="CVelocity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SCollisionDebugRender.cs" />
-    <Compile Include="SCollisionResolution.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PhotoVs.Assets\PhotoVs.Assets.csproj">
-      <Project>{F20CCDA5-7287-4C0D-A6AB-F46FB3847B4E}</Project>
-      <Name>PhotoVs.Assets</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Camera\PhotoVs.CommonGameLogic.Camera.csproj">
-      <Project>{4FFE19CB-A0C0-4398-BB8F-CC1157EEEF6D}</Project>
-      <Name>PhotoVs.CommonGameLogic.Camera</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Transforms\PhotoVs.CommonGameLogic.Transforms.csproj">
-      <Project>{95ADE627-A2AE-4196-A6DC-CD00A38228AA}</Project>
-      <Name>PhotoVs.CommonGameLogic.Transforms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PhotoVs.ECS\PhotoVs.ECS.csproj">
-      <Project>{8676E645-4A87-47E5-898B-F985727C30F6}</Project>
+      <Project>{8676e645-4a87-47e5-898b-f985727c30f6}</Project>
       <Name>PhotoVs.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Events\PhotoVs.Events.csproj">
-      <Project>{DB380E0E-67F5-4276-AF7D-7CFF3BBBE990}</Project>
-      <Name>PhotoVs.Events</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PhotoVs.Math\PhotoVs.Math.csproj">
-      <Project>{95FC5E86-507D-4C80-9B96-04831819AAC9}</Project>
+      <Project>{95fc5e86-507d-4c80-9b96-04831819aac9}</Project>
       <Name>PhotoVs.Math</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotoVs.WorldZoning.csproj">
-      <Project>{252A1CC4-9D24-4A14-8CBF-9E7ADC27DFD0}</Project>
-      <Name>PhotoVs.WorldZoning</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,6 +6,7 @@ using PhotoVs.Assets.StreamProviders;
 using PhotoVs.Assets.TypeLoaders;
 using PhotoVs.Audio;
 using PhotoVs.CommonGameLogic.Camera;
+using PhotoVs.CommonGameLogic.Input;
 using PhotoVs.ECS.Entities;
 using PhotoVs.ECS.Systems;
 using PhotoVs.Events;
@@ -91,7 +92,8 @@ namespace PhotoVs.GameInstance
 
             _globalSystems = new SystemCollection()
             {
-                _camera
+                _camera,
+                new SProcessInput()
             };
 
             _camera.Follow(_player);
@@ -122,7 +124,6 @@ namespace PhotoVs.GameInstance
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _player.Input.Update(gameTime);
             _sceneManager.Update(gameTime);
 
             base.Update(gameTime);

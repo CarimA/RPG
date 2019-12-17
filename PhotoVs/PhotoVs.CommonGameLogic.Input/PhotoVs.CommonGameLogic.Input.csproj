@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>be1fdfcb-12f1-49f5-a669-d3f624b348aa</ProjectGuid>
+    <ProjectGuid>{3F2A1748-EE02-41A1-A3A9-90BDB9F899ED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Input</RootNamespace>
-    <AssemblyName>Input</AssemblyName>
+    <RootNamespace>PhotoVs.CommonGameLogic.Input</RootNamespace>
+    <AssemblyName>PhotoVs.CommonGameLogic.Input</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,24 +31,34 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SProcessInput.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Transforms\PhotoVs.CommonGameLogic.Transforms.csproj">
+      <Project>{95ADE627-A2AE-4196-A6DC-CD00A38228AA}</Project>
+      <Name>PhotoVs.CommonGameLogic.Transforms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.ECS\PhotoVs.ECS.csproj">
+      <Project>{8676e645-4a87-47e5-898b-f985727c30f6}</Project>
+      <Name>PhotoVs.ECS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.GameInput\PhotoVs.GameInput.csproj">
+      <Project>{e4e7d35e-30a1-46b2-89df-75c77029ab6b}</Project>
+      <Name>PhotoVs.GameInput</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
- </Project>
+</Project>

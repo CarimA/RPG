@@ -1,14 +1,15 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PhotoVs.CommonGameLogic")]
+[assembly: AssemblyTitle("PhotoVs.CommonGameLogic.Camera")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PhotoVs.CommonGameLogic")]
+[assembly: AssemblyProduct("PhotoVs.CommonGameLogic.Camera")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3e437c0c-4984-4ac2-b0f9-7d00150b517e")]
+[assembly: Guid("4ffe19cb-a0c0-4398-bb8f-cc1157eeef6d")]
 
 // Version information for an assembly consists of the following four values:
 //

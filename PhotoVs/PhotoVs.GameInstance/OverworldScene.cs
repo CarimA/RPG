@@ -1,4 +1,5 @@
 ﻿using PhotoVs.Collision;
+using PhotoVs.CommonGameLogic.Movement;
 using PhotoVs.Core.ECS.Entities;
 using PhotoVs.ECS.Entities;
 using PhotoVs.ECS.Systems;
@@ -26,7 +27,8 @@ namespace PhotoVs.GameInstance
             };
             Systems = new SystemCollection
             {
-                //new SProcessVelocity(),
+                new SProcessMovement(),
+                new SProcessVelocity(),
                 mapBoundary,
                 new SCollisionDebugRender(scene.SpriteBatch, scene.AssetLoader, mapBoundary, scene.Camera),
                 new SCollisionResolution(scene.GameEvents, mapBoundary),

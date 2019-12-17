@@ -56,9 +56,13 @@
       <Project>{F20CCDA5-7287-4C0D-A6AB-F46FB3847B4E}</Project>
       <Name>PhotoVs.Assets</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.CommonGameLogic\PhotoVs.CommonGameLogic.csproj">
-      <Project>{3E437C0C-4984-4AC2-B0F9-7D00150B517E}</Project>
-      <Name>PhotoVs.CommonGameLogic</Name>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Camera\PhotoVs.CommonGameLogic.Camera.csproj">
+      <Project>{4FFE19CB-A0C0-4398-BB8F-CC1157EEEF6D}</Project>
+      <Name>PhotoVs.CommonGameLogic.Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Transforms\PhotoVs.CommonGameLogic.Transforms.csproj">
+      <Project>{95ADE627-A2AE-4196-A6DC-CD00A38228AA}</Project>
+      <Name>PhotoVs.CommonGameLogic.Transforms</Name>
     </ProjectReference>
     <ProjectReference Include="..\PhotoVs.DataStructures\PhotoVs.DataStructures.csproj">
       <Project>{C5BE4B50-AED8-4CD7-B554-CC22B4D05E4E}</Project>

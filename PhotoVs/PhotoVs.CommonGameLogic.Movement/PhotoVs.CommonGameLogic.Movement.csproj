@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3E437C0C-4984-4AC2-B0F9-7D00150B517E}</ProjectGuid>
+    <ProjectGuid>{22631446-7871-4668-9087-F89A8FDC47C6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PhotoVs.CommonGameLogic</RootNamespace>
-    <AssemblyName>PhotoVs.CommonGameLogic</AssemblyName>
+    <RootNamespace>PhotoVs.CommonGameLogic.Movement</RootNamespace>
+    <AssemblyName>PhotoVs.CommonGameLogic.Movement</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -42,34 +42,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera\SCamera.cs" />
-    <Compile Include="Camera\ScreenShake.cs" />
-    <Compile Include="Transforms\CCollisionBound.cs" />
-    <Compile Include="Transforms\CPosition.cs" />
-    <Compile Include="Transforms\CSize.cs" />
-    <Compile Include="Transforms\CVelocity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SProcessMovement.cs" />
+    <Compile Include="SProcessVelocity.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Input\PhotoVs.CommonGameLogic.Input.csproj">
+      <Project>{3F2A1748-EE02-41A1-A3A9-90BDB9F899ED}</Project>
+      <Name>PhotoVs.CommonGameLogic.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Transforms\PhotoVs.CommonGameLogic.Transforms.csproj">
+      <Project>{95ADE627-A2AE-4196-A6DC-CD00A38228AA}</Project>
+      <Name>PhotoVs.CommonGameLogic.Transforms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PhotoVs.ECS\PhotoVs.ECS.csproj">
       <Project>{8676E645-4A87-47E5-898B-F985727C30F6}</Project>
       <Name>PhotoVs.ECS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Events\PhotoVs.Events.csproj">
-      <Project>{DB380E0E-67F5-4276-AF7D-7CFF3BBBE990}</Project>
-      <Name>PhotoVs.Events</Name>
+    <ProjectReference Include="..\PhotoVs.GameInput\PhotoVs.GameInput.csproj">
+      <Project>{E4E7D35E-30A1-46B2-89DF-75C77029AB6B}</Project>
+      <Name>PhotoVs.GameInput</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Graphics\PhotoVs.Graphics.csproj">
-      <Project>{37F3C50F-757A-409E-938A-80B329E5A536}</Project>
-      <Name>PhotoVs.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Math\PhotoVs.Math.csproj">
-      <Project>{95FC5E86-507D-4C80-9B96-04831819AAC9}</Project>
-      <Name>PhotoVs.Math</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.TiledMaps\PhotoVs.TiledMaps.csproj">
-      <Project>{474C8372-CDFB-4564-A668-9F4CFF8AC700}</Project>
-      <Name>PhotoVs.TiledMaps</Name>
+    <ProjectReference Include="..\PhotoVs.PlayerData\PhotoVs.PlayerData.csproj">
+      <Project>{61F373E2-8115-48DF-B131-D0BDB505C60C}</Project>
+      <Name>PhotoVs.PlayerData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

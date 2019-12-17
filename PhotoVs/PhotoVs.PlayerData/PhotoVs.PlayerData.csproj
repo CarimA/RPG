@@ -53,9 +53,13 @@
       <Project>{252A1CC4-9D24-4A14-8CBF-9E7ADC27DFD0}</Project>
       <Name>PhotoVs.WorldZoning</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.CommonGameLogic\PhotoVs.CommonGameLogic.csproj">
-      <Project>{3E437C0C-4984-4AC2-B0F9-7D00150B517E}</Project>
-      <Name>PhotoVs.CommonGameLogic</Name>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Input\PhotoVs.CommonGameLogic.Input.csproj">
+      <Project>{3F2A1748-EE02-41A1-A3A9-90BDB9F899ED}</Project>
+      <Name>PhotoVs.CommonGameLogic.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Transforms\PhotoVs.CommonGameLogic.Transforms.csproj">
+      <Project>{95ADE627-A2AE-4196-A6DC-CD00A38228AA}</Project>
+      <Name>PhotoVs.CommonGameLogic.Transforms</Name>
     </ProjectReference>
     <ProjectReference Include="..\PhotoVs.ECS\PhotoVs.ECS.csproj">
       <Project>{8676E645-4A87-47E5-898B-F985727C30F6}</Project>

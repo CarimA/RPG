@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using PhotoVs.Assets.AssetLoaders;
-using PhotoVs.CommonGameLogic;
 using PhotoVs.CommonGameLogic.Camera;
 using PhotoVs.CommonGameLogic.Transforms;
 using PhotoVs.Core.ECS.Entities;

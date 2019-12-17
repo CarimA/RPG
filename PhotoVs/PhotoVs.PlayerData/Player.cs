@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using PhotoVs.CommonGameLogic;
+using PhotoVs.CommonGameLogic.Input;
 using PhotoVs.CommonGameLogic.Transforms;
 using PhotoVs.Core.ECS.Entities;
 using PhotoVs.GameInput;
@@ -13,7 +13,7 @@ namespace PhotoVs.PlayerData
         private readonly Dictionary<string, object> _flags;
 
         private readonly CPosition _position;
-        public readonly Input Input;
+        public readonly CInput Input;
         private readonly float RunSpeed = 295f;
         private readonly float WalkSpeed = 140f;
 
@@ -33,7 +33,7 @@ namespace PhotoVs.PlayerData
             _position = new CPosition {Position = new Vector2(0, 100)};
             Components.Add(_position);
 
-            Input = new Input(PlayerIndex.One)
+            Input = new CInput(new Input(PlayerIndex.One)
             {
                 KeyMappings =
                 {
@@ -59,8 +59,9 @@ namespace PhotoVs.PlayerData
                     [InputActions.Fullscreen] = new List<Buttons>(),
                     [InputActions.Screenshot] = new List<Buttons> {Buttons.Back}
                 }
-            };
+            });
 
+            Components.Add(Input);
             Components.Add(new CVelocity {Velocity = new Vector2(0, 0)});
             Components.Add(CCollisionBound.Circle(16, 8));
             Components.Add(new CSize {Size = new Vector2(32, 32)});

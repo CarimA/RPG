@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using PhotoVs.ECS.Components;
 using PhotoVs.Math;
 
-namespace PhotoVs.CommonGameLogic
+namespace PhotoVs.CommonGameLogic.Transforms
 {
     public class CCollisionBound : IComponent
     {
