@@ -8,7 +8,7 @@ namespace PhotoVs.Logic.Input
     {
         public int Priority { get; set; } = -999;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInput) };
+        public Type[] Requires { get; } = {typeof(CInput)};
 
         public void BeforeUpdate(GameTime gameTime)
         {

@@ -17,14 +17,6 @@ namespace PhotoVs.Engine.ECS.Systems
             collection.ForEach(Reseed);
         }
 
-        private void Reseed(ISystem system)
-        {
-            unchecked
-            {
-                _hash = _hash * 31 + system.GetHashCode();
-            }
-        }
-
         public new void Add(ISystem system)
         {
             Reseed(system);
@@ -35,6 +27,14 @@ namespace PhotoVs.Engine.ECS.Systems
         {
             Reseed(system);
             base.Remove(system);
+        }
+
+        private void Reseed(ISystem system)
+        {
+            unchecked
+            {
+                _hash = _hash * 31 + system.GetHashCode();
+            }
         }
 
         public int GetUniqueSeed()

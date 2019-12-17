@@ -104,7 +104,7 @@ namespace PhotoVs.Utils
         public override bool Equals(object obj)
         {
             if (obj is Size2)
-                return Equals((Size2)obj);
+                return Equals((Size2) obj);
             return false;
         }
 
@@ -206,7 +206,7 @@ namespace PhotoVs.Utils
         {
             unchecked
             {
-                return Width.GetHashCode() * 397 ^ Height.GetHashCode();
+                return (Width.GetHashCode() * 397) ^ Height.GetHashCode();
             }
         }
 
@@ -292,7 +292,7 @@ namespace PhotoVs.Utils
         /// </returns>
         public static explicit operator Point(Size2 size)
         {
-            return new Point((int)size.Width, (int)size.Height);
+            return new Point((int) size.Width, (int) size.Height);
         }
 
         /// <summary>

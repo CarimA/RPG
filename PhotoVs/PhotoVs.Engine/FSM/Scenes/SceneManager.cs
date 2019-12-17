@@ -129,10 +129,10 @@ namespace PhotoVs.Engine.FSM.Scenes
         private SystemCollection GetCombinedSystems(ISystemScene currentState)
         {
             if (_globalSystemsHash != _globalSystems.GetUniqueSeed() ||
-                _localSystemsHash != ((SystemCollection)(currentState.Systems)).GetUniqueSeed())
+                _localSystemsHash != ((SystemCollection) currentState.Systems).GetUniqueSeed())
             {
                 _globalSystemsHash = _globalSystems.GetUniqueSeed();
-                _localSystemsHash = ((SystemCollection)(currentState.Systems)).GetUniqueSeed();
+                _localSystemsHash = ((SystemCollection) currentState.Systems).GetUniqueSeed();
 
                 // Logger.Debug($"System Cache changed: Global [{_globalSystemsHash}], Local [{_localSystemsHash}]");
 
@@ -147,10 +147,10 @@ namespace PhotoVs.Engine.FSM.Scenes
         private GameObjectCollection GetCombinedEntities(ISystemScene currentState)
         {
             if (_globalEntitiesHash != _globalEntities.GetUniqueSeed() ||
-                _localEntitiesHash != ((GameObjectCollection)(currentState.Entities)).GetUniqueSeed())
+                _localEntitiesHash != ((GameObjectCollection) currentState.Entities).GetUniqueSeed())
             {
                 _globalEntitiesHash = _globalEntities.GetUniqueSeed();
-                _localEntitiesHash = ((GameObjectCollection)(currentState.Entities)).GetUniqueSeed();
+                _localEntitiesHash = ((GameObjectCollection) currentState.Entities).GetUniqueSeed();
 
                 // Logger.Debug($"Entity Cache changed: Global [{_globalEntitiesHash}], Local [{_localEntitiesHash}]");
 

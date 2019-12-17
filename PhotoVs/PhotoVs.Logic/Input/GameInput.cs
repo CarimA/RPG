@@ -7,7 +7,6 @@ namespace PhotoVs.Logic.Input
     {
         public GameInput(PlayerIndex playerIndex) : base(playerIndex)
         {
-
         }
 
         public Vector2 GetAxis()

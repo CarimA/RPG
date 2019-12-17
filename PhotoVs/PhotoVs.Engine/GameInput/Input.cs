@@ -101,7 +101,7 @@ namespace PhotoVs.Engine.GameInput
                     AnyKeyDown(keyboard, KeyMappings[action]))
                 {
                     IsPressed[action] = true;
-                    PressedTime[action] += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    PressedTime[action] += (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else
                 {

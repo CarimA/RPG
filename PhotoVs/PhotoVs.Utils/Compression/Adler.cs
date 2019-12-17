@@ -43,7 +43,7 @@
                 return 1;
 
             var s1 = adler & 0xffff;
-            var s2 = adler >> 16 & 0xffff;
+            var s2 = (adler >> 16) & 0xffff;
 
             while (len > 0)
             {
@@ -98,7 +98,7 @@
                 s2 %= BASE;
             }
 
-            return s2 << 16 | s1;
+            return (s2 << 16) | s1;
         }
 #pragma warning restore 3001
 #pragma warning restore 3002

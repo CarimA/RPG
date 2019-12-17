@@ -12,14 +12,14 @@ namespace PhotoVs.Engine.TiledMaps
         {
             map.Version = reader["version"];
             map.TiledVersion = reader["tiledversion"];
-            map.Orientation = (Orientation)Enum.Parse(typeof(Orientation), reader["orientation"]);
-            map.RenderOrder = (RenderOrder)Enum.Parse(typeof(RenderOrder), reader["renderorder"]?.Replace("-", ""));
+            map.Orientation = (Orientation) Enum.Parse(typeof(Orientation), reader["orientation"]);
+            map.RenderOrder = (RenderOrder) Enum.Parse(typeof(RenderOrder), reader["renderorder"]?.Replace("-", ""));
             map.StaggerAxis = reader["staggeraxis"] == null
                 ? StaggerAxis.None
-                : (StaggerAxis)Enum.Parse(typeof(StaggerAxis), reader["staggeraxis"]);
+                : (StaggerAxis) Enum.Parse(typeof(StaggerAxis), reader["staggeraxis"]);
             map.StaggerIndex = reader["staggerindex"] == null
                 ? StaggerIndex.None
-                : (StaggerIndex)Enum.Parse(typeof(StaggerIndex), reader["staggerindex"]);
+                : (StaggerIndex) Enum.Parse(typeof(StaggerIndex), reader["staggerindex"]);
             map.Width = int.Parse(reader["width"]);
             map.Height = int.Parse(reader["height"]);
             map.CellWidth = int.Parse(reader["tilewidth"]);
@@ -64,27 +64,27 @@ namespace PhotoVs.Engine.TiledMaps
                         if (reader["source"] == null)
                         {
                             var xmlSerializer = new XmlSerializer(typeof(Tileset));
-                            tilesets.Add((Tileset)xmlSerializer.Deserialize(reader));
+                            tilesets.Add((Tileset) xmlSerializer.Deserialize(reader));
                         }
                         else
                         {
                             tilesets.Add(new ExternalTileset
-                            { FirstGid = int.Parse(reader["firstgid"]), Source = reader["source"] });
+                                {FirstGid = int.Parse(reader["firstgid"]), Source = reader["source"]});
                             reader.Read();
                         }
 
                         break;
                     case "layer":
                         var xmlSerializer1 = new XmlSerializer(typeof(TileLayer));
-                        layers.Add((BaseLayer)xmlSerializer1.Deserialize(reader));
+                        layers.Add((BaseLayer) xmlSerializer1.Deserialize(reader));
                         break;
                     case "objectgroup":
                         var xmlSerializer2 = new XmlSerializer(typeof(ObjectLayer));
-                        layers.Add((BaseLayer)xmlSerializer2.Deserialize(reader));
+                        layers.Add((BaseLayer) xmlSerializer2.Deserialize(reader));
                         break;
                     case "imagelayer":
                         var xmlSerializer3 = new XmlSerializer(typeof(ImageLayer));
-                        layers.Add((BaseLayer)xmlSerializer3.Deserialize(reader));
+                        layers.Add((BaseLayer) xmlSerializer3.Deserialize(reader));
                         break;
                     case "properties":
                         reader.ReadProperties(map.Properties);
@@ -116,56 +116,56 @@ namespace PhotoVs.Engine.TiledMaps
                         break;
                     case Tileset ts:
                         writer.WriteStartElement("tileset");
+                    {
+                        if (ts.FirstGid < 1)
+                            throw new ArgumentOutOfRangeException(nameof(Tileset.FirstGid));
+                        writer.WriteAttribute("firstgid", ts.FirstGid);
+                        if (ts.Name != null)
+                            writer.WriteAttribute("name", ts.Name);
+
+                        writer.WriteAttribute("tilewidth", ts.TileWidth);
+                        writer.WriteAttribute("tileheight", ts.TileHeight);
+                        if (ts.Spacing != 0)
+                            writer.WriteAttribute("spacing", ts.Spacing);
+                        if (ts.TileCount != 0)
+                            writer.WriteAttribute("tilecount", ts.TileCount);
+                        if (ts.Columns != 0)
+                            writer.WriteAttribute("columns", ts.Columns);
+
+                        if (ts.TileOffset != null)
                         {
-                            if (ts.FirstGid < 1)
-                                throw new ArgumentOutOfRangeException(nameof(Tileset.FirstGid));
-                            writer.WriteAttribute("firstgid", ts.FirstGid);
-                            if (ts.Name != null)
-                                writer.WriteAttribute("name", ts.Name);
+                            writer.WriteStartElement("tileoffset");
+                            writer.WriteAttribute("x", ts.TileOffset.X);
+                            writer.WriteAttribute("y", ts.TileOffset.Y);
+                            writer.WriteEndElement();
+                        }
 
-                            writer.WriteAttribute("tilewidth", ts.TileWidth);
-                            writer.WriteAttribute("tileheight", ts.TileHeight);
-                            if (ts.Spacing != 0)
-                                writer.WriteAttribute("spacing", ts.Spacing);
-                            if (ts.TileCount != 0)
-                                writer.WriteAttribute("tilecount", ts.TileCount);
-                            if (ts.Columns != 0)
-                                writer.WriteAttribute("columns", ts.Columns);
+                        writer.WriteStartElement("image");
+                        {
+                            writer.WriteAttribute("source", ts.ImagePath);
+                            if (ts.ImageWidth != 0)
+                                writer.WriteAttribute("width", ts.ImageWidth);
+                            if (ts.ImageHeight != 0)
+                                writer.WriteAttribute("height", ts.ImageHeight);
+                        }
+                        writer.WriteEndElement();
 
-                            if (ts.TileOffset != null)
+                        writer.WriteProperties(ts.Properties);
+
+                        foreach (var t in ts.TileProperties)
+                        {
+                            writer.WriteStartElement("tile");
                             {
-                                writer.WriteStartElement("tileoffset");
-                                writer.WriteAttribute("x", ts.TileOffset.X);
-                                writer.WriteAttribute("y", ts.TileOffset.Y);
-                                writer.WriteEndElement();
-                            }
+                                writer.WriteAttribute("id", t.Key);
 
-                            writer.WriteStartElement("image");
-                            {
-                                writer.WriteAttribute("source", ts.ImagePath);
-                                if (ts.ImageWidth != 0)
-                                    writer.WriteAttribute("width", ts.ImageWidth);
-                                if (ts.ImageHeight != 0)
-                                    writer.WriteAttribute("height", ts.ImageHeight);
+                                writer.WriteProperties(t.Value);
+                                if (ts.TileAnimations != null)
+                                    if (ts.TileAnimations.TryGetValue(t.Key, out var anim) && anim?.Length > 0)
+                                        writer.WriteAnimation(anim);
                             }
                             writer.WriteEndElement();
-
-                            writer.WriteProperties(ts.Properties);
-
-                            foreach (var t in ts.TileProperties)
-                            {
-                                writer.WriteStartElement("tile");
-                                {
-                                    writer.WriteAttribute("id", t.Key);
-
-                                    writer.WriteProperties(t.Value);
-                                    if (ts.TileAnimations != null)
-                                        if (ts.TileAnimations.TryGetValue(t.Key, out var anim) && anim?.Length > 0)
-                                            writer.WriteAnimation(anim);
-                                }
-                                writer.WriteEndElement();
-                            }
                         }
+                    }
                         writer.WriteEndElement();
                         break;
                     default:
@@ -183,21 +183,21 @@ namespace PhotoVs.Engine.TiledMaps
                         break;
                     case ImageLayer l:
                         writer.WriteStartElement("imagelayer");
+                    {
+                        writer.WriteAttribute("name", l.Name);
+                        if (!l.Visible)
+                            writer.WriteAttribute("visible", l.Visible);
+                        if (l.Opacity != 1)
+                            writer.WriteAttribute("opacity", l.Opacity);
+
+
+                        writer.WriteStartElement("image");
                         {
-                            writer.WriteAttribute("name", l.Name);
-                            if (!l.Visible)
-                                writer.WriteAttribute("visible", l.Visible);
-                            if (l.Opacity != 1)
-                                writer.WriteAttribute("opacity", l.Opacity);
-
-
-                            writer.WriteStartElement("image");
-                            {
-                                writer.WriteAttribute("source", l.Image);
-                                // <image source="sewer_tileset.png"/> 
-                            }
-                            writer.WriteEndElement();
+                            writer.WriteAttribute("source", l.Image);
+                            // <image source="sewer_tileset.png"/> 
                         }
+                        writer.WriteEndElement();
+                    }
                         writer.WriteEndElement();
                         break;
                     default:

@@ -58,11 +58,11 @@ namespace PhotoVs.Engine.TiledMaps
                 if (gid == 0)
                     return default;
 
-                var orientation = (TileOrientation)gid & TileOrientation.MaskFlip;
+                var orientation = (TileOrientation) gid & TileOrientation.MaskFlip;
 
                 var columns = Columns;
                 var rows = Rows;
-                var index = ((int)TileOrientation.MaskID & gid) - FirstGid;
+                var index = ((int) TileOrientation.MaskID & gid) - FirstGid;
                 if (index < 0 || index >= rows * columns)
                     throw new ArgumentOutOfRangeException();
 
@@ -103,8 +103,8 @@ namespace PhotoVs.Engine.TiledMaps
             using (var reader = new StreamReader(stream))
             {
                 if (reader.ContainsJson())
-                    return (Tileset)Utils.JsonSerializer.Deserialize(reader, typeof(Tileset));
-                return (Tileset)new XmlSerializer(typeof(Tileset)).Deserialize(reader);
+                    return (Tileset) Utils.JsonSerializer.Deserialize(reader, typeof(Tileset));
+                return (Tileset) new XmlSerializer(typeof(Tileset)).Deserialize(reader);
             }
         }
     }

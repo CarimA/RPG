@@ -21,7 +21,7 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
         public BitmapFont Load(Stream stream)
         {
             var deserializer = new XmlSerializer(typeof(BitmapFontFile));
-            var data = (BitmapFontFile)deserializer.Deserialize(stream);
+            var data = (BitmapFontFile) deserializer.Deserialize(stream);
 
             var assets = new List<string>();
 

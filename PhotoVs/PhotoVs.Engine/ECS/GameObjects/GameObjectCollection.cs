@@ -24,14 +24,6 @@ namespace PhotoVs.Engine.ECS.GameObjects
             get { return Find(entity => entity.Name == name); }
         }
 
-        private void Reseed(IGameObject entity)
-        {
-            unchecked
-            {
-                _hash = _hash * 31 + entity.GetHashCode();
-            }
-        }
-
         public new void Add(IGameObject entity)
         {
             Reseed(entity);
@@ -42,11 +34,6 @@ namespace PhotoVs.Engine.ECS.GameObjects
         {
             Reseed(entity);
             base.Remove(entity);
-        }
-
-        public int GetUniqueSeed()
-        {
-            return _hash;
         }
 
         public IGameObjectCollection FindByTag(string tag)
@@ -67,6 +54,19 @@ namespace PhotoVs.Engine.ECS.GameObjects
         public IGameObjectCollection All(params Type[] types)
         {
             return new GameObjectCollection(FindAll(entity => types.All(entity.Components.Has)));
+        }
+
+        private void Reseed(IGameObject entity)
+        {
+            unchecked
+            {
+                _hash = _hash * 31 + entity.GetHashCode();
+            }
+        }
+
+        public int GetUniqueSeed()
+        {
+            return _hash;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using PhotoVs.Utils;
 
@@ -66,7 +67,7 @@ namespace PhotoVs.Logic.Collision
                 if (!result.AreIntersecting && !result.WillIntersect)
                     break;
 
-                interval = System.Math.Abs(interval);
+                interval = Math.Abs(interval);
                 if (!(interval < minimumInterval))
                     continue;
 
@@ -91,10 +92,10 @@ namespace PhotoVs.Logic.Collision
 
             foreach (var point in velocities)
             {
-                if (System.Math.Abs(point.X) > System.Math.Abs(x))
+                if (Math.Abs(point.X) > Math.Abs(x))
                     x = point.X;
 
-                if (System.Math.Abs(point.Y) > System.Math.Abs(y))
+                if (Math.Abs(point.Y) > Math.Abs(y))
                     y = point.Y;
             }
 

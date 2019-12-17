@@ -41,7 +41,7 @@ namespace PhotoVs.Utils
         {
             if (obj is Thickness)
             {
-                var other = (Thickness)obj;
+                var other = (Thickness) obj;
                 return Equals(other);
             }
 
@@ -53,9 +53,9 @@ namespace PhotoVs.Utils
             unchecked
             {
                 var hashCode = Left;
-                hashCode = hashCode * 397 ^ Top;
-                hashCode = hashCode * 397 ^ Right;
-                hashCode = hashCode * 397 ^ Bottom;
+                hashCode = (hashCode * 397) ^ Top;
+                hashCode = (hashCode * 397) ^ Right;
+                hashCode = (hashCode * 397) ^ Bottom;
                 return hashCode;
             }
         }
@@ -83,7 +83,7 @@ namespace PhotoVs.Utils
         public static Thickness Parse(string value)
         {
             var values = value
-                .Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToArray();
 

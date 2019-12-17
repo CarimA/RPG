@@ -1,5 +1,4 @@
-﻿using PhotoVs.Utils.Compression;
-using System;
+﻿using System;
 using System.ComponentModel;
 
 namespace PhotoVs.Utils.Compression

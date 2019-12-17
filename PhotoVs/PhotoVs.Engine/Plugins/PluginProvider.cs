@@ -1,10 +1,10 @@
-﻿using PhotoVs.Utils.Extensions;
-using PhotoVs.Utils.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using PhotoVs.Utils.Extensions;
+using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Plugins
 {
@@ -22,7 +22,6 @@ namespace PhotoVs.Engine.Plugins
             {
                 var dlls = Directory.GetFiles(directory);
                 foreach (var dll in dlls)
-                {
                     try
                     {
                         var assembly = Assembly.LoadFrom(dll);
@@ -37,18 +36,18 @@ namespace PhotoVs.Engine.Plugins
                         Debug.Log.Error($"Could not load plugin: {dll}");
                         Debug.Log.Error(e.ToString());
                     }
-                }
             }
             else
             {
                 Debug.Log.Error($"Could not find {directory}");
             }
+
             Debug.Log.Info($"Loaded {_plugins.Count} plugin(s)");
         }
 
         private void LoadAssembly(Type type)
         {
-            var plugin = (IPlugin)Activator.CreateInstance(type, _gameEvents);
+            var plugin = (IPlugin) Activator.CreateInstance(type, _gameEvents);
             plugin.Bind(_gameEvents);
             _plugins.Add(plugin);
         }

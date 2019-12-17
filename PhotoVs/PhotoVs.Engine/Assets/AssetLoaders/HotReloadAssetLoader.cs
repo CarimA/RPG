@@ -31,6 +31,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             };
             _fsWatcher.Changed += FileWatcher_Changed;
         }
+
         public T GetAsset<T>(string filepath) where T : class
         {
             filepath = filepath.Replace('/', '\\').ToLowerInvariant();
@@ -38,7 +39,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             if (_assetCache.TryGetValue(filepath, out var asset))
             {
                 if (asset != null)
-                    return (T)asset;
+                    return (T) asset;
             }
             else
             {

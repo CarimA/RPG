@@ -112,7 +112,7 @@ namespace PhotoVs.Utils
         public override bool Equals(object obj)
         {
             if (obj is Point2)
-                return Equals((Point2)obj);
+                return Equals((Point2) obj);
             return false;
         }
 
@@ -288,7 +288,7 @@ namespace PhotoVs.Utils
         {
             unchecked
             {
-                return X.GetHashCode() * 397 ^ Y.GetHashCode();
+                return (X.GetHashCode() * 397) ^ Y.GetHashCode();
             }
         }
 

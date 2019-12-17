@@ -30,7 +30,7 @@ namespace PhotoVs.Engine.Graphics
 
         public void Update(GameTime gameTime)
         {
-            var time = (float)gameTime.TotalGameTime.TotalMilliseconds;
+            var time = (float) gameTime.TotalGameTime.TotalMilliseconds;
             var scaleA = time % 360f / 360f;
             scaleA = scaleA >= 0.5f ? 1f - scaleA : scaleA;
 
@@ -67,8 +67,8 @@ namespace PhotoVs.Engine.Graphics
                     var bottomRightS = bottomRight + new Vector2(diffSmallC, diffSmallC);
                     var bottomLeftS = bottomLeft + new Vector2(-diffSmallB, diffSmallB);
 
-                    black.SetPoints(new List<Vector2> { topLeft, topRight, bottomRight, bottomLeft });
-                    white.SetPoints(new List<Vector2> { topLeftS, topRightS, bottomRightS, bottomLeftS });
+                    black.SetPoints(new List<Vector2> {topLeft, topRight, bottomRight, bottomLeft});
+                    white.SetPoints(new List<Vector2> {topLeftS, topRightS, bottomRightS, bottomLeftS});
                 }
                 else
                 {
@@ -82,8 +82,8 @@ namespace PhotoVs.Engine.Graphics
                     var bottomRightS = bottomRight + new Vector2(diffSmallA, diffSmallA);
                     var bottomLeftS = bottomLeft + new Vector2(-diffSmallB, diffSmallA);
 
-                    black.SetPoints(new List<Vector2> { topLeft, topRight, bottomRight, bottomLeft });
-                    white.SetPoints(new List<Vector2> { topLeftS, topRightS, bottomRightS, bottomLeftS });
+                    black.SetPoints(new List<Vector2> {topLeft, topRight, bottomRight, bottomLeft});
+                    white.SetPoints(new List<Vector2> {topLeftS, topRightS, bottomRightS, bottomLeftS});
                 }
             }
         }

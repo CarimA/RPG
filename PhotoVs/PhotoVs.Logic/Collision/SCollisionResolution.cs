@@ -24,7 +24,7 @@ namespace PhotoVs.Logic.Collision
 
         public int Priority { get; set; } = -1;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CCollisionBound), typeof(CPosition) };
+        public Type[] Requires { get; } = {typeof(CCollisionBound), typeof(CPosition)};
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -67,7 +67,7 @@ namespace PhotoVs.Logic.Collision
             // next, check if A is actually moving and possesses a velocity
             if (moving.Components.TryGet(out CVelocity velocityA) && velocityA.Velocity != Vector2.Zero)
             {
-                velocity = velocityA.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity = velocityA.Velocity * (float) gameTime.ElapsedGameTime.TotalSeconds;
                 baseVelocity = velocity;
             }
             else

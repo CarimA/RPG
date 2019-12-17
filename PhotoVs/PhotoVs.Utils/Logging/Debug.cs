@@ -6,17 +6,13 @@ namespace PhotoVs.Utils.Logging
     public class Debug : List<ILogger>
     {
         private static Debug _instance;
-        public static Debug Log
-        {
-            get
+
+        public static Debug Log =>
+            _instance
+            ?? (_instance = new Debug
             {
-                return _instance
-                  ?? (_instance = new Debug()
-                  {
                 new ConsoleLogger(LogLevel.Trace)
-                  });
-            }
-        }
+            });
 
         public ILogger this[Type type] => Find(logger => logger.GetType() == type);
 

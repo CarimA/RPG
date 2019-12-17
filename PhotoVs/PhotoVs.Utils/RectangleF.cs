@@ -153,7 +153,7 @@ namespace PhotoVs.Utils
 
         public override bool Equals(object obj)
         {
-            return obj is RectangleF ? this == (RectangleF)obj : false;
+            return obj is RectangleF ? this == (RectangleF) obj : false;
         }
 
         public override string ToString()
@@ -163,7 +163,7 @@ namespace PhotoVs.Utils
 
         public override int GetHashCode()
         {
-            return (int)(X * Y * Width * Height) * ((int)X ^ (int)Y ^ (int)Width ^ (int)Height);
+            return (int) (X * Y * Width * Height) * ((int) X ^ (int) Y ^ (int) Width ^ (int) Height);
         }
 
         public bool Intersects(RectangleF r2)

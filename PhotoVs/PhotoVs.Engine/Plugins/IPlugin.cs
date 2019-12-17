@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace PhotoVs.Engine.Plugins
+﻿namespace PhotoVs.Engine.Plugins
 {
     public interface IPlugin
     {

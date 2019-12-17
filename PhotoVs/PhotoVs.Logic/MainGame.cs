@@ -105,14 +105,6 @@ namespace PhotoVs.Logic
             base.Initialize();
         }
 
-        protected override void LoadContent()
-        {
-        }
-
-        protected override void UnloadContent()
-        {
-        }
-
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||

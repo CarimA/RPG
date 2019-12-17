@@ -11,7 +11,7 @@ namespace PhotoVs.Logic.Movement
     {
         public int Priority { get; set; } = -2;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInput), typeof(CVelocity) };
+        public Type[] Requires { get; } = {typeof(CInput), typeof(CVelocity)};
 
         public void BeforeUpdate(GameTime gameTime)
         {

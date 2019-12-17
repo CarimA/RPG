@@ -23,7 +23,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             if (_assetCache.TryGetValue(filepath, out var asset))
             {
                 if (asset != null)
-                    return (T)asset;
+                    return (T) asset;
             }
             else
             {

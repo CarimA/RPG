@@ -3,7 +3,6 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PhotoVs.Engine.TiledMaps.Layers;
-using PhotoVs.Utils;
 using PhotoVs.Utils.Compression;
 
 namespace PhotoVs.Engine.TiledMaps

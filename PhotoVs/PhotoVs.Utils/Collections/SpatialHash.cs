@@ -54,13 +54,13 @@ namespace PhotoVs.Utils.Collections
             var snapBottom = Snap(bounds.Bottom) + _cellSize;
 
             for (var x = snapLeft; x < snapRight; x += _cellSize)
-                for (var y = snapTop; y < snapBottom; y += _cellSize)
-                {
-                    var points = GetPoint(x, y);
-                    foreach (var point in points)
-                        if (!output.Contains(point))
-                            output.Add(point);
-                }
+            for (var y = snapTop; y < snapBottom; y += _cellSize)
+            {
+                var points = GetPoint(x, y);
+                foreach (var point in points)
+                    if (!output.Contains(point))
+                        output.Add(point);
+            }
 
             return output;
         }
@@ -68,8 +68,8 @@ namespace PhotoVs.Utils.Collections
         private void ForRange(RectangleF range, Action<int, int> action)
         {
             for (var x = Snap(range.Left); x < Snap(range.Right); x += _cellSize)
-                for (var y = Snap(range.Top); y < Snap(range.Bottom); y += _cellSize)
-                    action(x, y);
+            for (var y = Snap(range.Top); y < Snap(range.Bottom); y += _cellSize)
+                action(x, y);
         }
 
         private void ForRange(Rectangle range, Action<int, int> action)
@@ -80,13 +80,13 @@ namespace PhotoVs.Utils.Collections
             var snapBottom = Snap(range.Bottom) + _cellSize;
 
             for (var x = snapLeft; x < snapRight; x += _cellSize)
-                for (var y = snapTop; y < snapBottom; y += _cellSize)
-                    action(x, y);
+            for (var y = snapTop; y < snapBottom; y += _cellSize)
+                action(x, y);
         }
 
         private int Snap(float input)
         {
-            return (int)(System.Math.Round(input / _cellSize) * _cellSize);
+            return (int) (Math.Round(input / _cellSize) * _cellSize);
         }
 
         private static int HashPosition(int x, int y)
@@ -105,7 +105,7 @@ namespace PhotoVs.Utils.Collections
             unchecked
             {
                 const int c2 = 0x27d4eb2d;
-                val = val ^ 61 ^ val >> 16;
+                val = val ^ 61 ^ (val >> 16);
                 val += val << 3;
                 val ^= val >> 4;
                 val *= c2;

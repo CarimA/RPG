@@ -1,5 +1,5 @@
-﻿using PhotoVs.Models.Assets;
-using System.IO;
+﻿using System.IO;
+using PhotoVs.Models.Assets;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {

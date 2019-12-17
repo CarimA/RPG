@@ -118,7 +118,7 @@ namespace PhotoVs.Logic.WorldZoning
         {
             var entity = new GameObject();
             var bounds = new CCollisionBound(obj.Polygon.Select(point => new Vector2(point.X, point.Y)).ToList());
-            var position = new CPosition { Position = new Vector2(x + obj.X, y + obj.Y) };
+            var position = new CPosition {Position = new Vector2(x + obj.X, y + obj.Y)};
             entity.Components.Add(bounds);
             entity.Components.Add(position);
 
@@ -137,8 +137,8 @@ namespace PhotoVs.Logic.WorldZoning
         {
             var entity = new GameObject();
             var bounds = CCollisionBound.Rectangle(new Vector2(obj.Width, obj.Height));
-            var position = new CPosition { Position = new Vector2(x + obj.X, y + obj.Y) };
-            
+            var position = new CPosition {Position = new Vector2(x + obj.X, y + obj.Y)};
+
             entity.Components.Add(bounds);
             entity.Components.Add(position);
 

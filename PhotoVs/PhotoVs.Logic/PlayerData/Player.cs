@@ -29,7 +29,7 @@ namespace PhotoVs.Logic.PlayerData
             _flags = new Dictionary<string, object>();
             _canMove = true;
 
-            _position = new CPosition { Position = new Vector2(0, 100) };
+            _position = new CPosition {Position = new Vector2(0, 100)};
             Components.Add(_position);
 
             Input = new CInput(new GameInput(PlayerIndex.One)
@@ -61,9 +61,9 @@ namespace PhotoVs.Logic.PlayerData
             });
 
             Components.Add(Input);
-            Components.Add(new CVelocity { Velocity = new Vector2(0, 0) });
+            Components.Add(new CVelocity {Velocity = new Vector2(0, 0)});
             Components.Add(CCollisionBound.Circle(16, 8));
-            Components.Add(new CSize { Size = new Vector2(32, 32) });
+            Components.Add(new CSize {Size = new Vector2(32, 32)});
         }
 
         public void Save()
