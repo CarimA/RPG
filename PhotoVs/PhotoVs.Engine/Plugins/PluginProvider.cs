@@ -10,11 +10,11 @@ namespace PhotoVs.Engine.Plugins
     public class PluginProvider
     {
         private readonly Events _gameEvents;
-        private readonly List<Plugin> _plugins;
+        private readonly List<IPlugin> _plugins;
 
         public PluginProvider(string directory, Events gameEvents)
         {
-            _plugins = new List<Plugin>();
+            _plugins = new List<IPlugin>();
             _gameEvents = gameEvents;
 
             try
@@ -24,7 +24,7 @@ namespace PhotoVs.Engine.Plugins
                     .ForEach(file => Assembly
                         .LoadFrom(file)
                         .GetTypes()
-                        .Where(type => type.IsAssignableFrom(typeof(Plugin)))
+                        .Where(type => type.IsAssignableFrom(typeof(IPlugin)))
                         .ForEach(LoadAssembly));
             }
             catch (Exception e)
@@ -36,7 +36,7 @@ namespace PhotoVs.Engine.Plugins
 
         private void LoadAssembly(Type type)
         {
-            _plugins.Add((Plugin)Activator.CreateInstance(type, _gameEvents));
+            _plugins.Add((IPlugin)Activator.CreateInstance(type, _gameEvents));
         }
 
         private void BindPlugins(Events gameEvents)
