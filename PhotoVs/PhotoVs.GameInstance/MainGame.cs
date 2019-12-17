@@ -7,11 +7,11 @@ using PhotoVs.Assets.TypeLoaders;
 using PhotoVs.Audio;
 using PhotoVs.CommonGameLogic.Camera;
 using PhotoVs.CommonGameLogic.Input;
+using PhotoVs.CommonGameLogic.Scenes;
 using PhotoVs.ECS.Entities;
 using PhotoVs.ECS.Systems;
 using PhotoVs.Events;
 using PhotoVs.FSM.Scenes;
-using PhotoVs.FSM.States;
 using PhotoVs.Graphics;
 using PhotoVs.Logs;
 using PhotoVs.PlayerData;
@@ -22,27 +22,26 @@ namespace PhotoVs.GameInstance
 {
     public class MainGame : Game
     {
-        private GameEvents _gameEvents;
-        private PluginProvider _plugins;
-
-        private Player _player;
-        private SCamera _camera;
-        private SystemCollection _globalSystems;
-        private EntityCollection _globalEntities;
-
-        private Renderer _renderer;
-        private IAudio _audio;
-        private SceneMachine _sceneMachine;
-        private ISceneManager _sceneManager;
+        private readonly GraphicsDeviceManager _graphics;
 
         private IAssetLoader _assetLoader;
+        private IAudio _audio;
+        private SCamera _camera;
+
+        private Database _database;
+        private GameEvents _gameEvents;
+        private EntityCollection _globalEntities;
+        private SystemCollection _globalSystems;
 
         private LoggerCollection _logger;
 
-        private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        private Player _player;
+        private PluginProvider _plugins;
 
-        private Database _database;
+        private Renderer _renderer;
+        private SceneMachine _sceneMachine;
+        private ISceneManager _sceneManager;
+        private SpriteBatch _spriteBatch;
 
         public MainGame()
         {
@@ -90,7 +89,7 @@ namespace PhotoVs.GameInstance
                 _player
             };
 
-            _globalSystems = new SystemCollection()
+            _globalSystems = new SystemCollection
             {
                 _camera,
                 new SProcessInput()
@@ -100,7 +99,7 @@ namespace PhotoVs.GameInstance
 
             _sceneMachine = new SceneMachine(_spriteBatch, _assetLoader, _gameEvents, _camera);
             _sceneMachine.ChangeToOverworldScene();
-            _sceneManager = new SceneManager(_sceneMachine as StateMachine<IScene>, _globalSystems, _globalEntities);
+            _sceneManager = new SceneManager(_sceneMachine, _globalSystems, _globalEntities);
 
             _database = new Database(_assetLoader, _player);
 

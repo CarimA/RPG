@@ -6,7 +6,7 @@ using PhotoVs.ECS.Systems;
 using PhotoVs.FSM.Scenes;
 using PhotoVs.WorldZoning;
 
-namespace PhotoVs.GameInstance
+namespace PhotoVs.CommonGameLogic.Scenes
 {
     public class OverworldScene : ISystemScene
     {
@@ -16,7 +16,7 @@ namespace PhotoVs.GameInstance
         public OverworldScene(SceneMachine scene)
         {
             _scene = scene;
-            
+
             _world = new World(scene.SpriteBatch, scene.AssetLoader);
             _world.LoadMaps("maps\\");
             var mapBoundary = new SMapBoundaryGeneration(_world, scene.Camera);
@@ -36,28 +36,25 @@ namespace PhotoVs.GameInstance
                 new SMapRenderer(scene.SpriteBatch, scene.AssetLoader, mapBoundary, scene.Camera)
             };
         }
+
         public bool IsBlocking { get; set; }
         public EntityCollection Entities { get; }
         public SystemCollection Systems { get; }
 
         public void Enter(params object[] args)
         {
-
         }
 
         public void Exit()
         {
-
         }
 
         public void Resume()
         {
-
         }
 
         public void Suspend()
         {
-
         }
     }
 }

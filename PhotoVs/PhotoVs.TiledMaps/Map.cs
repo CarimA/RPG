@@ -5,7 +5,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using PhotoVs.TiledMaps.Layers;
 
@@ -14,10 +13,6 @@ namespace PhotoVs.TiledMaps
     [XmlRoot("map")]
     public class Map : IXmlSerializable
     {
-        public Map()
-        {
-        }
-
         [JsonRequired]
         [JsonProperty("version")]
         public string Version { get; set; } = "1.0";

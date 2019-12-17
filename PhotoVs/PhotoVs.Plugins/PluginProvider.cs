@@ -30,7 +30,6 @@ namespace PhotoVs.Plugins
             }
             catch (Exception e)
             {
-
             }
 
             BindPlugins(gameEvents);

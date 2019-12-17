@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BB71D2A9-C199-423B-B5DE-F986EC518DD2}</ProjectGuid>
+    <ProjectGuid>{DC5A0344-3D1B-4E66-A593-757E8491022F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PhotoVs.GameInstance</RootNamespace>
-    <AssemblyName>PhotoVs.GameInstance</AssemblyName>
+    <RootNamespace>PhotoVs.CommonGameLogic.Scenes</RootNamespace>
+    <AssemblyName>PhotoVs.CommonGameLogic.Scenes</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +29,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
@@ -48,17 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainGame.cs" />
+    <Compile Include="OverworldScene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SceneMachine.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PhotoVs.Assets\PhotoVs.Assets.csproj">
       <Project>{F20CCDA5-7287-4C0D-A6AB-F46FB3847B4E}</Project>
       <Name>PhotoVs.Assets</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Audio\PhotoVs.Audio.csproj">
-      <Project>{BC15C1EB-2AC5-453A-B330-9576FBEF89AF}</Project>
-      <Name>PhotoVs.Audio</Name>
     </ProjectReference>
     <ProjectReference Include="..\PhotoVs.Collision\PhotoVs.Collision.csproj">
       <Project>{27A4E1F7-464A-4BDE-A2FD-EF1AFC3A8F0E}</Project>
@@ -72,17 +66,9 @@
       <Project>{4FFE19CB-A0C0-4398-BB8F-CC1157EEEF6D}</Project>
       <Name>PhotoVs.CommonGameLogic.Camera</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Input\PhotoVs.CommonGameLogic.Input.csproj">
-      <Project>{3F2A1748-EE02-41A1-A3A9-90BDB9F899ED}</Project>
-      <Name>PhotoVs.CommonGameLogic.Input</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PhotoVs.CommonGameLogic.Movement\PhotoVs.CommonGameLogic.Movement.csproj">
       <Project>{22631446-7871-4668-9087-F89A8FDC47C6}</Project>
       <Name>PhotoVs.CommonGameLogic.Movement</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.CommonGameLogic.Scenes\PhotoVs.CommonGameLogic.Scenes.csproj">
-      <Project>{DC5A0344-3D1B-4E66-A593-757E8491022F}</Project>
-      <Name>PhotoVs.CommonGameLogic.Scenes</Name>
     </ProjectReference>
     <ProjectReference Include="..\PhotoVs.ECS\PhotoVs.ECS.csproj">
       <Project>{8676E645-4A87-47E5-898B-F985727C30F6}</Project>
@@ -92,41 +78,9 @@
       <Project>{DB380E0E-67F5-4276-AF7D-7CFF3BBBE990}</Project>
       <Name>PhotoVs.Events</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Extensions\PhotoVs.Extensions.csproj">
-      <Project>{6D71EF93-BA6A-4E16-83F4-E567547AC819}</Project>
-      <Name>PhotoVs.Extensions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PhotoVs.FSM\PhotoVs.FSM.csproj">
       <Project>{8A18EA10-0E96-443D-8E23-2ED738B6AF3C}</Project>
       <Name>PhotoVs.FSM</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.GameInput\PhotoVs.GameInput.csproj">
-      <Project>{e4e7d35e-30a1-46b2-89df-75c77029ab6b}</Project>
-      <Name>PhotoVs.GameInput</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Graphics\PhotoVs.Graphics.csproj">
-      <Project>{37F3C50F-757A-409E-938A-80B329E5A536}</Project>
-      <Name>PhotoVs.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Logs\PhotoVs.Logs.csproj">
-      <Project>{3063E736-A632-48A9-A44C-B60E97F734D2}</Project>
-      <Name>PhotoVs.Logs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.PlayerData\PhotoVs.PlayerData.csproj">
-      <Project>{61F373E2-8115-48DF-B131-D0BDB505C60C}</Project>
-      <Name>PhotoVs.PlayerData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Plugins\PhotoVs.Plugins.csproj">
-      <Project>{1FD3FFE5-D075-482E-8064-825F3E31A216}</Project>
-      <Name>PhotoVs.Plugins</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.Text\PhotoVs.Text.csproj">
-      <Project>{D18EA65C-50C9-4F8B-BF64-384BECA515B3}</Project>
-      <Name>PhotoVs.Text</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhotoVs.TiledMaps\PhotoVs.TiledMaps.csproj">
-      <Project>{474c8372-cdfb-4564-a668-9f4cff8ac700}</Project>
-      <Name>PhotoVs.TiledMaps</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

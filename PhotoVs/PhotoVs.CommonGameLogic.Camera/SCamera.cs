@@ -121,7 +121,7 @@ namespace PhotoVs.CommonGameLogic.Camera
         private void UpdateLookDirection()
         {
             var lastLook = _lookDirection;
-            _lookDirection = (_position - _lastPosition) * 20;
+            _lookDirection = (_position - _lastPosition) * 8;
 
             if (Vector2.Distance(lastLook, _lookDirection) < 1)
                 return;
@@ -161,7 +161,7 @@ namespace PhotoVs.CommonGameLogic.Camera
 
             var max = 4f;
             var min = 0.5f;
-            _zoom = System.Math.Min(max, System.Math.Max(min, zoom));
+            _zoom = Math.Min(max, Math.Max(min, zoom));
             _isDirty = true;
         }
 

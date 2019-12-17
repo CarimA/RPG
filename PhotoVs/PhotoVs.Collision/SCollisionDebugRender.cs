@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Assets.AssetLoaders;
-using PhotoVs.CommonGameLogic;
 using PhotoVs.CommonGameLogic.Camera;
 using PhotoVs.CommonGameLogic.Transforms;
 using PhotoVs.Core.ECS.Entities;
@@ -32,7 +31,7 @@ namespace PhotoVs.Collision
 
         public int Priority { get; set; } = 99;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CCollisionBound), typeof(CPosition) };
+        public Type[] Requires { get; } = {typeof(CCollisionBound), typeof(CPosition)};
 
         public void BeforeDraw(GameTime gameTime)
         {
@@ -86,7 +85,7 @@ namespace PhotoVs.Collision
         // todo: move to/create a primitives class
         private void DrawBox(Vector2 topLeft, Vector2 topRight, Vector2 bottomLeft, Vector2 bottomRight, Color color)
         {
-            DrawPolygon(Vector2.Zero, new List<Vector2> { topLeft, topRight, bottomRight, bottomLeft }, color);
+            DrawPolygon(Vector2.Zero, new List<Vector2> {topLeft, topRight, bottomRight, bottomLeft}, color);
         }
 
         private void DrawPolygon(Vector2 origin, List<Vector2> points, Color color)
@@ -107,13 +106,13 @@ namespace PhotoVs.Collision
             var edge = end - start;
             // calculate angle to rotate line
             var angle =
-                (float)System.Math.Atan2(edge.Y, edge.X);
+                (float) System.Math.Atan2(edge.Y, edge.X);
 
             _spriteBatch.Draw(_assetLoader.GetAsset<Texture2D>("Interfaces\\black.png"),
                 new Rectangle( // rectangle defines shape of line and position of start of line
-                    (int)start.X,
-                    (int)start.Y,
-                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
+                    (int) start.X,
+                    (int) start.Y,
+                    (int) edge.Length(), //sb will strech the texture to fill this rectangle
                     thickness), //width of line, change this to make thicker line
                 null,
                 color, //colour of line

@@ -35,6 +35,8 @@ namespace PhotoVs.Assets.AssetLoaders
             _fsWatcher.Changed += FileWatcher_Changed;
         }
 
+        public LoggerCollection Logger { get; }
+
         public T GetAsset<T>(string filepath) where T : class
         {
             filepath = filepath.Replace('/', '\\').ToLowerInvariant();
@@ -105,8 +107,6 @@ namespace PhotoVs.Assets.AssetLoaders
 
             return this;
         }
-
-        public LoggerCollection Logger { get; }
 
         public void Dispose()
         {

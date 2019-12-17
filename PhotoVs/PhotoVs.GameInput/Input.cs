@@ -75,6 +75,7 @@ namespace PhotoVs.GameInput
         {
             return PressedTime[action];
         }
+
         public bool AnyButtonDown(GamePadState state, List<Buttons> buttons)
         {
             foreach (var button in buttons)
@@ -100,20 +101,11 @@ namespace PhotoVs.GameInput
 
             foreach (InputActions action in Enum.GetValues(typeof(InputActions)))
             {
-                if (!IsPressed.ContainsKey(action))
-                {
-                    IsPressed[action] = false;
-                }
+                if (!IsPressed.ContainsKey(action)) IsPressed[action] = false;
 
-                if (!ButtonMappings.ContainsKey(action))
-                {
-                    ButtonMappings[action] = new List<Buttons>();
-                }
+                if (!ButtonMappings.ContainsKey(action)) ButtonMappings[action] = new List<Buttons>();
 
-                if (!KeyMappings.ContainsKey(action))
-                {
-                    KeyMappings[action] = new List<Keys>();
-                }
+                if (!KeyMappings.ContainsKey(action)) KeyMappings[action] = new List<Keys>();
 
                 WasPressed[action] = IsPressed[action];
 
@@ -121,7 +113,7 @@ namespace PhotoVs.GameInput
                     AnyKeyDown(keyboard, KeyMappings[action]))
                 {
                     IsPressed[action] = true;
-                    PressedTime[action] += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    PressedTime[action] += (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else
                 {

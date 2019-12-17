@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoVs.CommonGameLogic.Inp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoVs.CommonGameLogic.Movement", "PhotoVs.CommonGameLogic.Movement\PhotoVs.CommonGameLogic.Movement.csproj", "{22631446-7871-4668-9087-F89A8FDC47C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoVs.CommonGameLogic.Scenes", "PhotoVs.CommonGameLogic.Scenes\PhotoVs.CommonGameLogic.Scenes.csproj", "{DC5A0344-3D1B-4E66-A593-757E8491022F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Assets\Assets.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
@@ -255,6 +257,14 @@ Global
 		{22631446-7871-4668-9087-F89A8FDC47C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22631446-7871-4668-9087-F89A8FDC47C6}.Release|x86.ActiveCfg = Release|Any CPU
 		{22631446-7871-4668-9087-F89A8FDC47C6}.Release|x86.Build.0 = Release|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Debug|x86.Build.0 = Debug|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Release|x86.ActiveCfg = Release|Any CPU
+		{DC5A0344-3D1B-4E66-A593-757E8491022F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

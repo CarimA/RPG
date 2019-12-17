@@ -6,11 +6,11 @@ namespace PhotoVs.Graphics
     public class ColorGrading
     {
         private readonly CanvasSize _canvasSize;
-        private readonly GraphicsDevice _graphicsDevice;
-        private readonly VirtualRenderTarget2D _view;
 
         private readonly Effect _effect;
+        private readonly GraphicsDevice _graphicsDevice;
         private readonly Texture2D _lut;
+        private readonly VirtualRenderTarget2D _view;
 
         public ColorGrading(GraphicsDevice graphicsDevice, CanvasSize canvasSize, Effect effect, Texture2D lut)
         {
