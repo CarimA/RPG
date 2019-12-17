@@ -32,7 +32,7 @@ namespace PhotoVs.Logic.Scenes
                 mapBoundary,
                 new SCollisionDebugRender(scene.SpriteBatch, scene.AssetLoader, mapBoundary, scene.Camera),
                 new SCollisionResolution(scene.GameEvents, mapBoundary),
-                //new SMapInteraction(scene.Engine, mapBoundary),
+                new SProcessInteractionEvents(scene.GameEvents, mapBoundary),
                 new SMapRenderer(scene.SpriteBatch, scene.AssetLoader, mapBoundary, scene.Camera)
             };
         }

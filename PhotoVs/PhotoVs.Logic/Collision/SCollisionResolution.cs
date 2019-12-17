@@ -89,9 +89,7 @@ namespace PhotoVs.Logic.Collision
                 if (!compA.Intersects(compB))
                     continue;
 
-                var result = CollisionResult.Simulate(positionA.Position, positionB.Position, collisionBoundA.Bounds,
-                    collisionBoundB.Bounds, collisionBoundA.Points, collisionBoundB.Points, collisionBoundA.Edges,
-                    collisionBoundB.Edges, collisionBoundA.Center, collisionBoundB.Center, velocity);
+                var result = CollisionResult.Simulate(moving, stationary, velocity);
 
                 if (result.WillIntersect)
                     minimumTranslations.Add(result.MinimumTranslation);

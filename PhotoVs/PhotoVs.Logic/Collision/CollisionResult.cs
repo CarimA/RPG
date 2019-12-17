@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using PhotoVs.Logic.Transforms;
+using PhotoVs.Models.ECS;
 using PhotoVs.Utils;
 
 namespace PhotoVs.Logic.Collision
@@ -12,18 +14,13 @@ namespace PhotoVs.Logic.Collision
         public Vector2 MinimumTranslation;
 
         // todo: please refactor
-        public static CollisionResult Simulate(Vector2 positionA,
-            Vector2 positionB,
-            RectangleF collisionBoundA,
-            RectangleF collisionBoundB,
-            List<Vector2> pointsA,
-            List<Vector2> pointsB,
-            List<Vector2> edgesA,
-            List<Vector2> edgesB,
-            Vector2 centerA,
-            Vector2 centerB,
-            Vector2 velocity)
+        public static CollisionResult Simulate(IGameObject moving, IGameObject stationary, Vector2 velocity)
         {
+            var positionA = moving.Components.Get<CPosition>();
+            var positionB = stationary.Components.Get<CPosition>();
+            var collisionBoundA = moving.Components.Get<CCollisionBound>();
+            var collisionBoundB = stationary.Components.Get<CCollisionBound>();
+
             var result = new CollisionResult
             {
                 AreIntersecting = true,
@@ -33,6 +30,9 @@ namespace PhotoVs.Logic.Collision
             var minimumInterval = float.PositiveInfinity;
             var translationAxis = Vector2.Zero;
             Vector2 edge;
+
+            var edgesA = collisionBoundA.Edges;
+            var edgesB = collisionBoundB.Edges;
 
             // loop through the edges of both polygons
             for (var edgeIndex = 0; edgeIndex < edgesA.Count + edgesB.Count; edgeIndex++)
@@ -45,8 +45,8 @@ namespace PhotoVs.Logic.Collision
                 axis.Normalize();
 
                 // find the projection of the axis;
-                var (minA, maxA) = ProjectPolygon(axis, positionA, pointsA);
-                var (minB, maxB) = ProjectPolygon(axis, positionB, pointsB);
+                var (minA, maxA) = ProjectPolygon(axis, positionA, collisionBoundA);
+                var (minB, maxB) = ProjectPolygon(axis, positionB, collisionBoundB);
 
                 // check if the projections are currently intersecting
                 if (IntervalDistance(minA, maxA, minB, maxB) > 0)
@@ -74,7 +74,7 @@ namespace PhotoVs.Logic.Collision
                 minimumInterval = interval;
                 translationAxis = axis;
 
-                var d = positionA + centerA - (positionB + centerB);
+                var d = positionA.Position + collisionBoundA.Center - (positionB.Position + collisionBoundB.Center);
                 if (Vector2.Dot(d, translationAxis) < 0)
                     translationAxis = -translationAxis;
             }
@@ -102,15 +102,15 @@ namespace PhotoVs.Logic.Collision
             return new Vector2(x, y);
         }
 
-        private static (float, float) ProjectPolygon(Vector2 axis, Vector2 position, List<Vector2> points)
+        private static (float, float) ProjectPolygon(Vector2 axis, CPosition position, CCollisionBound bounds)
         {
-            var d = Vector2.Dot(position + points[0], axis);
+            var d = Vector2.Dot(position.Position + bounds.Points[0], axis);
             var min = d;
             var max = d;
 
-            foreach (var t in points)
+            foreach (var t in bounds.Points)
             {
-                d = Vector2.Dot(position + t, axis);
+                d = Vector2.Dot(position.Position + t, axis);
                 if (d < min)
                     min = d;
                 else if (d > max)
