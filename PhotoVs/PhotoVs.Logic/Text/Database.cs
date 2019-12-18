@@ -7,12 +7,12 @@ using YamlDotNet.Serialization;
 
 namespace PhotoVs.Logic.Text
 {
-    public class TextDatabase
+    public class Database
     {
         private readonly Player _player;
         private readonly Dictionary<string, Dictionary<string, string>> _text;
 
-        public TextDatabase(IAssetLoader assetLoader, Player player)
+        public Database(IAssetLoader assetLoader, Player player)
         {
             var deserializer = new Deserializer();
             var sr = new StringReader(assetLoader.GetAsset<string>("text.yml"));
