@@ -21,6 +21,13 @@ namespace PhotoVs.Engine.Plugins
             _gameEvents = gameEvents;
             _coroutines = coroutines;
 
+            LoadPlugins(directory);
+
+            Debug.Log.Info($"Loaded {_plugins.Count} plugin(s)");
+        }
+
+        private void LoadPlugins(string directory)
+        {
             if (Directory.Exists(directory))
             {
                 var dlls = Directory.GetFiles(directory);
@@ -34,11 +41,11 @@ namespace PhotoVs.Engine.Plugins
                     try
                     {
                         var assembly = Assembly.LoadFrom(dll);
+                        Debug.Log.Info($"Loaded dll: {dll}");
+
                         var types = assembly.GetTypes();
                         var plugins = types.Where(IsPlugin);
-
                         plugins.ForEach(LoadAssembly);
-                        Debug.Log.Info($"Loaded dll: {dll}");
                     }
                     catch (Exception e)
                     {
@@ -51,8 +58,6 @@ namespace PhotoVs.Engine.Plugins
             {
                 Debug.Log.Error($"Could not find {directory}");
             }
-
-            Debug.Log.Info($"Loaded {_plugins.Count} plugin(s)");
         }
 
         private static bool IsPlugin(Type type)
