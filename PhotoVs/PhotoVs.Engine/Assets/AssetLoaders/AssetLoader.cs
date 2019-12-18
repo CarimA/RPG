@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using PhotoVs.Models.Assets;
+using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
     public class AssetLoader : IAssetLoader
     {
-        private readonly Dictionary<string, object> _assetCache;
-        private readonly IStreamProvider _streamProvider;
-        private readonly Dictionary<Type, object> _typeLoaders;
+        protected readonly Dictionary<string, object> _assetCache;
+        protected readonly IStreamProvider _streamProvider;
+        protected readonly Dictionary<Type, object> _typeLoaders;
 
         public AssetLoader(IStreamProvider streamProvider)
         {
@@ -20,6 +21,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
         public T GetAsset<T>(string filepath) where T : class
         {
+            filepath = SanitiseFilename(filepath);
             if (_assetCache.TryGetValue(filepath, out var asset))
             {
                 if (asset != null)
@@ -31,27 +33,45 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
                 return GetAsset<T>(filepath);
             }
 
+            Debug.Log.Fatal("Could not find asset \"{0}\"", filepath);
             throw new FileNotFoundException();
         }
 
         public void LoadAsset<T>(string filepath) where T : class
         {
+            filepath = SanitiseFilename(filepath);
             var loader = _typeLoaders[typeof(T)];
             using var stream = _streamProvider.GetFile(filepath);
             var asset = (loader as ITypeLoader<T>)?.Load(stream);
             if (asset != null)
+            {
+
+                Debug.Log.Info("Loaded asset \"{0}\"", filepath);
                 _assetCache[filepath] = asset;
+            }
             else
+            {
+                Debug.Log.Fatal("Could not find asset \"{0}\"", filepath);
                 throw new InvalidOperationException();
+            }
         }
 
         public bool UnloadAsset(string filepath)
         {
-            return _assetCache.Remove(filepath);
+            filepath = SanitiseFilename(filepath);
+
+            _assetCache[filepath] = null;
+
+            var result = _assetCache.Remove(filepath);
+            if (result)
+                Debug.Log.Info("Unloaded asset \"{0}\"", filepath);
+
+            return result;
         }
 
         public bool IsAssetLoaded(string filepath)
         {
+            filepath = SanitiseFilename(filepath);
             return _assetCache.ContainsKey(filepath);
         }
 
@@ -63,9 +83,17 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         public IAssetLoader RegisterTypeLoader<T>(ITypeLoader<T> typeLoader)
         {
             if (typeLoader != null)
+            {
+                Debug.Log.Info("Registered Type Loader for \"{0}\"", typeof(T).Name);
                 _typeLoaders[typeof(T)] = typeLoader;
+            }
 
             return this;
+        }
+
+        private string SanitiseFilename(string filename)
+        {
+            return filename.Replace('/', '\\').ToLowerInvariant();
         }
     }
 }

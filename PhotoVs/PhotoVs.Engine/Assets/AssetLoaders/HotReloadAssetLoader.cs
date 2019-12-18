@@ -7,19 +7,14 @@ using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
-    public class DebugHotReloadAssetLoader : IAssetLoader, IDisposable
+    public class DebugHotReloadAssetLoader : AssetLoader, IDisposable
     {
-        private readonly Dictionary<string, object> _assetCache;
         private readonly FileSystemWatcher _fsWatcher;
-        private readonly IStreamProvider _streamProvider;
-        private readonly Dictionary<Type, object> _typeLoaders;
 
         public DebugHotReloadAssetLoader(IStreamProvider streamProvider)
+            : base(streamProvider)
         {
             Debug.Log.Info("Initialised DebugHotReloadAssetLoader");
-            _assetCache = new Dictionary<string, object>();
-            _typeLoaders = new Dictionary<Type, object>();
-            _streamProvider = streamProvider;
 
             _fsWatcher = new FileSystemWatcher
             {
@@ -30,78 +25,6 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
                 EnableRaisingEvents = true
             };
             _fsWatcher.Changed += FileWatcher_Changed;
-        }
-
-        public T GetAsset<T>(string filepath) where T : class
-        {
-            filepath = filepath.Replace('/', '\\').ToLowerInvariant();
-
-            if (_assetCache.TryGetValue(filepath, out var asset))
-            {
-                if (asset != null)
-                    return (T) asset;
-            }
-            else
-            {
-                LoadAsset<T>(filepath);
-                return GetAsset<T>(filepath);
-            }
-
-            Debug.Log.Fatal("Could not find asset \"{0}\"", filepath);
-            throw new FileNotFoundException();
-        }
-
-        public void LoadAsset<T>(string filepath) where T : class
-        {
-            filepath = filepath.Replace('/', '\\').ToLowerInvariant();
-
-            var loader = _typeLoaders[typeof(T)];
-            using var stream = _streamProvider.GetFile(filepath);
-            var asset = (loader as ITypeLoader<T>)?.Load(stream);
-            if (asset != null)
-            {
-                Debug.Log.Info("Loaded asset \"{0}\"", filepath);
-                _assetCache[filepath] = asset;
-            }
-            else
-            {
-                Debug.Log.Fatal("Could not find asset \"{0}\"", filepath);
-                throw new InvalidOperationException();
-            }
-        }
-
-        public bool UnloadAsset(string filepath)
-        {
-            filepath = filepath.Replace('/', '\\').ToLowerInvariant();
-            _assetCache[filepath] = null;
-
-            var result = _assetCache.Remove(filepath);
-            if (result)
-                Debug.Log.Info("Unloaded asset \"{0}\"", filepath);
-
-            return result;
-        }
-
-        public bool IsAssetLoaded(string filepath)
-        {
-            filepath = filepath.Replace('/', '\\').ToLowerInvariant();
-            return _assetCache.ContainsKey(filepath);
-        }
-
-        public IStreamProvider GetStreamProvider()
-        {
-            return _streamProvider;
-        }
-
-        public IAssetLoader RegisterTypeLoader<T>(ITypeLoader<T> typeLoader)
-        {
-            if (typeLoader != null)
-            {
-                Debug.Log.Info("Registered Type Loader for \"{0}\"", typeof(T).Name);
-                _typeLoaders[typeof(T)] = typeLoader;
-            }
-
-            return this;
         }
 
         public void Dispose()
