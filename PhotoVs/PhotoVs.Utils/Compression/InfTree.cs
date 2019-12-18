@@ -164,19 +164,22 @@ namespace PhotoVs.Utils.Compression
                 if (c[j] != 0)
                     break;
             k = j; // minimum code length
-            if (l < j) l = j;
+            if (l < j)
+                l = j;
             for (i = BMAX; i != 0; i--)
                 if (c[i] != 0)
                     break;
             g = i; // maximum code length
-            if (l > i) l = i;
+            if (l > i)
+                l = i;
             m[0] = l;
 
             // Adjust last length count to fill out codes, if needed
             for (y = 1 << j; j < i; j++, y <<= 1)
                 if ((y -= c[j]) < 0)
                     return Z_DATA_ERROR;
-            if ((y -= c[i]) < 0) return Z_DATA_ERROR;
+            if ((y -= c[i]) < 0)
+                return Z_DATA_ERROR;
             c[i] += y;
 
             // Generate starting offsets into the value table for each length
@@ -196,7 +199,8 @@ namespace PhotoVs.Utils.Compression
             p = 0;
             do
             {
-                if ((j = b[bindex + p]) != 0) v[x[j]++] = i;
+                if ((j = b[bindex + p]) != 0)
+                    v[x[j]++] = i;
                 p++;
             } while (++i < n);
 
@@ -255,8 +259,8 @@ namespace PhotoVs.Utils.Compression
                         if (h != 0)
                         {
                             x[h] = i; // save pattern for backing up
-                            r[0] = (sbyte) j; // bits in this table
-                            r[1] = (sbyte) l; // bits to dump before this table
+                            r[0] = (sbyte)j; // bits in this table
+                            r[1] = (sbyte)l; // bits to dump before this table
                             j = SharedUtils.URShift(i, w - l);
                             r[2] = q - u[h - 1] - j; // offset to this table
                             Array.Copy(r, 0, hp, (u[h - 1] + j) * 3, 3); // connect to last table
@@ -268,28 +272,30 @@ namespace PhotoVs.Utils.Compression
                     }
 
                     // set up table entry in r
-                    r[1] = (sbyte) (k - w);
+                    r[1] = (sbyte)(k - w);
                     if (p >= n)
                     {
                         r[0] = 128 + 64; // out of values--invalid code
                     }
                     else if (v[p] < s)
                     {
-                        r[0] = (sbyte) (v[p] < 256 ? 0 : 32 + 64); // 256 is end-of-block
+                        r[0] = (sbyte)(v[p] < 256 ? 0 : 32 + 64); // 256 is end-of-block
                         r[2] = v[p++]; // simple code is just the value
                     }
                     else
                     {
-                        r[0] = (sbyte) (e[v[p] - s] + 16 + 64); // non-simple--look up in lists
+                        r[0] = (sbyte)(e[v[p] - s] + 16 + 64); // non-simple--look up in lists
                         r[2] = d[v[p++] - s];
                     }
 
                     // fill code-like entries with r
                     f = 1 << (k - w);
-                    for (j = SharedUtils.URShift(i, w); j < z; j += f) Array.Copy(r, 0, hp, (q + j) * 3, 3);
+                    for (j = SharedUtils.URShift(i, w); j < z; j += f)
+                        Array.Copy(r, 0, hp, (q + j) * 3, 3);
 
                     // backwards increment the k-bit code i
-                    for (j = 1 << (k - 1); (i & j) != 0; j = SharedUtils.URShift(j, 1)) i ^= j;
+                    for (j = 1 << (k - 1); (i & j) != 0; j = SharedUtils.URShift(j, 1))
+                        i ^= j;
                     i ^= j;
 
                     // backup over finished tables
@@ -380,7 +386,8 @@ namespace PhotoVs.Utils.Compression
 
         internal static int InflateTreesFixed(int[] bl, int[] bd, int[][] tl, int[][] td, ZlibCodec z)
         {
-            if (z == null) throw new ArgumentNullException(nameof(z));
+            if (z == null)
+                throw new ArgumentNullException(nameof(z));
             bl[0] = fixed_bl;
             bd[0] = fixed_bd;
             tl[0] = fixed_tl;
@@ -401,7 +408,8 @@ namespace PhotoVs.Utils.Compression
             }
             else
             {
-                if (v.Length < vsize) v = new int[vsize];
+                if (v.Length < vsize)
+                    v = new int[vsize];
                 Array.Clear(v, 0, vsize);
                 Array.Clear(c, 0, BMAX + 1);
                 r[0] = 0;

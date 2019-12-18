@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace PhotoVs.Utils.Compression
 {
     /// <summary>
     ///     A general purpose exception class for exceptions in the Zlib library.
     /// </summary>
+    [Serializable]
     public class ZlibException : Exception
     {
         /// <summary>
@@ -21,6 +23,14 @@ namespace PhotoVs.Utils.Compression
         /// <param name="s">the message for the exception.</param>
         internal ZlibException(string s)
             : base(s)
+        {
+        }
+
+        public ZlibException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected ZlibException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

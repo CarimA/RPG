@@ -417,7 +417,8 @@ namespace PhotoVs.Utils.Compression
             get => _Comment;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
                 _Comment = value;
             }
         }
@@ -447,10 +448,13 @@ namespace PhotoVs.Utils.Compression
             get => _FileName;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
                 _FileName = value;
-                if (_FileName == null) return;
-                if (_FileName.IndexOf("/") != -1) _FileName = _FileName.Replace("/", "\\");
+                if (_FileName == null)
+                    return;
+                if (_FileName.IndexOf("/") != -1)
+                    _FileName = _FileName.Replace("/", "\\");
                 if (_FileName.EndsWith("\\"))
                     throw new Exception("Illegal filename");
                 if (_FileName.IndexOf("\\") != -1)
@@ -494,9 +498,10 @@ namespace PhotoVs.Utils.Compression
             header[i++] = flag;
 
             // mtime
-            if (!LastModified.HasValue) LastModified = DateTime.Now;
+            if (!LastModified.HasValue)
+                LastModified = DateTime.Now;
             var delta = LastModified.Value - _unixEpoch;
-            var timet = (int) delta.TotalSeconds;
+            var timet = (int)delta.TotalSeconds;
             Array.Copy(BitConverter.GetBytes(timet), 0, header, i, 4);
             i += 4;
 
@@ -546,13 +551,10 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The string in compressed form</returns>
         internal static byte[] CompressString(string s)
         {
-            using (var ms = new MemoryStream())
-            {
-                Stream compressor =
-                    new GZipStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
-                ZlibBaseStream.CompressString(s, compressor);
-                return ms.ToArray();
-            }
+            using var ms = new MemoryStream();
+            Stream compressor = new GZipStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
+            ZlibBaseStream.CompressString(s, compressor);
+            return ms.ToArray();
         }
 
 
@@ -570,14 +572,11 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The data in compressed form</returns>
         internal static byte[] CompressBuffer(byte[] b)
         {
-            using (var ms = new MemoryStream())
-            {
-                Stream compressor =
-                    new GZipStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
+            using var ms = new MemoryStream();
+            Stream compressor = new GZipStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
 
-                ZlibBaseStream.CompressBuffer(b, compressor);
-                return ms.ToArray();
-            }
+            ZlibBaseStream.CompressBuffer(b, compressor);
+            return ms.ToArray();
         }
 
 
@@ -592,11 +591,9 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The uncompressed string</returns>
         internal static string UncompressString(byte[] compressed)
         {
-            using (var input = new MemoryStream(compressed))
-            {
-                Stream decompressor = new GZipStream(input, CompressionMode.Decompress);
-                return ZlibBaseStream.UncompressString(compressed, decompressor);
-            }
+            using var input = new MemoryStream(compressed);
+            using Stream decompressor = new GZipStream(input, CompressionMode.Decompress);
+            return ZlibBaseStream.UncompressString(compressed, decompressor);
         }
 
 
@@ -611,13 +608,9 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The data in uncompressed form</returns>
         internal static byte[] UncompressBuffer(byte[] compressed)
         {
-            using (var input = new MemoryStream(compressed))
-            {
-                Stream decompressor =
-                    new GZipStream(input, CompressionMode.Decompress);
-
-                return ZlibBaseStream.UncompressBuffer(compressed, decompressor);
-            }
+            using var input = new MemoryStream(compressed);
+            using Stream decompressor = new GZipStream(input, CompressionMode.Decompress);
+            return ZlibBaseStream.UncompressBuffer(compressed, decompressor);
         }
 
         #region Zlib properties
@@ -630,7 +623,8 @@ namespace PhotoVs.Utils.Compression
             get => _baseStream._flushMode;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
                 _baseStream._flushMode = value;
             }
         }
@@ -655,13 +649,12 @@ namespace PhotoVs.Utils.Compression
             get => _baseStream._bufferSize;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
                 if (_baseStream._workingBuffer != null)
                     throw new ZlibException("The working buffer is already set.");
                 if (value < ZlibConstants.WorkingBufferSizeMin)
-                    throw new ZlibException(string.Format(
-                        "Don't be silly. {0} bytes?? Use a bigger buffer, at least {1}.", value,
-                        ZlibConstants.WorkingBufferSizeMin));
+                    throw new ZlibException($"Don't be silly. {value} bytes?? Use a bigger buffer, at least {ZlibConstants.WorkingBufferSizeMin}.");
                 _baseStream._bufferSize = value;
             }
         }
@@ -732,7 +725,8 @@ namespace PhotoVs.Utils.Compression
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
                 return _baseStream._stream.CanRead;
             }
         }
@@ -756,7 +750,8 @@ namespace PhotoVs.Utils.Compression
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("GZipStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
                 return _baseStream._stream.CanWrite;
             }
         }
@@ -766,14 +761,15 @@ namespace PhotoVs.Utils.Compression
         /// </summary>
         public override void Flush()
         {
-            if (_disposed) throw new ObjectDisposedException("GZipStream");
+            if (_disposed)
+                throw new ObjectDisposedException("GZipStream");
             _baseStream.Flush();
         }
 
         /// <summary>
         ///     Reading this property always throws a <see cref="NotImplementedException" />.
         /// </summary>
-        public override long Length => throw new NotImplementedException();
+        public override long Length => throw new NotSupportedException();
 
         /// <summary>
         ///     The position of the stream pointer.
@@ -832,7 +828,8 @@ namespace PhotoVs.Utils.Compression
         /// <returns>the number of bytes actually read</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException("GZipStream");
+            if (_disposed)
+                throw new ObjectDisposedException("GZipStream");
             var n = _baseStream.Read(buffer, offset, count);
 
             // Console.WriteLine("GZipStream::Read(buffer, off({0}), c({1}) = {2}", offset, count, n);
@@ -890,7 +887,8 @@ namespace PhotoVs.Utils.Compression
         /// <param name="count">the number of bytes to write.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException("GZipStream");
+            if (_disposed)
+                throw new ObjectDisposedException("GZipStream");
             if (_baseStream._streamMode == ZlibBaseStream.StreamMode.Undefined)
             {
                 //Console.WriteLine("GZipStream: First write");

@@ -135,12 +135,14 @@ namespace PhotoVs.Utils.Compression
             if (mode == CompressionMode.Compress)
             {
                 var rc = InitializeDeflate();
-                if (rc != ZlibConstants.Z_OK) throw new ZlibException("Cannot initialize for deflate.");
+                if (rc != ZlibConstants.Z_OK)
+                    throw new ZlibException("Cannot initialize for deflate.");
             }
             else if (mode == CompressionMode.Decompress)
             {
                 var rc = InitializeInflate();
-                if (rc != ZlibConstants.Z_OK) throw new ZlibException("Cannot initialize for inflate.");
+                if (rc != ZlibConstants.Z_OK)
+                    throw new ZlibException("Cannot initialize for inflate.");
             }
             else
             {
@@ -152,7 +154,7 @@ namespace PhotoVs.Utils.Compression
         /// <summary>
         ///     The Adler32 checksum on the data transferred through the codec so far. You probably don't need to look at this.
         /// </summary>
-        internal int Adler32 => (int) _Adler32;
+        internal int Adler32 => (int)_Adler32;
 
         /// <summary>
         ///     Initialize the inflation state.
@@ -464,7 +466,7 @@ namespace PhotoVs.Utils.Compression
         {
             if (istate != null)
                 throw new ZlibException("You may not call InitializeDeflate() after calling InitializeInflate().");
-            dstate = new DeflateManager {WantRfc1950HeaderBytes = wantRfc1950Header};
+            dstate = new DeflateManager { WantRfc1950HeaderBytes = wantRfc1950Header };
 
             return dstate.Initialize(this, CompressLevel, WindowBits, Strategy);
         }
@@ -626,8 +628,7 @@ namespace PhotoVs.Utils.Compression
                 OutputBuffer.Length <= NextOut ||
                 dstate.pending.Length < dstate.nextPending + len ||
                 OutputBuffer.Length < NextOut + len)
-                throw new ZlibException(string.Format("Invalid State. (pending.Length={0}, pendingCount={1})",
-                    dstate.pending.Length, dstate.pendingCount));
+                throw new ZlibException($"Invalid State. (pending.Length={dstate.pending.Length}, pendingCount={dstate.pendingCount})");
 
             Array.Copy(dstate.pending, dstate.nextPending, OutputBuffer, NextOut, len);
 
@@ -636,7 +637,8 @@ namespace PhotoVs.Utils.Compression
             TotalBytesOut += len;
             AvailableBytesOut -= len;
             dstate.pendingCount -= len;
-            if (dstate.pendingCount == 0) dstate.nextPending = 0;
+            if (dstate.pendingCount == 0)
+                dstate.nextPending = 0;
         }
 
         // Read a new buffer from the current input stream, update the adler32
@@ -655,7 +657,8 @@ namespace PhotoVs.Utils.Compression
 
             AvailableBytesIn -= len;
 
-            if (dstate.WantRfc1950HeaderBytes) _Adler32 = Adler.Adler32(_Adler32, InputBuffer, NextIn, len);
+            if (dstate.WantRfc1950HeaderBytes)
+                _Adler32 = Adler.Adler32(_Adler32, InputBuffer, NextIn, len);
             Array.Copy(InputBuffer, NextIn, buf, start, len);
             NextIn += len;
             TotalBytesIn += len;

@@ -20,9 +20,9 @@ namespace PhotoVs.Utils.Compression
     ///         DotNetZip library.
     ///     </para>
     /// </remarks>
-    public class CrcCalculatorStream : Stream, IDisposable
+    public class CrcCalculatorStream : Stream
     {
-        private static readonly long UnsetLengthLimit = -99;
+        private const long UnsetLengthLimit = -99;
         private readonly CRC32 _Crc32;
         private readonly long _lengthLimit = -99;
 
@@ -84,7 +84,7 @@ namespace PhotoVs.Utils.Compression
             : this(true, length, stream, null)
         {
             if (length < 0)
-                throw new ArgumentException("length");
+                throw new ArgumentException("length cannot be less than 0");
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace PhotoVs.Utils.Compression
             : this(leaveOpen, length, stream, null)
         {
             if (length < 0)
-                throw new ArgumentException("length");
+                throw new ArgumentException("length cannot be less than 0");
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace PhotoVs.Utils.Compression
             : this(leaveOpen, length, stream, crc32)
         {
             if (length < 0)
-                throw new ArgumentException("length");
+                throw new ArgumentException("length cannot be less than 0");
         }
 
 
@@ -229,12 +229,6 @@ namespace PhotoVs.Utils.Compression
             set => throw new NotSupportedException();
         }
 
-
-        void IDisposable.Dispose()
-        {
-            base.Dispose();
-        }
-
         /// <summary>
         ///     Read from the stream
         /// </summary>
@@ -256,13 +250,16 @@ namespace PhotoVs.Utils.Compression
 
             if (_lengthLimit != UnsetLengthLimit)
             {
-                if (_Crc32.TotalBytesRead >= _lengthLimit) return 0; // EOF
+                if (_Crc32.TotalBytesRead >= _lengthLimit)
+                    return 0; // EOF
                 var bytesRemaining = _lengthLimit - _Crc32.TotalBytesRead;
-                if (bytesRemaining < count) bytesToRead = (int) bytesRemaining;
+                if (bytesRemaining < count)
+                    bytesToRead = (int)bytesRemaining;
             }
 
             var n = _innerStream.Read(buffer, offset, bytesToRead);
-            if (n > 0) _Crc32.SlurpBlock(buffer, offset, n);
+            if (n > 0)
+                _Crc32.SlurpBlock(buffer, offset, n);
             return n;
         }
 
@@ -274,7 +271,8 @@ namespace PhotoVs.Utils.Compression
         /// <param name="count">the number of bytes to write</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (count > 0) _Crc32.SlurpBlock(buffer, offset, count);
+            if (count > 0)
+                _Crc32.SlurpBlock(buffer, offset, count);
             _innerStream.Write(buffer, offset, count);
         }
 

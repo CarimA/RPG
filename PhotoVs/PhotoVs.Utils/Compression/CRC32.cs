@@ -50,7 +50,7 @@ namespace PhotoVs.Utils.Compression
         ///     </para>
         /// </remarks>
         internal CRC32(bool reverseBits) :
-            this(unchecked((int) 0xEDB88320), reverseBits)
+            this(unchecked((int)0xEDB88320), reverseBits)
         {
         }
 
@@ -82,7 +82,7 @@ namespace PhotoVs.Utils.Compression
         internal CRC32(int polynomial, bool reverseBits)
         {
             this.reverseBits = reverseBits;
-            dwPolynomial = (uint) polynomial;
+            dwPolynomial = (uint)polynomial;
             GenerateLookupTable();
         }
 
@@ -94,7 +94,7 @@ namespace PhotoVs.Utils.Compression
         /// <summary>
         ///     Indicates the current CRC for all blocks slurped in.
         /// </summary>
-        internal int Crc32Result => unchecked((int) ~_register);
+        internal int Crc32Result => unchecked((int)~_register);
 
         /// <summary>
         ///     Returns the CRC32 for the specified stream.
@@ -125,17 +125,19 @@ namespace PhotoVs.Utils.Compression
 
                 TotalBytesRead = 0;
                 var count = input.Read(buffer, 0, readSize);
-                if (output != null) output.Write(buffer, 0, count);
+                if (output != null)
+                    output.Write(buffer, 0, count);
                 TotalBytesRead += count;
                 while (count > 0)
                 {
                     SlurpBlock(buffer, 0, count);
                     count = input.Read(buffer, 0, readSize);
-                    if (output != null) output.Write(buffer, 0, count);
+                    if (output != null)
+                        output.Write(buffer, 0, count);
                     TotalBytesRead += count;
                 }
 
-                return (int) ~_register;
+                return (int)~_register;
             }
         }
 
@@ -149,12 +151,12 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The CRC-ized result.</returns>
         internal int ComputeCrc32(int W, byte B)
         {
-            return InternalComputeCrc32((uint) W, B);
+            return InternalComputeCrc32((uint)W, B);
         }
 
         internal int InternalComputeCrc32(uint W, byte B)
         {
-            return (int) (crc32Table[(W ^ B) & 0xFF] ^ (W >> 8));
+            return (int)(crc32Table[(W ^ B) & 0xFF] ^ (W >> 8));
         }
 
 
@@ -260,11 +262,11 @@ namespace PhotoVs.Utils.Compression
         {
             unchecked
             {
-                var u = (uint) data * 0x00020202;
+                var u = (uint)data * 0x00020202;
                 uint m = 0x01044010;
                 var s = u & m;
                 var t = (u << 2) & (m << 1);
-                return (byte) ((0x01001001 * (s + t)) >> 24);
+                return (byte)((0x01001001 * (s + t)) >> 24);
             }
         }
 
@@ -310,7 +312,7 @@ namespace PhotoVs.Utils.Compression
         }
 
 
-        private uint Gf2MatrixTimes(uint[] matrix, uint vec)
+        private static uint Gf2MatrixTimes(uint[] matrix, uint vec)
         {
             uint sum = 0;
             var i = 0;
@@ -325,7 +327,7 @@ namespace PhotoVs.Utils.Compression
             return sum;
         }
 
-        private void Gf2MatrixSquare(uint[] square, uint[] mat)
+        private static void Gf2MatrixSquare(uint[] square, uint[] mat)
         {
             for (var i = 0; i < 32; i++)
                 square[i] = Gf2MatrixTimes(mat, mat[i]);
@@ -352,7 +354,7 @@ namespace PhotoVs.Utils.Compression
                 return;
 
             var crc1 = ~_register;
-            var crc2 = (uint) crc;
+            var crc2 = (uint)crc;
 
             // put operator for one zero bit in odd
             odd[0] = dwPolynomial; // the CRC-32 polynomial
@@ -369,7 +371,7 @@ namespace PhotoVs.Utils.Compression
             // put operator for four zero bits in odd
             Gf2MatrixSquare(odd, even);
 
-            var len2 = (uint) length;
+            var len2 = (uint)length;
 
             // apply len2 zeros to crc1 (first square will put the operator for one
             // zero byte, eight zero bits, in even)

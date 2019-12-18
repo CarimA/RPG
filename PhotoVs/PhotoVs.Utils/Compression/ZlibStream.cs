@@ -386,13 +386,10 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The string in compressed form</returns>
         public static byte[] CompressString(string s)
         {
-            using (var ms = new MemoryStream())
-            {
-                Stream compressor =
-                    new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
-                ZlibBaseStream.CompressString(s, compressor);
-                return ms.ToArray();
-            }
+            using var ms = new MemoryStream();
+            Stream compressor = new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
+            ZlibBaseStream.CompressString(s, compressor);
+            return ms.ToArray();
         }
 
 
@@ -410,14 +407,16 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The data in compressed form</returns>
         public static byte[] CompressBuffer(byte[] b)
         {
-            using (var ms = new MemoryStream())
+            if (b is null)
             {
-                Stream compressor =
-                    new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
-
-                ZlibBaseStream.CompressBuffer(b, compressor);
-                return ms.ToArray();
+                throw new ArgumentNullException(nameof(b));
             }
+
+            using var ms = new MemoryStream();
+            Stream compressor = new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
+
+            ZlibBaseStream.CompressBuffer(b, compressor);
+            return ms.ToArray();
         }
 
 
@@ -432,13 +431,9 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The uncompressed string</returns>
         public static string UncompressString(byte[] compressed)
         {
-            using (var input = new MemoryStream(compressed))
-            {
-                Stream decompressor =
-                    new ZlibStream(input, CompressionMode.Decompress);
-
-                return ZlibBaseStream.UncompressString(compressed, decompressor);
-            }
+            using var input = new MemoryStream(compressed);
+            using Stream decompressor = new ZlibStream(input, CompressionMode.Decompress);
+            return ZlibBaseStream.UncompressString(compressed, decompressor);
         }
 
 
@@ -453,13 +448,9 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The data in uncompressed form</returns>
         public static byte[] UncompressBuffer(byte[] compressed)
         {
-            using (var input = new MemoryStream(compressed))
-            {
-                Stream decompressor =
-                    new ZlibStream(input, CompressionMode.Decompress);
-
-                return ZlibBaseStream.UncompressBuffer(compressed, decompressor);
-            }
+            using var input = new MemoryStream(compressed);
+            using Stream decompressor = new ZlibStream(input, CompressionMode.Decompress);
+            return ZlibBaseStream.UncompressBuffer(compressed, decompressor);
         }
 
         #region Zlib properties
@@ -473,7 +464,8 @@ namespace PhotoVs.Utils.Compression
             get => _baseStream._flushMode;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("ZlibStream");
                 _baseStream._flushMode = value;
             }
         }
@@ -498,13 +490,12 @@ namespace PhotoVs.Utils.Compression
             get => _baseStream._bufferSize;
             set
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("ZlibStream");
                 if (_baseStream._workingBuffer != null)
                     throw new ZlibException("The working buffer is already set.");
                 if (value < ZlibConstants.WorkingBufferSizeMin)
-                    throw new ZlibException(string.Format(
-                        "Don't be silly. {0} bytes?? Use a bigger buffer, at least {1}.", value,
-                        ZlibConstants.WorkingBufferSizeMin));
+                    throw new ZlibException($"Don't be silly. {value} bytes?? Use a bigger buffer, at least {ZlibConstants.WorkingBufferSizeMin}.");
                 _baseStream._bufferSize = value;
             }
         }
@@ -570,7 +561,8 @@ namespace PhotoVs.Utils.Compression
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("ZlibStream");
                 return _baseStream._stream.CanRead;
             }
         }
@@ -593,7 +585,8 @@ namespace PhotoVs.Utils.Compression
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException("ZlibStream");
+                if (_disposed)
+                    throw new ObjectDisposedException("ZlibStream");
                 return _baseStream._stream.CanWrite;
             }
         }
@@ -603,7 +596,8 @@ namespace PhotoVs.Utils.Compression
         /// </summary>
         public override void Flush()
         {
-            if (_disposed) throw new ObjectDisposedException("ZlibStream");
+            if (_disposed)
+                throw new ObjectDisposedException("ZlibStream");
             _baseStream.Flush();
         }
 
@@ -667,7 +661,8 @@ namespace PhotoVs.Utils.Compression
         /// <returns>the number of bytes read</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException("ZlibStream");
+            if (_disposed)
+                throw new ObjectDisposedException("ZlibStream");
             return _baseStream.Read(buffer, offset, count);
         }
 
@@ -725,7 +720,8 @@ namespace PhotoVs.Utils.Compression
         /// <param name="count">the number of bytes to write.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException("ZlibStream");
+            if (_disposed)
+                throw new ObjectDisposedException("ZlibStream");
             _baseStream.Write(buffer, offset, count);
         }
 

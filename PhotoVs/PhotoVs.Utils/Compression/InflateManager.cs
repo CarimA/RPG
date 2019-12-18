@@ -11,7 +11,7 @@ namespace PhotoVs.Utils.Compression
         private const int Z_DEFLATED = 8;
 
 
-        private static readonly byte[] mark = {0, 0, 0xff, 0xff};
+        private static readonly byte[] mark = { 0, 0, 0xff, 0xff };
         internal ZlibCodec _codec; // pointer back to this zlib stream
 
         // mode independent information
@@ -98,7 +98,7 @@ namespace PhotoVs.Utils.Compression
         internal int Inflate(FlushType flush)
         {
             if (!Enum.IsDefined(typeof(FlushType), flush))
-                throw new InvalidEnumArgumentException(nameof(flush), (int) flush, typeof(FlushType));
+                throw new InvalidEnumArgumentException(nameof(flush), (int)flush, typeof(FlushType));
             int b;
 
             if (_codec.InputBuffer == null)
@@ -116,14 +116,15 @@ namespace PhotoVs.Utils.Compression
                 switch (mode)
                 {
                     case InflateManagerMode.METHOD:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
                         if (((method = _codec.InputBuffer[_codec.NextIn++]) & 0xf) != Z_DEFLATED)
                         {
                             mode = InflateManagerMode.BAD;
-                            _codec.Message = string.Format("unknown compression method (0x{0:X2})", method);
+                            _codec.Message = $"unknown compression method (0x{method:X2})";
                             marker = 5; // can't try inflateSync
                             break;
                         }
@@ -131,7 +132,7 @@ namespace PhotoVs.Utils.Compression
                         if ((method >> 4) + 8 > wbits)
                         {
                             mode = InflateManagerMode.BAD;
-                            _codec.Message = string.Format("invalid window size ({0})", (method >> 4) + 8);
+                            _codec.Message = $"invalid window size ({(method >> 4) + 8})";
                             marker = 5; // can't try inflateSync
                             break;
                         }
@@ -141,7 +142,8 @@ namespace PhotoVs.Utils.Compression
 
 
                     case InflateManagerMode.FLAG:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
@@ -161,37 +163,41 @@ namespace PhotoVs.Utils.Compression
                         break;
 
                     case InflateManagerMode.DICT4:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck = (uint) ((_codec.InputBuffer[_codec.NextIn++] << 24) & 0xff000000);
+                        expectedCheck = (uint)((_codec.InputBuffer[_codec.NextIn++] << 24) & 0xff000000);
                         mode = InflateManagerMode.DICT3;
                         break;
 
                     case InflateManagerMode.DICT3:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck += (uint) ((_codec.InputBuffer[_codec.NextIn++] << 16) & 0x00ff0000);
+                        expectedCheck += (uint)((_codec.InputBuffer[_codec.NextIn++] << 16) & 0x00ff0000);
                         mode = InflateManagerMode.DICT2;
                         break;
 
                     case InflateManagerMode.DICT2:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck += (uint) ((_codec.InputBuffer[_codec.NextIn++] << 8) & 0x0000ff00);
+                        expectedCheck += (uint)((_codec.InputBuffer[_codec.NextIn++] << 8) & 0x0000ff00);
                         mode = InflateManagerMode.DICT1;
                         break;
 
                     case InflateManagerMode.DICT1:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck += (uint) (_codec.InputBuffer[_codec.NextIn++] & 0x000000ff);
+                        expectedCheck += (uint)(_codec.InputBuffer[_codec.NextIn++] & 0x000000ff);
                         _codec._Adler32 = expectedCheck;
                         mode = InflateManagerMode.DICT0;
                         return ZlibConstants.Z_NEED_DICT;
@@ -211,7 +217,8 @@ namespace PhotoVs.Utils.Compression
                             break;
                         }
 
-                        if (r == ZlibConstants.Z_OK) r = f;
+                        if (r == ZlibConstants.Z_OK)
+                            r = f;
 
                         if (r != ZlibConstants.Z_STREAM_END)
                             return r;
@@ -228,38 +235,42 @@ namespace PhotoVs.Utils.Compression
                         break;
 
                     case InflateManagerMode.CHECK4:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck = (uint) ((_codec.InputBuffer[_codec.NextIn++] << 24) & 0xff000000);
+                        expectedCheck = (uint)((_codec.InputBuffer[_codec.NextIn++] << 24) & 0xff000000);
                         mode = InflateManagerMode.CHECK3;
                         break;
 
                     case InflateManagerMode.CHECK3:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck += (uint) ((_codec.InputBuffer[_codec.NextIn++] << 16) & 0x00ff0000);
+                        expectedCheck += (uint)((_codec.InputBuffer[_codec.NextIn++] << 16) & 0x00ff0000);
                         mode = InflateManagerMode.CHECK2;
                         break;
 
                     case InflateManagerMode.CHECK2:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck += (uint) ((_codec.InputBuffer[_codec.NextIn++] << 8) & 0x0000ff00);
+                        expectedCheck += (uint)((_codec.InputBuffer[_codec.NextIn++] << 8) & 0x0000ff00);
                         mode = InflateManagerMode.CHECK1;
                         break;
 
                     case InflateManagerMode.CHECK1:
-                        if (_codec.AvailableBytesIn == 0) return r;
+                        if (_codec.AvailableBytesIn == 0)
+                            return r;
                         r = f;
                         _codec.AvailableBytesIn--;
                         _codec.TotalBytesIn++;
-                        expectedCheck += (uint) (_codec.InputBuffer[_codec.NextIn++] & 0x000000ff);
+                        expectedCheck += (uint)(_codec.InputBuffer[_codec.NextIn++] & 0x000000ff);
                         if (computedCheck != expectedCheck)
                         {
                             mode = InflateManagerMode.BAD;
@@ -275,7 +286,7 @@ namespace PhotoVs.Utils.Compression
                         return ZlibConstants.Z_STREAM_END;
 
                     case InflateManagerMode.BAD:
-                        throw new ZlibException(string.Format("Bad state ({0})", _codec.Message));
+                        throw new ZlibException($"Bad state ({_codec.Message})");
 
                     default:
                         throw new ZlibException("Stream error.");
@@ -345,7 +356,8 @@ namespace PhotoVs.Utils.Compression
             marker = m;
 
             // return no joy or set up to restart on a new block
-            if (m != 4) return ZlibConstants.Z_DATA_ERROR;
+            if (m != 4)
+                return ZlibConstants.Z_DATA_ERROR;
             r = _codec.TotalBytesIn;
             w = _codec.TotalBytesOut;
             Reset();
@@ -364,7 +376,8 @@ namespace PhotoVs.Utils.Compression
         // waiting for these length bytes.
         internal int SyncPoint(ZlibCodec z)
         {
-            if (z == null) throw new ArgumentNullException(nameof(z));
+            if (z == null)
+                throw new ArgumentNullException(nameof(z));
             return blocks.SyncPoint();
         }
 

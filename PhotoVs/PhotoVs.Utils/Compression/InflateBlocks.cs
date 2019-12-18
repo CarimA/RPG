@@ -7,7 +7,7 @@ namespace PhotoVs.Utils.Compression
         private const int MANY = 1440;
 
         // Table for deflate from PKZIP's appnote.txt.
-        internal static readonly int[] border = {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
+        internal static readonly int[] border = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 
         internal ZlibCodec _codec; // pointer back to this zlib stream
         internal int[] bb = new int[1]; // bit length tree depth
@@ -115,7 +115,7 @@ namespace PhotoVs.Utils.Compression
                         t = b & 7;
                         last = t & 1;
 
-                        switch ((uint) t >> 1)
+                        switch ((uint)t >> 1)
                         {
                             case 0: // stored
                                 b >>= 3;
@@ -358,7 +358,8 @@ namespace PhotoVs.Utils.Compression
                             k -= 3;
                         }
 
-                        while (index < 19) blens[border[index++]] = 0;
+                        while (index < 19)
+                            blens[border[index++]] = 0;
 
                         bb[0] = 7;
                         t = inftree.InflateTreesBits(blens, bb, tb, hufts, _codec);
@@ -388,7 +389,8 @@ namespace PhotoVs.Utils.Compression
                         while (true)
                         {
                             t = table;
-                            if (!(index < 258 + (t & 0x1f) + ((t >> 5) & 0x1f))) break;
+                            if (!(index < 258 + (t & 0x1f) + ((t >> 5) & 0x1f)))
+                                break;
 
                             int i, j, c;
 
@@ -490,37 +492,37 @@ namespace PhotoVs.Utils.Compression
                         }
 
                         tb[0] = -1;
-                    {
-                        int[] bl = {9}; // must be <= 9 for lookahead assumptions
-                        int[] bd = {6}; // must be <= 9 for lookahead assumptions
-                        var tl = new int[1];
-                        var td = new int[1];
-
-                        t = table;
-                        t = inftree.InflateTreesDynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f), blens, bl, bd, tl, td,
-                            hufts, _codec);
-
-                        if (t != ZlibConstants.Z_OK)
                         {
-                            if (t == ZlibConstants.Z_DATA_ERROR)
+                            int[] bl = { 9 }; // must be <= 9 for lookahead assumptions
+                            int[] bd = { 6 }; // must be <= 9 for lookahead assumptions
+                            var tl = new int[1];
+                            var td = new int[1];
+
+                            t = table;
+                            t = inftree.InflateTreesDynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f), blens, bl, bd, tl, td,
+                                hufts, _codec);
+
+                            if (t != ZlibConstants.Z_OK)
                             {
-                                blens = null;
-                                mode = InflateBlockMode.BAD;
+                                if (t == ZlibConstants.Z_DATA_ERROR)
+                                {
+                                    blens = null;
+                                    mode = InflateBlockMode.BAD;
+                                }
+
+                                r = t;
+
+                                bitb = b;
+                                bitk = k;
+                                _codec.AvailableBytesIn = n;
+                                _codec.TotalBytesIn += p - _codec.NextIn;
+                                _codec.NextIn = p;
+                                writeAt = q;
+                                return Flush(r);
                             }
 
-                            r = t;
-
-                            bitb = b;
-                            bitk = k;
-                            _codec.AvailableBytesIn = n;
-                            _codec.TotalBytesIn += p - _codec.NextIn;
-                            _codec.NextIn = p;
-                            writeAt = q;
-                            return Flush(r);
+                            codes.Init(bl[0], bd[0], hufts, tl[0], hufts, td[0]);
                         }
-
-                        codes.Init(bl[0], bd[0], hufts, tl[0], hufts, td[0]);
-                    }
                         mode = InflateBlockMode.CODES;
                         goto case InflateBlockMode.CODES;
 
@@ -533,7 +535,8 @@ namespace PhotoVs.Utils.Compression
                         writeAt = q;
 
                         r = codes.Process(this, r);
-                        if (r != ZlibConstants.Z_STREAM_END) return Flush(r);
+                        if (r != ZlibConstants.Z_STREAM_END)
+                            return Flush(r);
 
                         r = ZlibConstants.Z_OK;
                         p = _codec.NextIn;

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace PhotoVs.Utils.Compression
 {
-    public class SharedUtils
+    public static class SharedUtils
     {
         /// <summary>
         ///     Performs an unsigned bitwise right shift with the specified number
@@ -13,7 +13,7 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The resulting number from the shift operation</returns>
         internal static int URShift(int number, int bits)
         {
-            return (int) ((uint) number >> bits);
+            return (int)((uint)number >> bits);
         }
 
 #if NOT
@@ -45,16 +45,18 @@ namespace PhotoVs.Utils.Compression
         internal static int ReadInput(TextReader sourceTextReader, byte[] target, int start, int count)
         {
             // Returns 0 bytes if not enough space in target
-            if (target.Length == 0) return 0;
+            if (target.Length == 0)
+                return 0;
 
             var charArray = new char[target.Length];
             var bytesRead = sourceTextReader.Read(charArray, start, count);
 
             // Returns -1 if EOF
-            if (bytesRead == 0) return -1;
+            if (bytesRead == 0)
+                return -1;
 
             for (var index = start; index < start + bytesRead; index++)
-                target[index] = (byte) charArray[index];
+                target[index] = (byte)charArray[index];
 
             return bytesRead;
         }

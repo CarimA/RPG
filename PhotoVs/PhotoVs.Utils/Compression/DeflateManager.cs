@@ -2,70 +2,12 @@
 
 namespace PhotoVs.Utils.Compression
 {
-    public sealed class DeflateManager
+    public sealed partial class DeflateManager
     {
-        private static readonly int MEM_LEVEL_MAX = 9;
-        private static readonly int MEM_LEVEL_DEFAULT = 8;
+        private const int MEM_LEVEL_MAX = 9;
+        private const int MEM_LEVEL_DEFAULT = 8;
 
         internal delegate BlockState CompressFunc(FlushType flush);
-
-        public class Config
-        {
-            private static readonly Config[] Table;
-
-            internal DeflateFlavor Flavor;
-
-            // Use a faster search when the previous match is longer than this
-            internal int GoodLength; // reduce lazy search above this match length
-
-            // To speed up deflation, hash chains are never searched beyond this
-            // length.  A higher limit improves compression ratio but degrades the speed.
-
-            internal int MaxChainLength;
-
-            // Attempt to find a better match only when the current match is
-            // strictly smaller than this value. This mechanism is used only for
-            // compression levels >= 4.  For levels 1,2,3: MaxLazy is actually
-            // MaxInsertLength. (See DeflateFast)
-
-            internal int MaxLazy; // do not perform lazy search above this match length
-
-            internal int NiceLength; // quit search above this match length
-
-
-            static Config()
-            {
-                Table = new[]
-                {
-                    new Config(0, 0, 0, 0, DeflateFlavor.Store),
-                    new Config(4, 4, 8, 4, DeflateFlavor.Fast),
-                    new Config(4, 5, 16, 8, DeflateFlavor.Fast),
-                    new Config(4, 6, 32, 32, DeflateFlavor.Fast),
-
-                    new Config(4, 4, 16, 16, DeflateFlavor.Slow),
-                    new Config(8, 16, 32, 32, DeflateFlavor.Slow),
-                    new Config(8, 16, 128, 128, DeflateFlavor.Slow),
-                    new Config(8, 32, 128, 256, DeflateFlavor.Slow),
-                    new Config(32, 128, 258, 1024, DeflateFlavor.Slow),
-                    new Config(32, 258, 258, 4096, DeflateFlavor.Slow)
-                };
-            }
-
-            private Config(int goodLength, int maxLazy, int niceLength, int maxChainLength, DeflateFlavor flavor)
-            {
-                GoodLength = goodLength;
-                MaxLazy = maxLazy;
-                NiceLength = niceLength;
-                MaxChainLength = maxChainLength;
-                Flavor = flavor;
-            }
-
-            internal static Config Lookup(CompressionLevel level)
-            {
-                return Table[(int) level];
-            }
-        }
-
 
         private CompressFunc DeflateFunction;
 
@@ -84,34 +26,34 @@ namespace PhotoVs.Utils.Compression
         };
 
         // preset dictionary flag in zlib header
-        private static readonly int PRESET_DICT = 0x20;
+        private const int PRESET_DICT = 0x20;
 
-        private static readonly int INIT_STATE = 42;
-        private static readonly int BUSY_STATE = 113;
-        private static readonly int FINISH_STATE = 666;
+        private const int INIT_STATE = 42;
+        private const int BUSY_STATE = 113;
+        private const int FINISH_STATE = 666;
 
         // The deflate compression method
-        private static readonly int Z_DEFLATED = 8;
+        private const int Z_DEFLATED = 8;
 
-        private static readonly int STORED_BLOCK = 0;
-        private static readonly int STATIC_TREES = 1;
-        private static readonly int DYN_TREES = 2;
+        private const int STORED_BLOCK = 0;
+        private const int STATIC_TREES = 1;
+        private const int DYN_TREES = 2;
 
         // The three kinds of block type
-        private static readonly int Z_BINARY = 0;
-        private static readonly int Z_ASCII = 1;
-        private static readonly int Z_UNKNOWN = 2;
+        private const int Z_BINARY = 0;
+        private const int Z_ASCII = 1;
+        private const int Z_UNKNOWN = 2;
 
-        private static readonly int Buf_size = 8 * 2;
+        private const int Buf_size = 8 * 2;
 
-        private static readonly int MIN_MATCH = 3;
-        private static readonly int MAX_MATCH = 258;
+        private const int MIN_MATCH = 3;
+        private const int MAX_MATCH = 258;
 
-        private static readonly int MIN_LOOKAHEAD = MAX_MATCH + MIN_MATCH + 1;
+        private const int MIN_LOOKAHEAD = MAX_MATCH + MIN_MATCH + 1;
 
-        private static readonly int HEAP_SIZE = 2 * InternalConstants.L_CODES + 1;
+        private const int HEAP_SIZE = 2 * InternalConstants.L_CODES + 1;
 
-        private static readonly int END_BLOCK = 256;
+        private const int END_BLOCK = 256;
 
         internal ZlibCodec _codec; // the zlib encoder/decoder
         internal int status; // as the name implies
@@ -164,7 +106,7 @@ namespace PhotoVs.Utils.Compression
 
         internal int block_start;
 
-        private Config config;
+        private DeflateManagerConfig config;
         internal int match_length; // length of best match
         internal int prev_match; // previous match
         internal int match_available; // set if previous match exists
@@ -268,7 +210,7 @@ namespace PhotoVs.Utils.Compression
             Array.Clear(head, 0, hash_size);
             //for (int i = 0; i < hash_size; i++) head[i] = 0;
 
-            config = Config.Lookup(compressionLevel);
+            config = DeflateManagerConfig.Lookup(compressionLevel);
             SetDeflater();
 
             strstart = 0;
@@ -325,7 +267,8 @@ namespace PhotoVs.Utils.Compression
             while (j <= heap_len)
             {
                 // Set j to the smallest of the two sons:
-                if (j < heap_len && IsSmaller(tree, heap[j + 1], heap[j], depth)) j++;
+                if (j < heap_len && IsSmaller(tree, heap[j + 1], heap[j], depth))
+                    j++;
                 // Exit if v is smaller than both sons
                 if (IsSmaller(tree, v, heap[j], depth))
                     break;
@@ -355,7 +298,7 @@ namespace PhotoVs.Utils.Compression
             int n; // iterates over all tree elements
             var prevlen = -1; // last emitted length
             int curlen; // length of current code
-            var nextlen = (int) tree[0 * 2 + 1]; // length of next code
+            var nextlen = (int)tree[0 * 2 + 1]; // length of next code
             var count = 0; // repeat count of the current code
             var max_count = 7; // max repeat count
             var min_count = 4; // min repeat count
@@ -372,11 +315,12 @@ namespace PhotoVs.Utils.Compression
             {
                 curlen = nextlen;
                 nextlen = tree[(n + 1) * 2 + 1];
-                if (++count < max_count && curlen == nextlen) continue;
+                if (++count < max_count && curlen == nextlen)
+                    continue;
 
                 if (count < min_count)
                 {
-                    bl_tree[curlen * 2] = (short) (bl_tree[curlen * 2] + count);
+                    bl_tree[curlen * 2] = (short)(bl_tree[curlen * 2] + count);
                 }
                 else if (curlen != 0)
                 {
@@ -451,7 +395,8 @@ namespace PhotoVs.Utils.Compression
             SendBits(lcodes - 257, 5); // not +255 as stated in appnote.txt
             SendBits(dcodes - 1, 5);
             SendBits(blcodes - 4, 4); // not -3 as stated in appnote.txt
-            for (rank = 0; rank < blcodes; rank++) SendBits(bl_tree[Tree.bl_order[rank] * 2 + 1], 3);
+            for (rank = 0; rank < blcodes; rank++)
+                SendBits(bl_tree[Tree.bl_order[rank] * 2 + 1], 3);
             SendTree(dyn_ltree, lcodes - 1); // literal tree
             SendTree(dyn_dtree, dcodes - 1); // distance tree
         }
@@ -478,7 +423,8 @@ namespace PhotoVs.Utils.Compression
             {
                 curlen = nextlen;
                 nextlen = tree[(n + 1) * 2 + 1];
-                if (++count < max_count && curlen == nextlen) continue;
+                if (++count < max_count && curlen == nextlen)
+                    continue;
 
                 if (count < min_count)
                 {
@@ -576,19 +522,19 @@ namespace PhotoVs.Utils.Compression
                     //int val = value;
                     //      bi_buf |= (val << bi_valid);
 
-                    bi_buf |= (short) ((value << bi_valid) & 0xffff);
+                    bi_buf |= (short)((value << bi_valid) & 0xffff);
                     //put_short(bi_buf);
-                    pending[pendingCount++] = (byte) bi_buf;
-                    pending[pendingCount++] = (byte) (bi_buf >> 8);
+                    pending[pendingCount++] = (byte)bi_buf;
+                    pending[pendingCount++] = (byte)(bi_buf >> 8);
 
 
-                    bi_buf = (short) ((uint) value >> (Buf_size - bi_valid));
+                    bi_buf = (short)((uint)value >> (Buf_size - bi_valid));
                     bi_valid += len - Buf_size;
                 }
                 else
                 {
                     //      bi_buf |= (value) << bi_valid;
-                    bi_buf |= (short) ((value << bi_valid) & 0xffff);
+                    bi_buf |= (short)((value << bi_valid) & 0xffff);
                     bi_valid += len;
                 }
             }
@@ -629,9 +575,9 @@ namespace PhotoVs.Utils.Compression
         // the current block must be flushed.
         internal bool TrTally(int dist, int lc)
         {
-            pending[_distanceOffset + last_lit * 2] = unchecked((byte) ((uint) dist >> 8));
-            pending[_distanceOffset + last_lit * 2 + 1] = unchecked((byte) dist);
-            pending[_lengthOffset + last_lit] = unchecked((byte) lc);
+            pending[_distanceOffset + last_lit * 2] = unchecked((byte)((uint)dist >> 8));
+            pending[_distanceOffset + last_lit * 2 + 1] = unchecked((byte)dist);
+            pending[_lengthOffset + last_lit] = unchecked((byte)lc);
             last_lit++;
 
             if (dist == 0)
@@ -648,14 +594,14 @@ namespace PhotoVs.Utils.Compression
                 dyn_dtree[Tree.DistanceCode(dist) * 2]++;
             }
 
-            if ((last_lit & 0x1fff) == 0 && (int) compressionLevel > 2)
+            if ((last_lit & 0x1fff) == 0 && (int)compressionLevel > 2)
             {
                 // Compute an upper bound for the compressed length
                 var out_length = last_lit << 3;
                 var in_length = strstart - block_start;
                 int dcode;
                 for (dcode = 0; dcode < InternalConstants.D_CODES; dcode++)
-                    out_length = (int) (out_length + dyn_dtree[dcode * 2] * (5L + Tree.ExtraDistanceBits[dcode]));
+                    out_length = (int)(out_length + dyn_dtree[dcode * 2] * (5L + Tree.ExtraDistanceBits[dcode]));
                 out_length >>= 3;
                 if (matches < last_lit / 2 && out_length < in_length / 2)
                     return true;
@@ -757,7 +703,7 @@ namespace PhotoVs.Utils.Compression
                 n++;
             }
 
-            data_type = (sbyte) (bin_freq > ascii_freq >> 2 ? Z_BINARY : Z_ASCII);
+            data_type = (sbyte)(bin_freq > ascii_freq >> 2 ? Z_BINARY : Z_ASCII);
         }
 
 
@@ -766,15 +712,15 @@ namespace PhotoVs.Utils.Compression
         {
             if (bi_valid == 16)
             {
-                pending[pendingCount++] = (byte) bi_buf;
-                pending[pendingCount++] = (byte) (bi_buf >> 8);
+                pending[pendingCount++] = (byte)bi_buf;
+                pending[pendingCount++] = (byte)(bi_buf >> 8);
                 bi_buf = 0;
                 bi_valid = 0;
             }
             else if (bi_valid >= 8)
             {
                 //put_byte((byte)bi_buf);
-                pending[pendingCount++] = (byte) bi_buf;
+                pending[pendingCount++] = (byte)bi_buf;
                 bi_buf >>= 8;
                 bi_valid -= 8;
             }
@@ -785,13 +731,13 @@ namespace PhotoVs.Utils.Compression
         {
             if (bi_valid > 8)
             {
-                pending[pendingCount++] = (byte) bi_buf;
-                pending[pendingCount++] = (byte) (bi_buf >> 8);
+                pending[pendingCount++] = (byte)bi_buf;
+                pending[pendingCount++] = (byte)(bi_buf >> 8);
             }
             else if (bi_valid > 0)
             {
                 //put_byte((byte)bi_buf);
-                pending[pendingCount++] = (byte) bi_buf;
+                pending[pendingCount++] = (byte)bi_buf;
             }
 
             bi_buf = 0;
@@ -809,11 +755,11 @@ namespace PhotoVs.Utils.Compression
                 unchecked
                 {
                     //put_short((short)len);
-                    pending[pendingCount++] = (byte) len;
-                    pending[pendingCount++] = (byte) (len >> 8);
+                    pending[pendingCount++] = (byte)len;
+                    pending[pendingCount++] = (byte)(len >> 8);
                     //put_short((short)~len);
-                    pending[pendingCount++] = (byte) ~len;
-                    pending[pendingCount++] = (byte) (~len >> 8);
+                    pending[pendingCount++] = (byte)~len;
+                    pending[pendingCount++] = (byte)(~len >> 8);
                 }
 
             PutBytes(window, buf, len);
@@ -841,7 +787,8 @@ namespace PhotoVs.Utils.Compression
             var max_block_size = 0xffff;
             int max_start;
 
-            if (max_block_size > pending.Length - 5) max_block_size = pending.Length - 5;
+            if (max_block_size > pending.Length - 5)
+                max_block_size = pending.Length - 5;
 
             // Copy as much as possible from input to output:
             while (true)
@@ -962,7 +909,8 @@ namespace PhotoVs.Utils.Compression
 
             InitializeBlocks();
 
-            if (eof) BitWindup();
+            if (eof)
+                BitWindup();
         }
 
         // Fill the window when the lookahead becomes insufficient.
@@ -1015,7 +963,7 @@ namespace PhotoVs.Utils.Compression
                     do
                     {
                         m = head[--p] & 0xffff;
-                        head[p] = (short) (m >= w_size ? m - w_size : 0);
+                        head[p] = (short)(m >= w_size ? m - w_size : 0);
                     } while (--n != 0);
 
                     n = w_size;
@@ -1023,7 +971,7 @@ namespace PhotoVs.Utils.Compression
                     do
                     {
                         m = prev[--p] & 0xffff;
-                        prev[p] = (short) (m >= w_size ? m - w_size : 0);
+                        prev[p] = (short)(m >= w_size ? m - w_size : 0);
                         // If n is not on any hash chain, prev[n] is garbage but
                         // its value will never be used.
                     } while (--n != 0);
@@ -1080,7 +1028,8 @@ namespace PhotoVs.Utils.Compression
                 if (lookahead < MIN_LOOKAHEAD)
                 {
                     FillWindow();
-                    if (lookahead < MIN_LOOKAHEAD && flush == FlushType.None) return BlockState.NeedMore;
+                    if (lookahead < MIN_LOOKAHEAD && flush == FlushType.None)
+                        return BlockState.NeedMore;
                     if (lookahead == 0)
                         break; // flush the current block
                 }
@@ -1094,7 +1043,7 @@ namespace PhotoVs.Utils.Compression
                     //  prev[strstart&w_mask]=hash_head=head[ins_h];
                     hash_head = head[ins_h] & 0xffff;
                     prev[strstart & w_mask] = head[ins_h];
-                    head[ins_h] = unchecked((short) strstart);
+                    head[ins_h] = unchecked((short)strstart);
                 }
 
                 // Find the longest match, discarding those <= prev_length.
@@ -1128,7 +1077,7 @@ namespace PhotoVs.Utils.Compression
                             //      prev[strstart&w_mask]=hash_head=head[ins_h];
                             hash_head = head[ins_h] & 0xffff;
                             prev[strstart & w_mask] = head[ins_h];
-                            head[ins_h] = unchecked((short) strstart);
+                            head[ins_h] = unchecked((short)strstart);
 
                             // strstart never exceeds WSIZE-MAX_MATCH, so there are
                             // always MIN_MATCH bytes ahead.
@@ -1211,7 +1160,7 @@ namespace PhotoVs.Utils.Compression
                     //  prev[strstart&w_mask]=hash_head=head[ins_h];
                     hash_head = head[ins_h] & 0xffff;
                     prev[strstart & w_mask] = head[ins_h];
-                    head[ins_h] = unchecked((short) strstart);
+                    head[ins_h] = unchecked((short)strstart);
                 }
 
                 // Find the longest match, discarding those <= prev_length.
@@ -1226,7 +1175,8 @@ namespace PhotoVs.Utils.Compression
                     // of window index 0 (in particular we have to avoid a match
                     // of the string with itself at the start of the input file).
 
-                    if (compressionStrategy != CompressionStrategy.HuffmanOnly) match_length = LongestMatch(hash_head);
+                    if (compressionStrategy != CompressionStrategy.HuffmanOnly)
+                        match_length = LongestMatch(hash_head);
                     // LongestMatch() sets match_start
 
                     if (match_length <= 5 && (compressionStrategy == CompressionStrategy.Filtered ||
@@ -1261,7 +1211,7 @@ namespace PhotoVs.Utils.Compression
                             //prev[strstart&w_mask]=hash_head=head[ins_h];
                             hash_head = head[ins_h] & 0xffff;
                             prev[strstart & w_mask] = head[ins_h];
-                            head[ins_h] = unchecked((short) strstart);
+                            head[ins_h] = unchecked((short)strstart);
                         }
                     } while (--prev_length != 0);
 
@@ -1284,7 +1234,8 @@ namespace PhotoVs.Utils.Compression
 
                     bflush = TrTally(0, window[strstart - 1] & 0xff);
 
-                    if (bflush) FlushBlockOnly(false);
+                    if (bflush)
+                        FlushBlockOnly(false);
                     strstart++;
                     lookahead--;
                     if (_codec.AvailableBytesOut == 0)
@@ -1301,7 +1252,8 @@ namespace PhotoVs.Utils.Compression
                 }
             }
 
-            if (match_available != 0) match_available = 0;
+            if (match_available != 0)
+                match_available = 0;
             FlushBlockOnly(flush == FlushType.Finish);
 
             if (_codec.AvailableBytesOut == 0)
@@ -1339,7 +1291,8 @@ namespace PhotoVs.Utils.Compression
             // It is easy to get rid of this optimization if necessary.
 
             // Do not waste too much time if we already have a good match:
-            if (prev_length >= config.GoodLength) chain_length >>= 2;
+            if (prev_length >= config.GoodLength)
+                chain_length >>= 2;
 
             // Do not look for matches beyond the end of the input. This is necessary
             // to make deflate deterministic.
@@ -1430,7 +1383,7 @@ namespace PhotoVs.Utils.Compression
                 throw new ZlibException("windowBits must be in the range 9..15.");
 
             if (memLevel < 1 || memLevel > MEM_LEVEL_MAX)
-                throw new ZlibException(string.Format("memLevel must be in the range 1.. {0}", MEM_LEVEL_MAX));
+                throw new ZlibException($"memLevel must be in the range 1.. {MEM_LEVEL_MAX}");
 
             _codec.dstate = this;
 
@@ -1485,7 +1438,7 @@ namespace PhotoVs.Utils.Compression
             status = WantRfc1950HeaderBytes ? INIT_STATE : BUSY_STATE;
             _codec._Adler32 = Adler.Adler32(0, null, 0, 0);
 
-            last_flush = (int) FlushType.None;
+            last_flush = (int)FlushType.None;
 
             InitializeTreeData();
             InitializeLazyMatch();
@@ -1530,7 +1483,7 @@ namespace PhotoVs.Utils.Compression
 
             if (compressionLevel != level)
             {
-                var newConfig = Config.Lookup(level);
+                var newConfig = DeflateManagerConfig.Lookup(level);
 
                 // change in the deflate flavor (Fast vs slow vs none)?
                 if (newConfig.Flavor != config.Flavor && _codec.TotalBytesIn != 0)
@@ -1582,7 +1535,7 @@ namespace PhotoVs.Utils.Compression
             {
                 ins_h = ((ins_h << hash_shift) ^ (window[n + (MIN_MATCH - 1)] & 0xff)) & hash_mask;
                 prev[n & w_mask] = head[ins_h];
-                head[ins_h] = (short) n;
+                head[ins_h] = (short)n;
             }
 
             return ZlibConstants.Z_OK;
@@ -1598,7 +1551,7 @@ namespace PhotoVs.Utils.Compression
                 status == FINISH_STATE && flush != FlushType.Finish)
             {
                 _codec.Message = _ErrorMessage[ZlibConstants.Z_NEED_DICT - ZlibConstants.Z_STREAM_ERROR];
-                throw new ZlibException(string.Format("Something is fishy. [{0}]", _codec.Message));
+                throw new ZlibException($"Something is fishy. [{_codec.Message}]");
             }
 
             if (_codec.AvailableBytesOut == 0)
@@ -1608,13 +1561,13 @@ namespace PhotoVs.Utils.Compression
             }
 
             old_flush = last_flush;
-            last_flush = (int) flush;
+            last_flush = (int)flush;
 
             // Write the zlib (rfc1950) header bytes
             if (status == INIT_STATE)
             {
                 var header = (Z_DEFLATED + ((w_bits - 8) << 4)) << 8;
-                var level_flags = (((int) compressionLevel - 1) & 0xff) >> 1;
+                var level_flags = (((int)compressionLevel - 1) & 0xff) >> 1;
 
                 if (level_flags > 3)
                     level_flags = 3;
@@ -1627,17 +1580,17 @@ namespace PhotoVs.Utils.Compression
                 //putShortMSB(header);
                 unchecked
                 {
-                    pending[pendingCount++] = (byte) (header >> 8);
-                    pending[pendingCount++] = (byte) header;
+                    pending[pendingCount++] = (byte)(header >> 8);
+                    pending[pendingCount++] = (byte)header;
                 }
 
                 // Save the adler32 of the preset dictionary:
                 if (strstart != 0)
                 {
-                    pending[pendingCount++] = (byte) ((_codec._Adler32 & 0xFF000000) >> 24);
-                    pending[pendingCount++] = (byte) ((_codec._Adler32 & 0x00FF0000) >> 16);
-                    pending[pendingCount++] = (byte) ((_codec._Adler32 & 0x0000FF00) >> 8);
-                    pending[pendingCount++] = (byte) (_codec._Adler32 & 0x000000FF);
+                    pending[pendingCount++] = (byte)((_codec._Adler32 & 0xFF000000) >> 24);
+                    pending[pendingCount++] = (byte)((_codec._Adler32 & 0x00FF0000) >> 16);
+                    pending[pendingCount++] = (byte)((_codec._Adler32 & 0x0000FF00) >> 8);
+                    pending[pendingCount++] = (byte)(_codec._Adler32 & 0x000000FF);
                 }
 
                 _codec._Adler32 = Adler.Adler32(0, null, 0, 0);
@@ -1664,7 +1617,7 @@ namespace PhotoVs.Utils.Compression
                 // returning Z_STREAM_END instead of Z_BUFF_ERROR.
             }
             else if (_codec.AvailableBytesIn == 0 &&
-                     (int) flush <= old_flush &&
+                     (int)flush <= old_flush &&
                      flush != FlushType.Finish)
             {
                 // workitem 8557
@@ -1692,10 +1645,12 @@ namespace PhotoVs.Utils.Compression
             {
                 var bstate = DeflateFunction(flush);
 
-                if (bstate == BlockState.FinishStarted || bstate == BlockState.FinishDone) status = FINISH_STATE;
+                if (bstate == BlockState.FinishStarted || bstate == BlockState.FinishDone)
+                    status = FINISH_STATE;
                 if (bstate == BlockState.NeedMore || bstate == BlockState.FinishStarted)
                 {
-                    if (_codec.AvailableBytesOut == 0) last_flush = -1; // avoid BUF_ERROR next call, see above
+                    if (_codec.AvailableBytesOut == 0)
+                        last_flush = -1; // avoid BUF_ERROR next call, see above
                     return ZlibConstants.Z_OK;
                     // If flush != Z_NO_FLUSH && avail_out == 0, the next call
                     // of deflate should use the same flush parameter to make sure
@@ -1739,10 +1694,10 @@ namespace PhotoVs.Utils.Compression
                 return ZlibConstants.Z_STREAM_END;
 
             // Write the zlib trailer (adler32)
-            pending[pendingCount++] = (byte) ((_codec._Adler32 & 0xFF000000) >> 24);
-            pending[pendingCount++] = (byte) ((_codec._Adler32 & 0x00FF0000) >> 16);
-            pending[pendingCount++] = (byte) ((_codec._Adler32 & 0x0000FF00) >> 8);
-            pending[pendingCount++] = (byte) (_codec._Adler32 & 0x000000FF);
+            pending[pendingCount++] = (byte)((_codec._Adler32 & 0xFF000000) >> 24);
+            pending[pendingCount++] = (byte)((_codec._Adler32 & 0x00FF0000) >> 16);
+            pending[pendingCount++] = (byte)((_codec._Adler32 & 0x0000FF00) >> 8);
+            pending[pendingCount++] = (byte)(_codec._Adler32 & 0x000000FF);
             //putShortMSB((int)(SharedUtils.URShift(_codec._Adler32, 16)));
             //putShortMSB((int)(_codec._Adler32 & 0xffff));
 
