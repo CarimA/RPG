@@ -65,9 +65,10 @@ namespace PhotoVs.Utils.Collections
         {
             unchecked
             {
-                var hash = 17;
-                hash = hash * 23 + x.GetHashCode();
-                hash = hash * 23 + y.GetHashCode();
+                // these magic numbers are all prime numbers
+                var hash = 463003;
+                hash = hash * 997651 + x.GetHashCode();
+                hash = hash * 148091 + y.GetHashCode();
                 return hash * (0x27d4eb2d + HashInt(x)) * 0x27d4eb2d + HashInt(y);
             }
         }
@@ -76,13 +77,7 @@ namespace PhotoVs.Utils.Collections
         {
             unchecked
             {
-                const int c2 = 0x27d4eb2d;
-                val = val ^ 61 ^ (val >> 16);
-                val += val << 3;
-                val ^= val >> 4;
-                val *= c2;
-                val ^= val >> 15;
-                return val;
+                return val * 0x27d4eb2d >> 24;
             }
         }
     }
