@@ -1,5 +1,6 @@
 ﻿using PhotoVs.Models.ECS;
 using PhotoVs.Utils.Logging;
+using System;
 
 namespace PhotoVs.Engine
 {
@@ -8,6 +9,7 @@ namespace PhotoVs.Engine
         public delegate void VoidEventHandler(object sender);
         public delegate void CollisionEventHandler(object sender, IGameObject moving, IGameObject stationary);
         public delegate void InteractEventHandler(object sender, IGameObject player, IGameObject script);
+        public delegate void ServiceSetEventHandler(object sender, object service);
 
         // events which would be nice
         /*
@@ -23,22 +25,33 @@ namespace PhotoVs.Engine
          */
 
         public event VoidEventHandler OnGameStart;
+        public readonly IndexedEvent<Type, ServiceSetEventHandler> OnServiceSet;
         public event CollisionEventHandler OnCollision;
-        public readonly IndexedEvent<InteractEventHandler> OnInteractEventAction;
-        public readonly IndexedEvent<InteractEventHandler> OnInteractEventEnter;
-        public readonly IndexedEvent<InteractEventHandler> OnInteractEventExit;
-        public readonly IndexedEvent<InteractEventHandler> OnInteractEventStand;
-        public readonly IndexedEvent<InteractEventHandler> OnInteractEventWalk;
-        public readonly IndexedEvent<InteractEventHandler> OnInteractEventRun;
+        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventAction;
+        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventEnter;
+        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventExit;
+        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventStand;
+        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventWalk;
+        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventRun;
 
         public Events()
         {
-            OnInteractEventAction = new IndexedEvent<InteractEventHandler>();
-            OnInteractEventEnter = new IndexedEvent<InteractEventHandler>();
-            OnInteractEventExit = new IndexedEvent<InteractEventHandler>();
-            OnInteractEventStand = new IndexedEvent<InteractEventHandler>();
-            OnInteractEventWalk = new IndexedEvent<InteractEventHandler>();
-            OnInteractEventRun = new IndexedEvent<InteractEventHandler>();
+            OnServiceSet = new IndexedEvent<Type, ServiceSetEventHandler>();
+            OnInteractEventAction = new IndexedEvent<string, InteractEventHandler>();
+            OnInteractEventEnter = new IndexedEvent<string, InteractEventHandler>();
+            OnInteractEventExit = new IndexedEvent<string, InteractEventHandler>();
+            OnInteractEventStand = new IndexedEvent<string, InteractEventHandler>();
+            OnInteractEventWalk = new IndexedEvent<string, InteractEventHandler>();
+            OnInteractEventRun = new IndexedEvent<string, InteractEventHandler>();
+        }
+
+        public void RaiseOnServiceSet<T>(T service)
+        {
+            Debug.Log.Trace($"EVENT - Invoking OnServiceSet ({typeof(T).Name})");
+            if (OnServiceSet.TryGetValue(typeof(T), out var value))
+            {
+                value?.Invoke(this, service);
+            }
         }
 
         public void RaiseOnGameStart()

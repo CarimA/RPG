@@ -75,6 +75,7 @@
     <Compile Include="Scenes\DialogueScene.cs" />
     <Compile Include="Scenes\OverworldScene.cs" />
     <Compile Include="Scenes\SceneMachine.cs" />
+    <Compile Include="Services.cs" />
     <Compile Include="Text\TextDatabase.cs" />
     <Compile Include="Transforms\CCollisionBound.cs" />
     <Compile Include="Transforms\CPosition.cs" />

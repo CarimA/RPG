@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace PhotoVs.Engine
 {
     [Serializable]
-    public class IndexedEvent<T> : Dictionary<string, T>
+    public class IndexedEvent<TKey, TValue> : Dictionary<TKey, TValue>
     {
-        public new T this[string key]
+        public new TValue this[TKey key]
         {
             get
             {

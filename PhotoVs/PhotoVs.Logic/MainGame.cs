@@ -27,6 +27,8 @@ namespace PhotoVs.Logic
 {
     public class MainGame : Game
     {
+        private Services _services;
+
         //private DiagnosticInfo _info;
         private readonly GraphicsDeviceManager _graphics;
 
@@ -53,8 +55,8 @@ namespace PhotoVs.Logic
             _graphics = new GraphicsDeviceManager(this);
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
 
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 720;
+            _graphics.PreferredBackBufferWidth = 320; //1280;
+            _graphics.PreferredBackBufferHeight = 180; //720;
 
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
@@ -65,6 +67,7 @@ namespace PhotoVs.Logic
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _events = new Events();
+            _services = new Services(_events);
             _coroutines = new Coroutines();
             _plugins = new PluginProvider("assets/plugins/", _events, _coroutines);
 
@@ -75,6 +78,8 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new BitmapFontTypeLoader(_assetLoader))
                 .RegisterTypeLoader(new MapTypeLoader());
+
+            _services.SetAssetLoader(_assetLoader);
 
             var canvas = new CanvasSize(320, 180);
             _renderer = new Renderer(GraphicsDevice,
