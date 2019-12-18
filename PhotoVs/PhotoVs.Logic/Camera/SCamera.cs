@@ -41,7 +41,7 @@ namespace PhotoVs.Logic.Camera
 
         public int Priority { get; set; } = -99;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(NoComponentRequired) };
+        public Type[] Requires { get; } = { };
 
         public void BeforeUpdate(GameTime gameTime)
         {

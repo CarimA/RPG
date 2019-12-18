@@ -79,7 +79,6 @@
     <Compile Include="Scheduler\YieldInstructions\IYieldInstruction.cs" />
     <Compile Include="Scheduler\YieldInstructions\Pause.cs" />
     <Compile Include="ECS\Components\ComponentCollection.cs" />
-    <Compile Include="ECS\Components\NoComponentRequired.cs" />
     <Compile Include="ECS\GameObjects\GameObject.cs" />
     <Compile Include="ECS\GameObjects\GameObjectCollection.cs" />
     <Compile Include="ECS\Systems\SystemCollection.cs" />

@@ -94,7 +94,7 @@ namespace PhotoVs.Engine.FSM.Scenes
         {
             foreach (var system in systems)
                 system.Update(gameTime,
-                    system.Requires.Contains(typeof(NoComponentRequired))
+                    system.Requires.Length == 0
                         ? entities
                         : entities.All(system.Requires));
         }
@@ -115,7 +115,7 @@ namespace PhotoVs.Engine.FSM.Scenes
         {
             foreach (var system in systems)
                 system.Draw(gameTime,
-                    system.Requires.Contains(typeof(NoComponentRequired))
+                    system.Requires.Length == 0
                         ? entities
                         : entities.All(system.Requires));
         }

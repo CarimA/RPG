@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
-    public class DebugHotReloadAssetLoader : AssetLoader, IDisposable
+    public class HotReloadAssetLoader : AssetLoader, IDisposable
     {
         private readonly FileSystemWatcher _fsWatcher;
 
-        public DebugHotReloadAssetLoader(IStreamProvider streamProvider)
+        public HotReloadAssetLoader(IStreamProvider streamProvider)
             : base(streamProvider)
         {
             Debug.Log.Info("Initialised DebugHotReloadAssetLoader");
