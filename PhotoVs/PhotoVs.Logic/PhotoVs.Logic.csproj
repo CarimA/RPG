@@ -61,7 +61,6 @@
     <Compile Include="Collision\SCollisionDebugRender.cs" />
     <Compile Include="Collision\SCollisionResolution.cs" />
     <Compile Include="Collision\SProcessInteractionEvents.cs" />
-    <Compile Include="Debug\DiagnosticInfo.cs" />
     <Compile Include="Input\CInput.cs" />
     <Compile Include="Input\GameInput.cs" />
     <Compile Include="Input\InputActions.cs" />
@@ -76,7 +75,7 @@
     <Compile Include="Scenes\DialogueScene.cs" />
     <Compile Include="Scenes\OverworldScene.cs" />
     <Compile Include="Scenes\SceneMachine.cs" />
-    <Compile Include="Text\Database.cs" />
+    <Compile Include="Text\TextDatabase.cs" />
     <Compile Include="Transforms\CCollisionBound.cs" />
     <Compile Include="Transforms\CPosition.cs" />
     <Compile Include="Transforms\CSize.cs" />
