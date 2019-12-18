@@ -15,6 +15,7 @@ using PhotoVs.Engine.Plugins;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.Camera;
+using PhotoVs.Logic.Debug;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
@@ -29,7 +30,7 @@ namespace PhotoVs.Logic
     {
         private Services _services;
 
-        //private DiagnosticInfo _info;
+        private DiagnosticInfo _info;
         private readonly GraphicsDeviceManager _graphics;
 
         private IAssetLoader _assetLoader;
@@ -114,7 +115,7 @@ namespace PhotoVs.Logic
 
             _audio = new DummyAudio();
 
-            //_info = new DiagnosticInfo(_spriteBatch, _assetLoader);
+            _info = new DiagnosticInfo(_spriteBatch, _assetLoader);
 
             _events.RaiseOnGameStart();
 
@@ -124,7 +125,7 @@ namespace PhotoVs.Logic
 
         protected override void Update(GameTime gameTime)
         {
-            //_info.BeforeUpdate();
+            _info.BeforeUpdate();
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -135,14 +136,14 @@ namespace PhotoVs.Logic
 
             base.Update(gameTime);
 
-            //_info.AfterUpdate();
+            _info.AfterUpdate();
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            //_info.BeforeDraw();
+            _info.BeforeDraw();
 
-            //GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _renderer.SetRenderMode(RenderMode.Game);
             _sceneManager.Draw(gameTime);
@@ -150,8 +151,8 @@ namespace PhotoVs.Logic
 
             base.Draw(gameTime);
 
-            //_info.AfterDraw();
-            //_info.Draw(gameTime);
+            _info.AfterDraw();
+            _info.Draw(gameTime);
         }
 
         private IEnumerator Test()

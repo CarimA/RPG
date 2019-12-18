@@ -11,7 +11,7 @@ namespace PhotoVs.Logic
 {
     public class Services
     {
-        public Events Events { get; private set; }
+        public Events Events { get; }
 
         public IAssetLoader AssetLoader { get; private set; }
 

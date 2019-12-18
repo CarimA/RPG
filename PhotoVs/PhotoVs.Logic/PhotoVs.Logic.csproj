@@ -61,6 +61,7 @@
     <Compile Include="Collision\SCollisionDebugRender.cs" />
     <Compile Include="Collision\SCollisionResolution.cs" />
     <Compile Include="Collision\SProcessInteractionEvents.cs" />
+    <Compile Include="Debugger\DiagnosticInfo.cs" />
     <Compile Include="Input\CInput.cs" />
     <Compile Include="Input\GameInput.cs" />
     <Compile Include="Input\InputActions.cs" />
