@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.Components;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Models.ECS;
+using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.WorldZoning
 {
@@ -26,7 +26,7 @@ namespace PhotoVs.Logic.WorldZoning
 
         public int Priority { get; set; } = -9999;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(NoComponentRequired)};
+        public Type[] Requires { get; } = { typeof(NoComponentRequired) };
 
         public void BeforeUpdate(GameTime gameTime)
         {

@@ -1,33 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using PhotoVs.Models.ECS;
+﻿using PhotoVs.Models.ECS;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine
 {
-    public class IndexedEvent<T> : Dictionary<string, T>
-    {
-        public new T this[string key]
-        {
-            get
-            {
-                if (ContainsKey(key))
-                {
-                    return base[key];
-                }
-
-                Add(key, default);
-                return base[key];
-            }
-            set => base[key] = value;
-        }
-    }
-
     public sealed class Events
     {
-        public delegate void VoidEventHandler();
-        public delegate void CollisionEventHandler(IGameObject moving, IGameObject stationary);
-        public delegate void InteractEventHandler(IGameObject player, IGameObject script);
+        public delegate void VoidEventHandler(object sender);
+        public delegate void CollisionEventHandler(object sender, IGameObject moving, IGameObject stationary);
+        public delegate void InteractEventHandler(object sender, IGameObject player, IGameObject script);
 
         // events which would be nice
         /*
@@ -64,13 +44,13 @@ namespace PhotoVs.Engine
         public void RaiseOnGameStart()
         {
             Debug.Log.Trace("EVENT - Invoking OnGameStart");
-            OnGameStart?.Invoke();
+            OnGameStart?.Invoke(this);
         }
 
         public void RaiseOnCollision(IGameObject moving, IGameObject stationary)
         {
             Debug.Log.Trace("EVENT - Invoking OnCollision");
-            OnCollision?.Invoke(moving, stationary);
+            OnCollision?.Invoke(this, moving, stationary);
         }
 
         public void RaiseOnInteractEventAction(string key, IGameObject player, IGameObject script)
@@ -78,7 +58,7 @@ namespace PhotoVs.Engine
             Debug.Log.Trace($"EVENT - Invoking OnInteractEventAction ({key})");
             if (OnInteractEventAction.TryGetValue(key, out var value))
             {
-                value?.Invoke(player, script);
+                value?.Invoke(this, player, script);
             }
         }
         public void RaiseOnInteractEventEnter(string key, IGameObject player, IGameObject script)
@@ -86,7 +66,7 @@ namespace PhotoVs.Engine
             Debug.Log.Trace($"EVENT - Invoking OnInteractEventEnter ({key})");
             if (OnInteractEventEnter.TryGetValue(key, out var value))
             {
-                value?.Invoke(player, script);
+                value?.Invoke(this, player, script);
             }
         }
         public void RaiseOnInteractEventExit(string key, IGameObject player, IGameObject script)
@@ -94,7 +74,7 @@ namespace PhotoVs.Engine
             Debug.Log.Trace($"EVENT - Invoking OnInteractEventExit ({key})");
             if (OnInteractEventExit.TryGetValue(key, out var value))
             {
-                value?.Invoke(player, script);
+                value?.Invoke(this, player, script);
             }
         }
         public void RaiseOnInteractEventStand(string key, IGameObject player, IGameObject script)
@@ -102,7 +82,7 @@ namespace PhotoVs.Engine
             Debug.Log.Trace($"EVENT - Invoking OnInteractEventStand ({key})");
             if (OnInteractEventStand.TryGetValue(key, out var value))
             {
-                value?.Invoke(player, script);
+                value?.Invoke(this, player, script);
             }
         }
         public void RaiseOnInteractEventWalk(string key, IGameObject player, IGameObject script)
@@ -110,7 +90,7 @@ namespace PhotoVs.Engine
             Debug.Log.Trace($"EVENT - Invoking OnInteractEventWalk ({key})");
             if (OnInteractEventWalk.TryGetValue(key, out var value))
             {
-                value?.Invoke(player, script);
+                value?.Invoke(this, player, script);
             }
         }
         public void RaiseOnInteractEventRun(string key, IGameObject player, IGameObject script)
@@ -118,7 +98,7 @@ namespace PhotoVs.Engine
             Debug.Log.Trace($"EVENT - Invoking OnInteractEventRun ({key})");
             if (OnInteractEventRun.TryGetValue(key, out var value))
             {
-                value?.Invoke(player, script);
+                value?.Invoke(this, player, script);
             }
         }
     }

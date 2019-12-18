@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using PhotoVs.Engine.Scheduler;
+﻿using PhotoVs.Engine.Scheduler;
+using System.Collections;
 
 namespace PhotoVs.Engine.Plugins
 {

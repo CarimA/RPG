@@ -21,10 +21,10 @@ namespace PhotoVs.Engine.Graphics.TextureAtlases
 
             if (clippingRectangle.HasValue)
             {
-                var x = (int) (position.X - origin.X);
-                var y = (int) (position.Y - origin.Y);
-                var width = (int) (textureRegion.Width * scale.X);
-                var height = (int) (textureRegion.Height * scale.Y);
+                var x = (int)(position.X - origin.X);
+                var y = (int)(position.Y - origin.Y);
+                var width = (int)(textureRegion.Width * scale.X);
+                var height = (int)(textureRegion.Height * scale.Y);
                 var destinationRectangle = new Rectangle(x, y, width, height);
 
                 sourceRectangle =
@@ -94,24 +94,24 @@ namespace PhotoVs.Engine.Graphics.TextureAtlases
         private static Rectangle ClipSourceRectangle(Rectangle sourceRectangle, Rectangle destinationRectangle,
             Rectangle clippingRectangle)
         {
-            var left = (float) (clippingRectangle.Left - destinationRectangle.Left);
-            var right = (float) (destinationRectangle.Right - clippingRectangle.Right);
-            var top = (float) (clippingRectangle.Top - destinationRectangle.Top);
-            var bottom = (float) (destinationRectangle.Bottom - clippingRectangle.Bottom);
+            var left = (float)(clippingRectangle.Left - destinationRectangle.Left);
+            var right = (float)(destinationRectangle.Right - clippingRectangle.Right);
+            var top = (float)(clippingRectangle.Top - destinationRectangle.Top);
+            var bottom = (float)(destinationRectangle.Bottom - clippingRectangle.Bottom);
             var x = left > 0 ? left : 0;
             var y = top > 0 ? top : 0;
             var w = (right > 0 ? right : 0) + x;
             var h = (bottom > 0 ? bottom : 0) + y;
 
-            var scaleX = (float) destinationRectangle.Width / sourceRectangle.Width;
-            var scaleY = (float) destinationRectangle.Height / sourceRectangle.Height;
+            var scaleX = (float)destinationRectangle.Width / sourceRectangle.Width;
+            var scaleY = (float)destinationRectangle.Height / sourceRectangle.Height;
             x /= scaleX;
             y /= scaleY;
             w /= scaleX;
             h /= scaleY;
 
-            return new Rectangle((int) (sourceRectangle.X + x), (int) (sourceRectangle.Y + y),
-                (int) (sourceRectangle.Width - w), (int) (sourceRectangle.Height - h));
+            return new Rectangle((int)(sourceRectangle.X + x), (int)(sourceRectangle.Y + y),
+                (int)(sourceRectangle.Width - w), (int)(sourceRectangle.Height - h));
         }
 
         private static Rectangle ClipDestinationRectangle(Rectangle destinationRectangle, Rectangle clippingRectangle)

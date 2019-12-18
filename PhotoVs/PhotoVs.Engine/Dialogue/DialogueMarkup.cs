@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue.Markups;
 using PhotoVs.Engine.Graphics.BitmapFonts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Engine.Dialogue
 {
     public class DialogueMarkup
     {
-        private BitmapFont _font;
-        private string _text;
-        private int _width;
-        private Dictionary<int, List<IMarkup>> _markupIndex;
-        private List<int> _newLineIndex; // todo: make methods not static and save new lines to here instead
+        private readonly BitmapFont _font;
+        private readonly string _text;
+        private readonly Dictionary<int, List<IMarkup>> _markupIndex;
         private Vector2 _origin;
 
-        private int _maxLines;
+        private readonly int _maxLines;
         private int _remainingLines;
         private int _breakIndex;
         private int _currentIndex;
         private bool _isPaused;
         private bool _isFinished;
-        private float _maxCharTime;
+        private readonly float _maxCharTime;
         private float _charTime;
 
         private bool _fastForwardState;
-        private Random _rng;
+        private readonly Random _rng;
 
         public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
         {
@@ -60,7 +58,7 @@ namespace PhotoVs.Engine.Dialogue
                     _currentIndex++;
 
                     // todo: play a sound effect
-                    
+
                     if (_markupIndex.TryGetValue(_currentIndex, out var activeMarkup))
                     {
                         if (activeMarkup.OfType<NewLineMarkup>().Any())
@@ -89,7 +87,7 @@ namespace PhotoVs.Engine.Dialogue
                     {
                         _isFinished = true;
                     }
-                    
+
                 }
             }
 
@@ -284,7 +282,7 @@ namespace PhotoVs.Engine.Dialogue
                                 var prop = typeof(Color).GetProperty(args[1]);
                                 if (prop == null)
                                 {
-                                    activeMarkups.Add(new ColorMarkup(default(Color)));
+                                    activeMarkups.Add(new ColorMarkup(default));
                                 }
                                 else
                                 {
@@ -333,7 +331,7 @@ namespace PhotoVs.Engine.Dialogue
                                 var prop = typeof(Color).GetProperty(args[1]);
                                 if (prop == null)
                                 {
-                                    activeMarkups.Add(new OutlineMarkup(default(Color)));
+                                    activeMarkups.Add(new OutlineMarkup(default));
                                 }
                                 else
                                 {
@@ -382,9 +380,8 @@ namespace PhotoVs.Engine.Dialogue
 
         private static Dictionary<int, List<IMarkup>> ParseNewLines(Dictionary<int, List<IMarkup>> markupIndex, string text, BitmapFont font, int width)
         {
-            text = text + " ";
+            text += " ";
             var x = 0f;
-            var lastBreak = 0;
 
             for (var i = 0; i < text.Length; i++)
             {
@@ -400,8 +397,6 @@ namespace PhotoVs.Engine.Dialogue
 
                 if (i >= 1 && text[i - 1] == ' ')
                 {
-                    lastBreak = i;
-
                     // check word ahead, make sure it doesn't wrap over
                     var index = text.IndexOf(' ', i + 1);
                     if (index > -1)

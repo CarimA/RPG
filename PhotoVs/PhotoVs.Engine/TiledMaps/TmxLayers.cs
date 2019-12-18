@@ -1,10 +1,10 @@
-﻿using System;
+﻿using PhotoVs.Engine.TiledMaps.Layers;
+using PhotoVs.Engine.TiledMaps.Objects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using PhotoVs.Engine.TiledMaps.Layers;
-using PhotoVs.Engine.TiledMaps.Objects;
 
 namespace PhotoVs.Engine.TiledMaps
 {
@@ -122,7 +122,7 @@ namespace PhotoVs.Engine.TiledMaps
             var y = reader["y"].ParseInt32().Value;
             var w = reader["width"].ParseInt32();
             var h = reader["height"].ParseInt32();
-            var rot = (float) (reader["rotation"].ParseDouble() ?? 0);
+            var rot = (float)(reader["rotation"].ParseDouble() ?? 0);
 
             BaseObject result = null;
             var properties = new Dictionary<string, string>();
@@ -305,8 +305,8 @@ namespace PhotoVs.Engine.TiledMaps
         private static IEnumerable<Position> ReadPoints(this XmlReader reader)
         {
             return from p in reader["points"].Split(' ')
-                let split = p.IndexOf(',')
-                select new Position(int.Parse(p.Substring(0, split)), int.Parse(p.Substring(split + 1)));
+                   let split = p.IndexOf(',')
+                   select new Position(int.Parse(p.Substring(0, split)), int.Parse(p.Substring(split + 1)));
         }
 
         private static void WritePoints(this XmlWriter writer, Position[] points)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PhotoVs.Utils.Logging
 {
@@ -12,8 +11,6 @@ namespace PhotoVs.Utils.Logging
             {
                 new ConsoleLogger(LogLevel.Trace)
             };
-
-        public ILogger this[Type type] => Find(logger => logger.GetType() == type);
 
         public void Trace(string message, params object[] args)
         {

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using PhotoVs.Engine.Scheduler;
+using PhotoVs.Utils.Extensions;
+using PhotoVs.Utils.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using PhotoVs.Engine.Scheduler;
-using PhotoVs.Utils.Extensions;
-using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Plugins
 {
@@ -19,6 +19,7 @@ namespace PhotoVs.Engine.Plugins
         {
             _plugins = new List<Plugin>();
             _gameEvents = gameEvents;
+            _coroutines = coroutines;
 
             if (Directory.Exists(directory))
             {
@@ -61,7 +62,7 @@ namespace PhotoVs.Engine.Plugins
 
         private void LoadAssembly(Type type)
         {
-            var plugin = (Plugin) Activator.CreateInstance(type);
+            var plugin = (Plugin)Activator.CreateInstance(type);
             plugin.Bind(_gameEvents);
             plugin.BindCoroutines(_coroutines);
             _plugins.Add(plugin);

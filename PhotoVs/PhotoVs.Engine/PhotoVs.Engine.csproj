@@ -74,6 +74,7 @@
     <Compile Include="Dialogue\Markups\ShakeMarkup.cs" />
     <Compile Include="Dialogue\Markups\WaitMarkup.cs" />
     <Compile Include="Dialogue\Markups\WaveMarkup.cs" />
+    <Compile Include="IndexedEvent.cs" />
     <Compile Include="Scheduler\Coroutines.cs" />
     <Compile Include="Scheduler\YieldInstructions\IYieldInstruction.cs" />
     <Compile Include="Scheduler\YieldInstructions\Pause.cs" />

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using PhotoVs.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Xna.Framework;
-using PhotoVs.Utils;
 
 namespace PhotoVs.Engine.Graphics.BitmapFonts
 {
@@ -65,7 +65,7 @@ namespace PhotoVs.Engine.Graphics.BitmapFonts
                     var right = glyph.Position.X + glyph.FontRegion.Width;
 
                     if (right > rectangle.Right)
-                        rectangle.Width = (int) (right - rectangle.Left);
+                        rectangle.Width = (int)(right - rectangle.Left);
                 }
 
                 if (glyph.Character == '\n')
@@ -88,7 +88,7 @@ namespace PhotoVs.Engine.Graphics.BitmapFonts
                     var right = glyph.Position.X + glyph.FontRegion.Width;
 
                     if (right > rectangle.Right)
-                        rectangle.Width = (int) (right - rectangle.Left);
+                        rectangle.Width = (int)(right - rectangle.Left);
                 }
 
                 if (glyph.Character == '\n')

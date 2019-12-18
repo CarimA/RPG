@@ -1,7 +1,7 @@
-﻿using System;
+﻿using PhotoVs.Models.ECS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using PhotoVs.Models.ECS;
 
 namespace PhotoVs.Engine.ECS.GameObjects
 {

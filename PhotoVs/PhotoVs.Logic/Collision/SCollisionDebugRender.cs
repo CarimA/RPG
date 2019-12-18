@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.Transforms;
@@ -8,6 +6,8 @@ using PhotoVs.Logic.WorldZoning;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.ECS;
 using PhotoVs.Utils.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Collision
 {
@@ -30,7 +30,7 @@ namespace PhotoVs.Logic.Collision
 
         public int Priority { get; set; } = 99;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(CCollisionBound), typeof(CPosition)};
+        public Type[] Requires { get; } = { typeof(CCollisionBound), typeof(CPosition) };
 
         public void BeforeDraw(GameTime gameTime)
         {
@@ -84,7 +84,7 @@ namespace PhotoVs.Logic.Collision
         // todo: move to/create a primitives class
         private void DrawBox(Vector2 topLeft, Vector2 topRight, Vector2 bottomLeft, Vector2 bottomRight, Color color)
         {
-            DrawPolygon(Vector2.Zero, new List<Vector2> {topLeft, topRight, bottomRight, bottomLeft}, color);
+            DrawPolygon(Vector2.Zero, new List<Vector2> { topLeft, topRight, bottomRight, bottomLeft }, color);
         }
 
         private void DrawPolygon(Vector2 origin, List<Vector2> points, Color color)
@@ -105,13 +105,13 @@ namespace PhotoVs.Logic.Collision
             var edge = end - start;
             // calculate angle to rotate line
             var angle =
-                (float) Math.Atan2(edge.Y, edge.X);
+                (float)Math.Atan2(edge.Y, edge.X);
 
             _spriteBatch.Draw(_assetLoader.GetAsset<Texture2D>("Interfaces\\black.png"),
                 new Rectangle( // rectangle defines shape of line and position of start of line
-                    (int) start.X,
-                    (int) start.Y,
-                    (int) edge.Length(), //sb will strech the texture to fill this rectangle
+                    (int)start.X,
+                    (int)start.Y,
+                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
                     thickness), //width of line, change this to make thicker line
                 null,
                 color, //colour of line

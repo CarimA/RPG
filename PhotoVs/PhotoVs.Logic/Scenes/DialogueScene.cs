@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue;
 using PhotoVs.Engine.Graphics;
@@ -12,6 +7,7 @@ using PhotoVs.Logic.Input;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.FSM;
 using PhotoVs.Utils;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Scenes
 {

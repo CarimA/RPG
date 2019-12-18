@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Models.ECS;
 using PhotoVs.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Logic.Transforms
 {
@@ -107,8 +107,8 @@ namespace PhotoVs.Logic.Transforms
             for (var i = 0; i < sides; i++)
                 points.Add(
                     new Vector2(
-                        radius * (float) Math.Cos(angle * i) + radius,
-                        radius * (float) Math.Sin(angle * i) + radius));
+                        radius * (float)Math.Cos(angle * i) + radius,
+                        radius * (float)Math.Sin(angle * i) + radius));
 
             return new CCollisionBound(points);
         }

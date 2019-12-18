@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.Components;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Models.ECS;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Logic.Camera
 {
@@ -41,7 +41,7 @@ namespace PhotoVs.Logic.Camera
 
         public int Priority { get; set; } = -99;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(NoComponentRequired)};
+        public Type[] Requires { get; } = { typeof(NoComponentRequired) };
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -70,7 +70,7 @@ namespace PhotoVs.Logic.Camera
 
         private Action<ScreenShake> UpdateShake(GameTime gameTime)
         {
-            var dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             return tuple => tuple.Duration -= dt;
         }
 
@@ -132,8 +132,8 @@ namespace PhotoVs.Logic.Camera
             var intensity = ShakeIntensity();
             _transform = Matrix.CreateTranslation(new Vector3(-_lerpPosition.X, -_lerpPosition.Y, 0)) *
                          Matrix.CreateTranslation(new Vector3(
-                             -((float) (_random.NextDouble() * intensity * 2) - intensity),
-                             -((float) (_random.NextDouble() * intensity * 2) - intensity), 0)) *
+                             -((float)(_random.NextDouble() * intensity * 2) - intensity),
+                             -((float)(_random.NextDouble() * intensity * 2) - intensity), 0)) *
                          Matrix.CreateScale(new Vector3(_zoom, _zoom, 1)) *
                          Matrix.CreateTranslation(new Vector3(_renderer.GetCanvasSize().GetWidth() / 2,
                              _renderer.GetCanvasSize().GetHeight() / 2,
@@ -225,7 +225,7 @@ namespace PhotoVs.Logic.Camera
                 MathHelper.Max(topLeft.X, MathHelper.Max(topRight.X, MathHelper.Max(bottomLeft.X, bottomRight.X))),
                 MathHelper.Max(topLeft.Y, MathHelper.Max(topRight.Y, MathHelper.Max(bottomLeft.Y, bottomRight.Y))));
 
-            var bounds = new Rectangle((int) min.X, (int) min.Y, (int) (max.X - min.X), (int) (max.Y - min.Y));
+            var bounds = new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
             return bounds;
         }
 

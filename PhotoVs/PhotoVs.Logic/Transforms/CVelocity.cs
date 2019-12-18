@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Models.ECS;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Transforms
 {

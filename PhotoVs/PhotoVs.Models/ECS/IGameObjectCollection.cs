@@ -7,11 +7,9 @@ namespace PhotoVs.Models.ECS
     {
         IGameObject this[string name] { get; }
 
-        void Add(IGameObject entity);
         IGameObjectCollection All(params Type[] types);
         IGameObjectCollection Any(params Type[] types);
         IGameObjectCollection Except(params Type[] types);
         IGameObjectCollection FindByTag(string tag);
-        void Remove(IGameObject entity);
     }
 }

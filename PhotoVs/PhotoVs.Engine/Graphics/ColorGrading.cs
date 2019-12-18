@@ -31,8 +31,8 @@ namespace PhotoVs.Engine.Graphics
 
             _effect.CurrentTechnique.Passes[0].Apply();
             _effect.Parameters["palette"].SetValue(_lut);
-            _effect.Parameters["tex_width"].SetValue((float) _lut.Width);
-            _effect.Parameters["tex_height"].SetValue((float) _lut.Height);
+            _effect.Parameters["tex_width"].SetValue((float)_lut.Width);
+            _effect.Parameters["tex_height"].SetValue((float)_lut.Height);
 
             spriteBatch.Draw(pass, Vector2.Zero, Color.White);
 

@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Models.ECS;
+using System;
 
 namespace PhotoVs.Logic.Movement
 {
@@ -11,7 +11,7 @@ namespace PhotoVs.Logic.Movement
     {
         public int Priority { get; set; } = -2;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(CInput), typeof(CVelocity)};
+        public Type[] Requires { get; } = { typeof(CInput), typeof(CVelocity) };
 
         public void BeforeUpdate(GameTime gameTime)
         {

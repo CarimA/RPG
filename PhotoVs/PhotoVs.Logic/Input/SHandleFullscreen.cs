@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.ECS;
+using System;
 
 namespace PhotoVs.Logic.Input
 {
@@ -28,7 +28,8 @@ namespace PhotoVs.Logic.Input
             foreach (var entity in entities)
             {
                 var input = entity.Components.Get<CInput>().Input;
-                if (!input.ActionPressed(InputActions.Fullscreen)) continue;
+                if (!input.ActionPressed(InputActions.Fullscreen))
+                    continue;
                 if (_graphics.IsFullScreen)
                 {
                     DisableFullscreen();

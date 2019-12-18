@@ -6,7 +6,7 @@
 
         public WaitMarkup() : this(0.5f)
         {
-                
+
         }
 
         public WaitMarkup(float waitTime)

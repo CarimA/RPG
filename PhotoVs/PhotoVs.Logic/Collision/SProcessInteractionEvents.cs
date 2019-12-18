@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Logic.WorldZoning;
 using PhotoVs.Models.ECS;
+using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Collision
 {
@@ -25,7 +25,7 @@ namespace PhotoVs.Logic.Collision
 
         public int Priority { get; set; } = -1;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(CInput)};
+        public Type[] Requires { get; } = { typeof(CInput) };
 
         public void BeforeUpdate(GameTime gameTime)
         {

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml.Serialization;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Engine.Graphics.TextureAtlases;
 using PhotoVs.Models.Assets;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {
@@ -21,7 +21,7 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
         public BitmapFont Load(Stream stream)
         {
             var deserializer = new XmlSerializer(typeof(BitmapFontFile));
-            var data = (BitmapFontFile) deserializer.Deserialize(stream);
+            var data = (BitmapFontFile)deserializer.Deserialize(stream);
 
             var assets = new List<string>();
 

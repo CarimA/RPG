@@ -39,9 +39,8 @@ namespace PhotoVs.Utils
 
         public override bool Equals(object obj)
         {
-            if (obj is Thickness)
+            if (obj is Thickness other)
             {
-                var other = (Thickness) obj;
                 return Equals(other);
             }
 
@@ -67,23 +66,29 @@ namespace PhotoVs.Utils
 
         public static Thickness FromValues(int[] values)
         {
-            switch (values.Length)
+            if (values == null)
             {
-                case 1:
-                    return new Thickness(values[0]);
-                case 2:
-                    return new Thickness(values[0], values[1]);
-                case 4:
-                    return new Thickness(values[0], values[1], values[2], values[3]);
-                default:
-                    throw new FormatException("Invalid thickness");
+                throw new ArgumentNullException(nameof(values));
             }
+
+            return values.Length switch
+            {
+                1 => new Thickness(values[0]),
+                2 => new Thickness(values[0], values[1]),
+                4 => new Thickness(values[0], values[1], values[2], values[3]),
+                _ => throw new FormatException("Invalid thickness"),
+            };
         }
 
         public static Thickness Parse(string value)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             var values = value
-                .Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToArray();
 
@@ -96,6 +101,16 @@ namespace PhotoVs.Utils
                 return Left == Top ? $"{Left}" : $"{Left} {Top}";
 
             return $"{Left}, {Right}, {Top}, {Bottom}";
+        }
+
+        public static bool operator ==(Thickness left, Thickness right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Thickness left, Thickness right)
+        {
+            return !(left == right);
         }
     }
 }

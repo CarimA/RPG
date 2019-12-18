@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using Newtonsoft.Json;
+using System.IO;
 using System.Xml.Serialization;
-using Newtonsoft.Json;
 
 namespace PhotoVs.Engine.TiledMaps
 {
@@ -11,12 +11,12 @@ namespace PhotoVs.Engine.TiledMaps
 
         public static Map ReadJsonMap(this TextReader reader)
         {
-            return (Map) JsonSerializer.Deserialize(reader, typeof(Map));
+            return (Map)JsonSerializer.Deserialize(reader, typeof(Map));
         }
 
         public static Map ReadTmxMap(this TextReader reader)
         {
-            return (Map) XmlSerializer.Deserialize(reader);
+            return (Map)XmlSerializer.Deserialize(reader);
         }
 
         public static void WriteTmxMap(this TextWriter writer, Map map)
@@ -38,7 +38,7 @@ namespace PhotoVs.Engine.TiledMaps
         internal static bool ContainsJson(this StreamReader reader)
         {
             var startPosition = reader.GetPosition();
-            for (var c = (char) reader.Read(); c != '{'; c = (char) reader.Read())
+            for (var c = (char)reader.Read(); c != '{'; c = (char)reader.Read())
                 if (c != '\r' && c != '\n' && !char.IsWhiteSpace(c))
                 {
                     reader.SetPosition(startPosition);

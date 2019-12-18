@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Engine.GameInput
 {
@@ -101,7 +101,7 @@ namespace PhotoVs.Engine.GameInput
                     AnyKeyDown(keyboard, KeyMappings[action]))
                 {
                     IsPressed[action] = true;
-                    PressedTime[action] += (float) gameTime.ElapsedGameTime.TotalSeconds;
+                    PressedTime[action] += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else
                 {

@@ -62,12 +62,14 @@
     <Compile Include="Compression\CompressionLevel.cs" />
     <Compile Include="Compression\CompressionMode.cs" />
     <Compile Include="Compression\CompressionStrategy.cs" />
+    <Compile Include="Compression\DeflateManagerConfig.cs" />
     <Compile Include="Compression\CRC32.cs" />
     <Compile Include="Compression\CrcCalculatorStream.cs" />
     <Compile Include="Compression\DeflateFlavor.cs" />
     <Compile Include="Compression\DeflateManager.cs" />
     <Compile Include="Compression\FlushType.cs" />
     <Compile Include="Compression\GZipStream.cs" />
+    <Compile Include="Compression\StreamMode.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="IEquatableByRef.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="Thickness.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

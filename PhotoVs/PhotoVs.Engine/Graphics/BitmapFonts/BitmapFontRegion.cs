@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PhotoVs.Engine.Graphics.TextureAtlases;
+using System;
 using System.Collections.Generic;
-using PhotoVs.Engine.Graphics.TextureAtlases;
 
 namespace PhotoVs.Engine.Graphics.BitmapFonts
 {

@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.ECS;
+using System;
+using System.IO;
 
 namespace PhotoVs.Logic.Input
 {

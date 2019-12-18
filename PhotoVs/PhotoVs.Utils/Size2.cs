@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace PhotoVs.Utils
 {
@@ -24,12 +24,12 @@ namespace PhotoVs.Utils
         /// <summary>
         ///     The horizontal component of this <see cref="Size2" />.
         /// </summary>
-        public float Width;
+        public float Width { get; set; }
 
         /// <summary>
         ///     The vertical component of this <see cref="Size2" />.
         /// </summary>
-        public float Height;
+        public float Height { get; set; }
 
         /// <summary>
         ///     Gets a value that indicates whether this <see cref="Size2" /> is empty.
@@ -104,7 +104,7 @@ namespace PhotoVs.Utils
         public override bool Equals(object obj)
         {
             if (obj is Size2)
-                return Equals((Size2) obj);
+                return Equals((Size2)obj);
             return false;
         }
 
@@ -150,9 +150,11 @@ namespace PhotoVs.Utils
         /// </returns>
         public static Size2 Add(Size2 first, Size2 second)
         {
-            Size2 size;
-            size.Width = first.Width + second.Width;
-            size.Height = first.Height + second.Height;
+            Size2 size = new Size2
+            {
+                Width = first.Width + second.Width,
+                Height = first.Height + second.Height
+            };
             return size;
         }
 
@@ -189,9 +191,11 @@ namespace PhotoVs.Utils
         /// </returns>
         public static Size2 Subtract(Size2 first, Size2 second)
         {
-            Size2 size;
-            size.Width = first.Width - second.Width;
-            size.Height = first.Height - second.Height;
+            Size2 size = new Size2
+            {
+                Width = first.Width - second.Width,
+                Height = first.Height - second.Height
+            };
             return size;
         }
 
@@ -292,7 +296,7 @@ namespace PhotoVs.Utils
         /// </returns>
         public static explicit operator Point(Size2 size)
         {
-            return new Point((int) size.Width, (int) size.Height);
+            return new Point((int)size.Width, (int)size.Height);
         }
 
         /// <summary>

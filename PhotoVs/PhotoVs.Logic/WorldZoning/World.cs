@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.Assets;
 using PhotoVs.Utils.Extensions;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.WorldZoning
 {
