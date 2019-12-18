@@ -6,11 +6,11 @@ namespace PhotoVs.Utils.Collections
 {
     public class Grid<T>
     {
-        private readonly Dictionary<int, T> _cells;
+        private readonly Dictionary<long, T> _cells;
 
         public Grid()
         {
-            _cells = new Dictionary<int, T>();
+            _cells = new Dictionary<long, T>();
         }
 
         public T this[int x, int y]
@@ -61,7 +61,7 @@ namespace PhotoVs.Utils.Collections
                 }
         }
 
-        private static int HashPosition(int x, int y)
+        private static long HashPosition(int x, int y)
         {
             unchecked
             {
@@ -73,11 +73,11 @@ namespace PhotoVs.Utils.Collections
             }
         }
 
-        private static int HashInt(int val)
+        private static long HashInt(int val)
         {
             unchecked
             {
-                return val * 0x27d4eb2d >> 24;
+                return val * 0x9e3779b1 >> 24;
             }
         }
     }
