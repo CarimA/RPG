@@ -1,4 +1,0 @@
-zones = {}
-zones[''] = function ()
-
-end

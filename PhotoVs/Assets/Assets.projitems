@@ -28,14 +28,6 @@
     <None Include="$(MSBuildThisFileDirectory)Maps\test\00_00.tmx" />
     <None Include="$(MSBuildThisFileDirectory)Maps\test\01_00.tmx" />
     <None Include="$(MSBuildThisFileDirectory)Maps\test\game.world" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\coroutines.lua" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\game\events\test.lua" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\game\main.lua" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\game\stl\constants.lua" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\game\stl\coroutines.lua" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\main.lua" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\zones.lua" />
-    <None Include="$(MSBuildThisFileDirectory)Scripts\_stlyield.lua" />
     <None Include="$(MSBuildThisFileDirectory)text.csv" />
     <None Include="$(MSBuildThisFileDirectory)text.yml" />
   </ItemGroup>
@@ -74,8 +66,5 @@
     <Content Include="$(MSBuildThisFileDirectory)Tilesets\new-tileset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Tilesets\pocket-tileset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Tilesets\test.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Scripts\" />
   </ItemGroup>
 </Project>

@@ -92,6 +92,8 @@
     <Compile Include="WorldZoning\SMapRenderer.cs" />
     <Compile Include="WorldZoning\World.cs" />
     <Compile Include="YieldInstructions\Dialogue.cs" />
+    <Compile Include="YieldInstructions\PauseUntil.cs" />
+    <Compile Include="YieldInstructions\PauseWhile.cs" />
     <Compile Include="YieldInstructions\Pause.cs" />
   </ItemGroup>
   <ItemGroup>

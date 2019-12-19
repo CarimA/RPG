@@ -1,4 +1,0 @@
-DIR_UP = 1
-DIR_DOWN = 2
-DIR_LEFT = 4
-DIR_RIGHT = 8
