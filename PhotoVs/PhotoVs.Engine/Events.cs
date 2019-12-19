@@ -47,7 +47,7 @@ namespace PhotoVs.Engine
 
         public void RaiseOnServiceSet<T>(T service)
         {
-            Debug.Log.Trace($"EVENT - Invoking OnServiceSet ({typeof(T).Name})");
+            Logger.Write.Trace($"EVENT - Invoking OnServiceSet ({typeof(T).Name})");
             if (OnServiceSet.TryGetValue(typeof(T), out var value))
             {
                 value?.Invoke(this, service);
@@ -56,19 +56,19 @@ namespace PhotoVs.Engine
 
         public void RaiseOnGameStart()
         {
-            Debug.Log.Trace("EVENT - Invoking OnGameStart");
+            Logger.Write.Trace("EVENT - Invoking OnGameStart");
             OnGameStart?.Invoke(this);
         }
 
         public void RaiseOnCollision(IGameObject moving, IGameObject stationary)
         {
-            Debug.Log.Trace("EVENT - Invoking OnCollision");
+            Logger.Write.Trace("EVENT - Invoking OnCollision");
             OnCollision?.Invoke(this, moving, stationary);
         }
 
         public void RaiseOnInteractEventAction(string key, IGameObject player, IGameObject script)
         {
-            Debug.Log.Trace($"EVENT - Invoking OnInteractEventAction ({key})");
+            Logger.Write.Trace($"EVENT - Invoking OnInteractEventAction ({key})");
             if (OnInteractEventAction.TryGetValue(key, out var value))
             {
                 value?.Invoke(this, player, script);
@@ -76,7 +76,7 @@ namespace PhotoVs.Engine
         }
         public void RaiseOnInteractEventEnter(string key, IGameObject player, IGameObject script)
         {
-            Debug.Log.Trace($"EVENT - Invoking OnInteractEventEnter ({key})");
+            Logger.Write.Trace($"EVENT - Invoking OnInteractEventEnter ({key})");
             if (OnInteractEventEnter.TryGetValue(key, out var value))
             {
                 value?.Invoke(this, player, script);
@@ -84,7 +84,7 @@ namespace PhotoVs.Engine
         }
         public void RaiseOnInteractEventExit(string key, IGameObject player, IGameObject script)
         {
-            Debug.Log.Trace($"EVENT - Invoking OnInteractEventExit ({key})");
+            Logger.Write.Trace($"EVENT - Invoking OnInteractEventExit ({key})");
             if (OnInteractEventExit.TryGetValue(key, out var value))
             {
                 value?.Invoke(this, player, script);
@@ -92,7 +92,7 @@ namespace PhotoVs.Engine
         }
         public void RaiseOnInteractEventStand(string key, IGameObject player, IGameObject script)
         {
-            Debug.Log.Trace($"EVENT - Invoking OnInteractEventStand ({key})");
+            Logger.Write.Trace($"EVENT - Invoking OnInteractEventStand ({key})");
             if (OnInteractEventStand.TryGetValue(key, out var value))
             {
                 value?.Invoke(this, player, script);
@@ -100,7 +100,7 @@ namespace PhotoVs.Engine
         }
         public void RaiseOnInteractEventWalk(string key, IGameObject player, IGameObject script)
         {
-            Debug.Log.Trace($"EVENT - Invoking OnInteractEventWalk ({key})");
+            Logger.Write.Trace($"EVENT - Invoking OnInteractEventWalk ({key})");
             if (OnInteractEventWalk.TryGetValue(key, out var value))
             {
                 value?.Invoke(this, player, script);
@@ -108,7 +108,7 @@ namespace PhotoVs.Engine
         }
         public void RaiseOnInteractEventRun(string key, IGameObject player, IGameObject script)
         {
-            Debug.Log.Trace($"EVENT - Invoking OnInteractEventRun ({key})");
+            Logger.Write.Trace($"EVENT - Invoking OnInteractEventRun ({key})");
             if (OnInteractEventRun.TryGetValue(key, out var value))
             {
                 value?.Invoke(this, player, script);

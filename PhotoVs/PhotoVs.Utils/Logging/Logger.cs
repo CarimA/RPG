@@ -2,12 +2,12 @@
 
 namespace PhotoVs.Utils.Logging
 {
-    public class Debug : List<ILogger>
+    public class Logger : List<ILogger>
     {
-        private static Debug _instance;
+        private static Logger _instance;
 
-        public static Debug Log =>
-            _instance ??= new Debug
+        public static Logger Write =>
+            _instance ??= new Logger
             {
                 new ConsoleLogger(LogLevel.Trace)
             };

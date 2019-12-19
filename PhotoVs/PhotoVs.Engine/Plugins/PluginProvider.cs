@@ -23,7 +23,7 @@ namespace PhotoVs.Engine.Plugins
 
             LoadPlugins(directory);
 
-            Debug.Log.Info($"Loaded {_plugins.Count} plugin(s)");
+            Logger.Write.Info($"Loaded {_plugins.Count} plugin(s)");
         }
 
         private void LoadPlugins(string directory)
@@ -41,7 +41,7 @@ namespace PhotoVs.Engine.Plugins
                     try
                     {
                         var assembly = Assembly.LoadFrom(dll);
-                        Debug.Log.Info($"Loaded dll: {dll}");
+                        Logger.Write.Info($"Loaded dll: {dll}");
 
                         var types = assembly.GetTypes();
                         var plugins = types.Where(IsPlugin);
@@ -49,14 +49,14 @@ namespace PhotoVs.Engine.Plugins
                     }
                     catch (Exception e)
                     {
-                        Debug.Log.Error($"Could not load plugin: {dll}");
-                        Debug.Log.Error(e.ToString());
+                        Logger.Write.Error($"Could not load plugin: {dll}");
+                        Logger.Write.Error(e.ToString());
                     }
                 }
             }
             else
             {
-                Debug.Log.Error($"Could not find {directory}");
+                Logger.Write.Error($"Could not find {directory}");
             }
         }
 
@@ -71,7 +71,7 @@ namespace PhotoVs.Engine.Plugins
             plugin.Bind(_gameEvents);
             plugin.Coroutines = _coroutines;
             _plugins.Add(plugin);
-            Debug.Log.Info($"Loaded plugin: {plugin.Name} - v{plugin.Version}");
+            Logger.Write.Info($"Loaded plugin: {plugin.Name} - v{plugin.Version}");
         }
 
         public void LoadPlugin<T>(T plugin) where T : Plugin

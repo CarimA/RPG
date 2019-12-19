@@ -33,7 +33,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
                 return GetAsset<T>(filepath);
             }
 
-            Debug.Log.Fatal("Could not find asset \"{0}\"", filepath);
+            Logger.Write.Fatal("Could not find asset \"{0}\"", filepath);
             throw new FileNotFoundException();
         }
 
@@ -46,12 +46,12 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             if (asset != null)
             {
 
-                Debug.Log.Info("Loaded asset \"{0}\"", filepath);
+                Logger.Write.Info("Loaded asset \"{0}\"", filepath);
                 _assetCache[filepath] = asset;
             }
             else
             {
-                Debug.Log.Fatal("Could not find asset \"{0}\"", filepath);
+                Logger.Write.Fatal("Could not find asset \"{0}\"", filepath);
                 throw new InvalidOperationException();
             }
         }
@@ -64,7 +64,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
             var result = _assetCache.Remove(filepath);
             if (result)
-                Debug.Log.Info("Unloaded asset \"{0}\"", filepath);
+                Logger.Write.Info("Unloaded asset \"{0}\"", filepath);
 
             return result;
         }
@@ -84,7 +84,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         {
             if (typeLoader != null)
             {
-                Debug.Log.Info("Registered Type Loader for \"{0}\"", typeof(T).Name);
+                Logger.Write.Info("Registered Type Loader for \"{0}\"", typeof(T).Name);
                 _typeLoaders[typeof(T)] = typeLoader;
             }
 

@@ -82,7 +82,7 @@
     <Compile Include="Compression\Iso88591Encoding.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Logging\Debug.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Point2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

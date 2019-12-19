@@ -13,7 +13,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         public HotReloadAssetLoader(IStreamProvider streamProvider)
             : base(streamProvider)
         {
-            Debug.Log.Info($"Initialised {nameof(HotReloadAssetLoader)}");
+            Logger.Write.Info($"Initialised {nameof(HotReloadAssetLoader)}");
 
             _fsWatcher = new FileSystemWatcher
             {
