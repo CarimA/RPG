@@ -7,22 +7,16 @@ namespace PhotoVs.Engine.Plugins
     {
         public abstract string Name { get; }
         public abstract string Version { get; }
-
-        internal Coroutines _coroutines;
+        internal Coroutines Coroutines { get; set; }
 
         public virtual void Bind(Events events)
         {
 
         }
 
-        internal void BindCoroutines(Coroutines coroutines)
-        {
-            _coroutines = coroutines;
-        }
-
         public void Spawn(IEnumerator routine)
         {
-            _coroutines?.Start(routine);
+            Coroutines?.Start(routine);
         }
     }
 }

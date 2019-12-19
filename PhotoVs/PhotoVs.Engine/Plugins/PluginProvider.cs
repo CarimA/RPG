@@ -69,9 +69,14 @@ namespace PhotoVs.Engine.Plugins
         {
             var plugin = (Plugin)Activator.CreateInstance(type);
             plugin.Bind(_gameEvents);
-            plugin.BindCoroutines(_coroutines);
+            plugin.Coroutines = _coroutines;
             _plugins.Add(plugin);
             Debug.Log.Info($"Loaded plugin: {plugin.Name} - v{plugin.Version}");
+        }
+
+        public void LoadPlugin<T>(T plugin) where T : Plugin
+        {
+            LoadAssembly(plugin.GetType());
         }
     }
 }

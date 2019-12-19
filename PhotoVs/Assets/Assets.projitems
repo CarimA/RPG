@@ -24,7 +24,6 @@
     <None Include="$(MSBuildThisFileDirectory)Fonts\body.bmfc" />
     <None Include="$(MSBuildThisFileDirectory)Fonts\body.fnt" />
     <None Include="$(MSBuildThisFileDirectory)Fonts\mono.fnt" />
-    <None Include="$(MSBuildThisFileDirectory)main.lua" />
     <None Include="$(MSBuildThisFileDirectory)Maps\test\-01_00.tmx" />
     <None Include="$(MSBuildThisFileDirectory)Maps\test\00_00.tmx" />
     <None Include="$(MSBuildThisFileDirectory)Maps\test\01_00.tmx" />
