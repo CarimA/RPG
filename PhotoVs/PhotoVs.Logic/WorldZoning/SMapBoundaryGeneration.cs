@@ -12,11 +12,11 @@ namespace PhotoVs.Logic.WorldZoning
     {
         private readonly SCamera _camera;
         private readonly World _world;
-        private List<IGameObject> _collisions;
+        private IGameObjectCollection _collisions;
 
         private List<Map> _maps;
-        private List<IGameObject> _scripts;
-        private List<IGameObject> _zones;
+        private IGameObjectCollection _scripts;
+        private IGameObjectCollection _zones;
 
         public SMapBoundaryGeneration(World world, SCamera camera)
         {
@@ -46,17 +46,17 @@ namespace PhotoVs.Logic.WorldZoning
             return _maps;
         }
 
-        public List<IGameObject> GetCollisions()
+        public IGameObjectCollection GetCollisions()
         {
             return _collisions;
         }
 
-        public List<IGameObject> GetScripts()
+        public IGameObjectCollection GetScripts()
         {
             return _scripts;
         }
 
-        public List<IGameObject> GetZones()
+        public IGameObjectCollection GetZones()
         {
             return _zones;
         }

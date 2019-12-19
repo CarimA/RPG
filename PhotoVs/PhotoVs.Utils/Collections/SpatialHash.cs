@@ -1,52 +1,53 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace PhotoVs.Utils.Collections
 {
-    public class SpatialHash<T>
+    public class SpatialHash<TItem, TList> where TList : IList<TItem>, new()
     {
-        private readonly Dictionary<int, List<T>> _cells;
+        private readonly Dictionary<int, TList> _cells;
         private readonly int _cellSize;
-        private readonly List<T> _empty;
+        private readonly TList _empty;
 
         public SpatialHash(int cellSize)
         {
-            _cells = new Dictionary<int, List<T>>();
-            _empty = new List<T>();
+            _cells = new Dictionary<int, TList>();
+            _empty = new TList();
             _cellSize = cellSize;
         }
 
-        public void AddPoint(T item, int x, int y)
+        public void AddPoint(TItem item, int x, int y)
         {
             var tX = Snap(x);
             var tY = Snap(y);
             var key = HashPosition(tX, tY);
 
             if (!_cells.ContainsKey(key))
-                _cells[key] = new List<T>();
+                _cells[key] = new TList();
 
             _cells[key].Add(item);
         }
 
-        public void Add(T item, Rectangle bounds)
+        public void Add(TItem item, Rectangle bounds)
         {
             ForRange(bounds, (x, y) => { AddPoint(item, x, y); });
         }
 
-        public void Add(T item, RectangleF bounds)
+        public void Add(TItem item, RectangleF bounds)
         {
             ForRange(bounds, (x, y) => { AddPoint(item, x, y); });
         }
 
-        public List<T> GetPoint(int x, int y)
+        public TList GetPoint(int x, int y)
         {
             return _cells.TryGetValue(HashPosition(x, y), out var value) ? value : _empty;
         }
 
-        public List<T> Get(Rectangle bounds)
+        public TList Get(Rectangle bounds)
         {
-            var output = new List<T>();
+            var output = new TList();
 
             var snapLeft = Snap(bounds.Left) - _cellSize;
             var snapRight = Snap(bounds.Right) + _cellSize;

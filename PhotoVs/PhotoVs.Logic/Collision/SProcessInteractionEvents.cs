@@ -43,7 +43,7 @@ namespace PhotoVs.Logic.Collision
         {
         }
 
-        private void HandleInteraction(IGameObject entity, List<IGameObject> scripts)
+        private void HandleInteraction(IGameObject entity, IGameObjectCollection scripts)
         {
             var input = entity.Components.Get<CInput>().Input;
             var velocity = entity.Components.Get<CVelocity>();

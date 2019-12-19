@@ -32,10 +32,8 @@ namespace PhotoVs.Logic.Collision
 
         public void Update(GameTime gameTime, IGameObjectCollection entities)
         {
-            var stationaryList = new GameObjectCollection(); //_mapBoundary.GetCollisions());
+            var stationaryList = _mapBoundary.GetCollisions();
             var movingList = new GameObjectCollection();
-
-            stationaryList.AddRange(_mapBoundary.GetCollisions());
 
             foreach (var entity in entities)
                 if (entity.Components.Has<CSolid>())
@@ -52,7 +50,7 @@ namespace PhotoVs.Logic.Collision
         {
         }
 
-        private void Move(IGameObject moving, GameObjectCollection stationaryEntities, GameTime gameTime)
+        private void Move(IGameObject moving, IGameObjectCollection stationaryEntities, GameTime gameTime)
         {
             var minimumTranslations = new List<Vector2>();
             var positionA = moving.Components.Get<CPosition>();

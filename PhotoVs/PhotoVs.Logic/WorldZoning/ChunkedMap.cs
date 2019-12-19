@@ -21,19 +21,19 @@ namespace PhotoVs.Logic.WorldZoning
     {
         private readonly IAssetLoader _assetLoader;
 
-        private readonly SpatialHash<Map> _chunks;
-        private readonly SpatialHash<IGameObject> _collisions;
-        private readonly SpatialHash<IGameObject> _scripts;
-        private readonly SpatialHash<IGameObject> _zones;
+        private readonly SpatialHash<Map, List<Map>> _chunks;
+        private readonly SpatialHash<IGameObject, GameObjectCollection> _collisions;
+        private readonly SpatialHash<IGameObject, GameObjectCollection> _scripts;
+        private readonly SpatialHash<IGameObject, GameObjectCollection> _zones;
 
         public ChunkedMap(IAssetLoader assetLoader, string directory)
         {
             _assetLoader = assetLoader;
 
-            _chunks = new SpatialHash<Map>(256);
-            _collisions = new SpatialHash<IGameObject>(256);
-            _scripts = new SpatialHash<IGameObject>(256);
-            _zones = new SpatialHash<IGameObject>(256);
+            _chunks = new SpatialHash<Map, List<Map>>(64);
+            _collisions = new SpatialHash<IGameObject, GameObjectCollection>(64);
+            _scripts = new SpatialHash<IGameObject, GameObjectCollection>(64);
+            _zones = new SpatialHash<IGameObject, GameObjectCollection>(64);
 
             LoadMap(directory);
         }
@@ -97,7 +97,7 @@ namespace PhotoVs.Logic.WorldZoning
             }
         }
 
-        private void ProcessObject(SpatialHash<IGameObject> hash, BaseObject obj, int x, int y,
+        private void ProcessObject(SpatialHash<IGameObject, GameObjectCollection> hash, BaseObject obj, int x, int y,
             Action<IGameObject, BaseObject, int, int> func)
         {
             switch (obj)
@@ -113,7 +113,7 @@ namespace PhotoVs.Logic.WorldZoning
             }
         }
 
-        private void ProcessPolygonObject(SpatialHash<IGameObject> hash, PolygonObject obj, int x, int y,
+        private void ProcessPolygonObject(SpatialHash<IGameObject, GameObjectCollection> hash, PolygonObject obj, int x, int y,
             Action<IGameObject, BaseObject, int, int> func)
         {
             var entity = new GameObject();
@@ -132,7 +132,7 @@ namespace PhotoVs.Logic.WorldZoning
             ));
         }
 
-        private void ProcessRectangleObject(SpatialHash<IGameObject> hash, RectangleObject obj, int x, int y,
+        private void ProcessRectangleObject(SpatialHash<IGameObject, GameObjectCollection> hash, RectangleObject obj, int x, int y,
             Action<IGameObject, BaseObject, int, int> func)
         {
             var entity = new GameObject();
@@ -168,7 +168,7 @@ namespace PhotoVs.Logic.WorldZoning
         }
 
 
-        public (List<Map>, List<IGameObject>, List<IGameObject>, List<IGameObject>) GetDataInBounds(Rectangle bounds)
+        public (List<Map>, IGameObjectCollection, IGameObjectCollection, IGameObjectCollection) GetDataInBounds(Rectangle bounds)
         {
             return (_chunks.Get(bounds),
                 _collisions.Get(bounds),
@@ -176,7 +176,7 @@ namespace PhotoVs.Logic.WorldZoning
                 _zones.Get(bounds));
         }
 
-        public (List<Map>, List<IGameObject>, List<IGameObject>, List<IGameObject>) GetDataInCamera(SCamera camera)
+        public (List<Map>, IGameObjectCollection, IGameObjectCollection, IGameObjectCollection) GetDataInCamera(SCamera camera)
         {
             var bounds = camera.VisibleArea();
             /*bounds.X = bounds.X / ChunkWidthInPixels - 1;
