@@ -15,9 +15,9 @@ namespace PhotoVs.Logic.Scenes
     public class DialogueScene : IUpdateableScene, IDrawableScene
     {
         private SceneMachine _scene;
-        private SpriteBatch _spriteBatch => _scene.SpriteBatch;
-        private IAssetLoader _assetLoader => _scene.AssetLoader;
-        private GameInput _input => _scene.Player.Input.Input;
+        private SpriteBatch _spriteBatch => _scene.Services.SpriteBatch;
+        private IAssetLoader _assetLoader => _scene.Services.AssetLoader;
+        private GameInput _input => _scene.Services.Player.Input.Input;
 
         private const float TextScrollSpeed = 22f;
 

@@ -12,10 +12,10 @@ namespace PhotoVs.Engine.FSM.Scenes
 {
     public class SceneManager : ISceneManager
     {
-        private readonly GameObjectCollection _globalEntities;
-        private readonly SystemCollection _globalSystems;
+        private readonly IGameObjectCollection _globalEntities;
+        private readonly ISystemCollection _globalSystems;
         private readonly StateMachine<IScene> _scenes;
-        private GameObjectCollection _entitiesCache;
+        private IGameObjectCollection _entitiesCache;
         private int _globalEntitiesHash;
 
         private int _globalSystemsHash;
@@ -24,8 +24,8 @@ namespace PhotoVs.Engine.FSM.Scenes
 
         private SystemCollection _systemsCache;
 
-        public SceneManager(StateMachine<IScene> scenes, SystemCollection globalSystems,
-            GameObjectCollection globalEntities)
+        public SceneManager(StateMachine<IScene> scenes, ISystemCollection globalSystems,
+            IGameObjectCollection globalEntities)
         {
             _scenes = scenes;
             _globalSystems = globalSystems;
@@ -90,7 +90,7 @@ namespace PhotoVs.Engine.FSM.Scenes
                 system.BeforeUpdate(gameTime);
         }
 
-        private void Update(IEnumerable<IUpdateableSystem> systems, GameObjectCollection entities, GameTime gameTime)
+        private void Update(IEnumerable<IUpdateableSystem> systems, IGameObjectCollection entities, GameTime gameTime)
         {
             foreach (var system in systems)
                 system.Update(gameTime,
@@ -111,7 +111,7 @@ namespace PhotoVs.Engine.FSM.Scenes
                 system.BeforeDraw(gameTime);
         }
 
-        private void Draw(IEnumerable<IDrawableSystem> systems, GameObjectCollection entities, GameTime gameTime)
+        private void Draw(IEnumerable<IDrawableSystem> systems, IGameObjectCollection entities, GameTime gameTime)
         {
             foreach (var system in systems)
                 system.Draw(gameTime,
@@ -126,12 +126,13 @@ namespace PhotoVs.Engine.FSM.Scenes
                 system.AfterDraw(gameTime);
         }
 
-        private SystemCollection GetCombinedSystems(ISystemScene currentState)
+        private ISystemCollection GetCombinedSystems(ISystemScene currentState)
         {
-            if (_globalSystemsHash != _globalSystems.GetUniqueSeed() ||
+            var globalSystems = _globalSystems as SystemCollection;
+            if (_globalSystemsHash != globalSystems.GetUniqueSeed() ||
                 _localSystemsHash != ((SystemCollection)currentState.Systems).GetUniqueSeed())
             {
-                _globalSystemsHash = _globalSystems.GetUniqueSeed();
+                _globalSystemsHash = globalSystems.GetUniqueSeed();
                 _localSystemsHash = ((SystemCollection)currentState.Systems).GetUniqueSeed();
 
                 // Logger.Debug($"System Cache changed: Global [{_globalSystemsHash}], Local [{_localSystemsHash}]");
@@ -144,12 +145,13 @@ namespace PhotoVs.Engine.FSM.Scenes
             return _systemsCache;
         }
 
-        private GameObjectCollection GetCombinedEntities(ISystemScene currentState)
+        private IGameObjectCollection GetCombinedEntities(ISystemScene currentState)
         {
-            if (_globalEntitiesHash != _globalEntities.GetUniqueSeed() ||
+            var globalGameObjects = _globalEntities as GameObjectCollection;
+            if (_globalEntitiesHash != globalGameObjects.GetUniqueSeed() ||
                 _localEntitiesHash != ((GameObjectCollection)currentState.Entities).GetUniqueSeed())
             {
-                _globalEntitiesHash = _globalEntities.GetUniqueSeed();
+                _globalEntitiesHash = globalGameObjects.GetUniqueSeed();
                 _localEntitiesHash = ((GameObjectCollection)currentState.Entities).GetUniqueSeed();
 
                 // Logger.Debug($"Entity Cache changed: Global [{_globalEntitiesHash}], Local [{_localEntitiesHash}]");

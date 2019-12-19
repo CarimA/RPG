@@ -134,19 +134,23 @@ namespace PhotoVs.Logic.Debug
             var theight = _font.MeasureString(text).Height + 20;
             var ty = y - theight - 20;
 
-            _textBackground.SetPoints(new List<Vector2>()
+            if (_spriteBatch.GraphicsDevice.Viewport.Width > x + 420
+                && _spriteBatch.GraphicsDevice.Viewport.Height > ty + theight)
             {
-                new Vector2(x, ty),
-                new Vector2(x + 420, ty),
-                new Vector2(x + 420, ty + theight),
-                new Vector2(x, ty + theight)
-            });
-            _textBackground.Draw();
+                _textBackground.SetPoints(new List<Vector2>()
+                {
+                    new Vector2(x, ty),
+                    new Vector2(x + 420, ty),
+                    new Vector2(x + 420, ty + theight),
+                    new Vector2(x, ty + theight)
+                });
 
-            _spriteBatch.DrawString(_font,
-                text,
-                new Vector2(x + 10, ty + 10),
-                Color.Yellow);
+                _textBackground.Draw();
+                _spriteBatch.DrawString(_font,
+                    text,
+                    new Vector2(x + 10, ty + 10),
+                    Color.Yellow);
+            }
 
             _spriteBatch.End();
         }

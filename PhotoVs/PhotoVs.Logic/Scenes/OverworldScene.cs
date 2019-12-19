@@ -17,9 +17,9 @@ namespace PhotoVs.Logic.Scenes
         {
             _scene = scene;
 
-            _world = new World(scene.SpriteBatch, scene.AssetLoader);
+            _world = new World(scene.Services.SpriteBatch, scene.Services.AssetLoader);
             _world.LoadMaps("maps\\");
-            var mapBoundary = new SMapBoundaryGeneration(_world, scene.Camera);
+            var mapBoundary = new SMapBoundaryGeneration(_world, scene.Services.Camera);
 
             Entities = new GameObjectCollection
             {
@@ -30,10 +30,10 @@ namespace PhotoVs.Logic.Scenes
                 new SProcessMovement(),
                 new SProcessVelocity(),
                 mapBoundary,
-                new SCollisionDebugRender(scene.SpriteBatch, scene.AssetLoader, mapBoundary, scene.Camera),
-                new SCollisionResolution(scene.GameEvents, mapBoundary),
-                new SProcessInteractionEvents(scene.GameEvents, mapBoundary),
-                new SMapRenderer(scene.SpriteBatch, scene.AssetLoader, mapBoundary, scene.Camera)
+                new SCollisionDebugRender(scene.Services.SpriteBatch, scene.Services.AssetLoader, mapBoundary, scene.Services.Camera),
+                new SCollisionResolution(scene.Services.Events, mapBoundary),
+                new SProcessInteractionEvents(scene.Services.Events, mapBoundary),
+                new SMapRenderer(scene.Services.SpriteBatch, scene.Services.AssetLoader, mapBoundary, scene.Services.Camera)
             };
         }
 

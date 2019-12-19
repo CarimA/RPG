@@ -1,5 +1,6 @@
 ﻿using PhotoVs.Logic.PlayerData;
 using PhotoVs.Models.Assets;
+using PhotoVs.Models.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -7,7 +8,7 @@ using YamlDotNet.Serialization;
 
 namespace PhotoVs.Logic.Text
 {
-    public class TextDatabase
+    public class TextDatabase : ITextDatabase
     {
         private readonly Player _player;
         private readonly Dictionary<string, Dictionary<string, string>> _text;

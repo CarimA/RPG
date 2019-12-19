@@ -49,25 +49,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\IAssetLoader.cs" />
-    <Compile Include="Assets\IStreamProvider.cs" />
-    <Compile Include="Assets\ITypeLoader.cs" />
-    <Compile Include="Audio\IAudio.cs" />
-    <Compile Include="ECS\IComponent.cs" />
-    <Compile Include="ECS\IComponentCollection.cs" />
-    <Compile Include="ECS\IDrawableSystem.cs" />
-    <Compile Include="ECS\IGameObject.cs" />
-    <Compile Include="ECS\IGameObjectCollection.cs" />
-    <Compile Include="ECS\ISystem.cs" />
-    <Compile Include="ECS\ISystemCollection.cs" />
-    <Compile Include="ECS\IUpdateableSystem.cs" />
-    <Compile Include="FSM\IDrawableScene.cs" />
-    <Compile Include="FSM\IScene.cs" />
-    <Compile Include="FSM\ISceneManager.cs" />
-    <Compile Include="FSM\IState.cs" />
-    <Compile Include="FSM\ISystemScene.cs" />
-    <Compile Include="FSM\IUpdateableScene.cs" />
+    <Compile Include="IAssetLoader.cs" />
+    <Compile Include="IStreamProvider.cs" />
+    <Compile Include="ITypeLoader.cs" />
+    <Compile Include="IAudio.cs" />
+    <Compile Include="IComponent.cs" />
+    <Compile Include="IComponentCollection.cs" />
+    <Compile Include="IDrawableSystem.cs" />
+    <Compile Include="IGameObject.cs" />
+    <Compile Include="IGameObjectCollection.cs" />
+    <Compile Include="ISystem.cs" />
+    <Compile Include="ISystemCollection.cs" />
+    <Compile Include="IUpdateableSystem.cs" />
+    <Compile Include="IDrawableScene.cs" />
+    <Compile Include="IScene.cs" />
+    <Compile Include="ISceneManager.cs" />
+    <Compile Include="IState.cs" />
+    <Compile Include="ISystemScene.cs" />
+    <Compile Include="IUpdateableScene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ITextDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

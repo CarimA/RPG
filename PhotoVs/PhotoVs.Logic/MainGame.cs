@@ -19,108 +19,135 @@ using PhotoVs.Logic.Debug;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
+using PhotoVs.Logic.Services;
 using PhotoVs.Logic.Text;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.Audio;
+using PhotoVs.Models.ECS;
 using PhotoVs.Models.FSM;
+using PhotoVs.Models.Text;
 
 namespace PhotoVs.Logic
 {
     public class MainGame : Game
     {
-        private Services _services;
-
+        private ServiceLocator _services;
         private DiagnosticInfo _info;
-        private readonly GraphicsDeviceManager _graphics;
-
-        private IAssetLoader _assetLoader;
-        private IAudio _audio;
-        private SCamera _camera;
-
-        private TextDatabase _database;
-        private Events _events;
-        private Coroutines _coroutines;
-        private GameObjectCollection _globalEntities;
-        private SystemCollection _globalSystems;
-
-        private Player _player;
-        private PluginProvider _plugins;
-
-        private Renderer _renderer;
-        private SceneMachine _sceneMachine;
-        private ISceneManager _sceneManager;
-        private SpriteBatch _spriteBatch;
 
         public MainGame()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
-
-            _graphics.PreferredBackBufferWidth = 320; //1280;
-            _graphics.PreferredBackBufferHeight = 180; //720;
-
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+
+            _services = new ServiceLocator(new Events());
+            _services.Set(new GraphicsDeviceManager(this)
+            {
+                GraphicsProfile = GraphicsProfile.HiDef,
+                PreferredBackBufferWidth = 320,
+                PreferredBackBufferHeight = 180
+            });
         }
 
         protected override void Initialize()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _services.Set(GraphicsDevice);
+            _services.Set(new SpriteBatch(GraphicsDevice));
+            _services.Set(new Coroutines());
+            _services.Set(new PluginProvider("assets/plugins/",
+                _services.Events,
+                _services.Coroutines));
+            _services.Set(CreateAssetLoader());
+            _services.Set(CreateRenderer());
+            _services.Set(new Player());
+            _services.Set(CreateCamera());
+            _services.Set(CreateGlobalEntities());
+            _services.Set(CreateGlobalSystems());
+            _services.Set(CreateSceneMachine());
+            _services.Set(new SceneManager(_services.SceneMachine,
+                _services.GlobalSystems,
+                _services.GlobalGameObjects));
+            _services.Set(CreateTextDatabase());
+            _services.Set(CreateAudio());
 
-            _events = new Events();
-            _services = new Services(_events);
-            _coroutines = new Coroutines();
-            _plugins = new PluginProvider("assets/plugins/", _events, _coroutines);
+            _info = new DiagnosticInfo(_services.SpriteBatch, _services.AssetLoader);
+            _services.Events.RaiseOnGameStart();
 
-            _assetLoader = new HotReloadAssetLoader(new FileSystemStreamProvider("assets/"));
-            _assetLoader
-                .RegisterTypeLoader(new EffectTypeLoader(GraphicsDevice))
+            //_coroutines.Start(Test());
+            base.Initialize();
+        }
+        private IAssetLoader CreateAssetLoader()
+        {
+            var assetLoader = new HotReloadAssetLoader(new FileSystemStreamProvider("assets/"));
+            assetLoader
+                .RegisterTypeLoader(new EffectTypeLoader(_services.GraphicsDevice))
                 .RegisterTypeLoader(new TextTypeLoader())
-                .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
-                .RegisterTypeLoader(new BitmapFontTypeLoader(_assetLoader))
+                .RegisterTypeLoader(new Texture2DTypeLoader(_services.GraphicsDevice))
+                .RegisterTypeLoader(new BitmapFontTypeLoader(assetLoader))
                 .RegisterTypeLoader(new MapTypeLoader());
 
-            _services.SetAssetLoader(_assetLoader);
+            return assetLoader;
+        }
 
+        private IAudio CreateAudio()
+        {
+            var audio = new DummyAudio();
+            return audio;
+        }
+
+        private ITextDatabase CreateTextDatabase()
+        {
+            var textDatabase = new TextDatabase(_services.AssetLoader, _services.Player);
+            _services.Set(textDatabase);
+            return textDatabase;
+        }
+
+        private Renderer CreateRenderer()
+        {
             var canvas = new CanvasSize(320, 180);
-            _renderer = new Renderer(GraphicsDevice,
-                _graphics,
+            var renderer = new Renderer(GraphicsDevice,
+                _services.GraphicsDeviceManager,
                 Window,
-                new ColorGrading(GraphicsDevice, canvas, _assetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
-                    _assetLoader.GetAsset<Texture2D>("colorgrading/main.png")),
+                new ColorGrading(GraphicsDevice,
+                    canvas,
+                    _services.AssetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
+                    _services.AssetLoader.GetAsset<Texture2D>("colorgrading/main.png")),
                 canvas);
-            _camera = new SCamera(_renderer);
+            return renderer;
+        }
 
-            _player = new Player();
-            _globalEntities = new GameObjectCollection
+        private IGameObjectCollection CreateGlobalEntities()
+        {
+            var globalEntities = new GameObjectCollection
             {
-                _player
+                _services.Player
             };
+            return globalEntities;
+        }
 
-            _globalSystems = new SystemCollection
+        private SCamera CreateCamera()
+        {
+            var camera = new SCamera(_services.Renderer);
+            camera.Follow(_services.Player);
+            return camera;
+        }
+
+        private ISystemCollection CreateGlobalSystems()
+        {
+            var globalSystems = new SystemCollection
             {
-                _camera,
+                _services.Camera,
                 new SProcessInput(),
-                new SHandleFullscreen(_graphics, GraphicsDevice),
+                new SHandleFullscreen(_services.GraphicsDeviceManager, GraphicsDevice),
                 new STakeScreenshot(GraphicsDevice)
             };
+            return globalSystems;
+        }
 
-            _camera.Follow(_player);
-
-            _sceneMachine = new SceneMachine(_spriteBatch, _assetLoader, _events, _camera, _player);
-            _sceneMachine.ChangeToOverworldScene();
-            _sceneManager = new SceneManager(_sceneMachine, _globalSystems, _globalEntities);
-
-            _database = new TextDatabase(_assetLoader, _player);
-
-            _audio = new DummyAudio();
-
-            _info = new DiagnosticInfo(_spriteBatch, _assetLoader);
-
-            _events.RaiseOnGameStart();
-
-            _coroutines.Start(Test());
-            base.Initialize();
+        private SceneMachine CreateSceneMachine()
+        {
+            var sceneMachine = new SceneMachine(_services);
+            sceneMachine.ChangeToOverworldScene();
+            return sceneMachine;
         }
 
         protected override void Update(GameTime gameTime)
@@ -131,8 +158,8 @@ namespace PhotoVs.Logic
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _coroutines.Update(gameTime);
-            _sceneManager.Update(gameTime);
+            _services.Coroutines.Update(gameTime);
+            _services.SceneManager.Update(gameTime);
 
             base.Update(gameTime);
 
@@ -145,9 +172,9 @@ namespace PhotoVs.Logic
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _renderer.SetRenderMode(RenderMode.Game);
-            _sceneManager.Draw(gameTime);
-            _renderer.Draw(_spriteBatch);
+            _services.Renderer.SetRenderMode(RenderMode.Game);
+            _services.SceneManager.Draw(gameTime);
+            _services.Renderer.Draw(_services.SpriteBatch);
 
             base.Draw(gameTime);
 
@@ -155,13 +182,13 @@ namespace PhotoVs.Logic
             _info.Draw(gameTime);
         }
 
-        private IEnumerator Test()
+        /* private IEnumerator Test()
         {
             Utils.Logging.Debug.Log.Trace("1");
             yield return null;
             Utils.Logging.Debug.Log.Trace("2");
             yield return new Pause(10f);
             _sceneMachine.PushDialogueScene("test", "hello!");
-        }
+        } */
     }
 }
