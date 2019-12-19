@@ -1,12 +1,3 @@
--- waits for the specified amount of seconds before proceeding
-function wait(seconds)
-  local total = seconds
-  while total >= 0 do
-    local time = coroutine.yield()
-    total = total - time
-  end
-end
-
 letterbox_y = 0
 
 -- turns on black bars then proceeds

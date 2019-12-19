@@ -41,20 +41,39 @@ namespace PhotoVs.Engine.Scheduler
                 {
                     if (!routine.MoveNext())
                     {
-                        // this routine has finished
                         _routines.RemoveAt(i--);
+                        // this routine has finished
                     }
                 }
 
-                if (routine.Current is IYieldInstruction instruction)
+                if (routine.Current is IEnumerator enumerator)
+                {
+                    if (enumerator.Current is IYieldInstruction instruction)
+                    {
+                        if (instruction.Continue(gameTime))
+                        {
+                            if (!enumerator.MoveNext())
+                            {
+                                if (!routine.MoveNext())
+                                {
+                                    _routines.RemoveAt(i--);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (routine.Current is IYieldInstruction instruction)
                 {
                     if (instruction.Continue(gameTime))
                     {
-                        routine.MoveNext();
+                        if (!routine.MoveNext())
+                        {
+                            _routines.RemoveAt(i--);
+                        }
                     }
 
-                    continue;
                 }
+
             }
         }
     }

@@ -76,8 +76,6 @@
     <Compile Include="Dialogue\Markups\WaveMarkup.cs" />
     <Compile Include="IndexedEvent.cs" />
     <Compile Include="Scheduler\Coroutines.cs" />
-    <Compile Include="Scheduler\YieldInstructions\IYieldInstruction.cs" />
-    <Compile Include="Scheduler\YieldInstructions\Pause.cs" />
     <Compile Include="ECS\Components\ComponentCollection.cs" />
     <Compile Include="ECS\GameObjects\GameObject.cs" />
     <Compile Include="ECS\GameObjects\GameObjectCollection.cs" />
@@ -105,8 +103,6 @@
     <Compile Include="Graphics\TextureAtlases\TextureAtlasExtensions.cs" />
     <Compile Include="Graphics\TextureAtlases\TextureRegion2D.cs" />
     <Compile Include="Graphics\VirtualRenderTarget2D.cs" />
-    <Compile Include="Plugins\Plugin.cs" />
-    <Compile Include="Plugins\PluginProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TiledMaps\ExternalTileset.cs" />
     <Compile Include="TiledMaps\Frame.cs" />

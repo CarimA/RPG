@@ -72,6 +72,8 @@
     <Compile Include="Movement\SProcessMovement.cs" />
     <Compile Include="Movement\SProcessVelocity.cs" />
     <Compile Include="PlayerData\Player.cs" />
+    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\PluginProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\DialogueScene.cs" />
     <Compile Include="Scenes\OverworldScene.cs" />
@@ -89,6 +91,8 @@
     <Compile Include="WorldZoning\SMapBoundaryGeneration.cs" />
     <Compile Include="WorldZoning\SMapRenderer.cs" />
     <Compile Include="WorldZoning\World.cs" />
+    <Compile Include="YieldInstructions\Dialogue.cs" />
+    <Compile Include="YieldInstructions\Pause.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

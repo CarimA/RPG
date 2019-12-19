@@ -67,6 +67,7 @@
     <Compile Include="IState.cs" />
     <Compile Include="ISystemScene.cs" />
     <Compile Include="IUpdateableScene.cs" />
+    <Compile Include="IYieldInstruction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ITextDatabase.cs" />
   </ItemGroup>

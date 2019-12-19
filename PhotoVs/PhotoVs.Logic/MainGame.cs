@@ -11,13 +11,13 @@ using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Plugins;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.Debug;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Plugins;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Services;
 using PhotoVs.Logic.Text;
@@ -26,6 +26,7 @@ using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.FSM;
 using PhotoVs.Models.Text;
+using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic
 {
@@ -53,9 +54,7 @@ namespace PhotoVs.Logic
             _services.Set(GraphicsDevice);
             _services.Set(new SpriteBatch(GraphicsDevice));
             _services.Set(new Coroutines());
-            _services.Set(new PluginProvider("assets/plugins/",
-                _services.Events,
-                _services.Coroutines));
+            _services.Set(new PluginProvider("assets/plugins/", _services));
             _services.Set(CreateAssetLoader());
             _services.Set(CreateRenderer());
             _services.Set(new Player());
@@ -72,7 +71,8 @@ namespace PhotoVs.Logic
             _info = new DiagnosticInfo(_services.SpriteBatch, _services.AssetLoader);
             _services.Events.RaiseOnGameStart();
 
-            //_coroutines.Start(Test());
+            _services.Plugins.LoadPlugin(typeof(TestPlugin));
+
             base.Initialize();
         }
         private IAssetLoader CreateAssetLoader()
@@ -182,13 +182,29 @@ namespace PhotoVs.Logic
             _info.Draw(gameTime);
         }
 
-        /* private IEnumerator Test()
+        public class TestPlugin : Plugin
         {
-            Utils.Logging.Debug.Log.Trace("1");
-            yield return null;
-            Utils.Logging.Debug.Log.Trace("2");
-            yield return new Pause(10f);
-            _sceneMachine.PushDialogueScene("test", "hello!");
-        } */
+            public override string Name { get; } = "Test Plugin";
+            public override string Version { get; } = "1.0.0";
+
+            public override void Bind(Events events)
+            {
+                events.OnInteractEventEnter["example_event"] += InteractEventHandler;
+            }
+
+            private void InteractEventHandler(object sender, IGameObject player, IGameObject script)
+            {
+                Spawn(LockMovement(DoThis));
+            }
+
+            private IEnumerator DoThis()
+            {
+                Logger.Write.Trace("Test 1");
+                yield return Dialogue("test", "hellooooo!");
+                Logger.Write.Trace("Test 2");
+                yield return new Pause(3f);
+                Logger.Write.Trace("Test 3");
+            }
+        }
     }
 }

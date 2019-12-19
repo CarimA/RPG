@@ -1,25 +1,25 @@
-﻿using PhotoVs.Engine.Scheduler;
-using PhotoVs.Utils.Extensions;
-using PhotoVs.Utils.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Scheduler;
+using PhotoVs.Logic.Services;
+using PhotoVs.Utils.Extensions;
+using PhotoVs.Utils.Logging;
 
-namespace PhotoVs.Engine.Plugins
+namespace PhotoVs.Logic.Plugins
 {
     public class PluginProvider
     {
-        private readonly Events _gameEvents;
-        private readonly Coroutines _coroutines;
+        private readonly ServiceLocator _services;
         private readonly List<Plugin> _plugins;
 
-        public PluginProvider(string directory, Events gameEvents, Coroutines coroutines)
+        public PluginProvider(string directory, ServiceLocator services)
         {
             _plugins = new List<Plugin>();
-            _gameEvents = gameEvents;
-            _coroutines = coroutines;
+            _services = services;
 
             LoadPlugins(directory);
 
@@ -68,15 +68,15 @@ namespace PhotoVs.Engine.Plugins
         private void LoadAssembly(Type type)
         {
             var plugin = (Plugin)Activator.CreateInstance(type);
-            plugin.Bind(_gameEvents);
-            plugin.Coroutines = _coroutines;
+            plugin.Bind(_services.Events);
+            plugin.Services = _services;
             _plugins.Add(plugin);
             Logger.Write.Info($"Loaded plugin: {plugin.Name} - v{plugin.Version}");
         }
 
-        public void LoadPlugin<T>(T plugin) where T : Plugin
+        public void LoadPlugin(Type plugin)
         {
-            LoadAssembly(plugin.GetType());
+            LoadAssembly(plugin);
         }
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Plugins;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.PlayerData;
@@ -13,6 +12,7 @@ using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.Text;
 using System;
+using PhotoVs.Logic.Plugins;
 
 namespace PhotoVs.Logic.Services
 {

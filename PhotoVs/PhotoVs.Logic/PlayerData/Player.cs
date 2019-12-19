@@ -27,7 +27,7 @@ namespace PhotoVs.Logic.PlayerData
             _flags = new Dictionary<string, object>();
             _canMove = true;
 
-            _position = new CPosition { Position = new Vector2(0, 100) };
+            _position = new CPosition { Position = new Vector2(0, 0) };
             Components.Add(_position);
 
             Input = new CInput(new GameInput(PlayerIndex.One)
