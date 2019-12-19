@@ -31,8 +31,6 @@ namespace PhotoVs.Engine.Scheduler
 
         public void Update(GameTime gameTime)
         {
-            var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             for (var i = 0; i < _routines.Count; i++)
             {
                 var routine = _routines[i];
