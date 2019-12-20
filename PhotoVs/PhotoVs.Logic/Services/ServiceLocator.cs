@@ -13,6 +13,7 @@ using PhotoVs.Models.ECS;
 using PhotoVs.Models.Text;
 using System;
 using PhotoVs.Logic.Plugins;
+using PhotoVs.Models.FSM;
 
 namespace PhotoVs.Logic.Services
 {
@@ -37,7 +38,7 @@ namespace PhotoVs.Logic.Services
         public Player Player { get; private set; }
         public SCamera Camera { get; private set; }
         public SceneMachine SceneMachine { get; private set; }
-        public SceneManager SceneManager { get; private set; }
+        public ISceneManager SceneManager { get; private set; }
         public IGameObjectCollection GlobalGameObjects { get; private set; }
         public ISystemCollection GlobalSystems { get; private set; }
 

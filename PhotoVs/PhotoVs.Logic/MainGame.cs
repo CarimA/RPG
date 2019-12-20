@@ -55,23 +55,24 @@ namespace PhotoVs.Logic
             _services.Set(new SpriteBatch(GraphicsDevice));
             _services.Set(new Coroutines());
             _services.Set(new PluginProvider("assets/plugins/", _services));
-            _services.Set(CreateAssetLoader());
-            _services.Set(CreateRenderer());
-            _services.Set(new Player());
-            _services.Set(CreateCamera());
-            _services.Set(CreateGlobalEntities());
-            _services.Set(CreateGlobalSystems());
-            _services.Set(CreateSceneMachine());
-            _services.Set(new SceneManager(_services.SceneMachine,
+            _services.Plugins.LoadPlugin(typeof(TestPlugin));
+
+            _services.Set<IAssetLoader>(CreateAssetLoader());
+            _services.Set<Renderer>(CreateRenderer());
+            _services.Set<Player>(new Player());
+            _services.Set<SCamera>(CreateCamera());
+            _services.Set<IGameObjectCollection>(CreateGlobalEntities());
+            _services.Set<ISystemCollection>(CreateGlobalSystems());
+            _services.Set<SceneMachine>(CreateSceneMachine());
+            _services.Set<ISceneManager>(new SceneManager(_services.SceneMachine,
                 _services.GlobalSystems,
                 _services.GlobalGameObjects));
-            _services.Set(CreateTextDatabase());
-            _services.Set(CreateAudio());
+            _services.Set<ITextDatabase>(CreateTextDatabase());
+            _services.Set<IAudio>(CreateAudio());
 
             _info = new DiagnosticInfo(_services.SpriteBatch, _services.AssetLoader);
             _services.Events.RaiseOnGameStart();
 
-            _services.Plugins.LoadPlugin(typeof(TestPlugin));
 
             base.Initialize();
         }
@@ -97,7 +98,6 @@ namespace PhotoVs.Logic
         private ITextDatabase CreateTextDatabase()
         {
             var textDatabase = new TextDatabase(_services.AssetLoader, _services.Player);
-            _services.Set(textDatabase);
             return textDatabase;
         }
 
@@ -187,9 +187,15 @@ namespace PhotoVs.Logic
             public override string Name { get; } = "Test Plugin";
             public override string Version { get; } = "1.0.0";
 
+            private ITextDatabase _db;
+
             public override void Bind(Events events)
             {
                 events.OnInteractEventEnter["example_event"] += InteractEventHandler;
+                events.OnServiceSet[typeof(ITextDatabase)] += (object sender, object type) =>
+                {
+                    _db = (ITextDatabase)type;
+                };
             }
 
             private void InteractEventHandler(object sender, IGameObject player, IGameObject script)
@@ -202,7 +208,7 @@ namespace PhotoVs.Logic
                 yield return Spawn(WaitTest());
                 Logger.Write.Trace("Test 1");
 
-                var a = Dialogue("test", "hellooooo!");
+                var a = Dialogue("test", _db.GetText("Intro"));
                 yield return a;
                 Logger.Write.Trace("Test 2");
                 yield return new Pause(3f);
