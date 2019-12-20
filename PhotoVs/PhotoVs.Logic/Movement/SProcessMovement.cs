@@ -38,7 +38,7 @@ namespace PhotoVs.Logic.Movement
                 if (entity is Player player)
                 {
                     movement *= player.CurrentSpeed(isRunning);
-                    if (!player.CanMove())
+                    if (!player.CanMove)
                         movement *= 0;
                 }
                 else

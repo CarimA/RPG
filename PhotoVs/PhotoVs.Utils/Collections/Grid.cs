@@ -15,27 +15,30 @@ namespace PhotoVs.Utils.Collections
 
         public T this[int x, int y]
         {
-            get => Get(x, y);
-            set => Set(x, y, value);
+            get
+            {
+                return _cells.TryGetValue(HashPosition(x, y), out var value)
+                    ? value
+                    : default;
+            }
+            set
+            {
+                _cells[HashPosition(x, y)] = value;
+            }
         }
 
         public void Remove(int x, int y)
         {
-            if (Get(x, y) != null)
+            if (this[x, y] != null)
                 _cells.Remove(HashPosition(x, y));
         }
 
         public void Insert(int x, int y, T value)
         {
-            if (Get(x, y) != null)
+            if (this[x, y] != null)
                 throw new InvalidOperationException("Data already exists at " + x + "," + y + ". May be a collision?");
 
-            Set(x, y, value);
-        }
-
-        public void Set(int x, int y, T value)
-        {
-            _cells[HashPosition(x, y)] = value;
+            this[x, y] = value;
         }
 
         public void Insert(Rectangle bounds, T value)
@@ -45,17 +48,12 @@ namespace PhotoVs.Utils.Collections
                     Insert(x, y, value);
         }
 
-        public T Get(int x, int y)
-        {
-            return _cells.TryGetValue(HashPosition(x, y), out var value) ? value : default;
-        }
-
-        public IEnumerable<T> Get(Rectangle bounds)
+        public IEnumerable<T> GetInBoundary(Rectangle bounds)
         {
             for (var x = bounds.Left; x < bounds.Right; x++)
                 for (var y = bounds.Top; y < bounds.Bottom; y++)
                 {
-                    var cell = Get(x, y);
+                    var cell = this[x, y];
                     if (cell != null)
                         yield return cell;
                 }

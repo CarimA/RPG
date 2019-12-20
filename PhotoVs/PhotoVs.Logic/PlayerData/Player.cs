@@ -7,30 +7,36 @@ using System.Collections.Generic;
 
 namespace PhotoVs.Logic.PlayerData
 {
+    public enum Languages
+    {
+        EnglishUK
+    }
+
     public class Player : GameObject
     {
-        private readonly Dictionary<string, object> _flags;
+        public Dictionary<string, object> Flags { get; }
+        public bool CanMove { get; set; }
+        public Languages Language { get; set; }
 
         private readonly CPosition _position;
-        public readonly CInput Input;
+        private readonly CInput _input;
         private readonly float RunSpeed = 295f;
         private readonly float WalkSpeed = 140f;
 
-        private bool _canMove;
-
-        private string _currentLanguage;
+        public GameInput Input { get => _input.Input; }
 
         public Player()
         {
             Name = "Player";
 
-            _flags = new Dictionary<string, object>();
-            _canMove = true;
+            Flags = new Dictionary<string, object>();
+            CanMove = true;
+            Language = Languages.EnglishUK;
 
             _position = new CPosition { Position = new Vector2(0, 0) };
             Components.Add(_position);
 
-            Input = new CInput(new GameInput(PlayerIndex.One)
+            _input = new CInput(new GameInput(PlayerIndex.One)
             {
                 KeyMappings =
                 {
@@ -58,7 +64,7 @@ namespace PhotoVs.Logic.PlayerData
                 }
             });
 
-            Components.Add(Input);
+            Components.Add(_input);
             Components.Add(new CVelocity { Velocity = new Vector2(0, 0) });
             Components.Add(CCollisionBound.Circle(16, 8));
             Components.Add(new CSize { Size = new Vector2(32, 32) });
@@ -79,44 +85,12 @@ namespace PhotoVs.Logic.PlayerData
 
         public void LockMovement()
         {
-            _canMove = false;
+            CanMove = false;
         }
 
         public void UnlockMovement()
         {
-            _canMove = true;
-        }
-
-        public void SetFlag(string key, object value)
-        {
-            _flags[key] = value;
-        }
-
-        public object GetFlag(string key)
-        {
-            return _flags[key];
-        }
-
-        public bool TryGetFlag(string key, out object value)
-        {
-            var result = _flags.TryGetValue(key, out var v);
-            value = v;
-            return result;
-        }
-
-        public bool CanMove()
-        {
-            return _canMove;
-        }
-
-        public string GetLanguage()
-        {
-            return _currentLanguage;
-        }
-
-        public void SetLanguage(string language)
-        {
-            _currentLanguage = language;
+            CanMove = true;
         }
     }
 }

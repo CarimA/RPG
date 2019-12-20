@@ -24,7 +24,8 @@ namespace PhotoVs.Engine.Dialogue
         private readonly float _maxCharTime;
         private float _charTime;
 
-        private bool _fastForwardState;
+        public bool FastForward { get; set; }
+
         private readonly Random _rng;
 
         public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
@@ -39,7 +40,7 @@ namespace PhotoVs.Engine.Dialogue
             _isFinished = false;
             _maxCharTime = 1 / 18f;
             _charTime = _maxCharTime;
-            _fastForwardState = false;
+            FastForward = false;
 
             (_text, _markupIndex) = ParseMarkup(text);
             _markupIndex = ParseNewLines(_markupIndex, _text, font, width);
@@ -50,7 +51,7 @@ namespace PhotoVs.Engine.Dialogue
         {
             if (!_isPaused && !_isFinished)
             {
-                _charTime -= (float)gameTime.ElapsedGameTime.TotalSeconds * (_fastForwardState ? 8 : 1);
+                _charTime -= (float)gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 8 : 1);
 
                 if (_charTime <= 0)
                 {
@@ -91,7 +92,7 @@ namespace PhotoVs.Engine.Dialogue
                 }
             }
 
-            if (_fastForwardState && _isPaused)
+            if (FastForward && _isPaused)
             {
                 Next();
             }
@@ -227,11 +228,6 @@ namespace PhotoVs.Engine.Dialogue
         public bool IsFinished()
         {
             return _isFinished;
-        }
-
-        public void SetFastForward(bool toggle)
-        {
-            _fastForwardState = toggle;
         }
 
         private static (string, Dictionary<int, List<IMarkup>>) ParseMarkup(string text)

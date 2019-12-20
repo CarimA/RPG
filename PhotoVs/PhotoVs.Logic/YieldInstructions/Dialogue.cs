@@ -20,7 +20,7 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
         public bool Continue(GameTime gameTime)
         {
             if (_sceneMachine.Peek() is DialogueScene dialogueScene
-                          && dialogueScene.IsFinished())
+                          && dialogueScene.IsFinished)
             {
                 _sceneMachine.Pop();
                 return true;
