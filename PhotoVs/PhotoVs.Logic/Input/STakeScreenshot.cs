@@ -1,23 +1,23 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.ECS;
-using System;
-using System.IO;
 
 namespace PhotoVs.Logic.Input
 {
     public class STakeScreenshot : IUpdateableSystem
     {
-        private GraphicsDevice _graphicsDevice;
-
-        public int Priority { get; set; } = 999;
-        public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInput) };
+        private readonly GraphicsDevice _graphicsDevice;
 
         public STakeScreenshot(GraphicsDevice graphicsDevice)
         {
             _graphicsDevice = graphicsDevice;
         }
+
+        public int Priority { get; set; } = 999;
+        public bool Active { get; set; } = true;
+        public Type[] Requires { get; } = {typeof(CInput)};
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -28,11 +28,12 @@ namespace PhotoVs.Logic.Input
             foreach (var entity in entities)
             {
                 var input = entity.Components.Get<CInput>().Input;
-                if (input.ActionPressed(InputActions.Screenshot))
-                {
-                    TakeScreenshot();
-                }
+                if (input.ActionPressed(InputActions.Screenshot)) TakeScreenshot();
             }
+        }
+
+        public void AfterUpdate(GameTime gameTime)
+        {
         }
 
         private void TakeScreenshot()
@@ -45,10 +46,6 @@ namespace PhotoVs.Logic.Input
             texture.SetData(data);
             using var stream = File.Create($"screenshots/{Guid.NewGuid().ToString()}.png");
             texture.SaveAsPng(stream, width, height);
-        }
-
-        public void AfterUpdate(GameTime gameTime)
-        {
         }
     }
 }

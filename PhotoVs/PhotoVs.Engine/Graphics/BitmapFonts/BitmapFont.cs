@@ -1,15 +1,20 @@
-﻿using Microsoft.Xna.Framework;
-using PhotoVs.Utils;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework;
+using PhotoVs.Utils;
 
 namespace PhotoVs.Engine.Graphics.BitmapFonts
 {
     public class BitmapFont
     {
         private readonly Dictionary<int, BitmapFontRegion> _characterMap = new Dictionary<int, BitmapFontRegion>();
+
+        public string Name { get; }
+        public int LineHeight { get; }
+        public int LetterSpacing { get; set; } = 0;
+        public static bool UseKernings { get; set; } = true;
 
         public BitmapFont(string name, IEnumerable<BitmapFontRegion> regions, int lineHeight)
         {
@@ -19,11 +24,6 @@ namespace PhotoVs.Engine.Graphics.BitmapFonts
             Name = name;
             LineHeight = lineHeight;
         }
-
-        public string Name { get; }
-        public int LineHeight { get; }
-        public int LetterSpacing { get; set; } = 0;
-        public static bool UseKernings { get; set; } = true;
 
         public BitmapFontRegion GetCharacterRegion(int character)
         {
@@ -65,7 +65,7 @@ namespace PhotoVs.Engine.Graphics.BitmapFonts
                     var right = glyph.Position.X + glyph.FontRegion.Width;
 
                     if (right > rectangle.Right)
-                        rectangle.Width = (int)(right - rectangle.Left);
+                        rectangle.Width = (int) (right - rectangle.Left);
                 }
 
                 if (glyph.Character == '\n')
@@ -88,7 +88,7 @@ namespace PhotoVs.Engine.Graphics.BitmapFonts
                     var right = glyph.Position.X + glyph.FontRegion.Width;
 
                     if (right > rectangle.Right)
-                        rectangle.Width = (int)(right - rectangle.Left);
+                        rectangle.Width = (int) (right - rectangle.Left);
                 }
 
                 if (glyph.Character == '\n')

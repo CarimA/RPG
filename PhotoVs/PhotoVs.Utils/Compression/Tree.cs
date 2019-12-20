@@ -26,9 +26,9 @@ namespace PhotoVs.Utils.Compression
         };
 
         // extra bits for each bit length code
-        internal static readonly int[] extra_blbits = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 7 };
+        internal static readonly int[] extra_blbits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 7};
 
-        internal static readonly sbyte[] bl_order = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
+        internal static readonly sbyte[] bl_order = {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
 
         // see definition of array dist_code below
         //internal const int DIST_CODE_LEN = 512;
@@ -160,7 +160,7 @@ namespace PhotoVs.Utils.Compression
                     overflow++;
                 }
 
-                tree[n * 2 + 1] = (short)bits;
+                tree[n * 2 + 1] = (short) bits;
                 // We overwrite tree[n*2+1] which is no longer needed
 
                 if (n > max_code)
@@ -187,7 +187,7 @@ namespace PhotoVs.Utils.Compression
                 while (s.bl_count[bits] == 0)
                     bits--;
                 s.bl_count[bits]--; // move one leaf down the tree
-                s.bl_count[bits + 1] = (short)(s.bl_count[bits + 1] + 2); // move one overflow item as its brother
+                s.bl_count[bits + 1] = (short) (s.bl_count[bits + 1] + 2); // move one overflow item as its brother
                 s.bl_count[max_length]--;
                 // The brother of the overflow item also moves one step up,
                 // but this does not affect bl_count[max_length]
@@ -204,8 +204,8 @@ namespace PhotoVs.Utils.Compression
                         continue;
                     if (tree[m * 2 + 1] != bits)
                     {
-                        s.opt_len = (int)(s.opt_len + (bits - (long)tree[m * 2 + 1]) * tree[m * 2]);
-                        tree[m * 2 + 1] = (short)bits;
+                        s.opt_len = (int) (s.opt_len + (bits - (long) tree[m * 2 + 1]) * tree[m * 2]);
+                        tree[m * 2 + 1] = (short) bits;
                     }
 
                     n--;
@@ -284,9 +284,9 @@ namespace PhotoVs.Utils.Compression
                 s.heap[--s.heap_max] = m;
 
                 // Create a new node father of n and m
-                tree[node * 2] = unchecked((short)(tree[n * 2] + tree[m * 2]));
-                s.depth[node] = (sbyte)(Math.Max((byte)s.depth[n], (byte)s.depth[m]) + 1);
-                tree[n * 2 + 1] = tree[m * 2 + 1] = (short)node;
+                tree[node * 2] = unchecked((short) (tree[n * 2] + tree[m * 2]));
+                s.depth[node] = (sbyte) (Math.Max((byte) s.depth[n], (byte) s.depth[m]) + 1);
+                tree[n * 2 + 1] = tree[m * 2 + 1] = (short) node;
 
                 // and insert the new node in the heap
                 s.heap[1] = node++;
@@ -322,7 +322,7 @@ namespace PhotoVs.Utils.Compression
             for (bits = 1; bits <= InternalConstants.MAX_BITS; bits++)
                 unchecked
                 {
-                    next_code[bits] = code = (short)((code + bl_count[bits - 1]) << 1);
+                    next_code[bits] = code = (short) ((code + bl_count[bits - 1]) << 1);
                 }
 
             // Check that the bit counts in bl_count are consistent. The last code
@@ -337,7 +337,7 @@ namespace PhotoVs.Utils.Compression
                 if (len == 0)
                     continue;
                 // Now reverse the bits
-                tree[n * 2] = unchecked((short)BitReverse(next_code[len]++, len));
+                tree[n * 2] = unchecked((short) BitReverse(next_code[len]++, len));
             }
         }
 

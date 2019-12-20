@@ -1,14 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.ECS.Components;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PhotoVs.Logic.WorldZoning
 {
@@ -76,39 +75,39 @@ namespace PhotoVs.Logic.WorldZoning
         {
             foreach (var layer in map.Layers.Where(layer => layer.Name.Contains(layers)).OfType<TileLayer>())
                 for (int y = 0, i = 0; y < layer.Height; y++)
-                    for (var x = 0; x < layer.Width; x++, i++)
+                for (var x = 0; x < layer.Width; x++, i++)
+                {
+                    var gid = layer.Data[i];
+                    if (gid == 0)
+                        continue;
+
+                    if (!_tilesetCache.TryGetValue(gid, out var tileset))
                     {
-                        var gid = layer.Data[i];
-                        if (gid == 0)
-                            continue;
-
-                        if (!_tilesetCache.TryGetValue(gid, out var tileset))
-                        {
-                            tileset = map.Tilesets.Single(ts =>
-                                gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
-                            _tilesetCache.Add(gid, tileset);
-                        }
-
-                        var tile = tileset[gid];
-
-                        if (!_replaceCache.TryGetValue(tileset.ImagePath, out var tilesetPath))
-                        {
-                            tilesetPath = tileset.ImagePath.Replace("../", "");
-                            _replaceCache.Add(tileset.ImagePath, tilesetPath);
-                        }
-
-                        if (!_textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
-                        {
-                            tilesetTexture = assetLoader.GetAsset<Texture2D>(tilesetPath);
-                            _textureCache.Add(tilesetPath, assetLoader.GetAsset<Texture2D>(tilesetPath));
-                        }
-
-                        spriteBatch.Draw(tilesetTexture,
-                            new Rectangle(map.XOffset + x * map.CellWidth, map.YOffset + y * map.CellHeight, map.CellWidth,
-                                map.CellHeight),
-                            new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height),
-                            Color.White);
+                        tileset = map.Tilesets.Single(ts =>
+                            gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
+                        _tilesetCache.Add(gid, tileset);
                     }
+
+                    var tile = tileset[gid];
+
+                    if (!_replaceCache.TryGetValue(tileset.ImagePath, out var tilesetPath))
+                    {
+                        tilesetPath = tileset.ImagePath.Replace("../", "");
+                        _replaceCache.Add(tileset.ImagePath, tilesetPath);
+                    }
+
+                    if (!_textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
+                    {
+                        tilesetTexture = assetLoader.GetAsset<Texture2D>(tilesetPath);
+                        _textureCache.Add(tilesetPath, assetLoader.GetAsset<Texture2D>(tilesetPath));
+                    }
+
+                    spriteBatch.Draw(tilesetTexture,
+                        new Rectangle(map.XOffset + x * map.CellWidth, map.YOffset + y * map.CellHeight, map.CellWidth,
+                            map.CellHeight),
+                        new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height),
+                        Color.White);
+                }
         }
     }
 }

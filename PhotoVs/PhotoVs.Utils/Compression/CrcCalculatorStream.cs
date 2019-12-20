@@ -28,6 +28,83 @@ namespace PhotoVs.Utils.Compression
 
         internal Stream _innerStream;
 
+
+        /// <summary>
+        ///     Gets the total number of bytes run through the CRC32 calculator.
+        /// </summary>
+        /// <remarks>
+        ///     This is either the total number of bytes read, or the total number of
+        ///     bytes written, depending on the direction of this stream.
+        /// </remarks>
+        internal long TotalBytesSlurped => _Crc32.TotalBytesRead;
+
+        /// <summary>
+        ///     Provides the current CRC for all blocks slurped in.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The running total of the CRC is kept as data is written or read
+        ///         through the stream.  read this property after all reads or writes to
+        ///         get an accurate CRC for the entire stream.
+        ///     </para>
+        /// </remarks>
+        internal int Crc => _Crc32.Crc32Result;
+
+        /// <summary>
+        ///     Indicates whether the underlying stream will be left open when the
+        ///     <c>CrcCalculatorStream</c> is Closed.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         Set this at any point before calling <see cref="Stream.Close" />.
+        ///     </para>
+        /// </remarks>
+        internal bool LeaveOpen { get; set; }
+
+        /// <summary>
+        ///     Indicates whether the stream supports reading.
+        /// </summary>
+        public override bool CanRead => _innerStream.CanRead;
+
+        /// <summary>
+        ///     Indicates whether the stream supports seeking.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         Always returns false.
+        ///     </para>
+        /// </remarks>
+        public override bool CanSeek => false;
+
+        /// <summary>
+        ///     Indicates whether the stream supports writing.
+        /// </summary>
+        public override bool CanWrite => _innerStream.CanWrite;
+
+        /// <summary>
+        ///     Returns the length of the underlying stream.
+        /// </summary>
+        public override long Length
+        {
+            get
+            {
+                if (_lengthLimit == UnsetLengthLimit)
+                    return _innerStream.Length;
+                return _lengthLimit;
+            }
+        }
+
+        /// <summary>
+        ///     The getter for this property returns the total bytes read.
+        ///     If you use the setter, it will throw
+        ///     <see cref="NotSupportedException" />.
+        /// </summary>
+        public override long Position
+        {
+            get => _Crc32.TotalBytesRead;
+            set => throw new NotSupportedException();
+        }
+
         /// <summary>
         ///     The default constructor.
         /// </summary>
@@ -152,83 +229,6 @@ namespace PhotoVs.Utils.Compression
             LeaveOpen = leaveOpen;
         }
 
-
-        /// <summary>
-        ///     Gets the total number of bytes run through the CRC32 calculator.
-        /// </summary>
-        /// <remarks>
-        ///     This is either the total number of bytes read, or the total number of
-        ///     bytes written, depending on the direction of this stream.
-        /// </remarks>
-        internal long TotalBytesSlurped => _Crc32.TotalBytesRead;
-
-        /// <summary>
-        ///     Provides the current CRC for all blocks slurped in.
-        /// </summary>
-        /// <remarks>
-        ///     <para>
-        ///         The running total of the CRC is kept as data is written or read
-        ///         through the stream.  read this property after all reads or writes to
-        ///         get an accurate CRC for the entire stream.
-        ///     </para>
-        /// </remarks>
-        internal int Crc => _Crc32.Crc32Result;
-
-        /// <summary>
-        ///     Indicates whether the underlying stream will be left open when the
-        ///     <c>CrcCalculatorStream</c> is Closed.
-        /// </summary>
-        /// <remarks>
-        ///     <para>
-        ///         Set this at any point before calling <see cref="Stream.Close" />.
-        ///     </para>
-        /// </remarks>
-        internal bool LeaveOpen { get; set; }
-
-        /// <summary>
-        ///     Indicates whether the stream supports reading.
-        /// </summary>
-        public override bool CanRead => _innerStream.CanRead;
-
-        /// <summary>
-        ///     Indicates whether the stream supports seeking.
-        /// </summary>
-        /// <remarks>
-        ///     <para>
-        ///         Always returns false.
-        ///     </para>
-        /// </remarks>
-        public override bool CanSeek => false;
-
-        /// <summary>
-        ///     Indicates whether the stream supports writing.
-        /// </summary>
-        public override bool CanWrite => _innerStream.CanWrite;
-
-        /// <summary>
-        ///     Returns the length of the underlying stream.
-        /// </summary>
-        public override long Length
-        {
-            get
-            {
-                if (_lengthLimit == UnsetLengthLimit)
-                    return _innerStream.Length;
-                return _lengthLimit;
-            }
-        }
-
-        /// <summary>
-        ///     The getter for this property returns the total bytes read.
-        ///     If you use the setter, it will throw
-        ///     <see cref="NotSupportedException" />.
-        /// </summary>
-        public override long Position
-        {
-            get => _Crc32.TotalBytesRead;
-            set => throw new NotSupportedException();
-        }
-
         /// <summary>
         ///     Read from the stream
         /// </summary>
@@ -254,7 +254,7 @@ namespace PhotoVs.Utils.Compression
                     return 0; // EOF
                 var bytesRemaining = _lengthLimit - _Crc32.TotalBytesRead;
                 if (bytesRemaining < count)
-                    bytesToRead = (int)bytesRemaining;
+                    bytesToRead = (int) bytesRemaining;
             }
 
             var n = _innerStream.Read(buffer, offset, bytesToRead);

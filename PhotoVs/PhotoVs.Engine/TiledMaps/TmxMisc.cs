@@ -1,12 +1,12 @@
-﻿using PhotoVs.Engine.TiledMaps.Layers;
-using PhotoVs.Utils.Compression;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using PhotoVs.Engine.TiledMaps.Layers;
+using PhotoVs.Utils.Compression;
 
 namespace PhotoVs.Engine.TiledMaps
 {
@@ -134,7 +134,7 @@ namespace PhotoVs.Engine.TiledMaps
         private static int[] ReadCSV(this XmlReader reader, int size)
         {
             var data = reader.ReadElementContentAsString()
-                .Split(new[] { '\r', '\n', ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] {'\r', '\n', ','}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToArray();
 

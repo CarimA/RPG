@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using PhotoVs.Engine;
-using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.Services;
 
@@ -15,7 +14,6 @@ namespace PhotoVs.Logic.Plugins
 
         public virtual void Bind(Events events)
         {
-
         }
 
         public IEnumerator Spawn(IEnumerator routine)

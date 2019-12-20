@@ -32,8 +32,8 @@ namespace PhotoVs.Logic
 {
     public class MainGame : Game
     {
-        private ServiceLocator _services;
         private DiagnosticInfo _info;
+        private readonly ServiceLocator _services;
 
         public MainGame()
         {
@@ -57,18 +57,18 @@ namespace PhotoVs.Logic
             _services.Set(new PluginProvider("assets/plugins/", _services));
             _services.Plugins.LoadPlugin(typeof(TestPlugin));
 
-            _services.Set<IAssetLoader>(CreateAssetLoader());
-            _services.Set<Renderer>(CreateRenderer());
-            _services.Set<Player>(new Player());
-            _services.Set<SCamera>(CreateCamera());
-            _services.Set<IGameObjectCollection>(CreateGlobalEntities());
-            _services.Set<ISystemCollection>(CreateGlobalSystems());
-            _services.Set<SceneMachine>(CreateSceneMachine());
+            _services.Set(CreateAssetLoader());
+            _services.Set(CreateRenderer());
+            _services.Set(new Player());
+            _services.Set(CreateCamera());
+            _services.Set(CreateGlobalEntities());
+            _services.Set(CreateGlobalSystems());
+            _services.Set(CreateSceneMachine());
             _services.Set<ISceneManager>(new SceneManager(_services.SceneMachine,
                 _services.GlobalSystems,
                 _services.GlobalGameObjects));
-            _services.Set<ITextDatabase>(CreateTextDatabase());
-            _services.Set<IAudio>(CreateAudio());
+            _services.Set(CreateTextDatabase());
+            _services.Set(CreateAudio());
 
             _info = new DiagnosticInfo(_services.SpriteBatch, _services.AssetLoader);
             _services.Events.RaiseOnGameStart();
@@ -76,6 +76,7 @@ namespace PhotoVs.Logic
 
             base.Initialize();
         }
+
         private IAssetLoader CreateAssetLoader()
         {
             var assetLoader = new HotReloadAssetLoader(new FileSystemStreamProvider("assets/"));
@@ -184,18 +185,14 @@ namespace PhotoVs.Logic
 
         public class TestPlugin : Plugin
         {
+            private ITextDatabase _db;
             public override string Name { get; } = "Test Plugin";
             public override string Version { get; } = "1.0.0";
-
-            private ITextDatabase _db;
 
             public override void Bind(Events events)
             {
                 events.OnInteractEventEnter["example_event"] += InteractEventHandler;
-                events.OnServiceSet[typeof(ITextDatabase)] += (object sender, object type) =>
-                {
-                    _db = (ITextDatabase)type;
-                };
+                events.OnServiceSet[typeof(ITextDatabase)] += (sender, type) => { _db = (ITextDatabase) type; };
             }
 
             private void InteractEventHandler(object sender, IGameObject player, IGameObject script)

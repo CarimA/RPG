@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace PhotoVs.Utils.Compression
@@ -551,12 +552,6 @@ namespace PhotoVs.Utils.Compression
 
         private char? fallbackCharacter;
 
-
-        public Iso88591Encoding()
-        {
-            FallbackCharacter = '?';
-        }
-
         /// <summary>
         ///     Gets the name registered with the
         ///     Internet Assigned Numbers Authority (IANA) for the current encoding.
@@ -581,8 +576,9 @@ namespace PhotoVs.Utils.Compression
 
                 if (value.HasValue && !charToByte.ContainsKey(value.Value))
                 {
-                    var msg = $"Cannot use the character [{value.Value}] (int value {(int)value.Value}) as fallback value "
-                              + "- the fallback character itself is not supported by the encoding.";
+                    var msg =
+                        $"Cannot use the character [{value.Value}] (int value {(int) value.Value}) as fallback value "
+                        + "- the fallback character itself is not supported by the encoding.";
                     throw new EncoderFallbackException(msg);
                 }
 
@@ -604,6 +600,12 @@ namespace PhotoVs.Utils.Compression
         ///     only supports single byte encodings (1 byte == 256 possible values).
         /// </summary>
         public static int CharacterCount => byteToChar.Length;
+
+
+        public Iso88591Encoding()
+        {
+            FallbackCharacter = '?';
+        }
 
         /// <summary>
         ///     Encodes a set of characters from the specified character array into the specified byte array.
@@ -628,15 +630,9 @@ namespace PhotoVs.Utils.Compression
         /// </param>
         public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex)
         {
-            if (chars is null)
-            {
-                throw new System.ArgumentNullException(nameof(chars));
-            }
+            if (chars is null) throw new ArgumentNullException(nameof(chars));
 
-            if (bytes is null)
-            {
-                throw new System.ArgumentNullException(nameof(bytes));
-            }
+            if (bytes is null) throw new ArgumentNullException(nameof(bytes));
 
             return FallbackByte.HasValue
                 ? GetBytesWithFallBack(chars, charIndex, charCount, bytes, byteIndex)
@@ -667,7 +663,8 @@ namespace PhotoVs.Utils.Compression
                 if (!status)
                 {
                     //throw exception
-                    var msg = $"The encoding [{WebName}] cannot encode the character [{character}] (int value {(int)character}). Set the FallbackCharacter property in order to suppress this exception and encode a default character instead.";
+                    var msg =
+                        $"The encoding [{WebName}] cannot encode the character [{character}] (int value {(int) character}). Set the FallbackCharacter property in order to suppress this exception and encode a default character instead.";
                     throw new EncoderFallbackException(msg);
                 }
 
@@ -701,15 +698,9 @@ namespace PhotoVs.Utils.Compression
         /// </param>
         public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex)
         {
-            if (bytes is null)
-            {
-                throw new System.ArgumentNullException(nameof(bytes));
-            }
+            if (bytes is null) throw new ArgumentNullException(nameof(bytes));
 
-            if (chars is null)
-            {
-                throw new System.ArgumentNullException(nameof(chars));
-            }
+            if (chars is null) throw new ArgumentNullException(nameof(chars));
 
             return FallbackCharacter.HasValue
                 ? GetCharsWithFallback(bytes, byteIndex, byteCount, chars, charIndex)
@@ -743,7 +734,8 @@ namespace PhotoVs.Utils.Compression
                 if (lookupIndex >= byteToChar.Length)
                 {
                     //throw exception
-                    var msg = $"The encoding [{WebName}] cannot decode byte value [{lookupIndex}]. Set the FallbackCharacter property in order to suppress this exception and decode the value as a default character instead.";
+                    var msg =
+                        $"The encoding [{WebName}] cannot decode byte value [{lookupIndex}]. Set the FallbackCharacter property in order to suppress this exception and decode the value as a default character instead.";
                     throw new EncoderFallbackException(msg);
                 }
 

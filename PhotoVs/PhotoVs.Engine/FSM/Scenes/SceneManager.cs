@@ -1,12 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.Components;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.States;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.FSM;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PhotoVs.Engine.FSM.Scenes
 {
@@ -130,10 +129,10 @@ namespace PhotoVs.Engine.FSM.Scenes
         {
             var globalSystems = _globalSystems as SystemCollection;
             if (_globalSystemsHash != globalSystems.GetUniqueSeed() ||
-                _localSystemsHash != ((SystemCollection)currentState.Systems).GetUniqueSeed())
+                _localSystemsHash != ((SystemCollection) currentState.Systems).GetUniqueSeed())
             {
                 _globalSystemsHash = globalSystems.GetUniqueSeed();
-                _localSystemsHash = ((SystemCollection)currentState.Systems).GetUniqueSeed();
+                _localSystemsHash = ((SystemCollection) currentState.Systems).GetUniqueSeed();
 
                 // Logger.Debug($"System Cache changed: Global [{_globalSystemsHash}], Local [{_localSystemsHash}]");
 
@@ -149,10 +148,10 @@ namespace PhotoVs.Engine.FSM.Scenes
         {
             var globalGameObjects = _globalEntities as GameObjectCollection;
             if (_globalEntitiesHash != globalGameObjects.GetUniqueSeed() ||
-                _localEntitiesHash != ((GameObjectCollection)currentState.Entities).GetUniqueSeed())
+                _localEntitiesHash != ((GameObjectCollection) currentState.Entities).GetUniqueSeed())
             {
                 _globalEntitiesHash = globalGameObjects.GetUniqueSeed();
-                _localEntitiesHash = ((GameObjectCollection)currentState.Entities).GetUniqueSeed();
+                _localEntitiesHash = ((GameObjectCollection) currentState.Entities).GetUniqueSeed();
 
                 // Logger.Debug($"Entity Cache changed: Global [{_globalEntitiesHash}], Local [{_localEntitiesHash}]");
 

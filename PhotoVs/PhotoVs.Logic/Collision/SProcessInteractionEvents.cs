@@ -1,20 +1,20 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Logic.WorldZoning;
 using PhotoVs.Models.ECS;
-using System;
-using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Collision
 {
-    class SProcessInteractionEvents : IUpdateableSystem
+    internal class SProcessInteractionEvents : IUpdateableSystem
     {
-        private readonly SMapBoundaryGeneration _mapBoundary;
-        private readonly Events _events;
         private readonly HashSet<IGameObject> _enteredScripts;
+        private readonly Events _events;
+        private readonly SMapBoundaryGeneration _mapBoundary;
 
         public SProcessInteractionEvents(Events events, SMapBoundaryGeneration mapBoundary)
         {
@@ -25,7 +25,7 @@ namespace PhotoVs.Logic.Collision
 
         public int Priority { get; set; } = -1;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInput) };
+        public Type[] Requires { get; } = {typeof(CInput)};
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -48,15 +48,9 @@ namespace PhotoVs.Logic.Collision
             var input = entity.Components.Get<CInput>().Input;
             var velocity = entity.Components.Get<CVelocity>();
 
-            if (!(entity is Player player))
-            {
-                return;
-            }
+            if (!(entity is Player player)) return;
 
-            if (!player.CanMove)
-            {
-                return;
-            }
+            if (!player.CanMove) return;
 
             foreach (var script in scripts)
             {
@@ -65,9 +59,7 @@ namespace PhotoVs.Logic.Collision
                 if (result.AreIntersecting)
                 {
                     if (input.ActionPressed(InputActions.Action))
-                    {
                         _events.RaiseOnInteractEventAction(scriptName, player, script);
-                    }
 
                     if (!_enteredScripts.Contains(script))
                     {
@@ -81,25 +73,17 @@ namespace PhotoVs.Logic.Collision
                         if (input.ActionDown(InputActions.Run))
                         {
                             if (player.CanMove)
-                            {
                                 // todo: should only fire on footstep touching ground
                                 _events.RaiseOnInteractEventRun(scriptName, player, script);
-                            }
                         }
                         else
                         {
-                            if (player.CanMove)
-                            {
-                                _events.RaiseOnInteractEventWalk(scriptName, player, script);
-                            }
+                            if (player.CanMove) _events.RaiseOnInteractEventWalk(scriptName, player, script);
                         }
                     }
                     else
                     {
-                        if (player.CanMove)
-                        {
-                            _events.RaiseOnInteractEventStand(scriptName, player, script);
-                        }
+                        if (player.CanMove) _events.RaiseOnInteractEventStand(scriptName, player, script);
                     }
                 }
                 else

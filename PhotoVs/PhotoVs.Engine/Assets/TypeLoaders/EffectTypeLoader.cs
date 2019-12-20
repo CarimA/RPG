@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.IO;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.Assets;
-using System.IO;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {
@@ -16,7 +16,7 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
         public Effect Load(Stream stream)
         {
             using var reader = new BinaryReader(stream);
-            return new Effect(_graphicsDevice, reader.ReadBytes((int)reader.BaseStream.Length));
+            return new Effect(_graphicsDevice, reader.ReadBytes((int) reader.BaseStream.Length));
         }
     }
 }

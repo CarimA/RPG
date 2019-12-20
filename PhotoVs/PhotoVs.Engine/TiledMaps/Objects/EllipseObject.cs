@@ -1,14 +1,16 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace PhotoVs.Engine.TiledMaps.Objects
 {
     public class EllipseObject : BaseObject, IXmlSerializable
     {
+        [JsonProperty("ellipse")] public bool IsEllipse { get; set; }
+
         public EllipseObject(Dictionary<string, string> properties) : base(properties)
         {
         }
@@ -16,8 +18,6 @@ namespace PhotoVs.Engine.TiledMaps.Objects
         public EllipseObject() : base(new Dictionary<string, string>())
         {
         }
-
-        [JsonProperty("ellipse")] public bool IsEllipse { get; set; }
 
         public XmlSchema GetSchema()
         {

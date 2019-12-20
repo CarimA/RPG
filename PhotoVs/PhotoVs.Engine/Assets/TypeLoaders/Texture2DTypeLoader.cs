@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.IO;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.Assets;
-using System.IO;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {

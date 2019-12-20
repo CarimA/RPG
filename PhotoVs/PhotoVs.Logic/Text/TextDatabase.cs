@@ -1,9 +1,9 @@
-﻿using PhotoVs.Logic.PlayerData;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Models.Assets;
+using PhotoVs.Models.Text;
 using YamlDotNet.Serialization;
 
 namespace PhotoVs.Logic.Text

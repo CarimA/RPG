@@ -1,9 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.Transforms;
-using System.Collections.Generic;
 
 namespace PhotoVs.Logic.PlayerData
 {
@@ -14,16 +14,16 @@ namespace PhotoVs.Logic.PlayerData
 
     public class Player : GameObject
     {
+        private readonly CInput _input;
+
+        private readonly CPosition _position;
+        private readonly float RunSpeed = 295f;
+        private readonly float WalkSpeed = 140f;
         public Dictionary<string, object> Flags { get; }
         public bool CanMove { get; set; }
         public Languages Language { get; set; }
 
-        private readonly CPosition _position;
-        private readonly CInput _input;
-        private readonly float RunSpeed = 295f;
-        private readonly float WalkSpeed = 140f;
-
-        public GameInput Input { get => _input.Input; }
+        public GameInput Input => _input.Input;
 
         public Player()
         {
@@ -33,7 +33,7 @@ namespace PhotoVs.Logic.PlayerData
             CanMove = true;
             Language = Languages.EnglishUK;
 
-            _position = new CPosition { Position = new Vector2(0, 0) };
+            _position = new CPosition {Position = new Vector2(0, 0)};
             Components.Add(_position);
 
             _input = new CInput(new GameInput(PlayerIndex.One)
@@ -65,9 +65,9 @@ namespace PhotoVs.Logic.PlayerData
             });
 
             Components.Add(_input);
-            Components.Add(new CVelocity { Velocity = new Vector2(0, 0) });
+            Components.Add(new CVelocity {Velocity = new Vector2(0, 0)});
             Components.Add(CCollisionBound.Circle(16, 8));
-            Components.Add(new CSize { Size = new Vector2(32, 32) });
+            Components.Add(new CSize {Size = new Vector2(32, 32)});
         }
 
         public void Save()

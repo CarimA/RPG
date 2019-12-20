@@ -1,18 +1,15 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine;
-using PhotoVs.Engine.FSM.States;
-using PhotoVs.Logic.Camera;
-using PhotoVs.Logic.PlayerData;
+﻿using PhotoVs.Engine.FSM.States;
 using PhotoVs.Logic.Services;
-using PhotoVs.Models.Assets;
 using PhotoVs.Models.FSM;
 
 namespace PhotoVs.Logic.Scenes
 {
     public class SceneMachine : StateMachine<IScene>
     {
-        private readonly OverworldScene _overworldScene;
         private readonly DialogueScene _dialogueScene;
+        private readonly OverworldScene _overworldScene;
+
+        public ServiceLocator Services { get; }
 
         public SceneMachine(ServiceLocator services)
         {
@@ -20,8 +17,6 @@ namespace PhotoVs.Logic.Scenes
             _overworldScene = new OverworldScene(this);
             _dialogueScene = new DialogueScene(this);
         }
-
-        public ServiceLocator Services { get; private set; }
 
         public void ChangeToOverworldScene()
         {

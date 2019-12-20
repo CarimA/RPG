@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.IO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Utils.Compression;
-using System;
-using System.IO;
 
 namespace PhotoVs.Engine.TiledMaps
 {

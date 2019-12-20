@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Utils
 {
@@ -104,7 +104,7 @@ namespace PhotoVs.Utils
         public override bool Equals(object obj)
         {
             if (obj is Size2)
-                return Equals((Size2)obj);
+                return Equals((Size2) obj);
             return false;
         }
 
@@ -150,7 +150,7 @@ namespace PhotoVs.Utils
         /// </returns>
         public static Size2 Add(Size2 first, Size2 second)
         {
-            Size2 size = new Size2
+            var size = new Size2
             {
                 Width = first.Width + second.Width,
                 Height = first.Height + second.Height
@@ -191,7 +191,7 @@ namespace PhotoVs.Utils
         /// </returns>
         public static Size2 Subtract(Size2 first, Size2 second)
         {
-            Size2 size = new Size2
+            var size = new Size2
             {
                 Width = first.Width - second.Width,
                 Height = first.Height - second.Height
@@ -296,7 +296,7 @@ namespace PhotoVs.Utils
         /// </returns>
         public static explicit operator Point(Size2 size)
         {
-            return new Point((int)size.Width, (int)size.Height);
+            return new Point((int) size.Width, (int) size.Height);
         }
 
         /// <summary>

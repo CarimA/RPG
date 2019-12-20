@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using PhotoVs.Engine;
-using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.Services;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
@@ -13,8 +11,8 @@ namespace PhotoVs.Logic.Plugins
 {
     public class PluginProvider
     {
-        private readonly ServiceLocator _services;
         private readonly List<Plugin> _plugins;
+        private readonly ServiceLocator _services;
 
         public PluginProvider(string directory, ServiceLocator services)
         {
@@ -33,10 +31,7 @@ namespace PhotoVs.Logic.Plugins
                 var dlls = Directory.GetFiles(directory);
                 foreach (var dll in dlls)
                 {
-                    if (!dll.EndsWith(".dll"))
-                    {
-                        continue;
-                    }
+                    if (!dll.EndsWith(".dll")) continue;
 
                     try
                     {
@@ -67,7 +62,7 @@ namespace PhotoVs.Logic.Plugins
 
         private void LoadAssembly(Type type)
         {
-            var plugin = (Plugin)Activator.CreateInstance(type);
+            var plugin = (Plugin) Activator.CreateInstance(type);
             plugin.Bind(_services.Events);
             plugin.Services = _services;
             _plugins.Add(plugin);

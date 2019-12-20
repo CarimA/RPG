@@ -1,6 +1,6 @@
-﻿using PhotoVs.Engine.TiledMaps;
+﻿using System.IO;
+using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Models.Assets;
-using System.IO;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {

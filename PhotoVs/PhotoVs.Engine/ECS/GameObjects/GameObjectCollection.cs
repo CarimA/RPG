@@ -1,7 +1,7 @@
-﻿using PhotoVs.Models.ECS;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PhotoVs.Models.ECS;
 
 namespace PhotoVs.Engine.ECS.GameObjects
 {
@@ -30,12 +30,6 @@ namespace PhotoVs.Engine.ECS.GameObjects
             base.Add(entity);
         }
 
-        public new void Remove(IGameObject entity)
-        {
-            Reseed(entity);
-            base.Remove(entity);
-        }
-
         public IGameObjectCollection FindByTag(string tag)
         {
             return new GameObjectCollection(FindAll(entity => entity.Tags.Contains(tag)));
@@ -54,6 +48,12 @@ namespace PhotoVs.Engine.ECS.GameObjects
         public IGameObjectCollection All(params Type[] types)
         {
             return new GameObjectCollection(FindAll(entity => types.All(entity.Components.Has)));
+        }
+
+        public new void Remove(IGameObject entity)
+        {
+            Reseed(entity);
+            base.Remove(entity);
         }
 
         private void Reseed(IGameObject entity)

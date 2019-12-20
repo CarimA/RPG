@@ -6,24 +6,13 @@ namespace PhotoVs.Logic.Scenes
 {
     public class TextInputScene : IUpdateableScene, IDrawableScene
     {
-        private SceneMachine _scene;
+        private const float _sustainTime = 0.8f;
+        private const float _repeatTime = 0.25f;
 
         private int _cursorX;
         private int _cursorY;
 
-        private const float _sustainTime = 0.8f;
-        private const float _repeatTime = 0.25f;
-
-        private string _question;
-        private int _limit;
-        private string _text;
-        private bool _isFinished;
-
-        public bool IsFinished { get => _isFinished; }
-
-        public bool IsBlocking { get; set; } = false;
-
-        private char[][] _keyboard =
+        private readonly char[][] _keyboard =
         {
             "ABCDEFGHIJKLM".ToCharArray(),
             "NOPQRSTUVWXYZ".ToCharArray(),
@@ -32,37 +21,48 @@ namespace PhotoVs.Logic.Scenes
             "0123456789-. ".ToCharArray()
         };
 
+        private int _limit;
+
+        private string _question;
+        private readonly SceneMachine _scene;
+        private string _text;
+
+        public bool IsFinished { get; private set; }
+
         public TextInputScene(SceneMachine scene)
         {
             _scene = scene;
         }
 
+        public void Draw(GameTime gameTime)
+        {
+        }
+
+        public bool IsBlocking { get; set; } = false;
+
         public void Enter(params object[] args)
         {
             _question = args[0].ToString();
-            _limit = args.Length > 1 
-                ? int.Parse(args[1].ToString()) 
+            _limit = args.Length > 1
+                ? int.Parse(args[1].ToString())
                 : 15;
             _text = args.Length > 2
                 ? args[2].ToString()
                 : string.Empty;
 
-            _isFinished = false;
+            IsFinished = false;
         }
 
         public void Exit()
         {
-
         }
 
         public void Resume()
         {
-
         }
 
         public void Suspend()
         {
-
         }
 
         public void Update(GameTime gameTime)
@@ -106,21 +106,13 @@ namespace PhotoVs.Logic.Scenes
 
         private void MoveCursor(int x, int y)
         {
-            if (x == 0 && y == 0)
-            {
-                return;
-            }
+            if (x == 0 && y == 0) return;
 
             _cursorX += x;
             _cursorY += y;
 
             _cursorY %= _keyboard.Length;
             _cursorX %= _keyboard[_cursorY].Length;
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-
         }
     }
 }

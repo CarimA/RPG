@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.Components;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Models.ECS;
-using System;
-using System.Collections.Generic;
-using PhotoVs.Utils;
-using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic.WorldZoning
 {

@@ -407,10 +407,7 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The data in compressed form</returns>
         public static byte[] CompressBuffer(byte[] b)
         {
-            if (b is null)
-            {
-                throw new ArgumentNullException(nameof(b));
-            }
+            if (b is null) throw new ArgumentNullException(nameof(b));
 
             using var ms = new MemoryStream();
             Stream compressor = new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
@@ -495,7 +492,8 @@ namespace PhotoVs.Utils.Compression
                 if (_baseStream._workingBuffer != null)
                     throw new ZlibException("The working buffer is already set.");
                 if (value < ZlibConstants.WorkingBufferSizeMin)
-                    throw new ZlibException($"Don't be silly. {value} bytes?? Use a bigger buffer, at least {ZlibConstants.WorkingBufferSizeMin}.");
+                    throw new ZlibException(
+                        $"Don't be silly. {value} bytes?? Use a bigger buffer, at least {ZlibConstants.WorkingBufferSizeMin}.");
                 _baseStream._bufferSize = value;
             }
         }

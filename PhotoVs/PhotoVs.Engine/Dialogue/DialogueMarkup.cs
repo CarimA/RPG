@@ -1,32 +1,32 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue.Markups;
 using PhotoVs.Engine.Graphics.BitmapFonts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PhotoVs.Engine.Dialogue
 {
     public class DialogueMarkup
     {
         private readonly BitmapFont _font;
-        private readonly string _text;
         private readonly Dictionary<int, List<IMarkup>> _markupIndex;
-        private Vector2 _origin;
+        private readonly float _maxCharTime;
 
         private readonly int _maxLines;
-        private int _remainingLines;
-        private int _breakIndex;
-        private int _currentIndex;
-        private bool _isPaused;
-        private bool _isFinished;
-        private readonly float _maxCharTime;
-        private float _charTime;
-
-        public bool FastForward { get; set; }
 
         private readonly Random _rng;
+        private readonly string _text;
+        private int _breakIndex;
+        private float _charTime;
+        private int _currentIndex;
+        private bool _isFinished;
+        private bool _isPaused;
+        private readonly Vector2 _origin;
+        private int _remainingLines;
+
+        public bool FastForward { get; set; }
 
         public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
         {
@@ -51,7 +51,7 @@ namespace PhotoVs.Engine.Dialogue
         {
             if (!_isPaused && !_isFinished)
             {
-                _charTime -= (float)gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 8 : 1);
+                _charTime -= (float) gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 8 : 1);
 
                 if (_charTime <= 0)
                 {
@@ -65,10 +65,7 @@ namespace PhotoVs.Engine.Dialogue
                         if (activeMarkup.OfType<NewLineMarkup>().Any())
                         {
                             _remainingLines--;
-                            if (_remainingLines <= 0)
-                            {
-                                _isPaused = true;
-                            }
+                            if (_remainingLines <= 0) _isPaused = true;
                         }
 
                         if (activeMarkup.OfType<EndOfParagraphMarkup>().Any())
@@ -84,18 +81,11 @@ namespace PhotoVs.Engine.Dialogue
                         }
                     }
 
-                    if (_currentIndex >= _text.Length)
-                    {
-                        _isFinished = true;
-                    }
-
+                    if (_currentIndex >= _text.Length) _isFinished = true;
                 }
             }
 
-            if (FastForward && _isPaused)
-            {
-                Next();
-            }
+            if (FastForward && _isPaused) Next();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -111,10 +101,7 @@ namespace PhotoVs.Engine.Dialogue
                 var c = _text[i];
                 var r = _font.GetCharacterRegion(c);
 
-                if (r == null)
-                {
-                    continue;
-                }
+                if (r == null) continue;
 
                 if (_markupIndex.TryGetValue(i, out var activeMarkup))
                 {
@@ -124,62 +111,40 @@ namespace PhotoVs.Engine.Dialogue
                         {
                             position.Y = 0;
 
-                            if (c == ' ')
-                            {
-                                continue;
-                            }
+                            if (c == ' ') continue;
                         }
                         else
                         {
-
                             //if (!(c == ' ' || i == _breakIndex))
                             //{1
                             position.X = 0;
                             position.Y += _font.LineHeight;
                             //}
 
-                            if (c == ' ')
-                            {
-                                continue;
-                            }
+                            if (c == ' ') continue;
                         }
                     }
 
                     if (activeMarkup.OfType<EndOfParagraphMarkup>().Any())
-                    {
                         if (c == ' ')
-                        {
                             continue;
-                        }
-                    }
                 }
 
                 if (activeMarkup != null)
-                {
                     foreach (var effect in activeMarkup)
                     {
-                        if (effect is ColorMarkup color)
-                        {
-                            activeColor = color.Color;
-                        }
+                        if (effect is ColorMarkup color) activeColor = color.Color;
 
                         if (effect is WaveMarkup)
-                        {
-                            wave = new Vector2(0, ((float)Math.Sin(10 * gameTime.TotalGameTime.TotalSeconds + (i * 0.6)) * 3) - 1.5f);
-                        }
+                            wave = new Vector2(0,
+                                (float) Math.Sin(10 * gameTime.TotalGameTime.TotalSeconds + i * 0.6) * 3 - 1.5f);
 
                         if (effect is ShakeMarkup)
-                        {
                             // todo: limit to time
                             shake = new Vector2(_rng.Next(-1, 1), _rng.Next(-1, 1));
-                        }
 
-                        if (effect is OutlineMarkup outline)
-                        {
-                            outlineColor = outline.Color;
-                        }
+                        if (effect is OutlineMarkup outline) outlineColor = outline.Color;
                     }
-                }
 
                 // todo: set active colour or position changing
                 if (outlineColor != Color.Transparent)
@@ -277,19 +242,16 @@ namespace PhotoVs.Engine.Dialogue
                             {
                                 var prop = typeof(Color).GetProperty(args[1]);
                                 if (prop == null)
-                                {
                                     activeMarkups.Add(new ColorMarkup(default));
-                                }
                                 else
-                                {
-                                    activeMarkups.Add(new ColorMarkup((Color)prop.GetValue(null, null)));
-                                }
+                                    activeMarkups.Add(new ColorMarkup((Color) prop.GetValue(null, null)));
                             }
                             else
                             {
                                 activeMarkups.Add(new ColorMarkup(int.Parse(args[1]), int.Parse(args[2]),
-                                  int.Parse(args[3])));
+                                    int.Parse(args[3])));
                             }
+
                             break;
 
                         case "/color":
@@ -326,19 +288,16 @@ namespace PhotoVs.Engine.Dialogue
                             {
                                 var prop = typeof(Color).GetProperty(args[1]);
                                 if (prop == null)
-                                {
                                     activeMarkups.Add(new OutlineMarkup(default));
-                                }
                                 else
-                                {
-                                    activeMarkups.Add(new OutlineMarkup((Color)prop.GetValue(null, null)));
-                                }
+                                    activeMarkups.Add(new OutlineMarkup((Color) prop.GetValue(null, null)));
                             }
                             else
                             {
                                 activeMarkups.Add(new OutlineMarkup(int.Parse(args[1]), int.Parse(args[2]),
                                     int.Parse(args[3])));
                             }
+
                             break;
 
                         case "/outline":
@@ -359,9 +318,10 @@ namespace PhotoVs.Engine.Dialogue
                             AddMarkups(markupIndex, index, activeMarkups);
 
                             activeMarkups.RemoveAll(m => m is EndOfParagraphMarkup
-                                || m is WaitMarkup
-                                || m is NewLineMarkup);
+                                                         || m is WaitMarkup
+                                                         || m is NewLineMarkup);
                         }
+
                         output += t;
                         index++;
                     }
@@ -374,7 +334,8 @@ namespace PhotoVs.Engine.Dialogue
             return (output, markupIndex);
         }
 
-        private static Dictionary<int, List<IMarkup>> ParseNewLines(Dictionary<int, List<IMarkup>> markupIndex, string text, BitmapFont font, int width)
+        private static Dictionary<int, List<IMarkup>> ParseNewLines(Dictionary<int, List<IMarkup>> markupIndex,
+            string text, BitmapFont font, int width)
         {
             text += " ";
             var x = 0f;
@@ -384,12 +345,8 @@ namespace PhotoVs.Engine.Dialogue
                 var c = text[i];
 
                 if (markupIndex.TryGetValue(i, out var activeMarkup))
-                {
                     if (activeMarkup.OfType<NewLineMarkup>().Any() || activeMarkup.OfType<EndOfParagraphMarkup>().Any())
-                    {
                         x = 0;
-                    }
-                }
 
                 if (i >= 1 && text[i - 1] == ' ')
                 {
@@ -408,31 +365,24 @@ namespace PhotoVs.Engine.Dialogue
                 }
 
                 var t = font.GetCharacterRegion(c);
-                if (t != null)
-                {
-                    x += t.Width + t.XOffset - 1;
-                }
+                if (t != null) x += t.Width + t.XOffset - 1;
             }
 
             return markupIndex;
         }
 
-        private static Dictionary<int, List<IMarkup>> AddMarkup(Dictionary<int, List<IMarkup>> dict, int index, IMarkup markup)
+        private static Dictionary<int, List<IMarkup>> AddMarkup(Dictionary<int, List<IMarkup>> dict, int index,
+            IMarkup markup)
         {
-            if (!dict.ContainsKey(index))
-            {
-                dict[index] = new List<IMarkup>();
-            }
+            if (!dict.ContainsKey(index)) dict[index] = new List<IMarkup>();
             dict[index].Add(markup);
             return dict;
         }
 
-        private static Dictionary<int, List<IMarkup>> AddMarkups(Dictionary<int, List<IMarkup>> dict, int index, List<IMarkup> markups)
+        private static Dictionary<int, List<IMarkup>> AddMarkups(Dictionary<int, List<IMarkup>> dict, int index,
+            List<IMarkup> markups)
         {
-            if (!dict.ContainsKey(index))
-            {
-                dict[index] = new List<IMarkup>();
-            }
+            if (!dict.ContainsKey(index)) dict[index] = new List<IMarkup>();
             dict[index].AddRange(markups);
             return dict;
         }

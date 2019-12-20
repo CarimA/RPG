@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Models.ECS;
-using System;
-using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Collision
 {

@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics.TextureAtlases;
-using System;
-using System.Text;
 
 namespace PhotoVs.Engine.Graphics.BitmapFonts
 {

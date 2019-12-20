@@ -1,19 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
-using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Plugins;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
-using PhotoVs.Models.Text;
-using System;
-using PhotoVs.Logic.Plugins;
 using PhotoVs.Models.FSM;
+using PhotoVs.Models.Text;
 
 namespace PhotoVs.Logic.Services
 {
@@ -51,7 +50,6 @@ namespace PhotoVs.Logic.Services
         public void Set<T>(T service)
         {
             foreach (var property in typeof(ServiceLocator).GetProperties())
-            {
                 if (property.PropertyType.IsAssignableFrom(typeof(T))
                     || property.PropertyType is T)
                 {
@@ -59,7 +57,6 @@ namespace PhotoVs.Logic.Services
                     Events.RaiseOnServiceSet(service);
                     return;
                 }
-            }
 
             throw new ArgumentException($"Service of type {typeof(T).Name} not found");
         }

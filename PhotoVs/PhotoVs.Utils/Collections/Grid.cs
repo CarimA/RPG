@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Utils.Collections
 {
@@ -8,23 +8,18 @@ namespace PhotoVs.Utils.Collections
     {
         private readonly Dictionary<long, T> _cells;
 
+        public T this[int x, int y]
+        {
+            get =>
+                _cells.TryGetValue(HashPosition(x, y), out var value)
+                    ? value
+                    : default;
+            set => _cells[HashPosition(x, y)] = value;
+        }
+
         public Grid()
         {
             _cells = new Dictionary<long, T>();
-        }
-
-        public T this[int x, int y]
-        {
-            get
-            {
-                return _cells.TryGetValue(HashPosition(x, y), out var value)
-                    ? value
-                    : default;
-            }
-            set
-            {
-                _cells[HashPosition(x, y)] = value;
-            }
         }
 
         public void Remove(int x, int y)
@@ -44,19 +39,19 @@ namespace PhotoVs.Utils.Collections
         public void Insert(Rectangle bounds, T value)
         {
             for (var x = bounds.Left; x < bounds.Right; x++)
-                for (var y = bounds.Top; y < bounds.Bottom; y++)
-                    Insert(x, y, value);
+            for (var y = bounds.Top; y < bounds.Bottom; y++)
+                Insert(x, y, value);
         }
 
         public IEnumerable<T> GetInBoundary(Rectangle bounds)
         {
             for (var x = bounds.Left; x < bounds.Right; x++)
-                for (var y = bounds.Top; y < bounds.Bottom; y++)
-                {
-                    var cell = this[x, y];
-                    if (cell != null)
-                        yield return cell;
-                }
+            for (var y = bounds.Top; y < bounds.Bottom; y++)
+            {
+                var cell = this[x, y];
+                if (cell != null)
+                    yield return cell;
+            }
         }
 
         private static long HashPosition(int x, int y)
@@ -75,7 +70,7 @@ namespace PhotoVs.Utils.Collections
         {
             unchecked
             {
-                return val * 0x9e3779b1 >> 24;
+                return (val * 0x9e3779b1) >> 24;
             }
         }
     }

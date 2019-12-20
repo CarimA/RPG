@@ -1,8 +1,8 @@
-﻿using PhotoVs.Models.Assets;
-using PhotoVs.Utils.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using PhotoVs.Models.Assets;
+using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
@@ -25,7 +25,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             if (_assetCache.TryGetValue(filepath, out var asset))
             {
                 if (asset != null)
-                    return (T)asset;
+                    return (T) asset;
             }
             else
             {
@@ -45,7 +45,6 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             var asset = (loader as ITypeLoader<T>)?.Load(stream);
             if (asset != null)
             {
-
                 Logger.Write.Info("Loaded asset \"{0}\"", filepath);
                 _assetCache[filepath] = asset;
             }

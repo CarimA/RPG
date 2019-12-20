@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
@@ -10,10 +14,6 @@ using PhotoVs.Models.ECS;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace PhotoVs.Logic.WorldZoning
 {
@@ -113,12 +113,13 @@ namespace PhotoVs.Logic.WorldZoning
             }
         }
 
-        private void ProcessPolygonObject(SpatialHash<IGameObject, GameObjectCollection> hash, PolygonObject obj, int x, int y,
+        private void ProcessPolygonObject(SpatialHash<IGameObject, GameObjectCollection> hash, PolygonObject obj, int x,
+            int y,
             Action<IGameObject, BaseObject, int, int> func)
         {
             var entity = new GameObject();
             var bounds = new CCollisionBound(obj.Polygon.Select(point => new Vector2(point.X, point.Y)).ToList());
-            var position = new CPosition { Position = new Vector2(x + obj.X, y + obj.Y) };
+            var position = new CPosition {Position = new Vector2(x + obj.X, y + obj.Y)};
             entity.Components.Add(bounds);
             entity.Components.Add(position);
 
@@ -132,12 +133,13 @@ namespace PhotoVs.Logic.WorldZoning
             ));
         }
 
-        private void ProcessRectangleObject(SpatialHash<IGameObject, GameObjectCollection> hash, RectangleObject obj, int x, int y,
+        private void ProcessRectangleObject(SpatialHash<IGameObject, GameObjectCollection> hash, RectangleObject obj,
+            int x, int y,
             Action<IGameObject, BaseObject, int, int> func)
         {
             var entity = new GameObject();
             var bounds = CCollisionBound.Rectangle(new Vector2(obj.Width, obj.Height));
-            var position = new CPosition { Position = new Vector2(x + obj.X, y + obj.Y) };
+            var position = new CPosition {Position = new Vector2(x + obj.X, y + obj.Y)};
 
             entity.Components.Add(bounds);
             entity.Components.Add(position);
@@ -168,7 +170,8 @@ namespace PhotoVs.Logic.WorldZoning
         }
 
 
-        public (List<Map>, IGameObjectCollection, IGameObjectCollection, IGameObjectCollection) GetDataInBounds(Rectangle bounds)
+        public (List<Map>, IGameObjectCollection, IGameObjectCollection, IGameObjectCollection) GetDataInBounds(
+            Rectangle bounds)
         {
             return (_chunks.Get(bounds),
                 _collisions.Get(bounds),
@@ -176,7 +179,8 @@ namespace PhotoVs.Logic.WorldZoning
                 _zones.Get(bounds));
         }
 
-        public (List<Map>, IGameObjectCollection, IGameObjectCollection, IGameObjectCollection) GetDataInCamera(SCamera camera)
+        public (List<Map>, IGameObjectCollection, IGameObjectCollection, IGameObjectCollection) GetDataInCamera(
+            SCamera camera)
         {
             var bounds = camera.VisibleArea();
             /*bounds.X = bounds.X / ChunkWidthInPixels - 1;

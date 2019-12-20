@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics;
@@ -14,25 +11,25 @@ namespace PhotoVs.Logic.Debug
 {
     public class DiagnosticInfo
     {
-        private SpriteBatch _spriteBatch;
+        private readonly PolygonPrimitive _backgroundBar;
 
-        private BitmapFont _font;
+        private readonly PolygonPrimitive _backgroundBarOutline;
+        private readonly PolygonPrimitive _drawBar;
+        private readonly Stopwatch _drawTimer;
 
-        private Stopwatch _updateTimer;
-        private Stopwatch _drawTimer;
+        private readonly BitmapFont _font;
+        private int _fps;
 
         private int _fpsTicks;
         private float _fpsTimer;
-        private int _fps;
-
-        private TimeSpan _lastUpdate;
         private TimeSpan _lastDraw;
 
-        private PolygonPrimitive _backgroundBarOutline;
-        private PolygonPrimitive _backgroundBar;
-        private PolygonPrimitive _textBackground;
-        private PolygonPrimitive _updateBar;
-        private PolygonPrimitive _drawBar;
+        private TimeSpan _lastUpdate;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly PolygonPrimitive _textBackground;
+        private readonly PolygonPrimitive _updateBar;
+
+        private readonly Stopwatch _updateTimer;
 
         public DiagnosticInfo(SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
@@ -74,7 +71,7 @@ namespace PhotoVs.Logic.Debug
         public void Draw(GameTime gameTime)
         {
             _fpsTicks++;
-            _fpsTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _fpsTimer -= (float) gameTime.ElapsedGameTime.TotalSeconds;
             if (_fpsTimer <= 0)
             {
                 _fps = _fpsTicks;
@@ -82,18 +79,18 @@ namespace PhotoVs.Logic.Debug
                 _fpsTicks = 0;
             }
 
-            int barWidth = (int)(_spriteBatch.GraphicsDevice.Viewport.Width / 1.5);
-            int x = (_spriteBatch.GraphicsDevice.Viewport.Width / 2) - (barWidth / 2);
-            int barHeight = 10;
-            int y = _spriteBatch.GraphicsDevice.Viewport.Height - 40 - barHeight;
-            _backgroundBarOutline.SetPoints(new List<Vector2>()
+            var barWidth = (int) (_spriteBatch.GraphicsDevice.Viewport.Width / 1.5);
+            var x = _spriteBatch.GraphicsDevice.Viewport.Width / 2 - barWidth / 2;
+            var barHeight = 10;
+            var y = _spriteBatch.GraphicsDevice.Viewport.Height - 40 - barHeight;
+            _backgroundBarOutline.SetPoints(new List<Vector2>
             {
                 new Vector2(x - 1, y - 1),
                 new Vector2(x + barWidth + 1, y - 1),
                 new Vector2(x + barWidth + 1, y + barHeight + 1),
                 new Vector2(x - 1, y + barHeight + 1)
             });
-            _backgroundBar.SetPoints(new List<Vector2>()
+            _backgroundBar.SetPoints(new List<Vector2>
             {
                 new Vector2(x, y),
                 new Vector2(x + barWidth, y),
@@ -101,9 +98,9 @@ namespace PhotoVs.Logic.Debug
                 new Vector2(x, y + barHeight)
             });
 
-            var updateWidth = (int)((barWidth / 60f) * (_lastUpdate.TotalMilliseconds));
+            var updateWidth = (int) (barWidth / 60f * _lastUpdate.TotalMilliseconds);
 
-            _updateBar.SetPoints(new List<Vector2>()
+            _updateBar.SetPoints(new List<Vector2>
             {
                 new Vector2(x, y),
                 new Vector2(x + updateWidth, y),
@@ -112,9 +109,9 @@ namespace PhotoVs.Logic.Debug
             });
 
             var nx = x + updateWidth;
-            var drawWidth = (int)((barWidth / 60f) * (_lastDraw.TotalMilliseconds));
+            var drawWidth = (int) (barWidth / 60f * _lastDraw.TotalMilliseconds);
 
-            _drawBar.SetPoints(new List<Vector2>()
+            _drawBar.SetPoints(new List<Vector2>
             {
                 new Vector2(nx, y),
                 new Vector2(nx + drawWidth, y),
@@ -130,14 +127,15 @@ namespace PhotoVs.Logic.Debug
             _updateBar.Draw();
             _drawBar.Draw();
 
-            var text = $"FPS:         {_fps}\nUpdate Avg.: {_lastUpdate.TotalMilliseconds}ms\nDraw Avg.:   {_lastDraw.TotalMilliseconds}ms";
+            var text =
+                $"FPS:         {_fps}\nUpdate Avg.: {_lastUpdate.TotalMilliseconds}ms\nDraw Avg.:   {_lastDraw.TotalMilliseconds}ms";
             var theight = _font.MeasureString(text).Height + 20;
             var ty = y - theight - 20;
 
             if (_spriteBatch.GraphicsDevice.Viewport.Width > x + 420
                 && _spriteBatch.GraphicsDevice.Viewport.Height > ty + theight)
             {
-                _textBackground.SetPoints(new List<Vector2>()
+                _textBackground.SetPoints(new List<Vector2>
                 {
                     new Vector2(x, ty),
                     new Vector2(x + 420, ty),
