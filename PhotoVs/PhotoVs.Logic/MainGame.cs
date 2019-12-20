@@ -201,7 +201,9 @@ namespace PhotoVs.Logic
             {
                 yield return Spawn(WaitTest());
                 Logger.Write.Trace("Test 1");
-                yield return Dialogue("test", "hellooooo!");
+
+                var a = Dialogue("test", "hellooooo!");
+                yield return a;
                 Logger.Write.Trace("Test 2");
                 yield return new Pause(3f);
                 Logger.Write.Trace("Test 3");

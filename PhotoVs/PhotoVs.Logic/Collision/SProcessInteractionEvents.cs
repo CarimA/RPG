@@ -80,16 +80,26 @@ namespace PhotoVs.Logic.Collision
                         // todo: make it only run every x ticks to simulate footsteps
                         if (input.ActionDown(InputActions.Run))
                         {
-                            _events.RaiseOnInteractEventRun(scriptName, player, script);
+                            if (player.CanMove())
+                            {
+                                // todo: should only fire on footstep touching ground
+                                _events.RaiseOnInteractEventRun(scriptName, player, script);
+                            }
                         }
                         else
                         {
-                            _events.RaiseOnInteractEventWalk(scriptName, player, script);
+                            if (player.CanMove())
+                            {
+                                _events.RaiseOnInteractEventWalk(scriptName, player, script);
+                            }
                         }
                     }
                     else
                     {
-                        _events.RaiseOnInteractEventStand(scriptName, player, script);
+                        if (player.CanMove())
+                        {
+                            _events.RaiseOnInteractEventStand(scriptName, player, script);
+                        }
                     }
                 }
                 else

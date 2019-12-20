@@ -23,7 +23,7 @@ namespace PhotoVs.Logic.Scenes
 
             Entities = new GameObjectCollection
             {
-                new GameObject()
+
             };
             Systems = new SystemCollection
             {
