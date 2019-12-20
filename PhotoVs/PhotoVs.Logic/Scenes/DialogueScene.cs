@@ -19,15 +19,12 @@ namespace PhotoVs.Logic.Scenes
         private IAssetLoader _assetLoader => _scene.Services.AssetLoader;
         private GameInput _input => _scene.Services.Player.Input;
 
-        private const float TextScrollSpeed = 22f;
-
         private string _name;
 
         private DialogueMarkup _dialogue;
         private ShakingBox _shakingBox;
-        private bool _isFinished;
 
-        public bool IsFinished { get => _isFinished; }
+        public bool IsFinished { get; private set; }
 
         public DialogueScene(SceneMachine scene)
         {
@@ -45,7 +42,7 @@ namespace PhotoVs.Logic.Scenes
             {
                 if (_input.ActionPressed(InputActions.Action))
                 {
-                    _isFinished = true;
+                    IsFinished = true;
                 }
             }
             else
@@ -95,7 +92,7 @@ namespace PhotoVs.Logic.Scenes
                 3,
                 200);
 
-            _isFinished = false;
+            IsFinished = false;
         }
 
         public void Exit()

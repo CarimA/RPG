@@ -2,8 +2,8 @@
 
 # Intro Cutscene
 
-intro:
-  en-uk: |-
+Intro:
+  EnglishUK: |-
     [outline Black]Hang on, now.[wait 1.5]
     Give me just a sec.[.].[.].[.][eop]
     Hi!
@@ -19,28 +19,28 @@ intro:
     All right. I just need some information about you, so I can have your curator license ready.[eop]
     Let's start with your picture, mind sending me one?[/outline]
 
-intro_picture:
-  en-uk: |-
+IntroPicture:
+  EnglishUK: |-
     Just to check, this is the one you want?
 
-intro_picture_no:
-  en-uk: |-
+IntroPictureNo:
+  EnglishUK: |-
     No? Okay, just send me a different one.
 
-intro_picture_yes:
-  en-uk: |-
+IntroPictureYes:
+  EnglishUK: |-
     Great!\nAnd now, mind spelling out your name in the chat for me?
 
-intro_name:
-  en-uk: |-
+IntroName:
+  EnglishUK: |-
     So, you go by [color Cyan][flag my_name][/color]?
 
-intro_name_no:
-  en-uk: |-
+IntroNameNo:
+  EnglishUK: |-
     Typo? That's fine, just correct it for me.
 
-intro_name_yes:
-  en-uk: |-
+IntroNameYes:
+  EnglishUK: |-
     Alright. And...that's it!
     I'll get that sent off to the [color Yellow]Photon Commission[/yellow], then.[eop]
     I'll send [color Cyan][flag friend_name][/cyan] to come pick you up at the station. I can't wait to see you in person!
