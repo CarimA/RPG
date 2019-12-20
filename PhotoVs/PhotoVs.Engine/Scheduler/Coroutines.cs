@@ -7,6 +7,7 @@ namespace PhotoVs.Engine.Scheduler
 {
     public class Coroutines
     {
+        // Timings guide: https://www.alanzucconi.com/2017/02/15/nested-coroutines-in-unity/
         private List<IEnumerator> _routines;
 
         public Coroutines()

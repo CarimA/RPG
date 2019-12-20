@@ -199,11 +199,17 @@ namespace PhotoVs.Logic
 
             private IEnumerator DoThis()
             {
+                yield return Spawn(WaitTest());
                 Logger.Write.Trace("Test 1");
                 yield return Dialogue("test", "hellooooo!");
                 Logger.Write.Trace("Test 2");
                 yield return new Pause(3f);
                 Logger.Write.Trace("Test 3");
+            }
+
+            private IEnumerator WaitTest()
+            {
+                yield return new Pause(3f);
             }
         }
     }

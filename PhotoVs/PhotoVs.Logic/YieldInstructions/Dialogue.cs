@@ -19,14 +19,14 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
         }
         public bool Continue(GameTime gameTime)
         {
-            var result = (_sceneMachine.Peek() is DialogueScene dialogueScene
-                          && dialogueScene.IsFinished());
-            if (result)
+            if (_sceneMachine.Peek() is DialogueScene dialogueScene
+                          && dialogueScene.IsFinished())
             {
                 _sceneMachine.Pop();
+                return true;
             }
 
-            return result;
+            return false;
         }
     }
 }
