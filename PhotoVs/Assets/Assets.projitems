@@ -42,8 +42,7 @@
     <Content Include="$(MSBuildThisFileDirectory)blockout\forest\canopy.png" />
     <Content Include="$(MSBuildThisFileDirectory)blockout\forest\treetrunks.png" />
     <Content Include="$(MSBuildThisFileDirectory)Characters\player.png" />
-    <Content Include="$(MSBuildThisFileDirectory)ColorGrading\main - Copy.png" />
-    <Content Include="$(MSBuildThisFileDirectory)ColorGrading\main.png" />
+    <Content Include="$(MSBuildThisFileDirectory)ColorGrading\aap128.png" />
     <Content Include="$(MSBuildThisFileDirectory)Fonts\b2_0.png" />
     <Content Include="$(MSBuildThisFileDirectory)Fonts\mono_0.png" />
     <Content Include="$(MSBuildThisFileDirectory)Interfaces\Atlas.png" />

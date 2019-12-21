@@ -111,7 +111,7 @@ namespace PhotoVs.Logic
                 new ColorGrading(GraphicsDevice,
                     canvas,
                     _services.AssetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
-                    _services.AssetLoader.GetAsset<Texture2D>("colorgrading/main.png")),
+                    _services.AssetLoader.GetAsset<Texture2D>("colorgrading/aap128.png")),
                 canvas);
             return renderer;
         }
