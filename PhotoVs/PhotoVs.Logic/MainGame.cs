@@ -202,6 +202,9 @@ namespace PhotoVs.Logic
 
             private IEnumerator DoThis()
             {
+                var text = TextInput("Hi", "Test", 10);
+                yield return text;
+
                 yield return Spawn(WaitTest());
                 Logger.Write.Trace("Test 1");
 

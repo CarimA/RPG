@@ -27,6 +27,11 @@ namespace PhotoVs.Logic.Plugins
             return new Dialogue(Services.SceneMachine, name, dialogue);
         }
 
+        public TextInput TextInput(string question, string defaultText = "", int limit = 15)
+        {
+            return new TextInput(Services.SceneMachine, question, defaultText, limit);
+        }
+
         public Pause Pause(float time)
         {
             return new Pause(time);

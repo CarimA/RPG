@@ -6,9 +6,13 @@
         Down,
         Left,
         Right,
+
         Action,
         Cancel,
+        Submit,
+
         Run,
+
         Fullscreen,
         Screenshot
     }

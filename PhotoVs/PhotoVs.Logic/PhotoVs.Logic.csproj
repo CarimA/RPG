@@ -92,6 +92,7 @@
     <Compile Include="WorldZoning\SMapBoundaryGeneration.cs" />
     <Compile Include="WorldZoning\SMapRenderer.cs" />
     <Compile Include="WorldZoning\World.cs" />
+    <Compile Include="YieldInstructions\TextInput.cs" />
     <Compile Include="YieldInstructions\Dialogue.cs" />
     <Compile Include="YieldInstructions\PauseUntil.cs" />
     <Compile Include="YieldInstructions\PauseWhile.cs" />

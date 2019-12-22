@@ -8,6 +8,7 @@ namespace PhotoVs.Logic.Scenes
     {
         private readonly DialogueScene _dialogueScene;
         private readonly OverworldScene _overworldScene;
+        private readonly TextInputScene _textInputScene;
 
         public ServiceLocator Services { get; }
 
@@ -16,6 +17,7 @@ namespace PhotoVs.Logic.Scenes
             Services = services;
             _overworldScene = new OverworldScene(this);
             _dialogueScene = new DialogueScene(this);
+            _textInputScene = new TextInputScene(this);
         }
 
         public void ChangeToOverworldScene()
@@ -26,6 +28,11 @@ namespace PhotoVs.Logic.Scenes
         public void PushDialogueScene(string name, string dialogue)
         {
             Push(_dialogueScene, name, dialogue);
+        }
+
+        public void PushTextInputScene(string question, string defaultText = "", int limit = 15)
+        {
+            Push(_textInputScene, question, limit, defaultText);
         }
     }
 }
