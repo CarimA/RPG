@@ -208,8 +208,8 @@ namespace PhotoVs.Logic
                 yield return Spawn(WaitTest());
                 Logger.Write.Trace("Test 1");
 
-                var a = Dialogue("test", _db.GetText("Intro"));
-                yield return a;
+                yield return Dialogue("test", $"Hello {text.Text}!");
+                yield return Dialogue("test", _db.GetText("Intro"));
                 Logger.Write.Trace("Test 2");
                 yield return new Pause(3f);
                 Logger.Write.Trace("Test 3");

@@ -91,16 +91,28 @@ namespace PhotoVs.Logic.Camera
 
         private void CheckPositionChanged()
         {
-            if (!_target.Components.TryGet(out CPosition position))
+            var hasPosition = _target.Components.TryGet(out CPosition position);
+            var hasSize = _target.Components.TryGet(out CSize size);
+
+            if (!hasPosition)
                 return;
-            if (_position == position.Position)
-                return;
+
+            if (!hasSize)
+            {
+                if (_position == position.Position)
+                    return;
+            }
+            else
+            {
+                if (_position == position.Position + (size.Size / 2))
+                    return;
+            }
 
             _lastPosition = _position;
             _position = position.Position;
 
             // todo: maybe rename to COffsetCamera?
-            if (_target.Components.TryGet(out CSize size))
+            if (hasSize)
                 _position += size.Size / 2;
 
             _isDirty = true;
