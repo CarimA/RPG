@@ -10,7 +10,13 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
         public Dialogue(SceneMachine sceneMachine, string name, string dialogue)
         {
             _sceneMachine = sceneMachine;
-            sceneMachine.PushDialogueScene(name, dialogue);
+
+            if (sceneMachine.Peek() is OverworldScene overworld)
+            {
+                overworld.PushDialogue(name, dialogue);
+            }
+
+            // todo: throw when not a matching scene
         }
 
         public bool Continue(GameTime gameTime)

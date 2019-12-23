@@ -6,33 +6,25 @@ namespace PhotoVs.Logic.Scenes
 {
     public class SceneMachine : StateMachine<IScene>
     {
-        private readonly DialogueScene _dialogueScene;
-        private readonly OverworldScene _overworldScene;
-        private readonly TextInputScene _textInputScene;
-
         public ServiceLocator Services { get; }
+
+        internal DialogueScene DialogueScene { get; }
+        internal TextInputScene TextInputScene { get; }
+        internal OverworldScene OverworldScene { get; }
 
         public SceneMachine(ServiceLocator services)
         {
             Services = services;
-            _overworldScene = new OverworldScene(this);
-            _dialogueScene = new DialogueScene(this);
-            _textInputScene = new TextInputScene(this);
+            OverworldScene = new OverworldScene(this);
+            DialogueScene = new DialogueScene(this);
+            TextInputScene = new TextInputScene(this);
         }
 
+        // todo: move to individual states to control scene flow and
+        // ensure that you can't call incorrect scenes from wrong places
         public void ChangeToOverworldScene()
         {
-            Change(_overworldScene);
-        }
-
-        public void PushDialogueScene(string name, string dialogue)
-        {
-            Push(_dialogueScene, name, dialogue);
-        }
-
-        public void PushTextInputScene(string question, string defaultText = "", int limit = 15)
-        {
-            Push(_textInputScene, question, limit, defaultText);
+            Change(OverworldScene);
         }
     }
 }

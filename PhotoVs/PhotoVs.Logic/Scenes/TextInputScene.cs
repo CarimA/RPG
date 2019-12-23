@@ -42,8 +42,8 @@ namespace PhotoVs.Logic.Scenes
             var spriteBatch = _scene.Services.SpriteBatch;
             var font = assetLoader.GetAsset<BitmapFont>("fonts/body.fnt");
 
-            const int cellWidth = 20;
-            const int cellHeight = 20;
+            const int cellWidth = 16;
+            const int cellHeight = 16;
 
             var offsetX = (320 / 2) - ((cellWidth * _keyboard[0].Length) / 2);
             var offsetY = (180 / 2) - ((cellHeight * _keyboard.Length) / 2) + 20;

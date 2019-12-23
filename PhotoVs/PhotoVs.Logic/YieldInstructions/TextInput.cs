@@ -11,7 +11,13 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
         public TextInput(SceneMachine sceneMachine, string question, string defaultText = "", int limit = 15)
         {
             _sceneMachine = sceneMachine;
-            sceneMachine.PushTextInputScene(question, defaultText, limit);
+
+            if (sceneMachine.Peek() is OverworldScene overworld)
+            {
+                overworld.PushTextInputScene(question, defaultText, limit);
+            }
+
+            // todo: throw when not a matching scene
         }
 
         public bool Continue(GameTime gameTime)

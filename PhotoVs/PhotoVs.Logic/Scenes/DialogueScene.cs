@@ -54,7 +54,7 @@ namespace PhotoVs.Logic.Scenes
 
             if (_dialogue.IsFinished())
             {
-                if (_input.ActionPressed(InputActions.Action)) IsFinished = true;
+                if (_input.ActionPressed(InputActions.Action) || _dialogue.FastForward) IsFinished = true;
             }
             else
             {

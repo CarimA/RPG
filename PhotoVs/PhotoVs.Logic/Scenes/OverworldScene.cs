@@ -55,5 +55,15 @@ namespace PhotoVs.Logic.Scenes
         public void Suspend()
         {
         }
+
+        public void PushDialogue(string name, string dialogue)
+        {
+            _scene.Push(_scene.DialogueScene, name, dialogue);
+        }
+
+        public void PushTextInputScene(string question, string defaultText = "", int limit = 15)
+        {
+            _scene.Push(_scene.TextInputScene, question, limit, defaultText);
+        }
     }
 }
