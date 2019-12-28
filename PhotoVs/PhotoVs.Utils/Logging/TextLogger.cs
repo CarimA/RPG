@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhotoVs.Utils.Logging
 {
     public class TextLogger : ILogger
     {
         private LogLevel _currentLevel;
-        private string _fileName;
+        private readonly string _fileName;
 
         // Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Logs"));
 
@@ -23,16 +19,6 @@ namespace PhotoVs.Utils.Logging
         public void SetLogLevel(LogLevel level)
         {
             _currentLevel = level;
-        }
-
-        private void Write(string text, params object[] args)
-        {
-            File.AppendAllText(
-                Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    $"PhotoVs/Logs/{_fileName}.log"),
-                string.Format(text, args));
-
         }
 
         public void Log(LogLevel level, string message, params object[] args)
@@ -68,6 +54,15 @@ namespace PhotoVs.Utils.Logging
         public void LogFatal(string message, params object[] args)
         {
             Log(LogLevel.Fatal, message, args);
+        }
+
+        private void Write(string text, params object[] args)
+        {
+            File.AppendAllText(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    $"PhotoVs/Logs/{_fileName}.log"),
+                string.Format(text, args));
         }
     }
 }

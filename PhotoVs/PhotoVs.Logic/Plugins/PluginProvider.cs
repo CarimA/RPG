@@ -44,6 +44,7 @@ namespace PhotoVs.Logic.Plugins
                         Logger.Write.Error(e.ToString());
                     }
                 }
+
                 Logger.Write.Info($"Loaded {_plugins.Count} plugin(s)");
             }
             else

@@ -18,6 +18,11 @@ namespace PhotoVs.Logic.Debug
         private readonly Stopwatch _drawTimer;
 
         private readonly BitmapFont _font;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly PolygonPrimitive _textBackground;
+        private readonly PolygonPrimitive _updateBar;
+
+        private readonly Stopwatch _updateTimer;
         private int _fps;
 
         private int _fpsTicks;
@@ -25,11 +30,6 @@ namespace PhotoVs.Logic.Debug
         private TimeSpan _lastDraw;
 
         private TimeSpan _lastUpdate;
-        private readonly SpriteBatch _spriteBatch;
-        private readonly PolygonPrimitive _textBackground;
-        private readonly PolygonPrimitive _updateBar;
-
-        private readonly Stopwatch _updateTimer;
 
         public DiagnosticInfo(SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {

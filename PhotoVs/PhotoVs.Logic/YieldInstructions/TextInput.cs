@@ -13,9 +13,7 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
             _sceneMachine = sceneMachine;
 
             if (sceneMachine.Peek() is OverworldScene overworld)
-            {
                 overworld.PushTextInputScene(question, defaultText, limit);
-            }
 
             // todo: throw when not a matching scene
         }

@@ -44,7 +44,9 @@ namespace PhotoVs.Logic.Input
             _graphicsDevice.GetBackBufferData(data);
             using var texture = new Texture2D(_graphicsDevice, width, height);
             texture.SetData(data);
-            using var stream = File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"PhotoVs/Screenshots/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{Guid.NewGuid().ToString()}.png"));
+            using var stream = File.Create(Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                $"PhotoVs/Screenshots/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{Guid.NewGuid().ToString()}.png"));
             texture.SaveAsPng(stream, width, height);
         }
     }

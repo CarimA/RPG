@@ -11,10 +11,7 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
         {
             _sceneMachine = sceneMachine;
 
-            if (sceneMachine.Peek() is OverworldScene overworld)
-            {
-                overworld.PushDialogue(name, dialogue);
-            }
+            if (sceneMachine.Peek() is OverworldScene overworld) overworld.PushDialogue(name, dialogue);
 
             // todo: throw when not a matching scene
         }

@@ -2,7 +2,6 @@
 using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Logic.Input;
 using PhotoVs.Models.FSM;
-using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic.Scenes
 {
@@ -10,9 +9,6 @@ namespace PhotoVs.Logic.Scenes
     {
         private const float _sustainTime = 0.8f;
         private const float _repeatTime = 0.25f;
-
-        private int _cursorX;
-        private int _cursorY;
 
         private readonly char[][] _keyboard =
         {
@@ -23,10 +19,14 @@ namespace PhotoVs.Logic.Scenes
             "0123456789-. ".ToCharArray()
         };
 
+        private readonly SceneMachine _scene;
+
+        private int _cursorX;
+        private int _cursorY;
+
         private int _limit;
 
         private string _question;
-        private readonly SceneMachine _scene;
 
         public string Text { get; private set; }
         public bool IsFinished { get; private set; }
@@ -45,19 +45,19 @@ namespace PhotoVs.Logic.Scenes
             const int cellWidth = 16;
             const int cellHeight = 16;
 
-            var offsetX = (320 / 2) - ((cellWidth * _keyboard[0].Length) / 2);
-            var offsetY = (180 / 2) - ((cellHeight * _keyboard.Length) / 2) + 20;
+            var offsetX = 320 / 2 - cellWidth * _keyboard[0].Length / 2;
+            var offsetY = 180 / 2 - cellHeight * _keyboard.Length / 2 + 20;
 
             spriteBatch.Begin();
 
             var questionSize = font.MeasureString(_question).Width;
-            var qX = (320 / 2) - (questionSize / 2);
+            var qX = 320 / 2 - questionSize / 2;
             var qY = offsetY - 40;
 
             spriteBatch.DrawString(font, _question, new Vector2(qX, qY), Color.HotPink);
 
             var textCellWidth = 14;
-            var tX = (320 / 2) - ((_limit * textCellWidth) / 2);
+            var tX = 320 / 2 - _limit * textCellWidth / 2;
             var tY = qY + 20;
 
             for (var i = 0; i < _limit; i++)
@@ -67,23 +67,22 @@ namespace PhotoVs.Logic.Scenes
                     : Text[i]).ToString();
                 var characterSize = font.MeasureString(character).Width;
 
-                spriteBatch.DrawString(font, character, new Vector2(tX + ((14 * i) - (characterSize / 2)), tY), Color.White);
+                spriteBatch.DrawString(font, character, new Vector2(tX + (14 * i - characterSize / 2), tY),
+                    Color.White);
             }
 
             for (var y = 0; y < _keyboard.Length; y++)
+            for (var x = 0; x < _keyboard[y].Length; x++)
             {
-                for (var x = 0; x < _keyboard[y].Length; x++)
-                {
-                    var character = _keyboard[y][x].ToString();
-                    var characterSize = font.MeasureString(character);
-                    var dX = offsetX + (int) ((cellWidth * x) + ((cellWidth / 2) - (characterSize.Width / 2)));
-                    var dY = offsetY + (int) ((cellHeight * y) + ((cellHeight / 2) - (characterSize.Height / 2)));
-                    var color = (y == _cursorY && x == _cursorX)
-                        ? Color.Yellow
-                        : Color.White;
+                var character = _keyboard[y][x].ToString();
+                var characterSize = font.MeasureString(character);
+                var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.Width / 2));
+                var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Height / 2));
+                var color = y == _cursorY && x == _cursorX
+                    ? Color.Yellow
+                    : Color.White;
 
-                    spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
-                }
+                spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
             }
 
             spriteBatch.End();
@@ -124,22 +123,12 @@ namespace PhotoVs.Logic.Scenes
             var input = _scene.Services.Player.Input;
 
             if (input.ActionPressed(InputActions.Submit))
-            {
                 if (Submit())
-                {
                     return;
-                }
-            }
 
-            if (input.ActionPressed(InputActions.Action))
-            {
-                AddCharacter();
-            }
+            if (input.ActionPressed(InputActions.Action)) AddCharacter();
 
-            if (input.ActionPressed(InputActions.Cancel))
-            {
-                RemoveCharacter();
-            }
+            if (input.ActionPressed(InputActions.Cancel)) RemoveCharacter();
 
             var mX = 0;
             var mY = 0;

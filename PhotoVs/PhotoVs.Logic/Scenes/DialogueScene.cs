@@ -14,10 +14,10 @@ namespace PhotoVs.Logic.Scenes
     // horrible port of horrible code but it works
     public class DialogueScene : IUpdateableScene, IDrawableScene
     {
+        private readonly SceneMachine _scene;
         private DialogueMarkup _dialogue;
 
         private string _name;
-        private readonly SceneMachine _scene;
         private ShakingBox _shakingBox;
         private SpriteBatch _spriteBatch => _scene.Services.SpriteBatch;
         private IAssetLoader _assetLoader => _scene.Services.AssetLoader;

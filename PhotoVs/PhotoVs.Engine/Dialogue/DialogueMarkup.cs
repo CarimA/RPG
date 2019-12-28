@@ -15,20 +15,20 @@ namespace PhotoVs.Engine.Dialogue
         private readonly float _maxCharTime;
 
         private readonly int _maxLines;
+        private readonly Vector2 _origin;
 
         private readonly Random _rng;
         private readonly string _text;
         private int _breakIndex;
         private float _charTime;
         private int _currentIndex;
-        private readonly Vector2 _origin;
         private int _remainingLines;
 
         public bool FastForward { get; set; }
         public bool IsFinished { get; set; }
         public bool IsPaused { get; set; }
 
-    public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
+        public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
         {
             _font = font;
             _origin = origin;

@@ -34,8 +34,8 @@ namespace PhotoVs.Logic
 {
     public class MainGame : Game
     {
-        private DiagnosticInfo _info;
         private readonly ServiceLocator _services;
+        private DiagnosticInfo _info;
 
         public MainGame()
         {
@@ -71,7 +71,8 @@ namespace PhotoVs.Logic
             _services.Set(new Coroutines());
             _services.Set(new PluginProvider(_services));
             _services.Plugins.LoadPlugins("assets/plugins/");
-            _services.Plugins.LoadPlugins(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "PhotoVs/Mods"));
+            _services.Plugins.LoadPlugins(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "PhotoVs/Mods"));
             _services.Plugins.LoadPlugin(typeof(TestPlugin));
 
             _services.Set(CreateAssetLoader());

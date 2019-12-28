@@ -104,7 +104,7 @@ namespace PhotoVs.Logic.Camera
             }
             else
             {
-                if (_position == position.Position + (size.Size / 2))
+                if (_position == position.Position + size.Size / 2)
                     return;
             }
 

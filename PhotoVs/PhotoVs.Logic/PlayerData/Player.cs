@@ -61,7 +61,7 @@ namespace PhotoVs.Logic.PlayerData
                     [InputActions.Submit] = new List<Buttons> {Buttons.Start},
                     [InputActions.Cancel] = new List<Buttons> {Buttons.B},
                     [InputActions.Run] = new List<Buttons> {Buttons.B},
-                    [InputActions.Fullscreen] = new List<Buttons>{Buttons.LeftShoulder},
+                    [InputActions.Fullscreen] = new List<Buttons> {Buttons.LeftShoulder},
                     [InputActions.Screenshot] = new List<Buttons> {Buttons.Back}
                 }
             });

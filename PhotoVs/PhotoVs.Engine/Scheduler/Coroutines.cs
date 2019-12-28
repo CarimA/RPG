@@ -39,7 +39,7 @@ namespace PhotoVs.Engine.Scheduler
                 if (routine.Current == null)
                     if (!routine.MoveNext())
                         _routines.RemoveAt(i--);
-                    // this routine has finished
+                // this routine has finished
 
                 if (routine.Current is IEnumerator enumerator)
                 {
