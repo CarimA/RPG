@@ -21,14 +21,14 @@ namespace PhotoVs.Engine.Dialogue
         private int _breakIndex;
         private float _charTime;
         private int _currentIndex;
-        private bool _isFinished;
-        private bool _isPaused;
         private readonly Vector2 _origin;
         private int _remainingLines;
 
         public bool FastForward { get; set; }
+        public bool IsFinished { get; set; }
+        public bool IsPaused { get; set; }
 
-        public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
+    public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
         {
             _font = font;
             _origin = origin;
@@ -36,8 +36,8 @@ namespace PhotoVs.Engine.Dialogue
             _remainingLines = lines;
             _breakIndex = 0;
             _currentIndex = 0;
-            _isPaused = false;
-            _isFinished = false;
+            IsPaused = false;
+            IsFinished = false;
             _maxCharTime = 1 / 18f;
             _charTime = _maxCharTime;
             FastForward = false;
@@ -49,9 +49,9 @@ namespace PhotoVs.Engine.Dialogue
 
         public void Update(GameTime gameTime)
         {
-            if (!_isPaused && !_isFinished)
+            if (!IsPaused && !IsFinished)
             {
-                _charTime -= (float) gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 8 : 1);
+                _charTime -= (float) gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 25 : 1);
 
                 if (_charTime <= 0)
                 {
@@ -65,13 +65,13 @@ namespace PhotoVs.Engine.Dialogue
                         if (activeMarkup.OfType<NewLineMarkup>().Any())
                         {
                             _remainingLines--;
-                            if (_remainingLines <= 0) _isPaused = true;
+                            if (_remainingLines <= 0) IsPaused = true;
                         }
 
                         if (activeMarkup.OfType<EndOfParagraphMarkup>().Any())
                         {
                             _remainingLines = 0;
-                            _isPaused = true;
+                            IsPaused = true;
                         }
 
                         if (activeMarkup.OfType<WaitMarkup>().Any())
@@ -81,11 +81,11 @@ namespace PhotoVs.Engine.Dialogue
                         }
                     }
 
-                    if (_currentIndex >= _text.Length) _isFinished = true;
+                    if (_currentIndex >= _text.Length) IsFinished = true;
                 }
             }
 
-            if (FastForward && _isPaused) Next();
+            if (FastForward && IsPaused) Next();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -182,17 +182,7 @@ namespace PhotoVs.Engine.Dialogue
         {
             _remainingLines = _maxLines;
             _breakIndex = _currentIndex;
-            _isPaused = false;
-        }
-
-        public bool IsPaused()
-        {
-            return _isPaused;
-        }
-
-        public bool IsFinished()
-        {
-            return _isFinished;
+            IsPaused = false;
         }
 
         private static (string, Dictionary<int, List<IMarkup>>) ParseMarkup(string text)

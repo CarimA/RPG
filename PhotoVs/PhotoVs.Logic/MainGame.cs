@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -40,6 +42,19 @@ namespace PhotoVs.Logic
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
 
+            var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save1"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save2"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save3"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Mods"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Options"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Screenshots"));
+            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Logs"));
+
+            Logger.Write.Trace("Creating [My Documents]/PhotoVs");
+
             _services = new ServiceLocator(new Events());
             _services.Set(new GraphicsDeviceManager(this)
             {
@@ -54,7 +69,9 @@ namespace PhotoVs.Logic
             _services.Set(GraphicsDevice);
             _services.Set(new SpriteBatch(GraphicsDevice));
             _services.Set(new Coroutines());
-            _services.Set(new PluginProvider("assets/plugins/", _services));
+            _services.Set(new PluginProvider(_services));
+            _services.Plugins.LoadPlugins("assets/plugins/");
+            _services.Plugins.LoadPlugins(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "PhotoVs/Mods"));
             _services.Plugins.LoadPlugin(typeof(TestPlugin));
 
             _services.Set(CreateAssetLoader());

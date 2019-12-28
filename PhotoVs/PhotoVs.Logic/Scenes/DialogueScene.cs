@@ -23,6 +23,8 @@ namespace PhotoVs.Logic.Scenes
         private IAssetLoader _assetLoader => _scene.Services.AssetLoader;
         private GameInput _input => _scene.Services.Player.Input;
 
+        // todo: text log by saving a queue
+
         public bool IsFinished { get; private set; }
 
         public DialogueScene(SceneMachine scene)
@@ -52,13 +54,13 @@ namespace PhotoVs.Logic.Scenes
             _dialogue.FastForward = _input.ActionDown(InputActions.Run);
             _dialogue.Update(gameTime);
 
-            if (_dialogue.IsFinished())
+            if (_dialogue.IsFinished)
             {
                 if (_input.ActionPressed(InputActions.Action) || _dialogue.FastForward) IsFinished = true;
             }
             else
             {
-                if (_dialogue.IsPaused())
+                if (_dialogue.IsPaused)
                     if (_input.ActionPressed(InputActions.Action))
                         _dialogue.Next();
             }

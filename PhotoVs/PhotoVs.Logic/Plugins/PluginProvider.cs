@@ -14,17 +14,13 @@ namespace PhotoVs.Logic.Plugins
         private readonly List<Plugin> _plugins;
         private readonly ServiceLocator _services;
 
-        public PluginProvider(string directory, ServiceLocator services)
+        public PluginProvider(ServiceLocator services)
         {
             _plugins = new List<Plugin>();
             _services = services;
-
-            LoadPlugins(directory);
-
-            Logger.Write.Info($"Loaded {_plugins.Count} plugin(s)");
         }
 
-        private void LoadPlugins(string directory)
+        public void LoadPlugins(string directory)
         {
             if (Directory.Exists(directory))
             {
@@ -48,6 +44,7 @@ namespace PhotoVs.Logic.Plugins
                         Logger.Write.Error(e.ToString());
                     }
                 }
+                Logger.Write.Info($"Loaded {_plugins.Count} plugin(s)");
             }
             else
             {
