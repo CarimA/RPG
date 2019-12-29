@@ -104,6 +104,9 @@
     <Compile Include="Graphics\TextureAtlases\TextureRegion2D.cs" />
     <Compile Include="Graphics\VirtualRenderTarget2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scheduler\YieldInstructions\Pause.cs" />
+    <Compile Include="Scheduler\YieldInstructions\PauseUntil.cs" />
+    <Compile Include="Scheduler\YieldInstructions\PauseWhile.cs" />
     <Compile Include="TiledMaps\ExternalTileset.cs" />
     <Compile Include="TiledMaps\Frame.cs" />
     <Compile Include="TiledMaps\Helpers.cs" />

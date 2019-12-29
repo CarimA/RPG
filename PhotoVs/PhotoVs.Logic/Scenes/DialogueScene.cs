@@ -19,9 +19,6 @@ namespace PhotoVs.Logic.Scenes
 
         private string _name;
         private ShakingBox _shakingBox;
-        private SpriteBatch _spriteBatch => _scene.Services.SpriteBatch;
-        private IAssetLoader _assetLoader => _scene.Services.AssetLoader;
-        private GameInput _input => _scene.Services.Player.Input;
 
         // todo: text log by saving a queue
 
@@ -34,34 +31,39 @@ namespace PhotoVs.Logic.Scenes
 
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_assetLoader.GetAsset<Texture2D>("portraits/test3.png"), new Vector2(0, 180 - 165),
-                Color.White);
-            _spriteBatch.End();
+            var spriteBatch = _scene.Services.SpriteBatch;
+            var assetLoader = _scene.Services.AssetLoader;
 
-            _spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin();
+            spriteBatch.Draw(assetLoader.GetAsset<Texture2D>("portraits/test3.png"), new Vector2(0, 180 - 165),
+                Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
             _shakingBox.Draw(gameTime);
-            var font = _assetLoader.GetAsset<BitmapFont>("fonts/body.fnt");
-            _spriteBatch.DrawString(font, _name, new Vector2(126, 94), Color.White);
-            _dialogue.Draw(gameTime, _spriteBatch);
-            _spriteBatch.End();
+            var font = assetLoader.GetAsset<BitmapFont>("fonts/body.fnt");
+            spriteBatch.DrawString(font, _name, new Vector2(126, 94), Color.White);
+            _dialogue.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
         }
 
         public void Update(GameTime gameTime)
         {
+            var input = _scene.Services.Player.Input;
+
             _shakingBox.Update(gameTime);
 
-            _dialogue.FastForward = _input.ActionDown(InputActions.Run);
+            _dialogue.FastForward = input.ActionDown(InputActions.Run);
             _dialogue.Update(gameTime);
 
             if (_dialogue.IsFinished)
             {
-                if (_input.ActionPressed(InputActions.Action) || _dialogue.FastForward) IsFinished = true;
+                if (input.ActionPressed(InputActions.Action) || _dialogue.FastForward) IsFinished = true;
             }
             else
             {
                 if (_dialogue.IsPaused)
-                    if (_input.ActionPressed(InputActions.Action))
+                    if (input.ActionPressed(InputActions.Action))
                         _dialogue.Next();
             }
         }
@@ -70,18 +72,21 @@ namespace PhotoVs.Logic.Scenes
 
         public void Enter(params object[] args)
         {
+            var spriteBatch = _scene.Services.SpriteBatch;
+            var assetLoader = _scene.Services.AssetLoader;
+
             _name = args[0].ToString();
             var text = args[1].ToString();
 
             var x = 110;
             var y = 110;
-            _shakingBox = new ShakingBox(_spriteBatch, new List<RectangleF>
+            _shakingBox = new ShakingBox(spriteBatch, new List<RectangleF>
             {
                 new RectangleF(x, y, 200, 65),
                 new RectangleF(x + 15 - 3, y - 20, 90, 25)
             });
 
-            _dialogue = new DialogueMarkup(_assetLoader.GetAsset<BitmapFont>("fonts/body.fnt"),
+            _dialogue = new DialogueMarkup(assetLoader.GetAsset<BitmapFont>("fonts/body.fnt"),
                 new Vector2(113, 114), //320 - TextWidth - 20, 133),
                 text,
                 3,

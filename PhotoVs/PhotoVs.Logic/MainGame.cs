@@ -97,7 +97,7 @@ namespace PhotoVs.Logic
 
         private IAssetLoader CreateAssetLoader()
         {
-            var assetLoader = new HotReloadAssetLoader(new FileSystemStreamProvider("assets/"));
+            var assetLoader = new HotReloadAssetLoader(_services.Coroutines, new FileSystemStreamProvider("assets/"));
             assetLoader
                 .RegisterTypeLoader(new EffectTypeLoader(_services.GraphicsDevice))
                 .RegisterTypeLoader(new TextTypeLoader())

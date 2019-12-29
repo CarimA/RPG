@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using PhotoVs.Engine.Scheduler;
 using PhotoVs.Models.Assets;
 using PhotoVs.Utils.Logging;
 
@@ -10,8 +11,8 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
     {
         private readonly FileSystemWatcher _fsWatcher;
 
-        public HotReloadAssetLoader(IStreamProvider streamProvider)
-            : base(streamProvider)
+        public HotReloadAssetLoader(Coroutines coroutines, IStreamProvider streamProvider)
+            : base(coroutines, streamProvider)
         {
             Logger.Write.Info($"Initialised {nameof(HotReloadAssetLoader)}");
 

@@ -72,8 +72,6 @@ namespace PhotoVs.Logic.WorldZoning
             {
                 throw new InvalidDataException($"Chunk \"{file}\" has bad name");
             }
-
-            _assetLoader.UnloadAsset(file);
         }
 
         private void ProcessLayers(Map map, int x, int y)

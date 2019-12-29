@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using PhotoVs.Engine.Scheduler;
+using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Models.Assets;
 using PhotoVs.Utils.Logging;
 
@@ -8,15 +11,38 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 {
     public class AssetLoader : IAssetLoader
     {
+        protected readonly Dictionary<string, int> _lastUsed;
         protected readonly Dictionary<string, object> _assetCache;
         protected readonly IStreamProvider _streamProvider;
         protected readonly Dictionary<Type, object> _typeLoaders;
 
-        public AssetLoader(IStreamProvider streamProvider)
+        public AssetLoader(Coroutines coroutines, IStreamProvider streamProvider)
         {
+            _lastUsed = new Dictionary<string, int>();
             _assetCache = new Dictionary<string, object>();
             _typeLoaders = new Dictionary<Type, object>();
             _streamProvider = streamProvider;
+
+            coroutines.Start(UnloadUnusedAssets());
+        }
+
+        private IEnumerator UnloadUnusedAssets()
+        {
+            while (true)
+            {
+                yield return new Pause(8f);
+
+                foreach (var kvp in _lastUsed)
+                {
+                    if (!_assetCache.ContainsKey(kvp.Key))
+                        continue;
+
+                    if (kvp.Value < Environment.TickCount - 8000)
+                    {
+                        UnloadAsset(kvp.Key);
+                    }
+                }
+            }
         }
 
         public T GetAsset<T>(string filepath) where T : class
@@ -24,6 +50,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             filepath = SanitiseFilename(filepath);
             if (_assetCache.TryGetValue(filepath, out var asset))
             {
+                _lastUsed[filepath] = Environment.TickCount;
                 if (asset != null)
                     return (T) asset;
             }

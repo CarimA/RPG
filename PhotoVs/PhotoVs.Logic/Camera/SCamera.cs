@@ -155,7 +155,7 @@ namespace PhotoVs.Logic.Camera
 
         public void Attach(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: _transform);
+            spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: _transform);
         }
 
         public void Detach(SpriteBatch spriteBatch)
