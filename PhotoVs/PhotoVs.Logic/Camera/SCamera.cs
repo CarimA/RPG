@@ -146,8 +146,8 @@ namespace PhotoVs.Logic.Camera
                              -((float) (_random.NextDouble() * intensity * 2) - intensity),
                              -((float) (_random.NextDouble() * intensity * 2) - intensity), 0)) *
                          Matrix.CreateScale(new Vector3(_zoom, _zoom, 1)) *
-                         Matrix.CreateTranslation(new Vector3(_renderer.GetCanvasSize().GetWidth() / 2,
-                             _renderer.GetCanvasSize().GetHeight() / 2,
+                         Matrix.CreateTranslation(new Vector3(_renderer.CanvasSize.GetWidth() / 2,
+                             _renderer.CanvasSize.GetHeight() / 2,
                              0)) *
                          Matrix.CreateRotationZ(_rotate);
             _isDirty = false;
@@ -223,10 +223,10 @@ namespace PhotoVs.Logic.Camera
             var inverseTransform = Matrix.Invert(_transform);
 
             var topLeft = Vector2.Transform(Vector2.Zero, inverseTransform);
-            var topRight = Vector2.Transform(new Vector2(_renderer.GetCanvasSize().GetWidth(), 0), inverseTransform);
-            var bottomLeft = Vector2.Transform(new Vector2(0, _renderer.GetCanvasSize().GetHeight()), inverseTransform);
+            var topRight = Vector2.Transform(new Vector2(_renderer.CanvasSize.GetWidth(), 0), inverseTransform);
+            var bottomLeft = Vector2.Transform(new Vector2(0, _renderer.CanvasSize.GetHeight()), inverseTransform);
             var bottomRight = Vector2.Transform(
-                new Vector2(_renderer.GetCanvasSize().GetWidth(), _renderer.GetCanvasSize().GetHeight()),
+                new Vector2(_renderer.CanvasSize.GetWidth(), _renderer.CanvasSize.GetHeight()),
                 inverseTransform);
 
             var min = new Vector2(

@@ -1,18 +1,37 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Security.Permissions;
+using System.Text;
+using System.Xml.Linq;
+using System.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Graphics;
+using PhotoVs.Engine.Graphics.BitmapFonts;
+using PhotoVs.Logic.Properties;
 using PhotoVs.Models.ECS;
+using PhotoVs.Utils.Extensions;
+using System.Windows.Forms;
 
 namespace PhotoVs.Logic.Input
 {
     public class STakeScreenshot : IUpdateableSystem
     {
         private readonly GraphicsDevice _graphicsDevice;
+        private readonly Renderer _renderer;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly BitmapFont _font;
 
-        public STakeScreenshot(GraphicsDevice graphicsDevice)
+        public STakeScreenshot(GraphicsDevice graphicsDevice, Renderer renderer, SpriteBatch spriteBatch, BitmapFont font)
         {
             _graphicsDevice = graphicsDevice;
+            _renderer = renderer;
+            _spriteBatch = spriteBatch;
+            _font = font;
         }
 
         public int Priority { get; set; } = 999;
@@ -38,16 +57,66 @@ namespace PhotoVs.Logic.Input
 
         private void TakeScreenshot()
         {
-            var width = _graphicsDevice.PresentationParameters.BackBufferWidth;
-            var height = _graphicsDevice.PresentationParameters.BackBufferHeight;
-            var data = new Color[width * height];
-            _graphicsDevice.GetBackBufferData(data);
-            using var texture = new Texture2D(_graphicsDevice, width, height);
-            texture.SetData(data);
+            var rt = new RenderTarget2D(_graphicsDevice, 1280, 720);
+            _graphicsDevice.SetRenderTarget(rt);
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            _spriteBatch.Draw(_renderer.FilterView, new Rectangle(0, 0, 1280, 720), Color.White);
+
+            var text = "PhotoVs - Development Build - discord.gg/ew2X8Sy";
+            var size = _font.MeasureString(text);
+
+            var x = (1280 / 2) - (size.Width / 2);
+            var y = (720 - 20) - size.Height;
+            var t = 2;
+
+            _spriteBatch.DrawString(_font, text, new Vector2(x + t, y - t), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(x + t, y + t), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(x - t, y - t), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(x - t, y + t), Color.Black);
+
+            _spriteBatch.DrawString(_font, text, new Vector2(x + t, y), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(x - t, y), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(x, y - t), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(x, y + t), Color.Black);
+
+            _spriteBatch.DrawString(_font, text, new Vector2(x, y), Color.Yellow);
+
+            _spriteBatch.End();
+            _graphicsDevice.SetRenderTarget(null);
+
             using var stream = File.Create(Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 $"PhotoVs/Screenshots/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{Guid.NewGuid().ToString()}.png"));
-            texture.SaveAsPng(stream, width, height);
+            rt.SaveAsPng(stream, 1280, 720);
+
+            UploadToDiscord(rt);
+
+            rt.Dispose();
+            stream.Dispose();
+        }
+
+        private async void UploadToDiscord(RenderTarget2D rt)
+        {
+            using var ms = new MemoryStream();
+
+            rt.SaveAsPng(ms, 1280, 720);
+
+            using var request = new WebClient();
+
+            var clientID = Resources.ResourceManager.GetString("IMGUR_CLIENT_ID");
+            request.Headers.Add("Authorization", "Client-ID " + clientID);
+            var values = new NameValueCollection {{"image", Convert.ToBase64String(ms.GetBuffer())}};
+            var res = request.UploadValues("https://api.imgur.com/3/upload.xml", values);
+
+            using var response = new MemoryStream(res);
+
+            foreach (var data in XDocument.Load(response).Descendants("data"))
+            {
+                var val = data.Element("link").Value;
+                Clipboard.SetText(val);
+                await new HttpClient().PostAsync(Resources.ResourceManager.GetString("DISCORD_WEBHOOK_URL"),
+                    new StringContent("{\"embeds\":[{\"image\":{\"url\":\"" + val + "\"}}]}", Encoding.UTF8, "application/json"));
+            }
         }
     }
 }

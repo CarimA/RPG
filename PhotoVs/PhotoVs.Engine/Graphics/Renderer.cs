@@ -7,10 +7,11 @@ namespace PhotoVs.Engine.Graphics
     public class Renderer
     {
         //private readonly VirtualRenderTarget2D _uiView;
-        private readonly CanvasSize _canvasSize;
+        public CanvasSize CanvasSize { get; private set; }
         private readonly ColorGrading _colorGrading;
 
-        private readonly VirtualRenderTarget2D _gameView;
+        public VirtualRenderTarget2D GameView { get; private set; }
+        public VirtualRenderTarget2D FilterView { get; private set; }
         private readonly GraphicsDeviceManager _graphics;
         private readonly GraphicsDevice _graphicsDevice;
 
@@ -23,9 +24,9 @@ namespace PhotoVs.Engine.Graphics
             _window = window;
             _graphicsDevice = graphicsDevice;
             _colorGrading = colorGrading;
-            _gameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight()); //);
+            GameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight()); //);
             //_uiView = new VirtualRenderTarget2D(graphicsDevice, 320 * 2, 180 * 2);
-            _canvasSize = canvasSize;
+            CanvasSize = canvasSize;
 
             window.ClientSizeChanged += (sender, e) => { UpdateViewports(); };
             UpdateViewports();
@@ -39,7 +40,7 @@ namespace PhotoVs.Engine.Graphics
                     _graphicsDevice.SetRenderTarget(null);
                     break;
                 case RenderMode.Game:
-                    _graphicsDevice.SetRenderTarget(_gameView);
+                    _graphicsDevice.SetRenderTarget(GameView);
                     _graphicsDevice.Clear(Color.Black);
                     break;
                 /*case RenderMode.UI:
@@ -56,10 +57,10 @@ namespace PhotoVs.Engine.Graphics
             SetRenderMode(RenderMode.None);
             _graphicsDevice.Clear(Color.Black);
 
-            //_gameView.DrawScaled(spriteBatch, SamplerState.PointClamp);
-            var filter = _colorGrading.Filter(spriteBatch, _gameView);
-            filter.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-            filter.DrawScaled(spriteBatch, SamplerState.PointClamp);
+            //GameView.DrawScaled(spriteBatch, SamplerState.PointClamp);
+            FilterView = _colorGrading.Filter(spriteBatch, GameView);
+            FilterView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            FilterView.DrawScaled(spriteBatch, SamplerState.PointClamp);
         }
 
         private void UpdateViewports()
@@ -68,13 +69,8 @@ namespace PhotoVs.Engine.Graphics
             _graphics.PreferredBackBufferHeight = _window.ClientBounds.Height;
             _graphics.ApplyChanges();
 
-            _gameView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            GameView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             //_uiView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-        }
-
-        public CanvasSize GetCanvasSize()
-        {
-            return _canvasSize;
         }
     }
 }

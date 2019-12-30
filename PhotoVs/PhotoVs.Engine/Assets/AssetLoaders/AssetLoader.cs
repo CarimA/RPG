@@ -28,9 +28,14 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
         private IEnumerator UnloadUnusedAssets()
         {
+            var time = 8f;
+            var pause = new Pause(time);
+            var toRemove = new List<string>();
+
             while (true)
             {
-                yield return new Pause(8f);
+                yield return pause;
+                pause.Time = time;
 
                 foreach (var kvp in _lastUsed)
                 {
@@ -39,9 +44,17 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
                     if (kvp.Value < Environment.TickCount - 8000)
                     {
+                        toRemove.Add(kvp.Key);
                         UnloadAsset(kvp.Key);
                     }
                 }
+
+                foreach (var key in toRemove)
+                {
+                    _lastUsed.Remove(key);
+                }
+
+                toRemove.Clear();
             }
         }
 

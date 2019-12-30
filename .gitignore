@@ -348,3 +348,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/PhotoVs/PhotoVs.Logic/Properties/Resources.resx
+/PhotoVs/PhotoVs.Logic/Properties/Resources.Designer.cs
