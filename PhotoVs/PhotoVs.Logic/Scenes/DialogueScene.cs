@@ -35,7 +35,7 @@ namespace PhotoVs.Logic.Scenes
             var assetLoader = _scene.Services.AssetLoader;
 
             spriteBatch.Begin();
-            spriteBatch.Draw(assetLoader.GetAsset<Texture2D>("portraits/test3.png"), new Vector2(0, 180 - 165),
+            spriteBatch.Draw(assetLoader.GetAsset<Texture2D>("portraits/test2.png"), new Vector2(0, 0),
                 Color.White);
             spriteBatch.End();
 

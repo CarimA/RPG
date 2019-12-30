@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.Data;
+using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Logic.Input;
 using PhotoVs.Models.FSM;
@@ -10,17 +12,24 @@ namespace PhotoVs.Logic.Scenes
         private const float _sustainTime = 0.8f;
         private const float _repeatTime = 0.25f;
 
-        private readonly char[][] _keyboard =
+        private const int _keysPerRow = 12;
+        private int _currentKeyboard = 0;
+
+        // | is inaccessible
+        // ^ is shift
+        // & is next keyboard
+        // £ is delete
+        // $ is submit
+        private readonly List<string> _keyboards = new List<string>
         {
-            "ABCDEFGHIJKLM".ToCharArray(),
-            "NOPQRSTUVWXYZ".ToCharArray(),
-            "abcdefghijklm".ToCharArray(),
-            "nopqrstuvwxyz".ToCharArray(),
-            "0123456789-. ".ToCharArray()
-        };
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ          ^^&&££££$$$$",
+            "abcdefghijklmnopqrstuvwxyz          ^^&&££££$$$$",
+            "0123456789  .!?-_+=                 ^^&&££££$$$$"
+        };    
 
         private readonly SceneMachine _scene;
 
+        private bool _shiftMode;
         private int _cursorX;
         private int _cursorY;
 
@@ -36,17 +45,33 @@ namespace PhotoVs.Logic.Scenes
             _scene = scene;
         }
 
+        private int KeyboardCellWidth()
+        {
+            return _keysPerRow;
+        }
+
+        private int KeyboardCellHeight()
+        {
+            return _keyboards[_currentKeyboard].Length / _keysPerRow;
+        }
+
+        private string GetKey(int x, int y)
+        {
+            var index = (_keysPerRow * y) + (x % _keysPerRow);
+            return _keyboards[_currentKeyboard][index].ToString();
+        }
+
         public void Draw(GameTime gameTime)
         {
             var assetLoader = _scene.Services.AssetLoader;
             var spriteBatch = _scene.Services.SpriteBatch;
             var font = assetLoader.GetAsset<BitmapFont>("fonts/body.fnt");
 
-            const int cellWidth = 16;
-            const int cellHeight = 16;
+            const int cellWidth = 18;
+            const int cellHeight = 28;
 
-            var offsetX = 320 / 2 - cellWidth * _keyboard[0].Length / 2;
-            var offsetY = 180 / 2 - cellHeight * _keyboard.Length / 2 + 20;
+            var offsetX = 320 / 2 - cellWidth * KeyboardCellWidth() / 2;
+            var offsetY = 180 / 2 - cellHeight * KeyboardCellHeight() / 2 + 20;
 
             spriteBatch.Begin();
 
@@ -71,10 +96,41 @@ namespace PhotoVs.Logic.Scenes
                     Color.White);
             }
 
-            for (var y = 0; y < _keyboard.Length; y++)
-            for (var x = 0; x < _keyboard[y].Length; x++)
+            for (var y = 0; y < KeyboardCellHeight(); y++)
+            for (var x = 0; x < KeyboardCellWidth(); x++)
             {
-                var character = _keyboard[y][x].ToString();
+                // ^ is shift
+                // & is next keyboard
+                // £ is delete
+                // $ is submit
+                var character = GetKey(x, y);
+
+                switch (character)
+                {
+                    case "|":
+                        continue;
+
+                    case "^":
+                        character = "^";
+                        break;
+
+                    case "&":
+                        character = "->";
+                        break;
+
+                    case "£":
+                        character = "<-";
+                        break;
+
+                    case "$":
+                        character = "SUBMIT";
+                        break;
+
+                    default:
+                        break;
+
+                }
+
                 var characterSize = font.MeasureString(character);
                 var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.Width / 2));
                 var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Height / 2));
@@ -99,6 +155,9 @@ namespace PhotoVs.Logic.Scenes
             Text = args.Length > 2
                 ? args[2].ToString()
                 : string.Empty;
+
+            _shiftMode = true;
+            _currentKeyboard = 0;
 
             IsFinished = false;
         }
@@ -153,8 +212,51 @@ namespace PhotoVs.Logic.Scenes
             if (Text.Length >= _limit)
                 return;
 
-            var character = _keyboard[_cursorY][_cursorX];
-            Text += character;
+            var character = GetKey(_cursorX, _cursorY);
+
+            // ^ is shift
+            // & is next keyboard
+            // £ is delete
+            // $ is submit
+
+            switch (character)
+            {
+                case "^":
+                    _shiftMode = !_shiftMode;
+                    if (_shiftMode)
+                    {
+                        _currentKeyboard = 0;
+                    }
+                    else
+                    {
+                        _currentKeyboard = 1;
+                    }
+                    break;
+
+                case "&":
+                    _currentKeyboard++;
+                    if (_currentKeyboard >= _keyboards.Count)
+                        _currentKeyboard = 0;
+                    break;
+
+                case "£":
+                    RemoveCharacter();
+                    break;
+
+                case "$":
+                    Submit();
+                    break;
+
+                default:
+                    Text += character;
+
+                    if (_shiftMode)
+                    {
+                        _shiftMode = false;
+                        _currentKeyboard = 1;
+                    }
+                    break;
+            }
         }
 
         private void RemoveCharacter()
@@ -165,18 +267,27 @@ namespace PhotoVs.Logic.Scenes
 
         private void MoveCursor(int x, int y)
         {
+            // | is inaccessible
+
             if (x == 0 && y == 0) return;
+            var lastKey = GetKey(_cursorX, _cursorY);
 
             _cursorX += x;
             _cursorY += y;
 
-            _cursorY %= _keyboard.Length;
+            _cursorY %= KeyboardCellHeight();
             if (_cursorY < 0)
-                _cursorY = _keyboard.Length + _cursorY;
+                _cursorY = KeyboardCellHeight() + _cursorY;
 
-            _cursorX %= _keyboard[_cursorY].Length;
+            _cursorX %= KeyboardCellWidth();
             if (_cursorX < 0)
-                _cursorX = _keyboard[_cursorY].Length + _cursorX;
+                _cursorX = KeyboardCellWidth() + _cursorX;
+
+            var curKey = GetKey(_cursorX, _cursorY);
+            if (curKey == lastKey || curKey == "|")
+            {
+                MoveCursor(x, y);
+            }
         }
 
         public bool Submit()

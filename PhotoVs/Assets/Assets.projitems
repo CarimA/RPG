@@ -45,17 +45,11 @@
     <Content Include="$(MSBuildThisFileDirectory)ColorGrading\aap128.png" />
     <Content Include="$(MSBuildThisFileDirectory)Fonts\b2_0.png" />
     <Content Include="$(MSBuildThisFileDirectory)Fonts\mono_0.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Interfaces\Atlas.png" />
     <Content Include="$(MSBuildThisFileDirectory)Interfaces\Black.png" />
     <Content Include="$(MSBuildThisFileDirectory)Interfaces\controller_buttons.png" />
     <Content Include="$(MSBuildThisFileDirectory)Interfaces\controls.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Interfaces\InputBigButton.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Interfaces\keycap.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Interfaces\shutter_slice.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Interfaces\spinner.png" />
     <Content Include="$(MSBuildThisFileDirectory)Interfaces\test.png" />
     <Content Include="$(MSBuildThisFileDirectory)Interfaces\title_mask.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Interfaces\use_a_gamepad.png" />
     <Content Include="$(MSBuildThisFileDirectory)Portraits\test.png" />
     <Content Include="$(MSBuildThisFileDirectory)Portraits\test2.png" />
     <Content Include="$(MSBuildThisFileDirectory)Portraits\test3.png" />
