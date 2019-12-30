@@ -103,8 +103,8 @@ namespace PhotoVs.Logic.Input
 
             using var request = new WebClient();
 
-            var clientID = Resources.ResourceManager.GetString("IMGUR_CLIENT_ID");
-            request.Headers.Add("Authorization", "Client-ID " + clientID);
+            var clientId = Resources.ResourceManager.GetString("IMGUR_CLIENT_ID");
+            request.Headers.Add("Authorization", "Client-ID " + clientId);
             var values = new NameValueCollection {{"image", Convert.ToBase64String(ms.GetBuffer())}};
             var res = request.UploadValues("https://api.imgur.com/3/upload.xml", values);
 
@@ -113,9 +113,18 @@ namespace PhotoVs.Logic.Input
             foreach (var data in XDocument.Load(response).Descendants("data"))
             {
                 var val = data.Element("link").Value;
+                
+                var embed = "{\"embeds\":[{\"image\":{\"url\":\"" + val + "\"}}]}";
+                var desc = Microsoft.VisualBasic.Interaction.InputBox("Want to add a description?");
+
+                if (desc != string.Empty)
+                {
+                    embed = "{\"embeds\":[{\"description\":\"" + desc + "\", \"image\":{\"url\":\"" + val + "\"}}]}";
+                }
+
                 Clipboard.SetText(val);
                 await new HttpClient().PostAsync(Resources.ResourceManager.GetString("DISCORD_WEBHOOK_URL"),
-                    new StringContent("{\"embeds\":[{\"image\":{\"url\":\"" + val + "\"}}]}", Encoding.UTF8, "application/json"));
+                    new StringContent(embed, Encoding.UTF8, "application/json"));
             }
         }
     }
