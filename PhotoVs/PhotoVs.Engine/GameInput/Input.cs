@@ -16,15 +16,27 @@ namespace PhotoVs.Engine.GameInput
 
         public Dictionary<T, bool> WasPressed;
 
-        public Input(PlayerIndex playerIndex)
+        public Input(PlayerIndex playerIndex, Dictionary<T, List<Buttons>> buttonMappings, Dictionary<T, List<Keys>> keyMappings)
         {
             GamePadIndex = playerIndex;
             LeftStick = Vector2.Zero;
             WasPressed = new Dictionary<T, bool>();
             IsPressed = new Dictionary<T, bool>();
             PressedTime = new Dictionary<T, float>();
-            ButtonMappings = new Dictionary<T, List<Buttons>>();
-            KeyMappings = new Dictionary<T, List<Keys>>();
+            ButtonMappings = buttonMappings;
+            KeyMappings = keyMappings;
+
+            foreach (var kvp in ButtonMappings)
+            {
+                WasPressed[kvp.Key] = false;
+                IsPressed[kvp.Key] = false;
+            }
+
+            foreach (var kvp in KeyMappings)
+            {
+                WasPressed[kvp.Key] = false;
+                IsPressed[kvp.Key] = false;
+            }
         }
 
         public bool ActionPressed(T action)
@@ -61,7 +73,7 @@ namespace PhotoVs.Engine.GameInput
             return PressedTime[action];
         }
 
-        public bool AnyButtonDown(GamePadState state, List<Buttons> buttons)
+        private bool AnyButtonDown(GamePadState state, List<Buttons> buttons)
         {
             foreach (var button in buttons)
                 if (state.IsButtonDown(button))
@@ -70,11 +82,22 @@ namespace PhotoVs.Engine.GameInput
             return false;
         }
 
-        public bool AnyKeyDown(KeyboardState state, List<Keys> keys)
+        private bool AnyKeyDown(KeyboardState state, List<Keys> keys)
         {
             foreach (var key in keys)
                 if (state.IsKeyDown(key))
                     return true;
+
+            return false;
+        }
+
+        public bool AnyActionDown()
+        {
+            foreach (var action in IsPressed)
+            {
+                if (action.Value)
+                    return true;
+            }
 
             return false;
         }
@@ -101,6 +124,10 @@ namespace PhotoVs.Engine.GameInput
                     AnyKeyDown(keyboard, KeyMappings[action]))
                 {
                     IsPressed[action] = true;
+                    if (!PressedTime.ContainsKey(action))
+                    {
+                        PressedTime.Add(action, 0f);
+                    }
                     PressedTime[action] += (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else

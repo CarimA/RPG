@@ -284,7 +284,7 @@ namespace PhotoVs.Logic.Scenes
                 _cursorX = KeyboardCellWidth() + _cursorX;
 
             var curKey = GetKey(_cursorX, _cursorY);
-            if (curKey == lastKey || curKey == "|")
+            if (curKey != " " && curKey == lastKey)
             {
                 MoveCursor(x, y);
             }

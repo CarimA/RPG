@@ -31,7 +31,7 @@ namespace PhotoVs.Logic.Camera
         public SCamera(Renderer renderer)
         {
             _renderer = renderer;
-            _isDirty = true;
+            _isDirty = false;
             _zoom = 1f;
             _rotate = 0f;
             _shakes = new List<ScreenShake>();
@@ -104,8 +104,8 @@ namespace PhotoVs.Logic.Camera
             }
             else
             {
-                if (_position == position.Position + size.Size / 2)
-                    return;
+                //if (_position == position.Position + size.Size / 2)
+                //    return;
             }
 
             _lastPosition = _position;
@@ -198,10 +198,18 @@ namespace PhotoVs.Logic.Camera
             if (_target == target)
                 return;
 
-            if (!target.Components.Has<CPosition>())
+            var hasPosition = target.Components.TryGet(out CPosition position);
+            var hasSize = target.Components.TryGet(out CSize size);
+
+            if (!hasPosition)
                 return;
 
             _target = target;
+            _lastPosition = position.Position;
+
+            if (hasSize)
+                _lastPosition += size.Size / 2;
+
             _isDirty = true;
         }
 

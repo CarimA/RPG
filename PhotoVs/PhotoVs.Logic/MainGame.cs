@@ -22,6 +22,7 @@ using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Plugins;
 using PhotoVs.Logic.Scenes;
+using PhotoVs.Logic.Scenes.Transitions;
 using PhotoVs.Logic.Services;
 using PhotoVs.Logic.Text;
 using PhotoVs.Models.Assets;
@@ -83,15 +84,13 @@ namespace PhotoVs.Logic
             _services.Set(CreateGlobalEntities());
             _services.Set(CreateGlobalSystems());
             _services.Set(CreateSceneMachine());
-            _services.Set<ISceneManager>(new SceneManager(_services.SceneMachine,
-                _services.GlobalSystems,
-                _services.GlobalGameObjects));
             _services.Set(CreateTextDatabase());
             _services.Set(CreateAudio());
 
             _info = new DiagnosticInfo(_services.SpriteBatch, _services.AssetLoader);
             _services.Events.RaiseOnGameStart();
 
+            _services.SceneMachine.Push(_services.SceneMachine.ControllerRecommendationScreen);
 
             base.Initialize();
         }
@@ -166,7 +165,6 @@ namespace PhotoVs.Logic
         private SceneMachine CreateSceneMachine()
         {
             var sceneMachine = new SceneMachine(_services);
-            sceneMachine.ChangeToOverworldScene();
             return sceneMachine;
         }
 
@@ -179,7 +177,7 @@ namespace PhotoVs.Logic
                 Exit();
 
             _services.Coroutines.Update(gameTime);
-            _services.SceneManager.Update(gameTime);
+            _services.SceneMachine.Update(gameTime);
 
             base.Update(gameTime);
 
@@ -193,7 +191,8 @@ namespace PhotoVs.Logic
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _services.Renderer.SetRenderMode(RenderMode.Game);
-            _services.SceneManager.Draw(gameTime);
+
+            _services.SceneMachine.Draw(gameTime);
             _services.Renderer.Draw(_services.SpriteBatch);
 
             base.Draw(gameTime);

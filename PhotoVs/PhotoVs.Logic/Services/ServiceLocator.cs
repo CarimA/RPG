@@ -37,7 +37,6 @@ namespace PhotoVs.Logic.Services
         public Player Player { get; private set; }
         public SCamera Camera { get; private set; }
         public SceneMachine SceneMachine { get; private set; }
-        public ISceneManager SceneManager { get; private set; }
         public IGameObjectCollection GlobalGameObjects { get; private set; }
         public ISystemCollection GlobalSystems { get; private set; }
 

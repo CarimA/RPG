@@ -82,11 +82,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Scenes\ControllerRecommendationScreen.cs" />
     <Compile Include="Scenes\DialogueScene.cs" />
     <Compile Include="Scenes\OverworldScene.cs" />
     <Compile Include="Scenes\SaveSelectScene.cs" />
     <Compile Include="Scenes\SceneMachine.cs" />
     <Compile Include="Scenes\TextInputScene.cs" />
+    <Compile Include="Scenes\Transitions\FadeTransition.cs" />
+    <Compile Include="Scenes\Transitions\ITransition.cs" />
     <Compile Include="Services\ServiceLocator.cs" />
     <Compile Include="Text\TextDatabase.cs" />
     <Compile Include="Transforms\CCollisionBound.cs" />

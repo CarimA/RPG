@@ -36,22 +36,8 @@ namespace PhotoVs.Logic.PlayerData
             _position = new CPosition {Position = new Vector2(0, 0)};
             Components.Add(_position);
 
-            _input = new CInput(new GameInput(PlayerIndex.One)
-            {
-                KeyMappings =
-                {
-                    [InputActions.Up] = new List<Keys> {Keys.Up, Keys.W},
-                    [InputActions.Down] = new List<Keys> {Keys.Down, Keys.S},
-                    [InputActions.Left] = new List<Keys> {Keys.Left, Keys.A},
-                    [InputActions.Right] = new List<Keys> {Keys.Right, Keys.D},
-                    [InputActions.Action] = new List<Keys> {Keys.Z, Keys.P},
-                    [InputActions.Submit] = new List<Keys> {Keys.Enter},
-                    [InputActions.Cancel] = new List<Keys> {Keys.X, Keys.O},
-                    [InputActions.Run] = new List<Keys> {Keys.X, Keys.O},
-                    [InputActions.Fullscreen] = new List<Keys> {Keys.F1},
-                    [InputActions.Screenshot] = new List<Keys> {Keys.F12}
-                },
-                ButtonMappings =
+            _input = new CInput(new GameInput(PlayerIndex.One,
+                new Dictionary<InputActions, List<Buttons>>
                 {
                     [InputActions.Up] = new List<Buttons> {Buttons.DPadUp},
                     [InputActions.Down] = new List<Buttons> {Buttons.DPadDown},
@@ -63,8 +49,20 @@ namespace PhotoVs.Logic.PlayerData
                     [InputActions.Run] = new List<Buttons> {Buttons.B},
                     [InputActions.Fullscreen] = new List<Buttons> {Buttons.LeftShoulder},
                     [InputActions.Screenshot] = new List<Buttons> {Buttons.Back}
-                }
-            });
+                },
+                new Dictionary<InputActions, List<Keys>>
+                {
+                    [InputActions.Up] = new List<Keys> {Keys.Up, Keys.W},
+                    [InputActions.Down] = new List<Keys> {Keys.Down, Keys.S},
+                    [InputActions.Left] = new List<Keys> {Keys.Left, Keys.A},
+                    [InputActions.Right] = new List<Keys> {Keys.Right, Keys.D},
+                    [InputActions.Action] = new List<Keys> {Keys.Z, Keys.P},
+                    [InputActions.Submit] = new List<Keys> {Keys.Enter},
+                    [InputActions.Cancel] = new List<Keys> {Keys.X, Keys.O},
+                    [InputActions.Run] = new List<Keys> {Keys.X, Keys.O},
+                    [InputActions.Fullscreen] = new List<Keys> {Keys.F1},
+                    [InputActions.Screenshot] = new List<Keys> {Keys.F12}
+                }));
 
             Components.Add(_input);
             Components.Add(new CVelocity {Velocity = new Vector2(0, 0)});

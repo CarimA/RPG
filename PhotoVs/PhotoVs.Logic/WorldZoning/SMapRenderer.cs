@@ -43,7 +43,7 @@ namespace PhotoVs.Logic.WorldZoning
         {
             _camera.Attach(_spriteBatch);
 
-            _mapBoundary.GetMaps().ForEach(DrawMapMask);
+            _mapBoundary.GetMaps()?.ForEach(DrawMapMask);
 
             _camera.Detach(_spriteBatch);
         }
@@ -56,7 +56,7 @@ namespace PhotoVs.Logic.WorldZoning
         {
             _camera.Attach(_spriteBatch);
 
-            _mapBoundary.GetMaps().ForEach(DrawMapFringe);
+            _mapBoundary.GetMaps()?.ForEach(DrawMapFringe);
 
             _camera.Detach(_spriteBatch);
         }

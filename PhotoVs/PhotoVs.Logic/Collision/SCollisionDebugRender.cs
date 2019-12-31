@@ -41,9 +41,9 @@ namespace PhotoVs.Logic.Collision
             _camera.Attach(_spriteBatch);
 
             entities.ForEach(Draw);
-            _mapBoundary.GetCollisions().ForEach(Draw);
-            _mapBoundary.GetScripts().ForEach(Draw);
-            _mapBoundary.GetZones().ForEach(Draw);
+            _mapBoundary.GetCollisions()?.ForEach(Draw);
+            _mapBoundary.GetScripts()?.ForEach(Draw);
+            _mapBoundary.GetZones()?.ForEach(Draw);
 
             _camera.Detach(_spriteBatch);
         }

@@ -1,4 +1,26 @@
+# Controller Recommendation Screen
+CR_PlayWithAGamepad:
+    EnglishUK: "9 out of 10 Photons recommend you play with a gamepad (but a keyboard works too!)"
 
+
+CR_CopyrightNotice:
+    EnglishUK: "PhotoVs (c) 2019-2020 Glaciate. Developed and published by Glaciate."
+
+# Main Menu
+MM_NewGame:
+    EnglishUK: "New Game"
+
+MM_ContinueGame:
+    EnglishUK: "Continue"
+
+MM_Options:
+    EnglishUK: "Options"
+
+MM_Discord:
+    EnglishUK: "Discord Server"
+   
+MM_Exit:
+    EnglishUK: "Quit Game"
 
 # Intro Cutscene
 

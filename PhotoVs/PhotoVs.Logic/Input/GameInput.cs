@@ -1,11 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.GameInput;
 
 namespace PhotoVs.Logic.Input
 {
     public class GameInput : Input<InputActions>
     {
-        public GameInput(PlayerIndex playerIndex) : base(playerIndex)
+        public GameInput(PlayerIndex playerIndex, Dictionary<InputActions, List<Buttons>> buttonMappings, Dictionary<InputActions, List<Keys>> keyMappings) 
+            : base(playerIndex, buttonMappings, keyMappings)
         {
         }
 
