@@ -5,7 +5,6 @@ using PhotoVs.Engine.Dialogue;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Logic.Input;
-using PhotoVs.Models.Assets;
 using PhotoVs.Models.FSM;
 using PhotoVs.Utils;
 

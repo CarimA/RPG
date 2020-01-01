@@ -6,16 +6,17 @@ namespace PhotoVs.Engine.Graphics
 {
     public class Renderer
     {
-        //private readonly VirtualRenderTarget2D _uiView;
-        public CanvasSize CanvasSize { get; private set; }
         private readonly ColorGrading _colorGrading;
-
-        public VirtualRenderTarget2D GameView { get; private set; }
-        public VirtualRenderTarget2D FilterView { get; private set; }
         private readonly GraphicsDeviceManager _graphics;
         private readonly GraphicsDevice _graphicsDevice;
 
         private readonly GameWindow _window;
+
+        //private readonly VirtualRenderTarget2D _uiView;
+        public CanvasSize CanvasSize { get; }
+
+        public VirtualRenderTarget2D GameView { get; }
+        public VirtualRenderTarget2D FilterView { get; private set; }
 
         public Renderer(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, GameWindow window,
             ColorGrading colorGrading, CanvasSize canvasSize)

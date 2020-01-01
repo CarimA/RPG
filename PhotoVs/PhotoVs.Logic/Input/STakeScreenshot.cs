@@ -1,32 +1,30 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Permissions;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml.Linq;
-using System.Windows;
+using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Logic.Properties;
 using PhotoVs.Models.ECS;
-using PhotoVs.Utils.Extensions;
-using System.Windows.Forms;
 
 namespace PhotoVs.Logic.Input
 {
     public class STakeScreenshot : IUpdateableSystem
     {
+        private readonly BitmapFont _font;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly Renderer _renderer;
         private readonly SpriteBatch _spriteBatch;
-        private readonly BitmapFont _font;
 
-        public STakeScreenshot(GraphicsDevice graphicsDevice, Renderer renderer, SpriteBatch spriteBatch, BitmapFont font)
+        public STakeScreenshot(GraphicsDevice graphicsDevice, Renderer renderer, SpriteBatch spriteBatch,
+            BitmapFont font)
         {
             _graphicsDevice = graphicsDevice;
             _renderer = renderer;
@@ -65,8 +63,8 @@ namespace PhotoVs.Logic.Input
             var text = "PhotoVs - Development Build - discord.gg/ew2X8Sy";
             var size = _font.MeasureString(text);
 
-            var x = (1280 / 2) - (size.Width / 2);
-            var y = (720 - 20) - size.Height;
+            var x = 1280 / 2 - size.Width / 2;
+            var y = 720 - 20 - size.Height;
             var t = 2;
 
             _spriteBatch.DrawString(_font, text, new Vector2(x + t, y - t), Color.Black);
@@ -113,14 +111,12 @@ namespace PhotoVs.Logic.Input
             foreach (var data in XDocument.Load(response).Descendants("data"))
             {
                 var val = data.Element("link").Value;
-                
+
                 var embed = "{\"embeds\":[{\"image\":{\"url\":\"" + val + "\"}}]}";
-                var desc = Microsoft.VisualBasic.Interaction.InputBox("Want to add a description?");
+                var desc = Interaction.InputBox("Want to add a description?");
 
                 if (desc != string.Empty)
-                {
                     embed = "{\"embeds\":[{\"description\":\"" + desc + "\", \"image\":{\"url\":\"" + val + "\"}}]}";
-                }
 
                 Clipboard.SetText(val);
                 await new HttpClient().PostAsync(Resources.ResourceManager.GetString("DISCORD_WEBHOOK_URL"),

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
@@ -14,16 +9,15 @@ using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes
 {
-    class ControllerRecommendationScreen : IUpdateableScene, IDrawableScene, ISystemScene
+    internal class ControllerRecommendationScreen : IUpdateableScene, IDrawableScene, ISystemScene
     {
-        public bool IsBlocking { get; set; }
         private readonly SceneMachine _scene;
         private float _continueTime;
+        private string _copyrightNotice;
+        private BitmapFont _font;
+        private Texture2D _gamepadIcon;
         private bool _isChanging;
         private string _playWithAGamepad;
-        private string _copyrightNotice;
-        private Texture2D _gamepadIcon;
-        private BitmapFont _font;
 
         public ControllerRecommendationScreen(SceneMachine scene)
         {
@@ -31,6 +25,25 @@ namespace PhotoVs.Logic.Scenes
             Entities = new GameObjectCollection();
             Systems = new SystemCollection();
         }
+
+        public void Draw(GameTime gameTime)
+        {
+            var spriteBatch = _scene.Services.SpriteBatch;
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
+
+            spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320 / 2, 10), Color.White);
+            spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320 / 2, 180 - 20),
+                Color.White);
+
+            spriteBatch.Draw(_gamepadIcon, new Vector2(96, 82), Color.White);
+
+            spriteBatch.End();
+        }
+
+        public IGameObjectCollection Entities { get; }
+        public ISystemCollection Systems { get; }
+        public bool IsBlocking { get; set; }
 
         public void Enter(params object[] args)
         {
@@ -49,31 +62,14 @@ namespace PhotoVs.Logic.Scenes
 
         public void Exit()
         {
-
         }
 
         public void Resume()
         {
-
         }
 
         public void Suspend()
         {
-
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-            var spriteBatch = _scene.Services.SpriteBatch;
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
-
-            spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320 / 2, 10), Color.White);
-            spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320 / 2, 180 - 20), Color.White);
-
-            spriteBatch.Draw(_gamepadIcon, new Vector2(96, 82), Color.White);
-
-            spriteBatch.End();
         }
 
         public void Update(GameTime gameTime)
@@ -88,8 +84,5 @@ namespace PhotoVs.Logic.Scenes
                 _isChanging = true;
             }
         }
-
-        public IGameObjectCollection Entities { get; }
-        public ISystemCollection Systems { get; }
     }
 }

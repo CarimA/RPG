@@ -97,14 +97,15 @@ namespace PhotoVs.Engine.Graphics.BitmapFonts
 
             return rectangle;
         }
+
         public string WrapText(string text, float maxLineWidth)
         {
-            string[] words = text.Split(' ');
-            StringBuilder sb = new StringBuilder();
-            float lineWidth = 0f;
-            float spaceWidth = MeasureString(" ").Width;
+            var words = text.Split(' ');
+            var sb = new StringBuilder();
+            var lineWidth = 0f;
+            var spaceWidth = MeasureString(" ").Width;
 
-            foreach (string word in words)
+            foreach (var word in words)
             {
                 Vector2 size = MeasureString(word);
 

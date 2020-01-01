@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.FSM.States;
 using PhotoVs.Logic.Scenes.Transitions;
@@ -10,17 +9,16 @@ namespace PhotoVs.Logic.Scenes
 {
     public class SceneMachine : StateMachine<IScene>
     {
+        private ITransition _activeTransition;
+        private object[] _nextArgs;
+        private IScene _nextState;
         public ServiceLocator Services { get; }
-        public ISceneManager SceneManager { get; private set; }
+        public ISceneManager SceneManager { get; }
 
         internal ControllerRecommendationScreen ControllerRecommendationScreen { get; }
         internal DialogueScene DialogueScene { get; }
         internal TextInputScene TextInputScene { get; }
         internal OverworldScene OverworldScene { get; }
-
-        private ITransition _activeTransition;
-        private IScene _nextState;
-        private object[] _nextArgs;
 
         public SceneMachine(ServiceLocator services)
         {
@@ -56,10 +54,7 @@ namespace PhotoVs.Logic.Scenes
             if (_activeTransition == null) return;
             _activeTransition.Update(gameTime);
 
-            if (_activeTransition.ShouldSwitch())
-            {
-                base.Change(_nextState, _nextArgs);
-            }
+            if (_activeTransition.ShouldSwitch()) base.Change(_nextState, _nextArgs);
 
             if (_activeTransition.IsFinished)
             {

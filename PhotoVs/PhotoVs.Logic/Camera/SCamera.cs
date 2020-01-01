@@ -102,11 +102,6 @@ namespace PhotoVs.Logic.Camera
                 if (_position == position.Position)
                     return;
             }
-            else
-            {
-                //if (_position == position.Position + size.Size / 2)
-                //    return;
-            }
 
             _lastPosition = _position;
             _position = position.Position;
@@ -155,7 +150,8 @@ namespace PhotoVs.Logic.Camera
 
         public void Attach(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: _transform);
+            spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
+                transformMatrix: _transform);
         }
 
         public void Detach(SpriteBatch spriteBatch)

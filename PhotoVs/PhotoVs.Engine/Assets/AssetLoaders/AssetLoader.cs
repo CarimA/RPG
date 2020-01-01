@@ -11,8 +11,8 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 {
     public class AssetLoader : IAssetLoader
     {
-        protected readonly Dictionary<string, int> _lastUsed;
         protected readonly Dictionary<string, object> _assetCache;
+        protected readonly Dictionary<string, int> _lastUsed;
         protected readonly IStreamProvider _streamProvider;
         protected readonly Dictionary<Type, object> _typeLoaders;
 
@@ -24,38 +24,6 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             _streamProvider = streamProvider;
 
             coroutines.Start(UnloadUnusedAssets());
-        }
-
-        private IEnumerator UnloadUnusedAssets()
-        {
-            var time = 8f;
-            var pause = new Pause(time);
-            var toRemove = new List<string>();
-
-            while (true)
-            {
-                yield return pause;
-                pause.Time = time;
-
-                foreach (var kvp in _lastUsed)
-                {
-                    if (!_assetCache.ContainsKey(kvp.Key))
-                        continue;
-
-                    if (kvp.Value < Environment.TickCount - 8000)
-                    {
-                        toRemove.Add(kvp.Key);
-                        UnloadAsset(kvp.Key);
-                    }
-                }
-
-                foreach (var key in toRemove)
-                {
-                    _lastUsed.Remove(key);
-                }
-
-                toRemove.Clear();
-            }
         }
 
         public T GetAsset<T>(string filepath) where T : class
@@ -128,6 +96,35 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             }
 
             return this;
+        }
+
+        private IEnumerator UnloadUnusedAssets()
+        {
+            var time = 8f;
+            var pause = new Pause(time);
+            var toRemove = new List<string>();
+
+            while (true)
+            {
+                yield return pause;
+                pause.Time = time;
+
+                foreach (var kvp in _lastUsed)
+                {
+                    if (!_assetCache.ContainsKey(kvp.Key))
+                        continue;
+
+                    if (kvp.Value < Environment.TickCount - 8000)
+                    {
+                        toRemove.Add(kvp.Key);
+                        UnloadAsset(kvp.Key);
+                    }
+                }
+
+                foreach (var key in toRemove) _lastUsed.Remove(key);
+
+                toRemove.Clear();
+            }
         }
 
         private string SanitiseFilename(string filename)

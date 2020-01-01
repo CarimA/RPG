@@ -11,7 +11,6 @@ using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Engine.Scheduler;
@@ -22,13 +21,11 @@ using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Plugins;
 using PhotoVs.Logic.Scenes;
-using PhotoVs.Logic.Scenes.Transitions;
 using PhotoVs.Logic.Services;
 using PhotoVs.Logic.Text;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
-using PhotoVs.Models.FSM;
 using PhotoVs.Models.Text;
 using PhotoVs.Utils.Logging;
 
@@ -157,7 +154,8 @@ namespace PhotoVs.Logic
                 _services.Camera,
                 new SProcessInput(),
                 new SHandleFullscreen(_services.GraphicsDeviceManager, GraphicsDevice),
-                new STakeScreenshot(GraphicsDevice, _services.Renderer, _services.SpriteBatch, _services.AssetLoader.GetAsset<BitmapFont>("fonts/mono.fnt"))
+                new STakeScreenshot(GraphicsDevice, _services.Renderer, _services.SpriteBatch,
+                    _services.AssetLoader.GetAsset<BitmapFont>("fonts/mono.fnt"))
             };
             return globalSystems;
         }

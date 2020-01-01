@@ -7,7 +7,8 @@ namespace PhotoVs.Logic.Input
 {
     public class GameInput : Input<InputActions>
     {
-        public GameInput(PlayerIndex playerIndex, Dictionary<InputActions, List<Buttons>> buttonMappings, Dictionary<InputActions, List<Keys>> keyMappings) 
+        public GameInput(PlayerIndex playerIndex, Dictionary<InputActions, List<Buttons>> buttonMappings,
+            Dictionary<InputActions, List<Keys>> keyMappings)
             : base(playerIndex, buttonMappings, keyMappings)
         {
         }

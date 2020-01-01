@@ -5,8 +5,8 @@ namespace PhotoVs.Utils.Logging
 {
     public class TextLogger : ILogger
     {
-        private LogLevel _currentLevel;
         private readonly string _fileName;
+        private LogLevel _currentLevel;
 
         // Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Logs"));
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Logic.Input;
@@ -13,7 +12,6 @@ namespace PhotoVs.Logic.Scenes
         private const float _repeatTime = 0.25f;
 
         private const int _keysPerRow = 12;
-        private int _currentKeyboard = 0;
 
         // | is inaccessible
         // ^ is shift
@@ -25,11 +23,10 @@ namespace PhotoVs.Logic.Scenes
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ          ^^&&££££$$$$",
             "abcdefghijklmnopqrstuvwxyz          ^^&&££££$$$$",
             "0123456789  .!?-_+=                 ^^&&££££$$$$"
-        };    
+        };
 
         private readonly SceneMachine _scene;
-
-        private bool _shiftMode;
+        private int _currentKeyboard;
         private int _cursorX;
         private int _cursorY;
 
@@ -37,28 +34,14 @@ namespace PhotoVs.Logic.Scenes
 
         private string _question;
 
+        private bool _shiftMode;
+
         public string Text { get; private set; }
         public bool IsFinished { get; private set; }
 
         public TextInputScene(SceneMachine scene)
         {
             _scene = scene;
-        }
-
-        private int KeyboardCellWidth()
-        {
-            return _keysPerRow;
-        }
-
-        private int KeyboardCellHeight()
-        {
-            return _keyboards[_currentKeyboard].Length / _keysPerRow;
-        }
-
-        private string GetKey(int x, int y)
-        {
-            var index = (_keysPerRow * y) + (x % _keysPerRow);
-            return _keyboards[_currentKeyboard][index].ToString();
         }
 
         public void Draw(GameTime gameTime)
@@ -125,10 +108,6 @@ namespace PhotoVs.Logic.Scenes
                     case "$":
                         character = "SUBMIT";
                         break;
-
-                    default:
-                        break;
-
                 }
 
                 var characterSize = font.MeasureString(character);
@@ -207,6 +186,22 @@ namespace PhotoVs.Logic.Scenes
             MoveCursor(mX, mY);
         }
 
+        private int KeyboardCellWidth()
+        {
+            return _keysPerRow;
+        }
+
+        private int KeyboardCellHeight()
+        {
+            return _keyboards[_currentKeyboard].Length / _keysPerRow;
+        }
+
+        private string GetKey(int x, int y)
+        {
+            var index = _keysPerRow * y + x % _keysPerRow;
+            return _keyboards[_currentKeyboard][index].ToString();
+        }
+
         private void AddCharacter()
         {
             if (Text.Length >= _limit)
@@ -224,13 +219,9 @@ namespace PhotoVs.Logic.Scenes
                 case "^":
                     _shiftMode = !_shiftMode;
                     if (_shiftMode)
-                    {
                         _currentKeyboard = 0;
-                    }
                     else
-                    {
                         _currentKeyboard = 1;
-                    }
                     break;
 
                 case "&":
@@ -255,6 +246,7 @@ namespace PhotoVs.Logic.Scenes
                         _shiftMode = false;
                         _currentKeyboard = 1;
                     }
+
                     break;
             }
         }
@@ -284,10 +276,7 @@ namespace PhotoVs.Logic.Scenes
                 _cursorX = KeyboardCellWidth() + _cursorX;
 
             var curKey = GetKey(_cursorX, _cursorY);
-            if (curKey != " " && curKey == lastKey)
-            {
-                MoveCursor(x, y);
-            }
+            if (curKey != " " && curKey == lastKey) MoveCursor(x, y);
         }
 
         public bool Submit()

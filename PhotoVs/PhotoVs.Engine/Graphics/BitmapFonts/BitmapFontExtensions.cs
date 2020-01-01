@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics.TextureAtlases;
@@ -168,14 +167,15 @@ namespace PhotoVs.Engine.Graphics.BitmapFonts
                 0, clippingRectangle);
         }
 
-        public static void DrawStringCenterTopAligned(this SpriteBatch spriteBatch, BitmapFont font, string text, Vector2 anchor,
+        public static void DrawStringCenterTopAligned(this SpriteBatch spriteBatch, BitmapFont font, string text,
+            Vector2 anchor,
             Color color)
         {
             var pos = anchor;
             foreach (var line in text.Split('\n'))
             {
                 var width = font.MeasureString(line).Width;
-                pos.X = anchor.X - (width / 2);
+                pos.X = anchor.X - width / 2;
                 spriteBatch.DrawString(font, line, pos, color);
                 pos.Y += font.LineHeight;
             }
