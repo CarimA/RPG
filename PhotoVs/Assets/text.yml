@@ -1,3 +1,35 @@
+# Language Config
+Language:
+    EnglishUK: English
+    French: <>
+    Spanish: <>
+    Italian: <>
+    German: <>
+    ChineseTD: <>
+    ChineseSD: <>
+    ChineseHK: <>
+    Korean: <>
+    Japanese: <>
+    Russian: <>
+    PortugeuseBR: <>
+
+LanguageIcon:
+    EnglishUK: "englishuk.png"
+
+LanguageFont:
+    EnglishUK: "latin"
+    French: "latin"
+    Spanish: "latin"
+    Italian: "latin"
+    German: "latin"
+    ChineseTD: "hanzi"
+    ChineseSD: "hanzi"
+    ChineseHK: "hanzi"
+    Korean: "hangul"
+    Japanese: "kana"
+    Russian: "cyrillic"
+    PortugeuseBR: "latin"
+
 # Controller Recommendation Screen
 CR_PlayWithAGamepad:
     EnglishUK: "9 out of 10 Photons recommend you play with a gamepad (but a keyboard works too!)"

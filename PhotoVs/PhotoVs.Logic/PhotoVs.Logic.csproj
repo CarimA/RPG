@@ -91,6 +91,7 @@
     <Compile Include="Scenes\Transitions\FadeTransition.cs" />
     <Compile Include="Scenes\Transitions\ITransition.cs" />
     <Compile Include="Services\ServiceLocator.cs" />
+    <Compile Include="Text\Language.cs" />
     <Compile Include="Text\TextDatabase.cs" />
     <Compile Include="Transforms\CCollisionBound.cs" />
     <Compile Include="Transforms\CPosition.cs" />
