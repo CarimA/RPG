@@ -169,7 +169,7 @@ namespace PhotoVs.Engine.Dialogue
 
                 // reset stuff
                 activeColor = Color.White;
-                outlineColor = Color.Black;
+                outlineColor = Color.Transparent;
                 wave = Vector2.Zero;
                 shake = Vector2.Zero;
             }

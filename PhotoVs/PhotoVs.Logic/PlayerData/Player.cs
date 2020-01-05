@@ -19,7 +19,7 @@ namespace PhotoVs.Logic.PlayerData
         Korean,
         Japanese,
         Russian,
-        PortugeuseBR
+        PortugueseBR
     }
 
     public class Player : GameObject

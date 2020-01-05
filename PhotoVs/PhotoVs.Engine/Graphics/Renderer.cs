@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Models.Assets;
 
 namespace PhotoVs.Engine.Graphics
 {
@@ -9,7 +10,7 @@ namespace PhotoVs.Engine.Graphics
         private readonly ColorGrading _colorGrading;
         private readonly GraphicsDeviceManager _graphics;
         private readonly GraphicsDevice _graphicsDevice;
-
+        private readonly IAssetLoader _assetLoader;
         private readonly GameWindow _window;
 
         //private readonly VirtualRenderTarget2D _uiView;
@@ -18,16 +19,22 @@ namespace PhotoVs.Engine.Graphics
         public VirtualRenderTarget2D GameView { get; }
         public VirtualRenderTarget2D FilterView { get; private set; }
 
+        private RenderTarget2D _final;
+        private Effect _scanlines;
+        private Effect _crt;
+
         public Renderer(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, GameWindow window,
-            ColorGrading colorGrading, CanvasSize canvasSize)
+            ColorGrading colorGrading, CanvasSize canvasSize, IAssetLoader assetLoader)
         {
             _graphics = graphics;
             _window = window;
             _graphicsDevice = graphicsDevice;
             _colorGrading = colorGrading;
+            _assetLoader = assetLoader;
             GameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight()); //);
             //_uiView = new VirtualRenderTarget2D(graphicsDevice, 320 * 2, 180 * 2);
             CanvasSize = canvasSize;
+
 
             window.ClientSizeChanged += (sender, e) => { UpdateViewports(); };
             UpdateViewports();
@@ -55,13 +62,32 @@ namespace PhotoVs.Engine.Graphics
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            _crt = _assetLoader.GetAsset<Effect>("shaders/crt.dx11");
+
             SetRenderMode(RenderMode.None);
             _graphicsDevice.Clear(Color.Black);
 
             //GameView.DrawScaled(spriteBatch, SamplerState.PointClamp);
             FilterView = _colorGrading.Filter(spriteBatch, GameView);
             FilterView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-            FilterView.DrawScaled(spriteBatch, SamplerState.PointClamp);
+
+            _graphicsDevice.SetRenderTarget(_final);
+            spriteBatch.Begin(SpriteSortMode.Immediate);
+
+            _crt.Parameters["ImageHeight"].SetValue(1080);
+            _crt.Parameters["ImageWidth"].SetValue(1920);
+            _crt.Parameters["Brightness"].SetValue(12f);
+            _crt.Parameters["Contrast"].SetValue(4f);
+            _crt.CurrentTechnique.Passes[1].Apply();
+            FilterView.DrawScaled(spriteBatch);
+            spriteBatch.End();
+
+            _graphicsDevice.SetRenderTarget(null);
+            spriteBatch.Begin(SpriteSortMode.Immediate);
+            _crt.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(_final, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
         }
 
         private void UpdateViewports()
@@ -71,6 +97,7 @@ namespace PhotoVs.Engine.Graphics
             _graphics.ApplyChanges();
 
             GameView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            _final = new RenderTarget2D(_graphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             //_uiView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
         }
     }

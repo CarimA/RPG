@@ -1,56 +1,55 @@
-# Language Config
+﻿# Language Config
 Language:
     EnglishUK: English
-    French: <>
-    Spanish: <>
-    Italian: <>
-    German: <>
-    ChineseTD: <>
-    ChineseSD: <>
-    Korean: <>
-    Japanese: <>
-    Russian: <>
-    PortugeuseBR: <>
+    French: Français
+    Spanish: Español
+    Italian: Italiano
+    German: Deutsche
+    ChineseTD: 繁体中文
+    ChineseSD: 简体中文
+    Korean: 한국말
+    Japanese: 日本語
+    Russian: русский
+    PortugueseBR: Portugais
 
 LanguageIcon:
-    EnglishUK: "englishuk"
+    EnglishUK: englishuk.png
 
 LanguageFont:
-    EnglishUK: "body.fnt"
-    French: "body.fnt"
-    Spanish: "body.fnt"
-    Italian: "body.fnt"
-    German: "body.fnt"
-    ChineseTD: "body.fnt"
-    ChineseSD: "body.fnt"
-    Korean: "body.fnt"
-    Japanese: "body.fnt"
-    Russian: "body.fnt"
-    PortugeuseBR: "body.fnt"
+    EnglishUK: body.fnt
+    French: body.fnt
+    Spanish: body.fnt
+    Italian: body.fnt
+    German: body.fnt
+    ChineseTD: body.fnt
+    ChineseSD: body.fnt
+    Korean: body.fnt
+    Japanese: body.fnt
+    Russian: body.fnt
+    PortugueseBR: body.fnt
 
 # Controller Recommendation Screen
 CR_PlayWithAGamepad:
-    EnglishUK: "9 out of 10 Photons recommend you play with a gamepad (but a keyboard works too!)"
-
+    EnglishUK: 9 out of 10 Photons recommend you play with a gamepad (but a keyboard works too!)
 
 CR_CopyrightNotice:
-    EnglishUK: "PhotoVs (c) 2019-2020 Glaciate. Developed and published by Glaciate."
+    EnglishUK: PhotoVs (c) 2019-2020 Glaciate. Developed and published by Glaciate.
 
 # Main Menu
 MM_NewGame:
-    EnglishUK: "New Game"
+    EnglishUK: New Game
 
 MM_ContinueGame:
-    EnglishUK: "Continue"
+    EnglishUK: Continue
 
 MM_Options:
-    EnglishUK: "Options"
+    EnglishUK: Options
 
 MM_Discord:
-    EnglishUK: "Discord Server"
+    EnglishUK: Discord Server
    
 MM_Exit:
-    EnglishUK: "Quit Game"
+    EnglishUK: Quit Game
 
 # Intro Cutscene
 

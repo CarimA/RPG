@@ -32,13 +32,9 @@ namespace PhotoVs.Engine.Graphics
             _viewport.Y = displayHeight / 2 - _viewport.Height / 2;
         }
 
-        public void DrawScaled(SpriteBatch spriteBatch, SamplerState sampler)
+        public void DrawScaled(SpriteBatch spriteBatch)
         {
-            if (spriteBatch == null)
-                return;
-            spriteBatch.Begin(samplerState: sampler);
-            spriteBatch.Draw(this, _viewport, Color.White);
-            spriteBatch.End();
+            spriteBatch?.Draw(this, _viewport, Color.White);
         }
     }
 }

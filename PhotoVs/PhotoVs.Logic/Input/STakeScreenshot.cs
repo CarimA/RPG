@@ -54,10 +54,19 @@ namespace PhotoVs.Logic.Input
 
         private void TakeScreenshot()
         {
+            var width = _graphicsDevice.PresentationParameters.BackBufferWidth;
+            var height = _graphicsDevice.PresentationParameters.BackBufferHeight;
+            var data = new Color[width * height];
+            _graphicsDevice.GetBackBufferData(data);
+            using var tex = new Texture2D(_graphicsDevice, width, height);
+            tex.SetData(data);
+
             var rt = new RenderTarget2D(_graphicsDevice, 1280, 720);
+
             _graphicsDevice.SetRenderTarget(rt);
+
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(_renderer.FilterView, new Rectangle(0, 0, 1280, 720), Color.White);
+            _spriteBatch.Draw(tex, new Rectangle(0, 0, 1280, 720), Color.White);
 
             var text = "PhotoVs - Development Build - discord.gg/ew2X8Sy";
             var size = _font.MeasureString(text);

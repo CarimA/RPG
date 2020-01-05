@@ -33,7 +33,7 @@ namespace PhotoVs.Logic.Debug
         public DiagnosticInfo(SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
             _spriteBatch = spriteBatch;
-            _font = assetLoader.GetAsset<SpriteFont>("fonts/mono.fnt");
+            _font = assetLoader.GetAsset<SpriteFont>("fonts/InputMono-Regular.ttf");
 
             _updateTimer = new Stopwatch();
             _drawTimer = new Stopwatch();
@@ -127,7 +127,7 @@ namespace PhotoVs.Logic.Debug
             _drawBar.Draw();
 
             var text =
-                $"FPS:         {_fps}\nUpdate Avg.: {_lastUpdate.TotalMilliseconds}ms\nDraw Avg.:   {_lastDraw.TotalMilliseconds}ms";
+                $"FPS:          {_fps}\nUpdate Avg.:  {_lastUpdate.TotalMilliseconds.ToString("00.000000")} ms\nDraw Avg.:    {_lastDraw.TotalMilliseconds.ToString("00.000000")} ms";
             var theight = _font.MeasureString(text).Y + 20;
             var ty = y - theight - 20;
 

@@ -98,7 +98,7 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new EffectTypeLoader(_services.GraphicsDevice))
                 .RegisterTypeLoader(new TextTypeLoader())
                 .RegisterTypeLoader(new Texture2DTypeLoader(_services.GraphicsDevice))
-                .RegisterTypeLoader(new SpriteFontTypeLoader(assetLoader))
+                .RegisterTypeLoader(new SpriteFontTypeLoader(_services.GraphicsDevice, assetLoader))
                 .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;
@@ -126,7 +126,7 @@ namespace PhotoVs.Logic
                     canvas,
                     _services.AssetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
                     _services.AssetLoader.GetAsset<Texture2D>("colorgrading/aap128.png")),
-                canvas);
+                canvas, _services.AssetLoader);
             return renderer;
         }
 

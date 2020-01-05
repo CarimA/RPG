@@ -53,19 +53,19 @@ namespace PhotoVs.Logic.Scenes
             const int cellWidth = 18;
             const int cellHeight = 28;
 
-            var offsetX = 320 / 2 - cellWidth * KeyboardCellWidth() / 2;
-            var offsetY = 180 / 2 - cellHeight * KeyboardCellHeight() / 2 + 20;
+            var offsetX = (int)(320 / 2 - cellWidth * KeyboardCellWidth() / 2);
+            var offsetY = (int)(180 / 2 - cellHeight * KeyboardCellHeight() / 2 + 20);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             var questionSize = font.MeasureString(_question).X;
-            var qX = 320 / 2 - questionSize / 2;
+            var qX = (int)(320 / 2 - questionSize / 2);
             var qY = offsetY - 40;
 
             spriteBatch.DrawString(font, _question, new Vector2(qX, qY), Color.HotPink);
 
             var textCellWidth = 14;
-            var tX = 320 / 2 - _limit * textCellWidth / 2;
+            var tX = (int)(320 / 2 - _limit * textCellWidth / 2);
             var tY = qY + 20;
 
             for (var i = 0; i < _limit; i++)
@@ -75,7 +75,7 @@ namespace PhotoVs.Logic.Scenes
                     : Text[i]).ToString();
                 var characterSize = font.MeasureString(character).X;
 
-                spriteBatch.DrawString(font, character, new Vector2(tX + (14 * i - characterSize / 2), tY),
+                spriteBatch.DrawString(font, character, new Vector2((int)(tX + (14 * i - characterSize / 2)), tY),
                     Color.White);
             }
 
@@ -111,8 +111,8 @@ namespace PhotoVs.Logic.Scenes
                 }
 
                 var characterSize = font.MeasureString(character);
-                var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.X / 2));
-                var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Y / 2));
+                var dX = (int)(offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.X / 2)));
+                var dY = (int)(offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Y / 2)));
                 var color = y == _cursorY && x == _cursorX
                     ? Color.Yellow
                     : Color.White;

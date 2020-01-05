@@ -28,6 +28,7 @@
     <None Include="$(MSBuildThisFileDirectory)Maps\test\00_00.tmx" />
     <None Include="$(MSBuildThisFileDirectory)Maps\test\01_00.tmx" />
     <None Include="$(MSBuildThisFileDirectory)Maps\test\game.world" />
+    <None Include="$(MSBuildThisFileDirectory)Shaders\crt.fx" />
     <None Include="$(MSBuildThisFileDirectory)text.yml" />
   </ItemGroup>
   <ItemGroup>
