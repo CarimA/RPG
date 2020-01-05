@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using PhotoVs.Engine.Graphics.BitmapFonts;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.Text;
@@ -28,16 +28,24 @@ namespace PhotoVs.Logic.Text
                 {
                     _languages.Add(language,
                         new Language(data["Language"][language],
-                        assetLoader.GetAsset<BitmapFont>($"fonts/{data["LanguageFont"][language]}")));
+                        assetLoader.GetAsset<SpriteFont>($"fonts/{data["LanguageFont"][language]}")));
                 }
 
                 foreach (var kvp in data)
                 {
-                    _languages[language].Text.Add(kvp.Key, kvp.Value[language]);
+                    if (data[kvp.Key].ContainsKey(language))
+                    {
+                        _languages[language].Text.Add(kvp.Key, kvp.Value[language]);
+                    }
                 }
             }
 
             _player = player;
+        }
+
+        public SpriteFont GetFont()
+        {
+            return _languages[_player.Language].Font;
         }
 
         public string GetText(string id)

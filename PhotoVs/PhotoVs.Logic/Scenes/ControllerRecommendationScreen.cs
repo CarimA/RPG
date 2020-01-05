@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.FSM;
 using PhotoVs.Utils.Extensions;
@@ -14,7 +13,7 @@ namespace PhotoVs.Logic.Scenes
         private readonly SceneMachine _scene;
         private float _continueTime;
         private string _copyrightNotice;
-        private BitmapFont _font;
+        private SpriteFont _font;
         private Texture2D _gamepadIcon;
         private bool _isChanging;
         private string _playWithAGamepad;
@@ -29,9 +28,12 @@ namespace PhotoVs.Logic.Scenes
         public void Draw(GameTime gameTime)
         {
             var spriteBatch = _scene.Services.SpriteBatch;
+            var text = _scene.Services.TextDatabase;
+            var font = text.GetFont();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
 
+            spriteBatch.DrawString(font, "test string", new Vector2(5, 50), Color.White);
             spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320 / 2, 10), Color.White);
             spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320 / 2, 180 - 20),
                 Color.White);
@@ -54,7 +56,7 @@ namespace PhotoVs.Logic.Scenes
             var assetLoader = _scene.Services.AssetLoader;
 
             _gamepadIcon = assetLoader.GetAsset<Texture2D>("interfaces/gamepad.png");
-            _font = assetLoader.GetAsset<BitmapFont>("fonts/body.fnt");
+            _font = assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
 
             _playWithAGamepad = _font.WrapText(textDatabase.GetText("CR_PlayWithAGamepad"), 280);
             _copyrightNotice = _font.WrapText(textDatabase.GetText("CR_CopyrightNotice"), 300);

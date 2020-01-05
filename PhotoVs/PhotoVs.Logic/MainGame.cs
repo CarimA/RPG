@@ -12,7 +12,6 @@ using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.Camera;
@@ -99,7 +98,7 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new EffectTypeLoader(_services.GraphicsDevice))
                 .RegisterTypeLoader(new TextTypeLoader())
                 .RegisterTypeLoader(new Texture2DTypeLoader(_services.GraphicsDevice))
-                .RegisterTypeLoader(new BitmapFontTypeLoader(assetLoader))
+                .RegisterTypeLoader(new SpriteFontTypeLoader(assetLoader))
                 .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;
@@ -155,7 +154,7 @@ namespace PhotoVs.Logic
                 new SProcessInput(),
                 new SHandleFullscreen(_services.GraphicsDeviceManager, GraphicsDevice),
                 new STakeScreenshot(GraphicsDevice, _services.Renderer, _services.SpriteBatch,
-                    _services.AssetLoader.GetAsset<BitmapFont>("fonts/mono.fnt"))
+                    _services.AssetLoader.GetAsset<SpriteFont>("fonts/mono.fnt"))
             };
             return globalSystems;
         }

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Models.Assets;
 
 namespace PhotoVs.Logic.Debug
@@ -17,7 +16,7 @@ namespace PhotoVs.Logic.Debug
         private readonly PolygonPrimitive _drawBar;
         private readonly Stopwatch _drawTimer;
 
-        private readonly BitmapFont _font;
+        private readonly SpriteFont _font;
         private readonly SpriteBatch _spriteBatch;
         private readonly PolygonPrimitive _textBackground;
         private readonly PolygonPrimitive _updateBar;
@@ -34,7 +33,7 @@ namespace PhotoVs.Logic.Debug
         public DiagnosticInfo(SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
             _spriteBatch = spriteBatch;
-            _font = assetLoader.GetAsset<BitmapFont>("fonts/mono.fnt");
+            _font = assetLoader.GetAsset<SpriteFont>("fonts/mono.fnt");
 
             _updateTimer = new Stopwatch();
             _drawTimer = new Stopwatch();
@@ -129,7 +128,7 @@ namespace PhotoVs.Logic.Debug
 
             var text =
                 $"FPS:         {_fps}\nUpdate Avg.: {_lastUpdate.TotalMilliseconds}ms\nDraw Avg.:   {_lastDraw.TotalMilliseconds}ms";
-            var theight = _font.MeasureString(text).Height + 20;
+            var theight = _font.MeasureString(text).Y + 20;
             var ty = y - theight - 20;
 
             if (_spriteBatch.GraphicsDevice.Viewport.Width > x + 420

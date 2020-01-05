@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine.Graphics.BitmapFonts;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.Input;
 using PhotoVs.Models.FSM;
 
@@ -48,7 +48,7 @@ namespace PhotoVs.Logic.Scenes
         {
             var assetLoader = _scene.Services.AssetLoader;
             var spriteBatch = _scene.Services.SpriteBatch;
-            var font = assetLoader.GetAsset<BitmapFont>("fonts/body.fnt");
+            var font = assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
 
             const int cellWidth = 18;
             const int cellHeight = 28;
@@ -58,7 +58,7 @@ namespace PhotoVs.Logic.Scenes
 
             spriteBatch.Begin();
 
-            var questionSize = font.MeasureString(_question).Width;
+            var questionSize = font.MeasureString(_question).X;
             var qX = 320 / 2 - questionSize / 2;
             var qY = offsetY - 40;
 
@@ -73,7 +73,7 @@ namespace PhotoVs.Logic.Scenes
                 var character = (i >= Text.Length
                     ? '_'
                     : Text[i]).ToString();
-                var characterSize = font.MeasureString(character).Width;
+                var characterSize = font.MeasureString(character).X;
 
                 spriteBatch.DrawString(font, character, new Vector2(tX + (14 * i - characterSize / 2), tY),
                     Color.White);
@@ -111,8 +111,8 @@ namespace PhotoVs.Logic.Scenes
                 }
 
                 var characterSize = font.MeasureString(character);
-                var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.Width / 2));
-                var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Height / 2));
+                var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.X / 2));
+                var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Y / 2));
                 var color = y == _cursorY && x == _cursorX
                     ? Color.Yellow
                     : Color.White;

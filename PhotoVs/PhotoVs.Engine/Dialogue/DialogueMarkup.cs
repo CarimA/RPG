@@ -4,13 +4,12 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue.Markups;
-using PhotoVs.Engine.Graphics.BitmapFonts;
 
 namespace PhotoVs.Engine.Dialogue
 {
     public class DialogueMarkup
     {
-        private readonly BitmapFont _font;
+        private readonly SpriteFont _font;
         private readonly Dictionary<int, List<IMarkup>> _markupIndex;
         private readonly float _maxCharTime;
 
@@ -28,7 +27,7 @@ namespace PhotoVs.Engine.Dialogue
         public bool IsFinished { get; set; }
         public bool IsPaused { get; set; }
 
-        public DialogueMarkup(BitmapFont font, Vector2 origin, string text, int lines, int width)
+        public DialogueMarkup(SpriteFont font, Vector2 origin, string text, int lines, int width)
         {
             _font = font;
             _origin = origin;
@@ -99,9 +98,7 @@ namespace PhotoVs.Engine.Dialogue
             for (var i = _breakIndex; i < _currentIndex; i++)
             {
                 var c = _text[i];
-                var r = _font.GetCharacterRegion(c);
-
-                if (r == null) continue;
+                var r = _font.GetGlyphs()[c];
 
                 if (_markupIndex.TryGetValue(i, out var activeMarkup))
                 {
@@ -118,7 +115,7 @@ namespace PhotoVs.Engine.Dialogue
                             //if (!(c == ' ' || i == _breakIndex))
                             //{1
                             position.X = 0;
-                            position.Y += _font.LineHeight;
+                            position.Y += _font.LineSpacing;
                             //}
 
                             if (c == ' ') continue;
@@ -168,7 +165,7 @@ namespace PhotoVs.Engine.Dialogue
                 }
 
                 spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake, activeColor);
-                position.X += r.Width + r.XOffset - 1;
+                position.X += r.WidthIncludingBearings;
 
                 // reset stuff
                 activeColor = Color.White;
@@ -325,7 +322,7 @@ namespace PhotoVs.Engine.Dialogue
         }
 
         private static Dictionary<int, List<IMarkup>> ParseNewLines(Dictionary<int, List<IMarkup>> markupIndex,
-            string text, BitmapFont font, int width)
+            string text, SpriteFont font, int width)
         {
             text += " ";
             var x = 0f;
@@ -345,7 +342,7 @@ namespace PhotoVs.Engine.Dialogue
                     if (index > -1)
                     {
                         var word = text.Substring(i, index - i);
-                        var wordWidth = font.MeasureString(word).Width;
+                        var wordWidth = font.MeasureString(word).X;
                         if (x + wordWidth >= width)
                         {
                             x = 0;
@@ -354,8 +351,8 @@ namespace PhotoVs.Engine.Dialogue
                     }
                 }
 
-                var t = font.GetCharacterRegion(c);
-                if (t != null) x += t.Width + t.XOffset - 1;
+                var t = font.GetGlyphs()[c];
+                x += t.WidthIncludingBearings;
             }
 
             return markupIndex;

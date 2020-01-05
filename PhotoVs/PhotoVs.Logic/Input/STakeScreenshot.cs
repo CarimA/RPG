@@ -10,7 +10,6 @@ using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Logic.Properties;
 using PhotoVs.Models.ECS;
 
@@ -18,13 +17,13 @@ namespace PhotoVs.Logic.Input
 {
     public class STakeScreenshot : IUpdateableSystem
     {
-        private readonly BitmapFont _font;
+        private readonly SpriteFont _font;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly Renderer _renderer;
         private readonly SpriteBatch _spriteBatch;
 
         public STakeScreenshot(GraphicsDevice graphicsDevice, Renderer renderer, SpriteBatch spriteBatch,
-            BitmapFont font)
+            SpriteFont font)
         {
             _graphicsDevice = graphicsDevice;
             _renderer = renderer;
@@ -63,8 +62,8 @@ namespace PhotoVs.Logic.Input
             var text = "PhotoVs - Development Build - discord.gg/ew2X8Sy";
             var size = _font.MeasureString(text);
 
-            var x = 1280 / 2 - size.Width / 2;
-            var y = 720 - 20 - size.Height;
+            var x = 1280 / 2 - size.X / 2;
+            var y = 720 - 20 - size.Y;
             var t = 2;
 
             _spriteBatch.DrawString(_font, text, new Vector2(x + t, y - t), Color.Black);

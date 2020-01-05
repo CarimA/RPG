@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Graphics.BitmapFonts;
 using PhotoVs.Logic.Input;
 using PhotoVs.Models.FSM;
 using PhotoVs.Utils;
@@ -40,7 +39,7 @@ namespace PhotoVs.Logic.Scenes
 
             spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
             _shakingBox.Draw(gameTime);
-            var font = assetLoader.GetAsset<BitmapFont>("fonts/body.fnt");
+            var font = assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
             spriteBatch.DrawString(font, _name, new Vector2(126, 94), Color.White);
             _dialogue.Draw(gameTime, spriteBatch);
             spriteBatch.End();
@@ -85,7 +84,7 @@ namespace PhotoVs.Logic.Scenes
                 new RectangleF(x + 15 - 3, y - 20, 90, 25)
             });
 
-            _dialogue = new DialogueMarkup(assetLoader.GetAsset<BitmapFont>("fonts/body.fnt"),
+            _dialogue = new DialogueMarkup(assetLoader.GetAsset<SpriteFont>("fonts/body.fnt"),
                 new Vector2(113, 114), //320 - TextWidth - 20, 133),
                 text,
                 3,

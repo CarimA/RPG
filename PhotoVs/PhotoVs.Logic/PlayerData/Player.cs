@@ -9,7 +9,17 @@ namespace PhotoVs.Logic.PlayerData
 {
     public enum Languages
     {
-        EnglishUK
+        EnglishUK,
+        French,
+        Spanish,
+        Italian,
+        German,
+        ChineseTD,
+        ChineseSD,
+        Korean,
+        Japanese,
+        Russian,
+        PortugeuseBR
     }
 
     public class Player : GameObject

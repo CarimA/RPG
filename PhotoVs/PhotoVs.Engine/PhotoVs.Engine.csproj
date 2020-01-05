@@ -45,6 +45,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SpriteFontPlus, Version=0.7.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpriteFontPlus.MonoGame.0.7.0.22\lib\net45\SpriteFontPlus.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -59,9 +62,9 @@
     <Compile Include="Assets\AssetLoaders\AssetLoader.cs" />
     <Compile Include="Assets\AssetLoaders\HotReloadAssetLoader.cs" />
     <Compile Include="Assets\StreamProviders\FileSystemStreamProvider.cs" />
-    <Compile Include="Assets\TypeLoaders\BitmapFontTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\EffectTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\MapTypeLoader.cs" />
+    <Compile Include="Assets\TypeLoaders\SpriteFontTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\TextTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\Texture2DTypeLoader.cs" />
     <Compile Include="Audio\DummyAudio.cs" />
@@ -84,15 +87,6 @@
     <Compile Include="FSM\Scenes\SceneManager.cs" />
     <Compile Include="FSM\States\StateMachine.cs" />
     <Compile Include="GameInput\Input.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFont.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontChar.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontCommon.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontExtensions.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontFile.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontInfo.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontKerning.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontPage.cs" />
-    <Compile Include="Graphics\BitmapFonts\BitmapFontRegion.cs" />
     <Compile Include="Graphics\CanvasSize.cs" />
     <Compile Include="Graphics\ColorGrading.cs" />
     <Compile Include="Graphics\PolygonPrimitive.cs" />

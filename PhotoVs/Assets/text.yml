@@ -7,28 +7,26 @@ Language:
     German: <>
     ChineseTD: <>
     ChineseSD: <>
-    ChineseHK: <>
     Korean: <>
     Japanese: <>
     Russian: <>
     PortugeuseBR: <>
 
 LanguageIcon:
-    EnglishUK: "englishuk.png"
+    EnglishUK: "englishuk"
 
 LanguageFont:
-    EnglishUK: "latin"
-    French: "latin"
-    Spanish: "latin"
-    Italian: "latin"
-    German: "latin"
-    ChineseTD: "hanzi"
-    ChineseSD: "hanzi"
-    ChineseHK: "hanzi"
-    Korean: "hangul"
-    Japanese: "kana"
-    Russian: "cyrillic"
-    PortugeuseBR: "latin"
+    EnglishUK: "body.fnt"
+    French: "body.fnt"
+    Spanish: "body.fnt"
+    Italian: "body.fnt"
+    German: "body.fnt"
+    ChineseTD: "body.fnt"
+    ChineseSD: "body.fnt"
+    Korean: "body.fnt"
+    Japanese: "body.fnt"
+    Russian: "body.fnt"
+    PortugeuseBR: "body.fnt"
 
 # Controller Recommendation Screen
 CR_PlayWithAGamepad:
