@@ -20,6 +20,9 @@ namespace PhotoVs.Engine.Graphics
         public VirtualRenderTarget2D FilterView { get; private set; }
 
         private RenderTarget2D _final;
+
+        // todo: move to a sensible place
+        private Random _random;
         private Effect _scanlines;
         private Effect _crt;
 
@@ -34,7 +37,7 @@ namespace PhotoVs.Engine.Graphics
             GameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight()); //);
             //_uiView = new VirtualRenderTarget2D(graphicsDevice, 320 * 2, 180 * 2);
             CanvasSize = canvasSize;
-
+            _random = new Random();
 
             window.ClientSizeChanged += (sender, e) => { UpdateViewports(); };
             UpdateViewports();
@@ -62,6 +65,14 @@ namespace PhotoVs.Engine.Graphics
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            var rx = (int)(CanvasSize.GetWidth() * _random.NextDouble());
+            var ry = (int)(CanvasSize.GetHeight() * _random.NextDouble());
+
+            spriteBatch.Begin(samplerState: SamplerState.PointWrap, blendState: BlendState.NonPremultiplied);
+            spriteBatch.Draw(_assetLoader.GetAsset<Texture2D>("interfaces/noise.png"), Vector2.Zero, new Rectangle(rx, ry, 320, 180), Color.White * 0.3f);
+            spriteBatch.End();
+
+
             _crt = _assetLoader.GetAsset<Effect>("shaders/crt.dx11");
 
             SetRenderMode(RenderMode.None);
@@ -70,7 +81,7 @@ namespace PhotoVs.Engine.Graphics
             //GameView.DrawScaled(spriteBatch, SamplerState.PointClamp);
             FilterView = _colorGrading.Filter(spriteBatch, GameView);
             FilterView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-
+            
             _graphicsDevice.SetRenderTarget(_final);
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
             _crt.CurrentTechnique.Passes[1].Apply();

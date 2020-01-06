@@ -189,6 +189,10 @@ namespace PhotoVs.Logic
 
             _services.Renderer.SetRenderMode(RenderMode.Game);
 
+            _services.SpriteBatch.Begin(samplerState: SamplerState.PointWrap);
+            _services.SpriteBatch.Draw(_services.AssetLoader.GetAsset<Texture2D>("interfaces/test2.png"), Vector2.Zero, Color.White);
+            _services.SpriteBatch.End();
+
             _services.SceneMachine.Draw(gameTime);
             _services.Renderer.Draw(_services.SpriteBatch);
 

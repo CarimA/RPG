@@ -34,7 +34,7 @@ namespace PhotoVs.Logic.Scenes
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
 
             spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320 / 2, 10), Color.White);
-            spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320 / 2, 180 - 20),
+            spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320 / 2, 180 - 40),
                 Color.White);
 
             spriteBatch.Draw(_gamepadIcon, new Vector2(96, 82), Color.White);

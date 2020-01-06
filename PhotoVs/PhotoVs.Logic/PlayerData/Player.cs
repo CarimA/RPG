@@ -41,7 +41,7 @@ namespace PhotoVs.Logic.PlayerData
 
             Flags = new Dictionary<string, object>();
             CanMove = true;
-            Language = Languages.French;
+            Language = Languages.EnglishUK;
 
             _position = new CPosition {Position = new Vector2(0, 0)};
             Components.Add(_position);

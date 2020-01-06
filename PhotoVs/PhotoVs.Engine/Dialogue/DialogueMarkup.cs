@@ -89,6 +89,11 @@ namespace PhotoVs.Engine.Dialogue
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (_text == string.Empty)
+            {
+                return;
+            }
+
             var activeColor = Color.White;
             var outlineColor = Color.Transparent;
 
