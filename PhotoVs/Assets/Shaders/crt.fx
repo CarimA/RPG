@@ -23,55 +23,152 @@ float4 CRT(float4 pos: SV_POSITION, float4 col : COLOR0, float2 coords : TEXCOOR
     return tex2D(s0, tc);
 }
 
-int ImageWidth;
-int ImageHeight;
-float Brightness;
-float Contrast;
-int ModFactor = 4;
+// hlsl port of https://www.shadertoy.com/view/XsjSzR
+
+float2 res = float2(1.0 / 320.0, 1.0 / 180.0);
+
+// Hardness of scanline.
+//  -8.0 = soft
+// -16.0 = medium
+float hardScan = -12.0;
+
+// Hardness of pixels in scanline.
+// -2.0 = soft
+// -4.0 = hard
+float hardPix = -3.0;
+
+// Amount of shadow mask.
+float maskDark = 0.5;
+float maskLight = 1.5;
+
+float ToSrgb1(float c)
+{
+    return c < 0.0031308 
+        ? c * 12.92 
+        : 1.055 * pow(c, 0.41666) - 0.055;
+}
+
+float3 ToSrgb(float3 c) {
+    return float3(ToSrgb1(c.r), ToSrgb1(c.g), ToSrgb1(c.b));
+}
+
+float ToLinear1(float c)
+{
+    return (c <= 0.04045)
+        ? c / 12.92
+        : pow((c + 0.055) / 1.055, 2.4);
+}
+
+float3 ToLinear(float3 c) {
+    return float3(ToLinear1(c.r), ToLinear1(c.g), ToLinear1(c.b));
+}
+
+float3 Fetch(float2 pos, float2 off)
+{
+    return ToLinear(tex2D(s0, pos + (off * res)).rgb);
+}
+
+float2 Dist(float2 pos)
+{
+    //pos = pos * res;
+    pos *= (1.0 / res);
+    return -((pos - floor(pos)) - float2(0.5, 0.5));
+}
+
+float Gaus(float pos, float scale)
+{
+    return exp2(scale * pos * pos);
+}
+
+float3 Horz3(float2 pos, float off)
+{
+    float3 b = Fetch(pos, float2(-1.0, off));
+    float3 c = Fetch(pos, float2(0.0, off));
+    float3 d = Fetch(pos, float2(1.0, off));
+    float dist = Dist(pos).x;
+    float scale = hardPix;
+    float wb = Gaus(dist - 1.0, scale);
+    float wc = Gaus(dist, scale);
+    float wd = Gaus(dist + 1.0, scale);
+
+    return (b * wb + c * wc + d * wd) / (wb + wc + wd);
+}
+
+float3 Horz5(float2 pos, float off)
+{
+    float3 a = Fetch(pos, float2(-2.0, off));
+    float3 b = Fetch(pos, float2(-1.0, off));
+    float3 c = Fetch(pos, float2(0.0, off));
+    float3 d = Fetch(pos, float2(1.0, off));
+    float3 e = Fetch(pos, float2(-2.0, off));
+    float dist = Dist(pos).x;
+    float scale = hardPix;
+    float wa = Gaus(dist - 2.0, scale);
+    float wb = Gaus(dist - 1.0, scale);
+    float wc = Gaus(dist, scale);
+    float wd = Gaus(dist + 1.0, scale);
+    float we = Gaus(dist - 2.0, scale);
+
+    return (a * wa + b * wb + c * wc + d * wd + e * we) / (wa + wb + wc + wd + we);
+}
+
+float Scan(float2 pos, float off)
+{
+    float dist = Dist(pos).y;
+    return Gaus(dist + off, hardScan);
+}
+
+float3 Tri(float2 pos)
+{
+    float3 a = Horz3(pos, -1.0);
+    float3 b = Horz5(pos, 0.0);
+    float3 c = Horz3(pos, 1.0);
+    float wa = Scan(pos, -1.0);
+    float wb = Scan(pos, 0.0);
+    float wc = Scan(pos, 1.0);
+
+    return a * wa + b * wb + c * wc;
+}
+
+float3 Mask(float2 pos)
+{
+    //pos.x += pos.y * 3.0;
+    float3 mask = float3(maskDark, maskDark, maskDark);
+    pos.x *= (1.0 / res.x);
+    pos.x = frac(pos.x);
+
+    if (pos.x < 0.333)
+        mask.r = maskLight;
+    else if (pos.x < 0.666)
+        mask.g = maskLight;
+    else
+        mask.b = maskLight;
+
+    return mask;
+}
+
+float2 Warp(float2 pos)
+{
+    float warp = 0.0;
+    pos = pos * 2.0 - 1.0;
+    pos *= float2(
+        1.0 + (pos.y * pos.y) * warp,
+        1.0 + (pos.x * pos.x) * warp);
+    return pos * 0.5 + 0.5;
+}
 
 float4 MainPS(float4 pos: SV_POSITION, float4 col : COLOR0, float2 coords : TEXCOORD0) : COLOR
 {
-    float4 color = tex2D(s0, coords);
+    float4 color = float4(
+        Fetch(coords, float2(0.0, 0.0)),
+        1.0);//tex2D(s0, coords);
 
-    // first, pick out rgb vertical lines
-    int xpos = (coords.x * ImageWidth) % ModFactor;
-    float4 outColor = color;
-    if (xpos == 1) {
-        outColor.r = color.r;
-        outColor.g = color.g * 0.85f;
-        outColor.b = color.b * 0.6f;
-    }
-    if (xpos == 2) {
-        outColor.g = color.g;
-        outColor.b = color.b * 0.87f;
-        outColor.r = color.r * 0.55f;
-    }
-    if (xpos == 3) {
-        outColor.b = color.b;
-        outColor.r = color.r * 0.9f;
-        outColor.g = color.g * 0.7f;
-    }
+    color.rgb = Tri(coords) * Mask(coords);
+    color.a = 1.0;
+    color.rgb = ToSrgb(color);
 
-    // now include the horizontal scanlines
-    float ypos = fmod(coords.y * ImageHeight, 4);
-    if (ypos > 1 && ypos <= 2) {
-        outColor *= 0.76;
-    }
-    if (ypos > 2 && ypos <= 3) {
-        outColor *= 1.2;
-    }
+    return color;
 
-    //int a = saturate((input.Position.y * ImageHeight) % 4);
-    //int b = saturate((input.Position.y * ImageHeight + 1) % 4);
-    //float m = min(a, b);
-
-    //outColor *= m;
-
-    // now increase the brightness/contrast
-    outColor += (Brightness / 255);
-    outColor = outColor - Contrast * (outColor - 1.0) * outColor * (outColor - 0.5f);
-
-    return outColor;
 }
 
 technique Technique1

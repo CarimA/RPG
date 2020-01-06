@@ -57,8 +57,8 @@ namespace PhotoVs.Logic
             _services.Set(new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
-                PreferredBackBufferWidth = 320,
-                PreferredBackBufferHeight = 180
+                PreferredBackBufferWidth = 1920,
+                PreferredBackBufferHeight = 1080
             });
         }
 

@@ -72,18 +72,13 @@ namespace PhotoVs.Engine.Graphics
             FilterView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
 
             _graphicsDevice.SetRenderTarget(_final);
-            spriteBatch.Begin(SpriteSortMode.Immediate);
-
-            _crt.Parameters["ImageHeight"].SetValue(1080);
-            _crt.Parameters["ImageWidth"].SetValue(1920);
-            _crt.Parameters["Brightness"].SetValue(12f);
-            _crt.Parameters["Contrast"].SetValue(4f);
+            spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
             _crt.CurrentTechnique.Passes[1].Apply();
             FilterView.DrawScaled(spriteBatch);
             spriteBatch.End();
 
             _graphicsDevice.SetRenderTarget(null);
-            spriteBatch.Begin(SpriteSortMode.Immediate);
+            spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
             _crt.CurrentTechnique.Passes[0].Apply();
             spriteBatch.Draw(_final, Vector2.Zero, Color.White);
             spriteBatch.End();
