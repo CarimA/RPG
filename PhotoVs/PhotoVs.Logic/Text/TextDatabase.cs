@@ -51,11 +51,16 @@ namespace PhotoVs.Logic.Text
         public string GetText(string id)
         {
             var language = _player.Language;
-            var value = _languages[language].Text[id];
-
-            // parse any embedded language tags
-            value = Regex.Replace(value, "\\[text (.+?)\\]", MatchTextMarkup);
-            value = Regex.Replace(value, "\\[flag (.+?)\\]", MatchFlagMarkup);
+            if (_languages[language].Text.TryGetValue(id, out var value))
+            {
+                // parse any embedded language tags
+                value = Regex.Replace(value, "\\[text (.+?)\\]", MatchTextMarkup);
+                value = Regex.Replace(value, "\\[flag (.+?)\\]", MatchFlagMarkup);
+            }
+            else
+            {
+                value = $"[{id}:{language.ToString()} NOT SET]";
+            }
 
             return value;
         }

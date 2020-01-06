@@ -31,6 +31,10 @@ LanguageFont:
 # Controller Recommendation Screen
 CR_PlayWithAGamepad:
     EnglishUK: 9 out of 10 Photons recommend you play with a gamepad (but a keyboard works too!)
+    French: Je vous recommande de jouer avec une manette de jeu (mais un clavier fonctionne aussi!)
+    Spanish: Te recomiendo que juegues con un gamepad (¡pero un teclado también funciona!)
+    Italian: Vi consiglio di giocare con un gamepad (ma una tastiera funziona troppo!)
+    German: "Ich empfehle, mit einem Gamepad zu spielen (aber eine Tastatur funktioniert auch!)"
 
 CR_CopyrightNotice:
     EnglishUK: PhotoVs (c) 2019-2020 Glaciate. Developed and published by Glaciate.
