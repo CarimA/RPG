@@ -28,6 +28,7 @@ namespace PhotoVs.Logic.Scenes
         public void Draw(GameTime gameTime)
         {
             var spriteBatch = _scene.Services.SpriteBatch;
+            var assetLoader = _scene.Services.AssetLoader;
             var text = _scene.Services.TextDatabase;
             var font = text.GetFont();
 
@@ -48,7 +49,7 @@ namespace PhotoVs.Logic.Scenes
 
         public void Enter(params object[] args)
         {
-            _continueTime = 6f;
+            _continueTime = 16f;
             _isChanging = false;
 
             var textDatabase = _scene.Services.TextDatabase;

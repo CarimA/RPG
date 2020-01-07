@@ -13,11 +13,12 @@ using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.Text;
 
-namespace PhotoVs.Logic.Services
+namespace PhotoVs.Logic
 {
-    public class ServiceLocator
+    public class Services
     {
         public Events Events { get; }
+        public Config Config { get; private set; }
         public Coroutines Coroutines { get; private set; }
         public PluginProvider Plugins { get; private set; }
 
@@ -40,14 +41,14 @@ namespace PhotoVs.Logic.Services
         public ISystemCollection GlobalSystems { get; private set; }
 
 
-        public ServiceLocator(Events events)
+        public Services(Events events)
         {
             Events = events;
         }
 
         public void Set<T>(T service)
         {
-            foreach (var property in typeof(ServiceLocator).GetProperties())
+            foreach (var property in typeof(Services).GetProperties())
                 if (property.PropertyType.IsAssignableFrom(typeof(T))
                     || property.PropertyType is T)
                 {

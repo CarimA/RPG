@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using PhotoVs.Logic.Services;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 
@@ -12,9 +11,9 @@ namespace PhotoVs.Logic.Plugins
     public class PluginProvider
     {
         private readonly List<Plugin> _plugins;
-        private readonly ServiceLocator _services;
+        private readonly Services _services;
 
-        public PluginProvider(ServiceLocator services)
+        public PluginProvider(Services services)
         {
             _plugins = new List<Plugin>();
             _services = services;

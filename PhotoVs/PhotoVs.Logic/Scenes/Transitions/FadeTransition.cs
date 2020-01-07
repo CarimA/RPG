@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Logic.Services;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes.Transitions
@@ -14,9 +13,9 @@ namespace PhotoVs.Logic.Scenes.Transitions
         private readonly float _maxFadeInTime;
         private readonly float _maxFadeOutTime;
 
-        private readonly ServiceLocator _services;
+        private readonly Services _services;
 
-        public FadeTransition(ServiceLocator services, Color fadeColor, float fadeInTime = 0.35f,
+        public FadeTransition(Services services, Color fadeColor, float fadeInTime = 0.35f,
             float fadeOutTime = 0.35f)
         {
             _services = services;

@@ -27,16 +27,22 @@ namespace PhotoVs.Engine.GameInput
             ButtonMappings = buttonMappings;
             KeyMappings = keyMappings;
 
-            foreach (var kvp in ButtonMappings)
-            {
-                WasPressed[kvp.Key] = false;
-                IsPressed[kvp.Key] = false;
+            if (ButtonMappings != null)
+            { 
+                foreach (var kvp in ButtonMappings)
+                {
+                    WasPressed[kvp.Key] = false;
+                    IsPressed[kvp.Key] = false;
+                }
             }
 
-            foreach (var kvp in KeyMappings)
+            if (KeyMappings != null)
             {
-                WasPressed[kvp.Key] = false;
-                IsPressed[kvp.Key] = false;
+                foreach (var kvp in KeyMappings)
+                {
+                    WasPressed[kvp.Key] = false;
+                    IsPressed[kvp.Key] = false;
+                }
             }
         }
 
@@ -106,21 +112,22 @@ namespace PhotoVs.Engine.GameInput
             var keyboard = Keyboard.GetState();
             var gamePad = GamePad.GetState(GamePadIndex);
 
+
             foreach (T action in Enum.GetValues(typeof(T)))
             {
                 if (!IsPressed.ContainsKey(action))
                     IsPressed[action] = false;
 
-                if (!ButtonMappings.ContainsKey(action))
+                if (ButtonMappings != null && !ButtonMappings.ContainsKey(action))
                     ButtonMappings[action] = new List<Buttons>();
 
-                if (!KeyMappings.ContainsKey(action))
+                if (KeyMappings != null && !KeyMappings.ContainsKey(action))
                     KeyMappings[action] = new List<Keys>();
 
                 WasPressed[action] = IsPressed[action];
 
-                if (AnyButtonDown(gamePad, ButtonMappings[action]) ||
-                    AnyKeyDown(keyboard, KeyMappings[action]))
+                if ((ButtonMappings != null && AnyButtonDown(gamePad, ButtonMappings[action])) ||
+                    (KeyMappings != null && AnyKeyDown(keyboard, KeyMappings[action])))
                 {
                     IsPressed[action] = true;
                     if (!PressedTime.ContainsKey(action)) PressedTime.Add(action, 0f);

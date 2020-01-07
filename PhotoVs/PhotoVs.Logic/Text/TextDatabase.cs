@@ -12,11 +12,13 @@ namespace PhotoVs.Logic.Text
 {
     public class TextDatabase : ITextDatabase
     {
-        private readonly Player _player;
+        private readonly Services _services;
         private readonly Dictionary<Languages, Language> _languages;
 
-        public TextDatabase(IAssetLoader assetLoader, Player player)
+        public TextDatabase(Services services)
         {
+            _services = services;
+            var assetLoader = services.AssetLoader;
             var deserializer = new Deserializer();
             var sr = new StringReader(assetLoader.GetAsset<string>("text.yml"));
             var data = deserializer.Deserialize<Dictionary<string, Dictionary<Languages, string>>>(sr);
@@ -39,18 +41,16 @@ namespace PhotoVs.Logic.Text
                     }
                 }
             }
-
-            _player = player;
         }
 
         public SpriteFont GetFont()
         {
-            return _languages[_player.Language].Font;
+            return _languages[_services.Config.Language].Font;
         }
 
         public string GetText(string id)
         {
-            var language = _player.Language;
+            var language = _services.Config.Language;
             if (_languages[language].Text.TryGetValue(id, out var value))
             {
                 // parse any embedded language tags
@@ -74,7 +74,7 @@ namespace PhotoVs.Logic.Text
         private string MatchFlagMarkup(Match match)
         {
             var flag = match.Groups[1].Value;
-            return _player.Flags[flag].ToString();
+            return _services.Player.Flags[flag].ToString();
         }
     }
 }

@@ -2,7 +2,6 @@
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.FSM.States;
 using PhotoVs.Logic.Scenes.Transitions;
-using PhotoVs.Logic.Services;
 using PhotoVs.Models.FSM;
 
 namespace PhotoVs.Logic.Scenes
@@ -12,7 +11,7 @@ namespace PhotoVs.Logic.Scenes
         private ITransition _activeTransition;
         private object[] _nextArgs;
         private IScene _nextState;
-        public ServiceLocator Services { get; }
+        public Services Services { get; }
         public ISceneManager SceneManager { get; }
 
         internal ControllerRecommendationScreen ControllerRecommendationScreen { get; }
@@ -20,7 +19,7 @@ namespace PhotoVs.Logic.Scenes
         internal TextInputScene TextInputScene { get; }
         internal OverworldScene OverworldScene { get; }
 
-        public SceneMachine(ServiceLocator services)
+        public SceneMachine(Services services)
         {
             Services = services;
             ControllerRecommendationScreen = new ControllerRecommendationScreen(this);

@@ -20,7 +20,6 @@ using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Plugins;
 using PhotoVs.Logic.Scenes;
-using PhotoVs.Logic.Services;
 using PhotoVs.Logic.Text;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.Audio;
@@ -32,7 +31,7 @@ namespace PhotoVs.Logic
 {
     public class MainGame : Game
     {
-        private readonly ServiceLocator _services;
+        private readonly Services _services;
         private DiagnosticInfo _info;
 
         public MainGame()
@@ -40,6 +39,7 @@ namespace PhotoVs.Logic
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
 
+            // todo: figure out how to abstract this away
             var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs"));
             Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves"));
@@ -47,13 +47,12 @@ namespace PhotoVs.Logic
             Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save2"));
             Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save3"));
             Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Mods"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Options"));
             Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Screenshots"));
             Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Logs"));
 
             Logger.Write.Trace("Creating [My Documents]/PhotoVs");
 
-            _services = new ServiceLocator(new Events());
+            _services = new Services(new Events());
             _services.Set(new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
@@ -72,10 +71,11 @@ namespace PhotoVs.Logic
             _services.Plugins.LoadPlugins(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 "PhotoVs/Mods"));
             _services.Plugins.LoadPlugin(typeof(TestPlugin));
+            _services.Set(Config.Load());
 
             _services.Set(CreateAssetLoader());
             _services.Set(CreateRenderer());
-            _services.Set(new Player());
+            _services.Set(new Player(_services));
             _services.Set(CreateCamera());
             _services.Set(CreateGlobalEntities());
             _services.Set(CreateGlobalSystems());
@@ -87,6 +87,11 @@ namespace PhotoVs.Logic
             _services.Events.RaiseOnGameStart();
 
             _services.SceneMachine.Push(_services.SceneMachine.ControllerRecommendationScreen);
+
+            if (_services.Config.Fullscreen)
+            {
+                EnableFullscreen();
+            }
 
             base.Initialize();
         }
@@ -112,7 +117,7 @@ namespace PhotoVs.Logic
 
         private ITextDatabase CreateTextDatabase()
         {
-            var textDatabase = new TextDatabase(_services.AssetLoader, _services.Player);
+            var textDatabase = new TextDatabase(_services);
             return textDatabase;
         }
 
@@ -189,9 +194,13 @@ namespace PhotoVs.Logic
 
             _services.Renderer.SetRenderMode(RenderMode.Game);
 
-            _services.SpriteBatch.Begin(samplerState: SamplerState.PointWrap);
-            _services.SpriteBatch.Draw(_services.AssetLoader.GetAsset<Texture2D>("interfaces/test2.png"), Vector2.Zero, Color.White);
-            _services.SpriteBatch.End();
+
+            if (_services.SceneMachine.Peek() is OverworldScene)
+            {
+                _services.SpriteBatch.Begin(samplerState: SamplerState.PointWrap);
+                _services.SpriteBatch.Draw(_services.AssetLoader.GetAsset<Texture2D>("interfaces/test2.png"), Vector2.Zero, Color.White);
+                _services.SpriteBatch.End();
+            }
 
             _services.SceneMachine.Draw(gameTime);
             _services.Renderer.Draw(_services.SpriteBatch);
@@ -238,6 +247,16 @@ namespace PhotoVs.Logic
             {
                 yield return new Pause(3f);
             }
+        }
+
+        private void EnableFullscreen()
+        {
+            var graphics = _services.GraphicsDeviceManager;
+            var graphicsDevice = _services.GraphicsDevice;
+            graphics.PreferredBackBufferWidth = graphicsDevice.DisplayMode.Width;
+            graphics.PreferredBackBufferHeight = graphicsDevice.DisplayMode.Height;
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
         }
     }
 }

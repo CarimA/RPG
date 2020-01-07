@@ -63,6 +63,7 @@
     <Compile Include="Collision\SCollisionDebugRender.cs" />
     <Compile Include="Collision\SCollisionResolution.cs" />
     <Compile Include="Collision\SProcessInteractionEvents.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Debugger\DiagnosticInfo.cs" />
     <Compile Include="Input\CInput.cs" />
     <Compile Include="Input\GameInput.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Movement\SProcessVelocity.cs" />
     <Compile Include="PlayerData\Player.cs" />
     <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\PluginHelpers.cs" />
     <Compile Include="Plugins\PluginProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -90,7 +92,7 @@
     <Compile Include="Scenes\TextInputScene.cs" />
     <Compile Include="Scenes\Transitions\FadeTransition.cs" />
     <Compile Include="Scenes\Transitions\ITransition.cs" />
-    <Compile Include="Services\ServiceLocator.cs" />
+    <Compile Include="Services.cs" />
     <Compile Include="Text\Language.cs" />
     <Compile Include="Text\TextDatabase.cs" />
     <Compile Include="Transforms\CCollisionBound.cs" />

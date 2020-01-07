@@ -7,6 +7,8 @@ namespace PhotoVs.Logic.Input
 {
     public class SHandleFullscreen : IUpdateableSystem
     {
+        // todo: move this logic out of a system, return to MainGame
+
         private readonly GraphicsDeviceManager _graphics;
         private readonly GraphicsDevice _graphicsDevice;
         private int _windowHeight;
