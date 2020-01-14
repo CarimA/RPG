@@ -56,8 +56,8 @@ namespace PhotoVs.Logic
             _services.Set(new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
-                PreferredBackBufferWidth = 320,
-                PreferredBackBufferHeight = 180
+                PreferredBackBufferWidth = 1280, //320,
+                PreferredBackBufferHeight = 720 //180
             });
         }
 
@@ -131,7 +131,7 @@ namespace PhotoVs.Logic
                     canvas,
                     _services.AssetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
                     _services.AssetLoader.GetAsset<Texture2D>("colorgrading/aap128.png")),
-                canvas, _services.AssetLoader);
+                canvas);
             return renderer;
         }
 
@@ -193,16 +193,11 @@ namespace PhotoVs.Logic
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _services.Renderer.SetRenderMode(RenderMode.Game);
-
-
-            if (_services.SceneMachine.Peek() is OverworldScene)
-            {
-                _services.SpriteBatch.Begin(samplerState: SamplerState.PointWrap);
-                _services.SpriteBatch.Draw(_services.AssetLoader.GetAsset<Texture2D>("interfaces/test2.png"), Vector2.Zero, Color.White);
-                _services.SpriteBatch.End();
-            }
-
             _services.SceneMachine.Draw(gameTime);
+
+            _services.Renderer.SetRenderMode(RenderMode.UI);
+            _services.SceneMachine.DrawUI(gameTime);
+
             _services.Renderer.Draw(_services.SpriteBatch);
 
             base.Draw(gameTime);

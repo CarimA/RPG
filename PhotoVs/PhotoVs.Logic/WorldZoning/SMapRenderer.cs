@@ -61,6 +61,11 @@ namespace PhotoVs.Logic.WorldZoning
             _camera.Detach(_spriteBatch);
         }
 
+        public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection)
+        {
+
+        }
+
         private void DrawMapMask(Map map)
         {
             DrawMap(map, _spriteBatch, _assetLoader, "mask");

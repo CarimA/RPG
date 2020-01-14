@@ -16,7 +16,7 @@ LanguageIcon:
     EnglishUK: englishuk.png
 
 LanguageFont:
-    EnglishUK: body.fnt
+    EnglishUK: InputMono-Regular.ttf
     French: body.fnt
     Spanish: body.fnt
     Italian: body.fnt

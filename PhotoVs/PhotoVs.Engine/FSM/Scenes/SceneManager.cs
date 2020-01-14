@@ -73,6 +73,26 @@ namespace PhotoVs.Engine.FSM.Scenes
             }
         }
 
+        public void DrawUI(GameTime gameTime)
+        {
+            foreach (var currentState in _scenes.CurrentStates())
+            {
+                if (currentState is ISystemScene systemScene)
+                {
+                    var systems = GetCombinedSystems(systemScene)
+                        .Where(IsActive)
+                        .OfType<IDrawableSystem>();
+                    var entities = GetCombinedEntities(systemScene);
+
+                    DrawUI(systems, entities, gameTime);
+                }
+
+                if (currentState is IDrawableScene drawableScene)
+                    drawableScene.DrawUI(gameTime);
+            }
+
+        }
+
         public StateMachine<IScene> GetScenes()
         {
             return _scenes;
@@ -123,6 +143,14 @@ namespace PhotoVs.Engine.FSM.Scenes
         {
             foreach (var system in systems)
                 system.AfterDraw(gameTime);
+        }
+        private void DrawUI(IEnumerable<IDrawableSystem> systems, IGameObjectCollection entities, GameTime gameTime)
+        {
+            foreach (var system in systems)
+                system.DrawUI(gameTime,
+                    system.Requires.Length == 0
+                        ? entities
+                        : entities.All(system.Requires));
         }
 
         private ISystemCollection GetCombinedSystems(ISystemScene currentState)

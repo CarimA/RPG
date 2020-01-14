@@ -66,7 +66,11 @@ namespace PhotoVs.Logic.Scenes
         public void Draw(GameTime gameTime)
         {
             SceneManager.Draw(gameTime);
+        }
 
+        public void DrawUI(GameTime gameTime)
+        {
+            SceneManager.DrawUI(gameTime);
             _activeTransition?.Draw(gameTime);
         }
     }

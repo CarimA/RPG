@@ -29,8 +29,13 @@ namespace PhotoVs.Logic.Scenes
 
         public void Draw(GameTime gameTime)
         {
+        }
+
+        public void DrawUI(GameTime gameTime)
+        {
             var spriteBatch = _scene.Services.SpriteBatch;
             var assetLoader = _scene.Services.AssetLoader;
+            var text = _scene.Services.TextDatabase;
 
             spriteBatch.Begin();
             spriteBatch.Draw(assetLoader.GetAsset<Texture2D>("portraits/test2.png"), new Vector2(0, 0),
@@ -39,8 +44,7 @@ namespace PhotoVs.Logic.Scenes
 
             spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
             _shakingBox.Draw(gameTime);
-            var font = assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
-            spriteBatch.DrawString(font, _name, new Vector2(126, 94), Color.White);
+            spriteBatch.DrawString(text.GetFont(), _name, new Vector2(126 * 4, 94 * 4), Color.White);
             _dialogue.Draw(gameTime, spriteBatch);
             spriteBatch.End();
         }
@@ -72,23 +76,24 @@ namespace PhotoVs.Logic.Scenes
         {
             var spriteBatch = _scene.Services.SpriteBatch;
             var assetLoader = _scene.Services.AssetLoader;
+            var text = _scene.Services.TextDatabase;
 
             _name = args[0].ToString();
-            var text = args[1].ToString();
+            var dialogue = args[1].ToString();
 
-            var x = 110;
-            var y = 110;
+            var x = 110 * 4;
+            var y = 110 * 4;
             _shakingBox = new ShakingBox(spriteBatch, new List<RectangleF>
             {
-                new RectangleF(x, y, 200, 65),
-                new RectangleF(x + 15 - 3, y - 20, 90, 25)
+                new RectangleF(x, y, 200 * 4, 65 * 4),
+                new RectangleF(x + (15 - 3) * 4, y - (20 * 4), 90 * 4, 25 * 4)
             });
 
-            _dialogue = new DialogueMarkup(assetLoader.GetAsset<SpriteFont>("fonts/body.fnt"),
-                new Vector2(113, 114), //320 - TextWidth - 20, 133),
-                text,
+            _dialogue = new DialogueMarkup(text.GetFont(),
+                new Vector2(113 * 4, 114 * 4), //320 - TextWidth - 20, 133),
+                dialogue,
                 3,
-                200);
+                200 * 4);
 
             IsFinished = false;
         }

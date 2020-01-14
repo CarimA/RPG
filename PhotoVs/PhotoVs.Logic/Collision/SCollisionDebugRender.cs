@@ -52,6 +52,11 @@ namespace PhotoVs.Logic.Collision
         {
         }
 
+        public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection)
+        {
+
+        }
+
         private void Draw(IGameObject entity)
         {
             var position = entity.Components.Get<CPosition>();

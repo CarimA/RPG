@@ -27,10 +27,11 @@ namespace PhotoVs.Logic.Scenes
 
         public void Draw(GameTime gameTime)
         {
+        }
+
+        public void DrawUI(GameTime gameTime)
+        {
             var spriteBatch = _scene.Services.SpriteBatch;
-            var assetLoader = _scene.Services.AssetLoader;
-            var text = _scene.Services.TextDatabase;
-            var font = text.GetFont();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
 
@@ -54,9 +55,11 @@ namespace PhotoVs.Logic.Scenes
 
             var textDatabase = _scene.Services.TextDatabase;
             var assetLoader = _scene.Services.AssetLoader;
+            var text = _scene.Services.TextDatabase;
+            var font = text.GetFont();
 
             _gamepadIcon = assetLoader.GetAsset<Texture2D>("interfaces/gamepad.png");
-            _font = assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
+            _font = font;
 
             _playWithAGamepad = _font.WrapText(textDatabase.GetText("CR_PlayWithAGamepad"), 280);
             _copyrightNotice = _font.WrapText(textDatabase.GetText("CR_CopyrightNotice"), 300);

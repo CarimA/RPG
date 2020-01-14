@@ -19,9 +19,6 @@ namespace PhotoVs.Logic
 
         // Graphics
         public bool Fullscreen { get; set; }
-        public bool CrtNoiseEnabled { get; set; }
-        public bool CrtBarrelEnabled { get; set; }
-        public bool CrtColourCorrectionEnabled { get; set; }
 
         // Audio
         public bool BgmEnabled { get; set; }
@@ -64,9 +61,6 @@ namespace PhotoVs.Logic
                 Language = Languages.EnglishUK,
 
                 Fullscreen = false,
-                CrtNoiseEnabled = true,
-                CrtBarrelEnabled = true,
-                CrtColourCorrectionEnabled = true,
 
                 BgmEnabled = true,
                 BgmVolume = 100,

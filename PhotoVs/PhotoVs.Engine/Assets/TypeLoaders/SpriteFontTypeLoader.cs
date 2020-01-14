@@ -47,7 +47,7 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
 
                     var bake = TtfFontBaker.Bake(
                         bytes,
-                        16,
+                        48,
                         1024,
                         1024,
                         new[]

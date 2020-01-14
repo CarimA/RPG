@@ -6,5 +6,6 @@ namespace PhotoVs.Models.FSM
     {
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime);
+        void DrawUI(GameTime gameTime);
     }
 }

@@ -8,9 +8,6 @@ namespace PhotoVs.Logic.Scenes
 {
     public class TextInputScene : IUpdateableScene, IDrawableScene
     {
-        private const float _sustainTime = 0.8f;
-        private const float _repeatTime = 0.25f;
-
         private const int _keysPerRow = 12;
 
         // | is inaccessible
@@ -46,6 +43,10 @@ namespace PhotoVs.Logic.Scenes
 
         public void Draw(GameTime gameTime)
         {
+        }
+
+        public void DrawUI(GameTime gameTime)
+        {
             var assetLoader = _scene.Services.AssetLoader;
             var spriteBatch = _scene.Services.SpriteBatch;
             var font = assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
@@ -80,45 +81,45 @@ namespace PhotoVs.Logic.Scenes
             }
 
             for (var y = 0; y < KeyboardCellHeight(); y++)
-            for (var x = 0; x < KeyboardCellWidth(); x++)
-            {
-                // ^ is shift
-                // & is next keyboard
-                // £ is delete
-                // $ is submit
-                var character = GetKey(x, y);
-
-                switch (character)
+                for (var x = 0; x < KeyboardCellWidth(); x++)
                 {
-                    case "|":
-                        continue;
+                    // ^ is shift
+                    // & is next keyboard
+                    // £ is delete
+                    // $ is submit
+                    var character = GetKey(x, y);
 
-                    case "^":
-                        character = "^";
-                        break;
+                    switch (character)
+                    {
+                        case "|":
+                            continue;
 
-                    case "&":
-                        character = "->";
-                        break;
+                        case "^":
+                            character = "^";
+                            break;
 
-                    case "£":
-                        character = "<-";
-                        break;
+                        case "&":
+                            character = "->";
+                            break;
 
-                    case "$":
-                        character = "SUBMIT";
-                        break;
+                        case "£":
+                            character = "<-";
+                            break;
+
+                        case "$":
+                            character = "SUBMIT";
+                            break;
+                    }
+
+                    var characterSize = font.MeasureString(character);
+                    var dX = (int)(offsetX + (int)(cellWidth * x + (cellWidth / 2 - characterSize.X / 2)));
+                    var dY = (int)(offsetY + (int)(cellHeight * y + (cellHeight / 2 - characterSize.Y / 2)));
+                    var color = y == _cursorY && x == _cursorX
+                        ? Color.Yellow
+                        : Color.White;
+
+                    spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
                 }
-
-                var characterSize = font.MeasureString(character);
-                var dX = (int)(offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.X / 2)));
-                var dY = (int)(offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Y / 2)));
-                var color = y == _cursorY && x == _cursorX
-                    ? Color.Yellow
-                    : Color.White;
-
-                spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
-            }
 
             spriteBatch.End();
         }

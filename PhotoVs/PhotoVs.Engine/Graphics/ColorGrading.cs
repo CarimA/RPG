@@ -5,8 +5,6 @@ namespace PhotoVs.Engine.Graphics
 {
     public class ColorGrading
     {
-        private readonly CanvasSize _canvasSize;
-
         private readonly Effect _effect;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly Texture2D _lut;
@@ -17,7 +15,6 @@ namespace PhotoVs.Engine.Graphics
             _graphicsDevice = graphicsDevice;
             _effect = effect;
             _lut = lut;
-            _canvasSize = canvasSize;
             _view = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
         }
 
@@ -25,7 +22,6 @@ namespace PhotoVs.Engine.Graphics
         {
             _graphicsDevice.SetRenderTarget(_view);
             _graphicsDevice.Clear(Color.Black);
-
 
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
 
