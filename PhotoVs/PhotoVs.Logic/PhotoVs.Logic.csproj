@@ -99,10 +99,6 @@
     <Compile Include="Transforms\CPosition.cs" />
     <Compile Include="Transforms\CSize.cs" />
     <Compile Include="Transforms\CVelocity.cs" />
-    <Compile Include="UI\UIComponents.cs" />
-    <Compile Include="UI\UIManager.cs" />
-    <Compile Include="UI\UIObject.cs" />
-    <Compile Include="UI\UIObjectCollection.cs" />
     <Compile Include="WorldZoning\ChunkedMap.cs" />
     <Compile Include="WorldZoning\CScript.cs" />
     <Compile Include="WorldZoning\CSolid.cs" />
@@ -136,9 +132,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Systems\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
