@@ -104,6 +104,7 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new TextTypeLoader())
                 .RegisterTypeLoader(new Texture2DTypeLoader(_services.GraphicsDevice))
                 .RegisterTypeLoader(new SpriteFontTypeLoader(_services.GraphicsDevice, assetLoader))
+                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(_services.GraphicsDevice, _services.AssetLoader, 32))
                 .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;

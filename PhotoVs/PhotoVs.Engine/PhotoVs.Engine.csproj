@@ -64,6 +64,7 @@
     <Compile Include="Assets\StreamProviders\FileSystemStreamProvider.cs" />
     <Compile Include="Assets\TypeLoaders\EffectTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\MapTypeLoader.cs" />
+    <Compile Include="Assets\TypeLoaders\DynamicSpriteFontTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\SpriteFontTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\TextTypeLoader.cs" />
     <Compile Include="Assets\TypeLoaders\Texture2DTypeLoader.cs" />

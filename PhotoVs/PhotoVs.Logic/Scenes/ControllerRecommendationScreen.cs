@@ -35,8 +35,8 @@ namespace PhotoVs.Logic.Scenes
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
 
-            spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320 / 2, 10), Color.White);
-            spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320 / 2, 180 - 40),
+            spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320, 10), Color.White);
+            spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320, (180 * 2) - 80),
                 Color.White);
 
             spriteBatch.Draw(_gamepadIcon, new Vector2(96, 82), Color.White);
@@ -61,8 +61,8 @@ namespace PhotoVs.Logic.Scenes
             _gamepadIcon = assetLoader.GetAsset<Texture2D>("interfaces/gamepad.png");
             _font = font;
 
-            _playWithAGamepad = _font.WrapText(textDatabase.GetText("CR_PlayWithAGamepad"), 280);
-            _copyrightNotice = _font.WrapText(textDatabase.GetText("CR_CopyrightNotice"), 300);
+            _playWithAGamepad = _font.WrapText(textDatabase.GetText("CR_PlayWithAGamepad"), (320 * 2) - 40);
+            _copyrightNotice = _font.WrapText(textDatabase.GetText("CR_CopyrightNotice"), (320 * 2) - 80);
         }
 
         public void Exit()
