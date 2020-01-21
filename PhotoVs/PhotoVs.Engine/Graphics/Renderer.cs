@@ -53,12 +53,15 @@ namespace PhotoVs.Engine.Graphics
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            var width = _graphics.PreferredBackBufferWidth;
+            var height = _graphics.PreferredBackBufferHeight;
             var gameView = _colorGrading.Filter(spriteBatch, GameView);
+            gameView.UpdateViewport(width, height);
 
             SetRenderMode(RenderMode.None);
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
-            spriteBatch.Draw(gameView, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
-            spriteBatch.Draw(UIView, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+            gameView.DrawScaled(spriteBatch);
+            UIView.DrawScaled(spriteBatch);
             spriteBatch.End();
         }
 
@@ -69,6 +72,7 @@ namespace PhotoVs.Engine.Graphics
             _graphics.ApplyChanges();
 
             GameView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            UIView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
         }
     }
 }
