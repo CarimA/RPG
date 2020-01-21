@@ -56,8 +56,8 @@ namespace PhotoVs.Logic
             _services.Set(new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
-                PreferredBackBufferWidth = 1280, //320,
-                PreferredBackBufferHeight = 720 //180
+                PreferredBackBufferWidth = 320,
+                PreferredBackBufferHeight = 180
             });
         }
 
@@ -210,6 +210,9 @@ namespace PhotoVs.Logic
         public class TestPlugin : Plugin
         {
             private ITextDatabase _db;
+            private SCamera _camera;
+            private Player _player;
+
             public override string Name { get; } = "Test Plugin";
             public override string Version { get; } = "1.0.0";
 
@@ -217,6 +220,8 @@ namespace PhotoVs.Logic
             {
                 events.OnInteractEventEnter["example_event"] += InteractEventHandler;
                 events.OnServiceSet[typeof(ITextDatabase)] += (sender, type) => { _db = (ITextDatabase) type; };
+                events.OnServiceSet[typeof(SCamera)] += (sender, type) => { _camera = (SCamera)type; };
+                events.OnServiceSet[typeof(Player)] += (sender, type) => { _player = (Player)type; };
             }
 
             private void InteractEventHandler(object sender, IGameObject player, IGameObject script)
@@ -226,6 +231,12 @@ namespace PhotoVs.Logic
 
             private IEnumerator DoThis()
             {
+                _camera.Set(new System.Collections.Generic.List<Vector2>()
+                {
+                    new Vector2(-600, -600),
+                    new Vector2(600, 600)
+                });
+
                 var text = TextInput("Hi", "Test", 10);
                 yield return text;
 
@@ -237,6 +248,8 @@ namespace PhotoVs.Logic
                 Logger.Write.Trace("Test 2");
                 yield return new Pause(3f);
                 Logger.Write.Trace("Test 3");
+
+                _camera.Follow(_player);
             }
 
             private IEnumerator WaitTest()

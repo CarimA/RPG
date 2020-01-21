@@ -95,7 +95,7 @@ namespace PhotoVs.Logic.Collision
                 if (!result.AreIntersecting)
                     continue;
 
-                _gameEvents.RaiseOnCollision(moving, stationary);
+                _gameEvents.RaiseOnCollision(new CollisionEventArgs() { Moving = moving, Stationary = stationary });
             }
 
             if (minimumTranslations.Count > 0)

@@ -58,6 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Battles\Field.cs" />
+    <Compile Include="Battles\Hazard.cs" />
+    <Compile Include="Battles\BattlePhoton.cs" />
     <Compile Include="Camera\SCamera.cs" />
     <Compile Include="Camera\ScreenShake.cs" />
     <Compile Include="Collision\CollisionResult.cs" />

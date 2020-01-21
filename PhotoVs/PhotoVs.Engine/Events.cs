@@ -4,9 +4,15 @@ using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine
 {
+    public class CollisionEventArgs : EventArgs
+    {
+        public IGameObject Moving { get; set; }
+        public IGameObject Stationary { get; set; }
+    }
+
     public sealed class Events
     {
-        public delegate void CollisionEventHandler(object sender, IGameObject moving, IGameObject stationary);
+        public delegate void CollisionEventHandler(object sender, CollisionEventArgs e);
 
         public delegate void InteractEventHandler(object sender, IGameObject player, IGameObject script);
 
@@ -61,10 +67,10 @@ namespace PhotoVs.Engine
             OnGameStart?.Invoke(this);
         }
 
-        public void RaiseOnCollision(IGameObject moving, IGameObject stationary)
+        public void RaiseOnCollision(CollisionEventArgs e)
         {
             Logger.Write.Trace("EVENT - Invoking OnCollision");
-            OnCollision?.Invoke(this, moving, stationary);
+            OnCollision?.Invoke(this, e);
         }
 
         public void RaiseOnInteractEventAction(string key, IGameObject player, IGameObject script)

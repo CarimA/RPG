@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Models.ECS;
+using PhotoVs.Utils;
 
 namespace PhotoVs.Logic.Camera
 {
@@ -27,6 +29,7 @@ namespace PhotoVs.Logic.Camera
 
         private Matrix _transform = Matrix.Identity;
         private float _zoom;
+        private float _lerpZoom;
 
         public SCamera(Renderer renderer)
         {
@@ -115,11 +118,17 @@ namespace PhotoVs.Logic.Camera
 
         private void UpdateLerp(GameTime gameTime)
         {
-            if (Vector2.Distance(_position + _lookDirection, _lerpPosition) < 1)
-                return;
+            if (Math.Abs(_zoom - _lerpZoom) > 0f)
+            {
+                _lerpZoom = MathHelper.Lerp(_lerpZoom, _zoom, 0.25f);
+                _isDirty = true;
+            }
 
-            _lerpPosition = Vector2.Lerp(_lerpPosition, _position + _lookDirection, 0.25f);
-            _isDirty = true;
+            if (Vector2.Distance(_position + _lookDirection, _lerpPosition) > 0.5)
+            {
+                _lerpPosition = Vector2.Lerp(_lerpPosition, _position, 0.25f);
+                _isDirty = true;
+            }
         }
 
         private void UpdateLookDirection()
@@ -133,6 +142,48 @@ namespace PhotoVs.Logic.Camera
             _isDirty = true;
         }
 
+        public void Set(List<Vector2> points)
+        {
+            // this method will set a zoom based on the
+            // given points in world view that want to be 
+            // seen in view
+            var rect = new RectangleF(points.First().X, 
+                points.First().Y, 
+                1, 1);
+
+            // find a bounding rectangle based on all of the points
+            foreach (var point in points)
+            {
+                if (point.X < rect.Left)
+                    rect.X = point.X;
+
+                if (point.X > rect.Right)
+                    rect.Width = (point.X - rect.X);
+
+                if (point.Y < rect.Top)
+                    rect.Y = point.Y;
+
+                if (point.Y > rect.Bottom)
+                    rect.Height = (point.Y - rect.Y);
+            }
+
+            var midpoint = rect.Center;
+            var distance = Vector2.Distance(rect.TopLeft, rect.BottomRight);
+
+            var zWidth = _renderer.CanvasSize.GetWidth() / rect.Width;
+            var zHeight = _renderer.CanvasSize.GetHeight() / rect.Height;
+
+            var zoom = Math.Min(zWidth, zHeight);
+
+            var follow = new GameObject();
+            follow.Components.Add(new CPosition()
+            {
+                Position = midpoint
+            });
+            this.Follow(follow);
+            _zoom = zoom;
+        }
+
         private void UpdateCamera()
         {
             var intensity = ShakeIntensity();
@@ -140,7 +191,7 @@ namespace PhotoVs.Logic.Camera
                          Matrix.CreateTranslation(new Vector3(
                              -((float) (_random.NextDouble() * intensity * 2) - intensity),
                              -((float) (_random.NextDouble() * intensity * 2) - intensity), 0)) *
-                         Matrix.CreateScale(new Vector3(_zoom, _zoom, 1)) *
+                         Matrix.CreateScale(new Vector3(_lerpZoom, _lerpZoom, 1)) *
                          Matrix.CreateTranslation(new Vector3(_renderer.CanvasSize.GetWidth() / 2,
                              _renderer.CanvasSize.GetHeight() / 2,
                              0)) *
@@ -207,6 +258,7 @@ namespace PhotoVs.Logic.Camera
                 _lastPosition += size.Size / 2;
 
             _isDirty = true;
+            _zoom = 1f;
         }
 
         public Vector2 WorldToScreen(Vector2 position)
