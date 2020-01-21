@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Utils.Collections
@@ -72,6 +73,11 @@ namespace PhotoVs.Utils.Collections
             {
                 return (val * 0x9e3779b1) >> 24;
             }
+        }
+
+        public List<T> ToList()
+        {
+            return _cells.Values.ToList();
         }
     }
 }
