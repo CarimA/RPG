@@ -25,24 +25,6 @@ namespace PhotoVs.Logic
     {
         private readonly Dictionary<Type, object> _cache;
 
-        //public Events Events { get; }
-        //public Config Config { get; private set; }
-        //public Coroutines Coroutines { get; private set; }
-        //public PluginProvider Plugins { get; private set; }
-        //public GraphicsDevice GraphicsDevice { get; private set; }
-        //public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
-        //public SpriteBatch SpriteBatch { get; private set; }
-        //public IAssetLoader AssetLoader { get; private set; }
-        //public IAudio Audio { get; private set; }
-        //public ITextDatabase TextDatabase { get; private set; }
-        //public Renderer Renderer { get; private set; }
-        //public Player Player { get; private set; }
-        //public SCamera Camera { get; private set; }
-        //public SceneMachine SceneMachine { get; private set; }
-        //public IGameObjectCollection GlobalGameObjects { get; private set; }
-        //public ISystemCollection GlobalSystems { get; private set; }
-
-
         public Services()
         {
             _cache = new Dictionary<Type, object>();
