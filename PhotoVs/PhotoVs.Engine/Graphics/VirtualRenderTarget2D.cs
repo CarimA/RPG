@@ -12,24 +12,34 @@ namespace PhotoVs.Engine.Graphics
         {
         }
 
-        public void UpdateViewport(int displayWidth, int displayHeight)
+        public void UpdateViewport(int displayWidth, int displayHeight, bool crop = true)
         {
             var widthScale = displayWidth / (double) Width;
             var heightScale = displayHeight / (double) Height;
 
-            if (widthScale < heightScale)
+            if (crop)
             {
-                _viewport.Width = (int) (Width * widthScale);
-                _viewport.Height = (int) (Height * widthScale);
+                if (widthScale < heightScale)
+                {
+                    _viewport.Width = (int)(Width * widthScale);
+                    _viewport.Height = (int)(Height * widthScale);
+                }
+                else
+                {
+                    _viewport.Width = (int)(Width * heightScale);
+                    _viewport.Height = (int)(Height * heightScale);
+                }
+
+                _viewport.X = displayWidth / 2 - _viewport.Width / 2;
+                _viewport.Y = displayHeight / 2 - _viewport.Height / 2;
             }
             else
             {
-                _viewport.Width = (int) (Width * heightScale);
-                _viewport.Height = (int) (Height * heightScale);
+                _viewport.Width = (int)(Width * widthScale);
+                _viewport.Height = (int)(Height * heightScale);
+                _viewport.X = 0;
+                _viewport.Y = 0;
             }
-
-            _viewport.X = displayWidth / 2 - _viewport.Width / 2;
-            _viewport.Y = displayHeight / 2 - _viewport.Height / 2;
         }
 
         public void DrawScaled(SpriteBatch spriteBatch)

@@ -57,23 +57,27 @@ namespace PhotoVs.Logic.Input
         {
             var width = _graphicsDevice.PresentationParameters.BackBufferWidth;
             var height = _graphicsDevice.PresentationParameters.BackBufferHeight;
+
+            var sWidth = (int) _renderer.RenderSize.Width * 4;
+            var sHeight = (int) _renderer.RenderSize.Height * 4;
+
             var data = new Color[width * height];
             _graphicsDevice.GetBackBufferData(data);
             using var tex = new Texture2D(_graphicsDevice, width, height);
             tex.SetData(data);
 
-            var rt = new RenderTarget2D(_graphicsDevice, 1280, 720);
+            var rt = new RenderTarget2D(_graphicsDevice, sWidth, sHeight);
 
             _graphicsDevice.SetRenderTarget(rt);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(tex, new Rectangle(0, 0, 1280, 720), Color.White);
+            _spriteBatch.Draw(tex, new Rectangle(0, 0, sWidth, sHeight), Color.White);
 
             var text = "PhotoVs - Development Build - discord.gg/ew2X8Sy";
             var size = _font.MeasureString(text);
 
-            var x = 1280 / 2 - size.X / 2;
-            var y = 720 - 20 - size.Y;
+            var x = sWidth / 2 - size.X / 2;
+            var y = sHeight - 20 - size.Y;
             var t = 2;
 
             _spriteBatch.DrawString(_font, text, new Vector2(x + t, y - t), Color.Black);
@@ -94,7 +98,7 @@ namespace PhotoVs.Logic.Input
             using var stream = File.Create(Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 $"PhotoVs/Screenshots/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{Guid.NewGuid().ToString()}.png"));
-            rt.SaveAsPng(stream, 1280, 720);
+            rt.SaveAsPng(stream, sWidth, sHeight);
 
             UploadToDiscord(rt);
 

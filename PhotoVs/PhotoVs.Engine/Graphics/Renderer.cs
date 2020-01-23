@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Utils;
 
 namespace PhotoVs.Engine.Graphics
 {
@@ -13,8 +14,16 @@ namespace PhotoVs.Engine.Graphics
 
         public CanvasSize CanvasSize { get; }
 
-        public VirtualRenderTarget2D GameView { get; }
+        public VirtualRenderTarget2D GameView { get; private set; }
         public VirtualRenderTarget2D UIView { get; }
+
+        public Size2 RenderSize
+        {
+            get
+            {
+                return new Size2(GameView.Width, GameView.Height);
+            }
+        }
 
         public Renderer(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, GameWindow window,
             ColorGrading colorGrading, CanvasSize canvasSize)
@@ -24,7 +33,7 @@ namespace PhotoVs.Engine.Graphics
             _graphicsDevice = graphicsDevice;
             _colorGrading = colorGrading;
             GameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
-            UIView = new VirtualRenderTarget2D(graphicsDevice, 1280 / 2, 720 / 2);
+            UIView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
             CanvasSize = canvasSize;
 
             window.ClientSizeChanged += (sender, e) => { UpdateViewports(); };
@@ -67,12 +76,31 @@ namespace PhotoVs.Engine.Graphics
 
         private void UpdateViewports()
         {
-            _graphics.PreferredBackBufferWidth = _window.ClientBounds.Width;
-            _graphics.PreferredBackBufferHeight = _window.ClientBounds.Height;
+            var width = _window.ClientBounds.Width;
+            var height = _window.ClientBounds.Height;
+
+            _graphics.PreferredBackBufferWidth = width;
+            _graphics.PreferredBackBufferHeight = height;
             _graphics.ApplyChanges();
 
-            GameView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-            UIView.UpdateViewport(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            var widthScale = width / (double)CanvasSize.GetWidth();
+            var heightScale = height / (double)CanvasSize.GetHeight();
+
+            if (widthScale < heightScale)
+            {
+                // _viewport.Width = (int)(Width * widthScale);
+                // _viewport.Height = (int)(Height * widthScale);
+                GameView = new VirtualRenderTarget2D(_graphicsDevice, CanvasSize.GetWidth(), (int)(height / widthScale));
+            }
+            else
+            {
+                //_viewport.Width = (int)(Width * heightScale);
+                // _viewport.Height = (int)(Height * heightScale);
+                GameView = new VirtualRenderTarget2D(_graphicsDevice, (int)(width / heightScale), CanvasSize.GetHeight());
+            }
+
+            GameView.UpdateViewport(width, height, false);
+            UIView.UpdateViewport(width, height);
         }
     }
 }

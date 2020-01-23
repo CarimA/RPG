@@ -30,36 +30,32 @@ namespace PhotoVs.Logic.Plugins
 
         public void LoadPlugins(string directory)
         {
-            if (Directory.Exists(directory))
-            {
-                var dlls = Directory.GetFiles(directory);
-                foreach (var dll in dlls)
-                {
-                    if (!dll.EndsWith(".dll"))
-                        continue;
-
-                    try
-                    {
-                        var assembly = Assembly.LoadFrom(dll);
-                        Logger.Write.Info($"Loaded dll: {dll}");
-
-                        var types = assembly.GetTypes();
-                        var plugins = types.Where(IsPlugin);
-                        plugins.ForEach(LoadAssembly);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Write.Error($"Could not load plugin: {dll}");
-                        Logger.Write.Error(e.ToString());
-                    }
-                }
-
-                Logger.Write.Info($"Loaded {_plugins.Count} plugin(s)");
-            }
-            else
+            if (!Directory.Exists(directory))
             {
                 Logger.Write.Error($"Could not find {directory}");
+                return;
             }
+
+            var dlls = Directory.GetFiles(directory).Where(file => file.EndsWith(".dll"));
+            foreach (var dll in dlls)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFrom(dll);
+                    Logger.Write.Info($"Loaded dll: {dll}");
+
+                    var types = assembly.GetTypes();
+                    var plugins = types.Where(IsPlugin);
+                    plugins.ForEach(LoadAssembly);
+                }
+                catch (Exception e)
+                {
+                    Logger.Write.Error($"Could not load plugin: {dll}");
+                    Logger.Write.Error(e.ToString());
+                }
+            }
+
+            Logger.Write.Info($"Loaded {_plugins.Count} plugin(s)");
         }
 
         private static bool IsPlugin(Type type)
