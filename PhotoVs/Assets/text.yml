@@ -16,17 +16,17 @@ LanguageIcon:
     EnglishUK: englishuk.png
 
 LanguageFont:
-    EnglishUK: InputMono-Regular.ttf
-    French: body.fnt
-    Spanish: body.fnt
-    Italian: body.fnt
-    German: body.fnt
-    ChineseTD: body.fnt
-    ChineseSD: body.fnt
-    Korean: body.fnt
-    Japanese: body.fnt
-    Russian: body.fnt
-    PortugueseBR: body.fnt
+    EnglishUK: plain_12.fnt
+    French: plain_12.fnt
+    Spanish: plain_12.fnt
+    Italian: plain_12.fnt
+    German: plain_12.fnt
+    ChineseTD: plain_12.fnt
+    ChineseSD: plain_12.fnt
+    Korean: plain_12.fnt
+    Japanese: plain_12.fnt
+    Russian: plain_12.fnt
+    PortugueseBR: plain_12.fnt
 
 # Controller Recommendation Screen
 CR_PlayWithAGamepad:

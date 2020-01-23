@@ -52,7 +52,7 @@ namespace PhotoVs.Logic.Scenes
 
             _spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
             _shakingBox.Draw(gameTime);
-            _spriteBatch.DrawString(_textDatabase.GetFont(), _name, new Vector2(126 * 2, 94 * 2), Color.White);
+            _spriteBatch.DrawString(_textDatabase.GetFont(), _name, new Vector2(126, 94), Color.White);
             _dialogue.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
         }
@@ -86,19 +86,19 @@ namespace PhotoVs.Logic.Scenes
             _name = args[0].ToString();
             var dialogue = args[1].ToString();
 
-            var x = 110 * 2;
-            var y = 110 * 2;
+            var x = 110 ;
+            var y = 110 ;
             _shakingBox = new ShakingBox(_spriteBatch, new List<RectangleF>
             {
-                new RectangleF(x, y, 200 * 2, 65 * 2),
-                new RectangleF(x + (15 - 3) * 2, y - 20 * 2, 90 * 2, 25 * 2)
+                new RectangleF(x, y, 200 , 65 ),
+                new RectangleF(x + (15 - 3) , y - 20 , 90 , 25 )
             });
 
             _dialogue = new DialogueMarkup(_textDatabase.GetFont(),
-                new Vector2(113 * 2, 114 * 2), //320 - TextWidth - 20, 133),
+                new Vector2(113 , 114 ), //320 - TextWidth - 20, 133),
                 dialogue,
-                3,
-                200 * 2);
+                2,
+                200 );
 
             IsFinished = false;
         }

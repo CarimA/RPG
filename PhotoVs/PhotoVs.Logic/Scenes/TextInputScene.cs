@@ -54,7 +54,7 @@ namespace PhotoVs.Logic.Scenes
 
         public void DrawUI(GameTime gameTime)
         {
-            var font = _assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
+            var font = _assetLoader.GetAsset<SpriteFont>("fonts/plain_12.fnt");
 
             const int cellWidth = 18;
             const int cellHeight = 28;
