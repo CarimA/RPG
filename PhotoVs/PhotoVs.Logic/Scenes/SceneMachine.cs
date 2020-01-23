@@ -23,7 +23,6 @@ namespace PhotoVs.Logic.Scenes
 
         public SceneMachine(Services services)
         {
-
             Services = services;
             ControllerRecommendationScreen = new ControllerRecommendationScreen(this);
             OverworldScene = new OverworldScene(this);
@@ -53,10 +52,12 @@ namespace PhotoVs.Logic.Scenes
         {
             SceneManager.Update(gameTime);
 
-            if (_activeTransition == null) return;
+            if (_activeTransition == null)
+                return;
             _activeTransition.Update(gameTime);
 
-            if (_activeTransition.ShouldSwitch()) base.Change(_nextState, _nextArgs);
+            if (_activeTransition.ShouldSwitch())
+                base.Change(_nextState, _nextArgs);
 
             if (_activeTransition.IsFinished)
             {

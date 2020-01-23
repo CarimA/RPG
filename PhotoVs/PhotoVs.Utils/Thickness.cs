@@ -39,7 +39,8 @@ namespace PhotoVs.Utils
 
         public override bool Equals(object obj)
         {
-            if (obj is Thickness other) return Equals(other);
+            if (obj is Thickness other)
+                return Equals(other);
 
             return base.Equals(obj);
         }
@@ -63,7 +64,8 @@ namespace PhotoVs.Utils
 
         public static Thickness FromValues(int[] values)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
+            if (values == null)
+                throw new ArgumentNullException(nameof(values));
 
             return values.Length switch
                 {
@@ -76,7 +78,8 @@ namespace PhotoVs.Utils
 
         public static Thickness Parse(string value)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
 
             var values = value
                 .Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries)

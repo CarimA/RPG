@@ -630,9 +630,11 @@ namespace PhotoVs.Utils.Compression
         /// </param>
         public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex)
         {
-            if (chars is null) throw new ArgumentNullException(nameof(chars));
+            if (chars is null)
+                throw new ArgumentNullException(nameof(chars));
 
-            if (bytes is null) throw new ArgumentNullException(nameof(bytes));
+            if (bytes is null)
+                throw new ArgumentNullException(nameof(bytes));
 
             return FallbackByte.HasValue
                 ? GetBytesWithFallBack(chars, charIndex, charCount, bytes, byteIndex)
@@ -698,9 +700,11 @@ namespace PhotoVs.Utils.Compression
         /// </param>
         public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex)
         {
-            if (bytes is null) throw new ArgumentNullException(nameof(bytes));
+            if (bytes is null)
+                throw new ArgumentNullException(nameof(bytes));
 
-            if (chars is null) throw new ArgumentNullException(nameof(chars));
+            if (chars is null)
+                throw new ArgumentNullException(nameof(chars));
 
             return FallbackCharacter.HasValue
                 ? GetCharsWithFallback(bytes, byteIndex, byteCount, chars, charIndex)

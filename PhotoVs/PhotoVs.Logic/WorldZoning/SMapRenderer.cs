@@ -63,7 +63,6 @@ namespace PhotoVs.Logic.WorldZoning
 
         public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection)
         {
-
         }
 
         private void DrawMapMask(Map map)

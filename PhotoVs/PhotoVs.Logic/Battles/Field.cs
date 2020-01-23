@@ -1,15 +1,34 @@
-﻿using Microsoft.Xna.Framework;
-using PhotoVs.Utils.Collections;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using PhotoVs.Utils.Collections;
 
 namespace PhotoVs.Logic.Battles
 {
     public class Field
     {
+        private BattlePhoton _activePhoton;
+        private Grid<Hazard> _hazards;
+
+        private readonly Grid<BattlePhoton> _photons;
+
+        private readonly Random _random;
+        private int _turn;
+
+        private Queue<BattlePhoton> _turnOrder;
+
+        public Field()
+        {
+            _random = new Random();
+
+            _photons = new Grid<BattlePhoton>();
+            _hazards = new Grid<Hazard>();
+
+            _turnOrder = new Queue<BattlePhoton>();
+            _turn = 0;
+        }
+
         // raised when a photon is attempting to deal damage.
         // used to apply any modifiers invoked by the photon itself.
         private event EventHandler OnDealDamage;
@@ -33,26 +52,6 @@ namespace PhotoVs.Logic.Battles
         // applied. 
         private event EventHandler OnSetStatus;
 
-        private Random _random;
-
-        private Grid<BattlePhoton> _photons;
-        private Grid<Hazard> _hazards;
-
-        private Queue<BattlePhoton> _turnOrder;
-        private BattlePhoton _activePhoton;
-        private int _turn;
-
-        public Field()
-        {
-            _random = new Random();
-
-            _photons = new Grid<BattlePhoton>();
-            _hazards = new Grid<Hazard>();
-
-            _turnOrder = new Queue<BattlePhoton>();
-            _turn = 0;
-        }
-
         public void DetermineTurnOrder()
         {
             // sort by speed and then priority,
@@ -69,7 +68,7 @@ namespace PhotoVs.Logic.Battles
             photons.Sort((a, b) =>
             {
                 if (a.Speed.CompareTo(b.Speed) == 0)
-                    return (_random.NextDouble() < 0.5)
+                    return _random.NextDouble() < 0.5
                         ? -1
                         : 1;
                 return 0;
@@ -96,7 +95,6 @@ namespace PhotoVs.Logic.Battles
 
                 // call a photon turn started event for the photon
                 // that just started its turn
-
             }
             else
             {
@@ -113,10 +111,7 @@ namespace PhotoVs.Logic.Battles
 
         public void Update(GameTime gameTime)
         {
-            if (_activePhoton.HasMoved)
-            {
-                NextPhoton();
-            }
+            if (_activePhoton.HasMoved) NextPhoton();
         }
     }
 }

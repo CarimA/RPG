@@ -66,37 +66,43 @@ namespace PhotoVs.Engine
         public void RaiseOnInteractEventAction(string key, IGameObject player, IGameObject script)
         {
             Logger.Write.Trace($"EVENT - Invoking OnInteractEventAction ({key})");
-            if (OnInteractEventAction.TryGetValue(key, out var value)) value?.Invoke(this, player, script);
+            if (OnInteractEventAction.TryGetValue(key, out var value))
+                value?.Invoke(this, player, script);
         }
 
         public void RaiseOnInteractEventEnter(string key, IGameObject player, IGameObject script)
         {
             Logger.Write.Trace($"EVENT - Invoking OnInteractEventEnter ({key})");
-            if (OnInteractEventEnter.TryGetValue(key, out var value)) value?.Invoke(this, player, script);
+            if (OnInteractEventEnter.TryGetValue(key, out var value))
+                value?.Invoke(this, player, script);
         }
 
         public void RaiseOnInteractEventExit(string key, IGameObject player, IGameObject script)
         {
             Logger.Write.Trace($"EVENT - Invoking OnInteractEventExit ({key})");
-            if (OnInteractEventExit.TryGetValue(key, out var value)) value?.Invoke(this, player, script);
+            if (OnInteractEventExit.TryGetValue(key, out var value))
+                value?.Invoke(this, player, script);
         }
 
         public void RaiseOnInteractEventStand(string key, IGameObject player, IGameObject script)
         {
             Logger.Write.Trace($"EVENT - Invoking OnInteractEventStand ({key})");
-            if (OnInteractEventStand.TryGetValue(key, out var value)) value?.Invoke(this, player, script);
+            if (OnInteractEventStand.TryGetValue(key, out var value))
+                value?.Invoke(this, player, script);
         }
 
         public void RaiseOnInteractEventWalk(string key, IGameObject player, IGameObject script)
         {
             Logger.Write.Trace($"EVENT - Invoking OnInteractEventWalk ({key})");
-            if (OnInteractEventWalk.TryGetValue(key, out var value)) value?.Invoke(this, player, script);
+            if (OnInteractEventWalk.TryGetValue(key, out var value))
+                value?.Invoke(this, player, script);
         }
 
         public void RaiseOnInteractEventRun(string key, IGameObject player, IGameObject script)
         {
             Logger.Write.Trace($"EVENT - Invoking OnInteractEventRun ({key})");
-            if (OnInteractEventRun.TryGetValue(key, out var value)) value?.Invoke(this, player, script);
+            if (OnInteractEventRun.TryGetValue(key, out var value))
+                value?.Invoke(this, player, script);
         }
     }
 }

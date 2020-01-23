@@ -28,22 +28,18 @@ namespace PhotoVs.Engine.GameInput
             KeyMappings = keyMappings;
 
             if (ButtonMappings != null)
-            { 
                 foreach (var kvp in ButtonMappings)
                 {
                     WasPressed[kvp.Key] = false;
                     IsPressed[kvp.Key] = false;
                 }
-            }
 
             if (KeyMappings != null)
-            {
                 foreach (var kvp in KeyMappings)
                 {
                     WasPressed[kvp.Key] = false;
                     IsPressed[kvp.Key] = false;
                 }
-            }
         }
 
         public bool ActionPressed(T action)
@@ -126,11 +122,12 @@ namespace PhotoVs.Engine.GameInput
 
                 WasPressed[action] = IsPressed[action];
 
-                if ((ButtonMappings != null && AnyButtonDown(gamePad, ButtonMappings[action])) ||
-                    (KeyMappings != null && AnyKeyDown(keyboard, KeyMappings[action])))
+                if (ButtonMappings != null && AnyButtonDown(gamePad, ButtonMappings[action]) ||
+                    KeyMappings != null && AnyKeyDown(keyboard, KeyMappings[action]))
                 {
                     IsPressed[action] = true;
-                    if (!PressedTime.ContainsKey(action)) PressedTime.Add(action, 0f);
+                    if (!PressedTime.ContainsKey(action))
+                        PressedTime.Add(action, 0f);
                     PressedTime[action] += (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else

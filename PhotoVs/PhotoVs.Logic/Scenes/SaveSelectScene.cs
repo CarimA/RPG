@@ -11,7 +11,6 @@ namespace PhotoVs.Logic.Scenes
 
         public void DrawUI(GameTime gameTime)
         {
-
         }
 
         public bool IsBlocking { get; set; } = false;

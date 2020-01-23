@@ -48,9 +48,11 @@ namespace PhotoVs.Logic.Collision
             var input = entity.Components.Get<CInput>().Input;
             var velocity = entity.Components.Get<CVelocity>();
 
-            if (!(entity is Player player)) return;
+            if (!(entity is Player player))
+                return;
 
-            if (!player.CanMove) return;
+            if (!player.CanMove)
+                return;
 
             foreach (var script in scripts)
             {
@@ -78,12 +80,14 @@ namespace PhotoVs.Logic.Collision
                         }
                         else
                         {
-                            if (player.CanMove) _events.RaiseOnInteractEventWalk(scriptName, player, script);
+                            if (player.CanMove)
+                                _events.RaiseOnInteractEventWalk(scriptName, player, script);
                         }
                     }
                     else
                     {
-                        if (player.CanMove) _events.RaiseOnInteractEventStand(scriptName, player, script);
+                        if (player.CanMove)
+                            _events.RaiseOnInteractEventStand(scriptName, player, script);
                     }
                 }
                 else

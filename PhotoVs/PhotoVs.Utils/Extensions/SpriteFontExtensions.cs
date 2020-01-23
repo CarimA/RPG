@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PhotoVs.Utils.Extensions
@@ -19,7 +14,7 @@ namespace PhotoVs.Utils.Extensions
 
             foreach (var word in words)
             {
-                Vector2 size = font.MeasureString(word);
+                var size = font.MeasureString(word);
 
                 if (lineWidth + size.X < maxLineWidth)
                 {

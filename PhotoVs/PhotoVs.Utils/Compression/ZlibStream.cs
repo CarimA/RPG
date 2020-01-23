@@ -407,7 +407,8 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The data in compressed form</returns>
         public static byte[] CompressBuffer(byte[] b)
         {
-            if (b is null) throw new ArgumentNullException(nameof(b));
+            if (b is null)
+                throw new ArgumentNullException(nameof(b));
 
             using var ms = new MemoryStream();
             Stream compressor = new ZlibStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);

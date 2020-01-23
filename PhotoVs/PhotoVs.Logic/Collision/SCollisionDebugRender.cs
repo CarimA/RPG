@@ -54,7 +54,6 @@ namespace PhotoVs.Logic.Collision
 
         public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection)
         {
-
         }
 
         private void Draw(IGameObject entity)

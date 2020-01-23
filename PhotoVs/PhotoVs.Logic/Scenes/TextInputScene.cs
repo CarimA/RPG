@@ -10,11 +10,8 @@ namespace PhotoVs.Logic.Scenes
 {
     public class TextInputScene : IUpdateableScene, IDrawableScene
     {
-        private readonly Player _player;
-        private readonly IAssetLoader _assetLoader;
-        private readonly SpriteBatch _spriteBatch;
-
         private const int _keysPerRow = 12;
+        private readonly IAssetLoader _assetLoader;
 
         // | is inaccessible
         // ^ is shift
@@ -27,6 +24,9 @@ namespace PhotoVs.Logic.Scenes
             "abcdefghijklmnopqrstuvwxyz          ^^&&££££$$$$",
             "0123456789  .!?-_+=                 ^^&&££££$$$$"
         };
+
+        private readonly Player _player;
+        private readonly SpriteBatch _spriteBatch;
 
         private int _currentKeyboard;
         private int _cursorX;
@@ -59,19 +59,19 @@ namespace PhotoVs.Logic.Scenes
             const int cellWidth = 18;
             const int cellHeight = 28;
 
-            var offsetX = (int)(320 / 2 - cellWidth * KeyboardCellWidth() / 2);
-            var offsetY = (int)(180 / 2 - cellHeight * KeyboardCellHeight() / 2 + 20);
+            var offsetX = 320 / 2 - cellWidth * KeyboardCellWidth() / 2;
+            var offsetY = 180 / 2 - cellHeight * KeyboardCellHeight() / 2 + 20;
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             var questionSize = font.MeasureString(_question).X;
-            var qX = (int)(320 / 2 - questionSize / 2);
+            var qX = (int) (320 / 2 - questionSize / 2);
             var qY = offsetY - 40;
 
             _spriteBatch.DrawString(font, _question, new Vector2(qX, qY), Color.HotPink);
 
             var textCellWidth = 14;
-            var tX = (int)(320 / 2 - _limit * textCellWidth / 2);
+            var tX = 320 / 2 - _limit * textCellWidth / 2;
             var tY = qY + 20;
 
             for (var i = 0; i < _limit; i++)
@@ -81,50 +81,50 @@ namespace PhotoVs.Logic.Scenes
                     : Text[i]).ToString();
                 var characterSize = font.MeasureString(character).X;
 
-                _spriteBatch.DrawString(font, character, new Vector2((int)(tX + (14 * i - characterSize / 2)), tY),
+                _spriteBatch.DrawString(font, character, new Vector2((int) (tX + (14 * i - characterSize / 2)), tY),
                     Color.White);
             }
 
             for (var y = 0; y < KeyboardCellHeight(); y++)
-                for (var x = 0; x < KeyboardCellWidth(); x++)
+            for (var x = 0; x < KeyboardCellWidth(); x++)
+            {
+                // ^ is shift
+                // & is next keyboard
+                // £ is delete
+                // $ is submit
+                var character = GetKey(x, y);
+
+                switch (character)
                 {
-                    // ^ is shift
-                    // & is next keyboard
-                    // £ is delete
-                    // $ is submit
-                    var character = GetKey(x, y);
+                    case "|":
+                        continue;
 
-                    switch (character)
-                    {
-                        case "|":
-                            continue;
+                    case "^":
+                        character = "^";
+                        break;
 
-                        case "^":
-                            character = "^";
-                            break;
+                    case "&":
+                        character = "->";
+                        break;
 
-                        case "&":
-                            character = "->";
-                            break;
+                    case "£":
+                        character = "<-";
+                        break;
 
-                        case "£":
-                            character = "<-";
-                            break;
-
-                        case "$":
-                            character = "SUBMIT";
-                            break;
-                    }
-
-                    var characterSize = font.MeasureString(character);
-                    var dX = (int)(offsetX + (int)(cellWidth * x + (cellWidth / 2 - characterSize.X / 2)));
-                    var dY = (int)(offsetY + (int)(cellHeight * y + (cellHeight / 2 - characterSize.Y / 2)));
-                    var color = y == _cursorY && x == _cursorX
-                        ? Color.Yellow
-                        : Color.White;
-
-                    _spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
+                    case "$":
+                        character = "SUBMIT";
+                        break;
                 }
+
+                var characterSize = font.MeasureString(character);
+                var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.X / 2));
+                var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Y / 2));
+                var color = y == _cursorY && x == _cursorX
+                    ? Color.Yellow
+                    : Color.White;
+
+                _spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
+            }
 
             _spriteBatch.End();
         }
@@ -170,9 +170,11 @@ namespace PhotoVs.Logic.Scenes
                 if (Submit())
                     return;
 
-            if (input.ActionPressed(InputActions.Action)) AddCharacter();
+            if (input.ActionPressed(InputActions.Action))
+                AddCharacter();
 
-            if (input.ActionPressed(InputActions.Cancel)) RemoveCharacter();
+            if (input.ActionPressed(InputActions.Cancel))
+                RemoveCharacter();
 
             var mX = 0;
             var mY = 0;
@@ -267,7 +269,8 @@ namespace PhotoVs.Logic.Scenes
         {
             // | is inaccessible
 
-            if (x == 0 && y == 0) return;
+            if (x == 0 && y == 0)
+                return;
             var lastKey = GetKey(_cursorX, _cursorY);
 
             _cursorX += x;
@@ -282,7 +285,8 @@ namespace PhotoVs.Logic.Scenes
                 _cursorX = KeyboardCellWidth() + _cursorX;
 
             var curKey = GetKey(_cursorX, _cursorY);
-            if (curKey != " " && curKey == lastKey) MoveCursor(x, y);
+            if (curKey != " " && curKey == lastKey)
+                MoveCursor(x, y);
         }
 
         public bool Submit()

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.Transforms;
@@ -47,8 +46,8 @@ namespace PhotoVs.Logic.PlayerData
             Components.Add(_position);
 
             _input = new CInput(new GameInput(
-                PlayerIndex.One, 
-                config.ControlsGamepad, 
+                PlayerIndex.One,
+                config.ControlsGamepad,
                 config.ControlsKeyboard));
 
             Components.Add(_input);

@@ -44,7 +44,8 @@ namespace PhotoVs.Logic.Input
             foreach (var entity in entities)
             {
                 var input = entity.Components.Get<CInput>().Input;
-                if (input.ActionPressed(InputActions.Screenshot)) TakeScreenshot();
+                if (input.ActionPressed(InputActions.Screenshot))
+                    TakeScreenshot();
             }
         }
 

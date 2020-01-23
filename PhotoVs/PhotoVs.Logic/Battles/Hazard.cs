@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PhotoVs.Logic.Battles
+﻿namespace PhotoVs.Logic.Battles
 {
     public class Hazard
     {

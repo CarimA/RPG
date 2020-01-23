@@ -24,7 +24,7 @@ namespace PhotoVs.Engine.Graphics
             _graphicsDevice = graphicsDevice;
             _colorGrading = colorGrading;
             GameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
-            UIView = new VirtualRenderTarget2D(graphicsDevice, 1280  /2, 720 / 2);
+            UIView = new VirtualRenderTarget2D(graphicsDevice, 1280 / 2, 720 / 2);
             CanvasSize = canvasSize;
 
             window.ClientSizeChanged += (sender, e) => { UpdateViewports(); };

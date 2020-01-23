@@ -12,11 +12,11 @@ namespace PhotoVs.Logic.Text
 {
     public class TextDatabase : ITextDatabase
     {
-        private readonly Dictionary<Languages, Language> _languages;
+        private readonly IAssetLoader _assetLoader;
 
         private readonly Config _config;
+        private readonly Dictionary<Languages, Language> _languages;
         private readonly Player _player;
-        private readonly IAssetLoader _assetLoader;
 
         public TextDatabase(Services services)
         {
@@ -32,19 +32,13 @@ namespace PhotoVs.Logic.Text
             foreach (Languages language in Enum.GetValues(typeof(Languages)))
             {
                 if (!_languages.ContainsKey(language))
-                {
                     _languages.Add(language,
                         new Language(data["Language"][language],
                             _assetLoader.GetAsset<SpriteFont>($"fonts/{data["LanguageFont"][language]}")));
-                }
 
                 foreach (var kvp in data)
-                {
                     if (data[kvp.Key].ContainsKey(language))
-                    {
                         _languages[language].Text.Add(kvp.Key, kvp.Value[language]);
-                    }
-                }
             }
         }
 

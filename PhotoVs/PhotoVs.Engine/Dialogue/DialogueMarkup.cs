@@ -64,7 +64,8 @@ namespace PhotoVs.Engine.Dialogue
                         if (activeMarkup.OfType<NewLineMarkup>().Any())
                         {
                             _remainingLines--;
-                            if (_remainingLines <= 0) IsPaused = true;
+                            if (_remainingLines <= 0)
+                                IsPaused = true;
                         }
 
                         if (activeMarkup.OfType<EndOfParagraphMarkup>().Any())
@@ -80,19 +81,18 @@ namespace PhotoVs.Engine.Dialogue
                         }
                     }
 
-                    if (_currentIndex >= _text.Length) IsFinished = true;
+                    if (_currentIndex >= _text.Length)
+                        IsFinished = true;
                 }
             }
 
-            if (FastForward && IsPaused) Next();
+            if (FastForward && IsPaused)
+                Next();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (_text == string.Empty)
-            {
-                return;
-            }
+            if (_text == string.Empty) return;
 
             var activeColor = Color.White;
             var outlineColor = Color.Transparent;
@@ -113,7 +113,8 @@ namespace PhotoVs.Engine.Dialogue
                         {
                             position.Y = 0;
 
-                            if (c == ' ') continue;
+                            if (c == ' ')
+                                continue;
                         }
                         else
                         {
@@ -123,7 +124,8 @@ namespace PhotoVs.Engine.Dialogue
                             position.Y += _font.LineSpacing;
                             //}
 
-                            if (c == ' ') continue;
+                            if (c == ' ')
+                                continue;
                         }
                     }
 
@@ -135,7 +137,8 @@ namespace PhotoVs.Engine.Dialogue
                 if (activeMarkup != null)
                     foreach (var effect in activeMarkup)
                     {
-                        if (effect is ColorMarkup color) activeColor = color.Color;
+                        if (effect is ColorMarkup color)
+                            activeColor = color.Color;
 
                         if (effect is WaveMarkup)
                             wave = new Vector2(0,
@@ -145,7 +148,8 @@ namespace PhotoVs.Engine.Dialogue
                             // todo: limit to time
                             shake = new Vector2(_rng.Next(-1, 1), _rng.Next(-1, 1));
 
-                        if (effect is OutlineMarkup outline) outlineColor = outline.Color;
+                        if (effect is OutlineMarkup outline)
+                            outlineColor = outline.Color;
                     }
 
                 // todo: set active colour or position changing
@@ -366,7 +370,8 @@ namespace PhotoVs.Engine.Dialogue
         private static Dictionary<int, List<IMarkup>> AddMarkup(Dictionary<int, List<IMarkup>> dict, int index,
             IMarkup markup)
         {
-            if (!dict.ContainsKey(index)) dict[index] = new List<IMarkup>();
+            if (!dict.ContainsKey(index))
+                dict[index] = new List<IMarkup>();
             dict[index].Add(markup);
             return dict;
         }
@@ -374,7 +379,8 @@ namespace PhotoVs.Engine.Dialogue
         private static Dictionary<int, List<IMarkup>> AddMarkups(Dictionary<int, List<IMarkup>> dict, int index,
             List<IMarkup> markups)
         {
-            if (!dict.ContainsKey(index)) dict[index] = new List<IMarkup>();
+            if (!dict.ContainsKey(index))
+                dict[index] = new List<IMarkup>();
             dict[index].AddRange(markups);
             return dict;
         }

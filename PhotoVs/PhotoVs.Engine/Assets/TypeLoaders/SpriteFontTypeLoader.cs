@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.Assets;
 using SpriteFontPlus;
@@ -14,8 +7,8 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
 {
     public class SpriteFontTypeLoader : ITypeLoader<SpriteFont>
     {
-        private GraphicsDevice _graphicsDevice;
-        private IAssetLoader _assetLoader;
+        private readonly IAssetLoader _assetLoader;
+        private readonly GraphicsDevice _graphicsDevice;
 
         public SpriteFontTypeLoader(GraphicsDevice graphicsDevice, IAssetLoader loader)
         {
@@ -55,7 +48,7 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
                             CharacterRange.BasicLatin,
                             CharacterRange.Latin1Supplement,
                             CharacterRange.LatinExtendedA,
-                            CharacterRange.LatinExtendedB,
+                            CharacterRange.LatinExtendedB
                         });
                     font = bake.CreateSpriteFont(_graphicsDevice);
                     break;

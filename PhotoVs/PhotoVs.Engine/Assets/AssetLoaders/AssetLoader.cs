@@ -121,7 +121,8 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
                     }
                 }
 
-                foreach (var key in toRemove) _lastUsed.Remove(key);
+                foreach (var key in toRemove)
+                    _lastUsed.Remove(key);
 
                 toRemove.Clear();
             }

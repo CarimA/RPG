@@ -10,7 +10,8 @@ namespace PhotoVs.Engine
         {
             get
             {
-                if (ContainsKey(key)) return base[key];
+                if (ContainsKey(key))
+                    return base[key];
 
                 Add(key, default);
                 return base[key];

@@ -16,7 +16,7 @@ namespace PhotoVs.Logic.Scenes
     {
         private readonly SceneMachine _scene;
         private readonly World _world;
-        
+
         public OverworldScene(SceneMachine scene)
         {
             _scene = scene;

@@ -90,7 +90,6 @@ namespace PhotoVs.Engine.FSM.Scenes
                 if (currentState is IDrawableScene drawableScene)
                     drawableScene.DrawUI(gameTime);
             }
-
         }
 
         public StateMachine<IScene> GetScenes()
@@ -144,6 +143,7 @@ namespace PhotoVs.Engine.FSM.Scenes
             foreach (var system in systems)
                 system.AfterDraw(gameTime);
         }
+
         private void DrawUI(IEnumerable<IDrawableSystem> systems, IGameObjectCollection entities, GameTime gameTime)
         {
             foreach (var system in systems)

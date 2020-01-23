@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using PhotoVs.Engine;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
@@ -14,11 +13,11 @@ namespace PhotoVs.Logic.Plugins
 {
     public class PluginProvider
     {
-        private readonly List<Plugin> _plugins;
-        private readonly Services _services;
         private readonly Coroutines _coroutines;
-        private readonly SceneMachine _sceneMachine;
         private readonly Player _player;
+        private readonly List<Plugin> _plugins;
+        private readonly SceneMachine _sceneMachine;
+        private readonly Services _services;
 
         public PluginProvider(Services services)
         {
@@ -36,7 +35,8 @@ namespace PhotoVs.Logic.Plugins
                 var dlls = Directory.GetFiles(directory);
                 foreach (var dll in dlls)
                 {
-                    if (!dll.EndsWith(".dll")) continue;
+                    if (!dll.EndsWith(".dll"))
+                        continue;
 
                     try
                     {

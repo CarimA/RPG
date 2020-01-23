@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -27,25 +27,22 @@ using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.Text;
 using PhotoVs.Utils.Logging;
-using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
-using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace PhotoVs.Logic
 {
     public class MainGame : Game
     {
-        private readonly Services _services;
-        private DiagnosticInfo _info;
-
         private readonly Events _events;
-        private Coroutines _coroutines;
-        private PluginProvider _pluginProvider;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
-        private SceneMachine _sceneMachine;
-        private SCamera _camera;
-        private Player _player;
-        private Renderer _renderer;
+        private readonly Services _services;
         private IAssetLoader _assetLoader;
+        private SCamera _camera;
+        private Coroutines _coroutines;
+        private DiagnosticInfo _info;
+        private Player _player;
+        private PluginProvider _pluginProvider;
+        private Renderer _renderer;
+        private SceneMachine _sceneMachine;
         private SpriteBatch _spriteBatch;
 
         public MainGame()
@@ -115,10 +112,7 @@ namespace PhotoVs.Logic
 
             _info = new DiagnosticInfo(_spriteBatch, _assetLoader);
 
-            if (_services.Get<Config>().Fullscreen)
-            {
-                EnableFullscreen();
-            }
+            if (_services.Get<Config>().Fullscreen) EnableFullscreen();
 
             _pluginProvider = new PluginProvider(_services);
             _services.Set(_pluginProvider);
@@ -244,12 +238,19 @@ namespace PhotoVs.Logic
             _info.Draw(gameTime);
         }
 
+        private void EnableFullscreen()
+        {
+            _graphicsDeviceManager.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            _graphicsDeviceManager.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            _graphicsDeviceManager.IsFullScreen = true;
+            _graphicsDeviceManager.ApplyChanges();
+        }
+
         public class GameLoad : Plugin
         {
+            private SceneMachine _sceneMachine;
             public override string Name { get; }
             public override string Version { get; }
-
-            private SceneMachine _sceneMachine;
 
             public override void Bind(Services services)
             {
@@ -267,8 +268,8 @@ namespace PhotoVs.Logic
 
         public class TestPlugin : Plugin
         {
-            private ITextDatabase _db;
             private SCamera _camera;
+            private ITextDatabase _db;
             private Player _player;
 
             public override string Name { get; } = "Test Plugin";
@@ -292,7 +293,7 @@ namespace PhotoVs.Logic
 
             private IEnumerator DoThis()
             {
-                _camera.Set(new System.Collections.Generic.List<Vector2>()
+                _camera.Set(new List<Vector2>
                 {
                     new Vector2(-600, -600),
                     new Vector2(600, 600)
@@ -317,14 +318,6 @@ namespace PhotoVs.Logic
             {
                 yield return new Pause(3f);
             }
-        }
-
-        private void EnableFullscreen()
-        {
-            _graphicsDeviceManager.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            _graphicsDeviceManager.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            _graphicsDeviceManager.IsFullScreen = true;
-            _graphicsDeviceManager.ApplyChanges();
         }
     }
 }

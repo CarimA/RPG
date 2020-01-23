@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Models.Assets;
 using SpriteFontPlus;
@@ -14,9 +7,9 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
 {
     public class DynamicSpriteFontTypeLoader : ITypeLoader<DynamicSpriteFont>
     {
-        private GraphicsDevice _graphicsDevice;
         private IAssetLoader _assetLoader;
-        private int _defaultFontSize;
+        private readonly int _defaultFontSize;
+        private GraphicsDevice _graphicsDevice;
 
         public DynamicSpriteFontTypeLoader(GraphicsDevice graphicsDevice, IAssetLoader loader, int defaultFontSize)
         {

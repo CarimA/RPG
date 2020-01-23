@@ -21,6 +21,7 @@ namespace PhotoVs.Logic.Camera
         private Vector2 _lastPosition;
 
         private Vector2 _lerpPosition;
+        private float _lerpZoom;
         private Vector2 _lookDirection;
         private float _permanentShake;
         private Vector2 _position;
@@ -29,7 +30,6 @@ namespace PhotoVs.Logic.Camera
 
         private Matrix _transform = Matrix.Identity;
         private float _zoom;
-        private float _lerpZoom;
 
         public SCamera(Renderer renderer)
         {
@@ -101,10 +101,8 @@ namespace PhotoVs.Logic.Camera
                 return;
 
             if (!hasSize)
-            {
                 if (_position == position.Position)
                     return;
-            }
 
             _lastPosition = _position;
             _position = position.Position;
@@ -147,8 +145,8 @@ namespace PhotoVs.Logic.Camera
             // this method will set a zoom based on the
             // given points in world view that want to be 
             // seen in view
-            var rect = new RectangleF(points.First().X, 
-                points.First().Y, 
+            var rect = new RectangleF(points.First().X,
+                points.First().Y,
                 1, 1);
 
             // find a bounding rectangle based on all of the points
@@ -158,13 +156,13 @@ namespace PhotoVs.Logic.Camera
                     rect.X = point.X;
 
                 if (point.X > rect.Right)
-                    rect.Width = (point.X - rect.X);
+                    rect.Width = point.X - rect.X;
 
                 if (point.Y < rect.Top)
                     rect.Y = point.Y;
 
                 if (point.Y > rect.Bottom)
-                    rect.Height = (point.Y - rect.Y);
+                    rect.Height = point.Y - rect.Y;
             }
 
             var midpoint = rect.Center;
@@ -176,11 +174,11 @@ namespace PhotoVs.Logic.Camera
             var zoom = Math.Min(zWidth, zHeight);
 
             var follow = new GameObject();
-            follow.Components.Add(new CPosition()
+            follow.Components.Add(new CPosition
             {
                 Position = midpoint
             });
-            this.Follow(follow);
+            Follow(follow);
             _zoom = zoom;
         }
 

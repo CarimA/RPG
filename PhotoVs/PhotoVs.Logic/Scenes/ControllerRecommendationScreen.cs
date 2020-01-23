@@ -13,11 +13,11 @@ namespace PhotoVs.Logic.Scenes
 {
     internal class ControllerRecommendationScreen : IUpdateableScene, IDrawableScene, ISystemScene
     {
-        private readonly Player _player;
-        private readonly ITextDatabase _textDatabase;
-        private readonly SceneMachine _scene;
         private readonly IAssetLoader _assetLoader;
+        private readonly Player _player;
+        private readonly SceneMachine _scene;
         private readonly SpriteBatch _spriteBatch;
+        private readonly ITextDatabase _textDatabase;
         private float _continueTime;
         private string _copyrightNotice;
         private SpriteFont _font;
@@ -45,7 +45,7 @@ namespace PhotoVs.Logic.Scenes
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
 
             _spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320, 10), Color.White);
-            _spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320, (180 * 2) - 80),
+            _spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320, 180 * 2 - 80),
                 Color.White);
 
             _spriteBatch.Draw(_gamepadIcon, new Vector2(96, 82), Color.White);
@@ -67,8 +67,8 @@ namespace PhotoVs.Logic.Scenes
             _gamepadIcon = _assetLoader.GetAsset<Texture2D>("interfaces/gamepad.png");
             _font = font;
 
-            _playWithAGamepad = _font.WrapText(_textDatabase.GetText("CR_PlayWithAGamepad"), (320 * 2) - 40);
-            _copyrightNotice = _font.WrapText(_textDatabase.GetText("CR_CopyrightNotice"), (320 * 2) - 80);
+            _playWithAGamepad = _font.WrapText(_textDatabase.GetText("CR_PlayWithAGamepad"), 320 * 2 - 40);
+            _copyrightNotice = _font.WrapText(_textDatabase.GetText("CR_CopyrightNotice"), 320 * 2 - 80);
         }
 
         public void Exit()

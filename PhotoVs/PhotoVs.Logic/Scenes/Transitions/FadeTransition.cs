@@ -8,17 +8,17 @@ namespace PhotoVs.Logic.Scenes.Transitions
 {
     public class FadeTransition : ITransition
     {
+        private readonly IAssetLoader _assetLoader;
         private readonly Color _fadeColor;
+        private readonly float _maxFadeInTime;
+        private readonly float _maxFadeOutTime;
+        private readonly Renderer _renderer;
+
+        private readonly Services _services;
+        private readonly SpriteBatch _spriteBatch;
         private float _fadeInTime;
         private float _fadeOutTime;
         private bool _hasSwitched;
-        private readonly float _maxFadeInTime;
-        private readonly float _maxFadeOutTime;
-
-        private readonly Services _services;
-        private readonly Renderer _renderer;
-        private readonly IAssetLoader _assetLoader;
-        private readonly SpriteBatch _spriteBatch;
 
         public FadeTransition(Services services, Color fadeColor, float fadeInTime = 0.35f,
             float fadeOutTime = 0.35f)
@@ -45,7 +45,8 @@ namespace PhotoVs.Logic.Scenes.Transitions
             else
                 _fadeOutTime -= gameTime.GetElapsedSeconds();
 
-            if (_fadeOutTime <= 0f) IsFinished = true;
+            if (_fadeOutTime <= 0f)
+                IsFinished = true;
         }
 
         public void Draw(GameTime gameTime)
@@ -64,7 +65,8 @@ namespace PhotoVs.Logic.Scenes.Transitions
 
         public bool ShouldSwitch()
         {
-            if (!(_fadeInTime <= 0f) || _hasSwitched) return false;
+            if (!(_fadeInTime <= 0f) || _hasSwitched)
+                return false;
 
             _hasSwitched = true;
             return true;

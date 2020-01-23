@@ -15,16 +15,16 @@ namespace PhotoVs.Logic.Scenes
     // horrible port of horrible code but it works
     public class DialogueScene : IUpdateableScene, IDrawableScene
     {
+        private readonly IAssetLoader _assetLoader;
+
+        private readonly Player _player;
         private readonly SceneMachine _scene;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly ITextDatabase _textDatabase;
         private DialogueMarkup _dialogue;
 
         private string _name;
         private ShakingBox _shakingBox;
-
-        private readonly Player _player;
-        private readonly ITextDatabase _textDatabase;
-        private readonly IAssetLoader _assetLoader;
-        private readonly SpriteBatch _spriteBatch;
 
         // todo: text log by saving a queue
 
@@ -68,7 +68,8 @@ namespace PhotoVs.Logic.Scenes
 
             if (_dialogue.IsFinished)
             {
-                if (input.ActionPressed(InputActions.Action) || _dialogue.FastForward) IsFinished = true;
+                if (input.ActionPressed(InputActions.Action) || _dialogue.FastForward)
+                    IsFinished = true;
             }
             else
             {
@@ -90,7 +91,7 @@ namespace PhotoVs.Logic.Scenes
             _shakingBox = new ShakingBox(_spriteBatch, new List<RectangleF>
             {
                 new RectangleF(x, y, 200 * 2, 65 * 2),
-                new RectangleF(x + (15 - 3) * 2, y - (20 * 2), 90 * 2, 25 * 2)
+                new RectangleF(x + (15 - 3) * 2, y - 20 * 2, 90 * 2, 25 * 2)
             });
 
             _dialogue = new DialogueMarkup(_textDatabase.GetFont(),
