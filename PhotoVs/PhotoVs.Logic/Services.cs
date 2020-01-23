@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
@@ -12,52 +15,53 @@ using PhotoVs.Models.Assets;
 using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.Text;
+using PhotoVs.Utils.Extensions;
+using PhotoVs.Utils.Logging;
+using YamlDotNet.Core;
 
 namespace PhotoVs.Logic
 {
     public class Services
     {
-        public Events Events { get; }
-        public Config Config { get; private set; }
-        public Coroutines Coroutines { get; private set; }
-        public PluginProvider Plugins { get; private set; }
+        private readonly Dictionary<Type, object> _cache;
 
-        // monogame
-        public GraphicsDevice GraphicsDevice { get; private set; }
-        public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
-        public SpriteBatch SpriteBatch { get; private set; }
-
-        // base engine stuff
-        public IAssetLoader AssetLoader { get; private set; }
-        public IAudio Audio { get; private set; }
-        public ITextDatabase TextDatabase { get; private set; }
-        public Renderer Renderer { get; private set; }
-
-        // core logical stuff
-        public Player Player { get; private set; }
-        public SCamera Camera { get; private set; }
-        public SceneMachine SceneMachine { get; private set; }
-        public IGameObjectCollection GlobalGameObjects { get; private set; }
-        public ISystemCollection GlobalSystems { get; private set; }
+        //public Events Events { get; }
+        //public Config Config { get; private set; }
+        //public Coroutines Coroutines { get; private set; }
+        //public PluginProvider Plugins { get; private set; }
+        //public GraphicsDevice GraphicsDevice { get; private set; }
+        //public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
+        //public SpriteBatch SpriteBatch { get; private set; }
+        //public IAssetLoader AssetLoader { get; private set; }
+        //public IAudio Audio { get; private set; }
+        //public ITextDatabase TextDatabase { get; private set; }
+        //public Renderer Renderer { get; private set; }
+        //public Player Player { get; private set; }
+        //public SCamera Camera { get; private set; }
+        //public SceneMachine SceneMachine { get; private set; }
+        //public IGameObjectCollection GlobalGameObjects { get; private set; }
+        //public ISystemCollection GlobalSystems { get; private set; }
 
 
-        public Services(Events events)
+        public Services()
         {
-            Events = events;
+            _cache = new Dictionary<Type, object>();
+        }
+
+        public T Get<T>()
+        {
+            if (_cache.TryGetValue(typeof(T), out var value))
+            {
+                return (T)value;
+            }
+
+            throw new KeyNotFoundException();
         }
 
         public void Set<T>(T service)
         {
-            foreach (var property in typeof(Services).GetProperties())
-                if (property.PropertyType.IsAssignableFrom(typeof(T))
-                    || property.PropertyType is T)
-                {
-                    property.SetValue(this, service);
-                    Events.RaiseOnServiceSet(service);
-                    return;
-                }
-
-            throw new ArgumentException($"Service of type {typeof(T).Name} not found");
+            _cache.Add(typeof(T), service);
+            Logger.Write.Trace($"Registered Type \"{typeof(T).Name}\" as service.");
         }
     }
 }

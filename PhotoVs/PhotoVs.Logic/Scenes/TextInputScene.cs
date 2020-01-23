@@ -2,12 +2,18 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.Input;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Models.Assets;
 using PhotoVs.Models.FSM;
 
 namespace PhotoVs.Logic.Scenes
 {
     public class TextInputScene : IUpdateableScene, IDrawableScene
     {
+        private readonly Player _player;
+        private readonly IAssetLoader _assetLoader;
+        private readonly SpriteBatch _spriteBatch;
+
         private const int _keysPerRow = 12;
 
         // | is inaccessible
@@ -22,7 +28,6 @@ namespace PhotoVs.Logic.Scenes
             "0123456789  .!?-_+=                 ^^&&££££$$$$"
         };
 
-        private readonly SceneMachine _scene;
         private int _currentKeyboard;
         private int _cursorX;
         private int _cursorY;
@@ -38,7 +43,9 @@ namespace PhotoVs.Logic.Scenes
 
         public TextInputScene(SceneMachine scene)
         {
-            _scene = scene;
+            _player = scene.Services.Get<Player>();
+            _assetLoader = scene.Services.Get<IAssetLoader>();
+            _spriteBatch = scene.Services.Get<SpriteBatch>();
         }
 
         public void Draw(GameTime gameTime)
@@ -47,9 +54,7 @@ namespace PhotoVs.Logic.Scenes
 
         public void DrawUI(GameTime gameTime)
         {
-            var assetLoader = _scene.Services.AssetLoader;
-            var spriteBatch = _scene.Services.SpriteBatch;
-            var font = assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
+            var font = _assetLoader.GetAsset<SpriteFont>("fonts/body.fnt");
 
             const int cellWidth = 18;
             const int cellHeight = 28;
@@ -57,13 +62,13 @@ namespace PhotoVs.Logic.Scenes
             var offsetX = (int)(320 / 2 - cellWidth * KeyboardCellWidth() / 2);
             var offsetY = (int)(180 / 2 - cellHeight * KeyboardCellHeight() / 2 + 20);
 
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             var questionSize = font.MeasureString(_question).X;
             var qX = (int)(320 / 2 - questionSize / 2);
             var qY = offsetY - 40;
 
-            spriteBatch.DrawString(font, _question, new Vector2(qX, qY), Color.HotPink);
+            _spriteBatch.DrawString(font, _question, new Vector2(qX, qY), Color.HotPink);
 
             var textCellWidth = 14;
             var tX = (int)(320 / 2 - _limit * textCellWidth / 2);
@@ -76,7 +81,7 @@ namespace PhotoVs.Logic.Scenes
                     : Text[i]).ToString();
                 var characterSize = font.MeasureString(character).X;
 
-                spriteBatch.DrawString(font, character, new Vector2((int)(tX + (14 * i - characterSize / 2)), tY),
+                _spriteBatch.DrawString(font, character, new Vector2((int)(tX + (14 * i - characterSize / 2)), tY),
                     Color.White);
             }
 
@@ -118,10 +123,10 @@ namespace PhotoVs.Logic.Scenes
                         ? Color.Yellow
                         : Color.White;
 
-                    spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
+                    _spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
                 }
 
-            spriteBatch.End();
+            _spriteBatch.End();
         }
 
         public bool IsBlocking { get; set; } = false;
@@ -159,7 +164,7 @@ namespace PhotoVs.Logic.Scenes
             if (IsFinished)
                 return;
 
-            var input = _scene.Services.Player.Input;
+            var input = _player.Input;
 
             if (input.ActionPressed(InputActions.Submit))
                 if (Submit())

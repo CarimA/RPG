@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 using PhotoVs.Engine;
+using PhotoVs.Engine.Scheduler;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Scenes;
 
 namespace PhotoVs.Logic.Plugins
 {
@@ -7,15 +10,17 @@ namespace PhotoVs.Logic.Plugins
     {
         public abstract string Name { get; }
         public abstract string Version { get; }
-        internal Services Services { get; set; }
+        internal Coroutines Coroutines { get; set; }
+        internal SceneMachine SceneMachine { get; set; }
+        internal Player Player { get; set; }
 
-        public virtual void Bind(Events events)
+        public virtual void Bind(Services services)
         {
         }
 
         public IEnumerator Spawn(IEnumerator routine)
         {
-            Services.Coroutines.Start(routine);
+            Coroutines.Start(routine);
             return routine;
         }
     }

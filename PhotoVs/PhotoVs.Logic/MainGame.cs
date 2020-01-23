@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,6 +27,8 @@ using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.Text;
 using PhotoVs.Utils.Logging;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace PhotoVs.Logic
 {
@@ -33,6 +36,17 @@ namespace PhotoVs.Logic
     {
         private readonly Services _services;
         private DiagnosticInfo _info;
+
+        private readonly Events _events;
+        private Coroutines _coroutines;
+        private PluginProvider _pluginProvider;
+        private readonly GraphicsDeviceManager _graphicsDeviceManager;
+        private SceneMachine _sceneMachine;
+        private SCamera _camera;
+        private Player _player;
+        private Renderer _renderer;
+        private IAssetLoader _assetLoader;
+        private SpriteBatch _spriteBatch;
 
         public MainGame()
         {
@@ -52,59 +66,82 @@ namespace PhotoVs.Logic
 
             Logger.Write.Trace("Creating [My Documents]/PhotoVs");
 
-            _services = new Services(new Events());
-            _services.Set(new GraphicsDeviceManager(this)
+            _services = new Services();
+            _events = new Events();
+            _services.Set(_events);
+            _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
                 PreferredBackBufferWidth = 320,
                 PreferredBackBufferHeight = 180
-            });
+            };
+            _services.Set(_graphicsDeviceManager);
         }
 
         protected override void Initialize()
         {
             _services.Set(GraphicsDevice);
-            _services.Set(new SpriteBatch(GraphicsDevice));
-            _services.Set(new Coroutines());
-            _services.Set(new PluginProvider(_services));
-            _services.Plugins.LoadPlugins("assets/plugins/");
-            _services.Plugins.LoadPlugins(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "PhotoVs/Mods"));
-            _services.Plugins.LoadPlugin(typeof(TestPlugin));
+
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _services.Set(_spriteBatch);
+
+            _coroutines = new Coroutines();
+            _services.Set(_coroutines);
+
             _services.Set(Config.Load());
 
-            _services.Set(CreateAssetLoader());
-            _services.Set(CreateRenderer());
-            _services.Set(new Player(_services));
-            _services.Set(CreateCamera());
+            _assetLoader = CreateAssetLoader();
+            _services.Set(_assetLoader);
+
+            _renderer = CreateRenderer();
+            _services.Set(_renderer);
+
+            _player = new Player(_services);
+            _services.Set(_player);
+
+            _camera = CreateCamera();
+            _services.Set(_camera);
+
             _services.Set(CreateGlobalEntities());
+
             _services.Set(CreateGlobalSystems());
-            _services.Set(CreateSceneMachine());
+
             _services.Set(CreateTextDatabase());
+
+            _sceneMachine = CreateSceneMachine();
+            _services.Set(_sceneMachine);
+
             _services.Set(CreateAudio());
 
-            _info = new DiagnosticInfo(_services.SpriteBatch, _services.AssetLoader);
-            _services.Events.RaiseOnGameStart();
+            _info = new DiagnosticInfo(_spriteBatch, _assetLoader);
 
-            _services.SceneMachine.Push(_services.SceneMachine.ControllerRecommendationScreen);
-
-            if (_services.Config.Fullscreen)
+            if (_services.Get<Config>().Fullscreen)
             {
                 EnableFullscreen();
             }
+
+            _pluginProvider = new PluginProvider(_services);
+            _services.Set(_pluginProvider);
+            _pluginProvider.LoadPlugins("assets/plugins/");
+            _pluginProvider.LoadPlugins(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "PhotoVs/Mods"));
+            _pluginProvider.LoadPlugin(typeof(TestPlugin));
+            _pluginProvider.LoadPlugin(typeof(GameLoad));
+
+            _events.RaiseOnGameStart();
 
             base.Initialize();
         }
 
         private IAssetLoader CreateAssetLoader()
         {
-            var assetLoader = new HotReloadAssetLoader(_services.Coroutines, new FileSystemStreamProvider("assets/"));
+            var assetLoader = new HotReloadAssetLoader(_coroutines, new FileSystemStreamProvider("assets/"));
             assetLoader
-                .RegisterTypeLoader(new EffectTypeLoader(_services.GraphicsDevice))
+                .RegisterTypeLoader(new EffectTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new TextTypeLoader())
-                .RegisterTypeLoader(new Texture2DTypeLoader(_services.GraphicsDevice))
-                .RegisterTypeLoader(new SpriteFontTypeLoader(_services.GraphicsDevice, assetLoader))
-                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(_services.GraphicsDevice, _services.AssetLoader, 32))
+                .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
+                .RegisterTypeLoader(new SpriteFontTypeLoader(GraphicsDevice, assetLoader))
+                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(GraphicsDevice, _assetLoader, 32))
                 .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;
@@ -126,12 +163,12 @@ namespace PhotoVs.Logic
         {
             var canvas = new CanvasSize(320, 180);
             var renderer = new Renderer(GraphicsDevice,
-                _services.GraphicsDeviceManager,
+                _graphicsDeviceManager,
                 Window,
                 new ColorGrading(GraphicsDevice,
                     canvas,
-                    _services.AssetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
-                    _services.AssetLoader.GetAsset<Texture2D>("colorgrading/aap128.png")),
+                    _assetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
+                    _assetLoader.GetAsset<Texture2D>("colorgrading/aap128.png")),
                 canvas);
             return renderer;
         }
@@ -140,15 +177,15 @@ namespace PhotoVs.Logic
         {
             var globalEntities = new GameObjectCollection
             {
-                _services.Player
+                _player
             };
             return globalEntities;
         }
 
         private SCamera CreateCamera()
         {
-            var camera = new SCamera(_services.Renderer);
-            camera.Follow(_services.Player);
+            var camera = new SCamera(_renderer);
+            camera.Follow(_player);
             return camera;
         }
 
@@ -156,11 +193,11 @@ namespace PhotoVs.Logic
         {
             var globalSystems = new SystemCollection
             {
-                _services.Camera,
+                _camera,
                 new SProcessInput(),
-                new SHandleFullscreen(_services.GraphicsDeviceManager, GraphicsDevice),
-                new STakeScreenshot(GraphicsDevice, _services.Renderer, _services.SpriteBatch,
-                    _services.AssetLoader.GetAsset<SpriteFont>("fonts/mono.fnt"))
+                new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
+                new STakeScreenshot(GraphicsDevice, _renderer, _spriteBatch,
+                    _assetLoader.GetAsset<SpriteFont>("fonts/mono.fnt"))
             };
             return globalSystems;
         }
@@ -179,8 +216,8 @@ namespace PhotoVs.Logic
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _services.Coroutines.Update(gameTime);
-            _services.SceneMachine.Update(gameTime);
+            _coroutines.Update(gameTime);
+            _sceneMachine.Update(gameTime);
 
             base.Update(gameTime);
 
@@ -193,18 +230,39 @@ namespace PhotoVs.Logic
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _services.Renderer.SetRenderMode(RenderMode.Game);
-            _services.SceneMachine.Draw(gameTime);
+            _renderer.SetRenderMode(RenderMode.Game);
+            _sceneMachine.Draw(gameTime);
 
-            _services.Renderer.SetRenderMode(RenderMode.UI);
-            _services.SceneMachine.DrawUI(gameTime);
+            _renderer.SetRenderMode(RenderMode.UI);
+            _sceneMachine.DrawUI(gameTime);
 
-            _services.Renderer.Draw(_services.SpriteBatch);
+            _renderer.Draw(_spriteBatch);
 
             base.Draw(gameTime);
 
             _info.AfterDraw();
             _info.Draw(gameTime);
+        }
+
+        public class GameLoad : Plugin
+        {
+            public override string Name { get; }
+            public override string Version { get; }
+
+            private SceneMachine _sceneMachine;
+
+            public override void Bind(Services services)
+            {
+                _sceneMachine = services.Get<SceneMachine>();
+
+                var events = services.Get<Events>();
+                events.OnGameStart += EventsOnOnGameStart;
+            }
+
+            private void EventsOnOnGameStart(object sender)
+            {
+                _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);
+            }
         }
 
         public class TestPlugin : Plugin
@@ -216,12 +274,15 @@ namespace PhotoVs.Logic
             public override string Name { get; } = "Test Plugin";
             public override string Version { get; } = "1.0.0";
 
-            public override void Bind(Events events)
+            public override void Bind(Services services)
             {
+                var events = services.Get<Events>();
+
                 events.OnInteractEventEnter["example_event"] += InteractEventHandler;
-                events.OnServiceSet[typeof(ITextDatabase)] += (sender, type) => { _db = (ITextDatabase) type; };
-                events.OnServiceSet[typeof(SCamera)] += (sender, type) => { _camera = (SCamera)type; };
-                events.OnServiceSet[typeof(Player)] += (sender, type) => { _player = (Player)type; };
+
+                _db = services.Get<ITextDatabase>();
+                _camera = services.Get<SCamera>();
+                _player = services.Get<Player>();
             }
 
             private void InteractEventHandler(object sender, IGameObject player, IGameObject script)
@@ -260,12 +321,10 @@ namespace PhotoVs.Logic
 
         private void EnableFullscreen()
         {
-            var graphics = _services.GraphicsDeviceManager;
-            var graphicsDevice = _services.GraphicsDevice;
-            graphics.PreferredBackBufferWidth = graphicsDevice.DisplayMode.Width;
-            graphics.PreferredBackBufferHeight = graphicsDevice.DisplayMode.Height;
-            graphics.IsFullScreen = true;
-            graphics.ApplyChanges();
+            _graphicsDeviceManager.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            _graphicsDeviceManager.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            _graphicsDeviceManager.IsFullScreen = true;
+            _graphicsDeviceManager.ApplyChanges();
         }
     }
 }

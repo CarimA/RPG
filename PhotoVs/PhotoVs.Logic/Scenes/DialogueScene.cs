@@ -4,7 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Input;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Models.Assets;
 using PhotoVs.Models.FSM;
+using PhotoVs.Models.Text;
 using PhotoVs.Utils;
 
 namespace PhotoVs.Logic.Scenes
@@ -18,6 +21,11 @@ namespace PhotoVs.Logic.Scenes
         private string _name;
         private ShakingBox _shakingBox;
 
+        private readonly Player _player;
+        private readonly ITextDatabase _textDatabase;
+        private readonly IAssetLoader _assetLoader;
+        private readonly SpriteBatch _spriteBatch;
+
         // todo: text log by saving a queue
 
         public bool IsFinished { get; private set; }
@@ -25,6 +33,10 @@ namespace PhotoVs.Logic.Scenes
         public DialogueScene(SceneMachine scene)
         {
             _scene = scene;
+            _player = _scene.Services.Get<Player>();
+            _textDatabase = _scene.Services.Get<ITextDatabase>();
+            _assetLoader = _scene.Services.Get<IAssetLoader>();
+            _spriteBatch = _scene.Services.Get<SpriteBatch>();
         }
 
         public void Draw(GameTime gameTime)
@@ -33,25 +45,21 @@ namespace PhotoVs.Logic.Scenes
 
         public void DrawUI(GameTime gameTime)
         {
-            var spriteBatch = _scene.Services.SpriteBatch;
-            var assetLoader = _scene.Services.AssetLoader;
-            var text = _scene.Services.TextDatabase;
-
-            spriteBatch.Begin();
-            spriteBatch.Draw(assetLoader.GetAsset<Texture2D>("portraits/test2.png"), new Vector2(0, 0),
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_assetLoader.GetAsset<Texture2D>("portraits/test2.png"), new Vector2(0, 0),
                 Color.White);
-            spriteBatch.End();
+            _spriteBatch.End();
 
-            spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
+            _spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
             _shakingBox.Draw(gameTime);
-            spriteBatch.DrawString(text.GetFont(), _name, new Vector2(126 * 2, 94 * 2), Color.White);
-            _dialogue.Draw(gameTime, spriteBatch);
-            spriteBatch.End();
+            _spriteBatch.DrawString(_textDatabase.GetFont(), _name, new Vector2(126 * 2, 94 * 2), Color.White);
+            _dialogue.Draw(gameTime, _spriteBatch);
+            _spriteBatch.End();
         }
 
         public void Update(GameTime gameTime)
         {
-            var input = _scene.Services.Player.Input;
+            var input = _player.Input;
 
             _shakingBox.Update(gameTime);
 
@@ -74,22 +82,18 @@ namespace PhotoVs.Logic.Scenes
 
         public void Enter(params object[] args)
         {
-            var spriteBatch = _scene.Services.SpriteBatch;
-            var assetLoader = _scene.Services.AssetLoader;
-            var text = _scene.Services.TextDatabase;
-
             _name = args[0].ToString();
             var dialogue = args[1].ToString();
 
             var x = 110 * 2;
             var y = 110 * 2;
-            _shakingBox = new ShakingBox(spriteBatch, new List<RectangleF>
+            _shakingBox = new ShakingBox(_spriteBatch, new List<RectangleF>
             {
                 new RectangleF(x, y, 200 * 2, 65 * 2),
                 new RectangleF(x + (15 - 3) * 2, y - (20 * 2), 90 * 2, 25 * 2)
             });
 
-            _dialogue = new DialogueMarkup(text.GetFont(),
+            _dialogue = new DialogueMarkup(_textDatabase.GetFont(),
                 new Vector2(113 * 2, 114 * 2), //320 - TextWidth - 20, 133),
                 dialogue,
                 3,

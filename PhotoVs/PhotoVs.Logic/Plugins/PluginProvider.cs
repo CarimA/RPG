@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Scheduler;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Scenes;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 
@@ -12,11 +16,17 @@ namespace PhotoVs.Logic.Plugins
     {
         private readonly List<Plugin> _plugins;
         private readonly Services _services;
+        private readonly Coroutines _coroutines;
+        private readonly SceneMachine _sceneMachine;
+        private readonly Player _player;
 
         public PluginProvider(Services services)
         {
             _plugins = new List<Plugin>();
             _services = services;
+            _coroutines = _services.Get<Coroutines>();
+            _sceneMachine = _services.Get<SceneMachine>();
+            _player = _services.Get<Player>();
         }
 
         public void LoadPlugins(string directory)
@@ -60,8 +70,10 @@ namespace PhotoVs.Logic.Plugins
         private void LoadAssembly(Type type)
         {
             var plugin = (Plugin) Activator.CreateInstance(type);
-            plugin.Bind(_services.Events);
-            plugin.Services = _services;
+            plugin.Coroutines = _coroutines;
+            plugin.SceneMachine = _sceneMachine;
+            plugin.Player = _player;
+            plugin.Bind(_services);
             _plugins.Add(plugin);
             Logger.Write.Info($"Loaded plugin: {plugin.Name} - v{plugin.Version}");
         }

@@ -1,8 +1,12 @@
-﻿using PhotoVs.Engine.ECS.GameObjects;
+﻿using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine;
+using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.Collision;
 using PhotoVs.Logic.Movement;
 using PhotoVs.Logic.WorldZoning;
+using PhotoVs.Models.Assets;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.FSM;
 
@@ -12,14 +16,18 @@ namespace PhotoVs.Logic.Scenes
     {
         private readonly SceneMachine _scene;
         private readonly World _world;
-
+        
         public OverworldScene(SceneMachine scene)
         {
             _scene = scene;
+            var events = _scene.Services.Get<Events>();
+            var camera = _scene.Services.Get<SCamera>();
+            var assetLoader = _scene.Services.Get<IAssetLoader>();
+            var spriteBatch = _scene.Services.Get<SpriteBatch>();
 
-            _world = new World(scene.Services.SpriteBatch, scene.Services.AssetLoader);
+            _world = new World(spriteBatch, assetLoader);
             _world.LoadMaps("maps\\");
-            var mapBoundary = new SMapBoundaryGeneration(_world, scene.Services.Camera);
+            var mapBoundary = new SMapBoundaryGeneration(_world, camera);
 
             Entities = new GameObjectCollection();
             Systems = new SystemCollection
@@ -27,12 +35,12 @@ namespace PhotoVs.Logic.Scenes
                 new SProcessMovement(),
                 new SProcessVelocity(),
                 mapBoundary,
-                new SCollisionDebugRender(scene.Services.SpriteBatch, scene.Services.AssetLoader, mapBoundary,
-                    scene.Services.Camera),
-                new SCollisionResolution(scene.Services.Events, mapBoundary),
-                new SProcessInteractionEvents(scene.Services.Events, mapBoundary),
-                new SMapRenderer(scene.Services.SpriteBatch, scene.Services.AssetLoader, mapBoundary,
-                    scene.Services.Camera)
+                new SCollisionDebugRender(spriteBatch, assetLoader, mapBoundary,
+                    camera),
+                new SCollisionResolution(events, mapBoundary),
+                new SProcessInteractionEvents(events, mapBoundary),
+                new SMapRenderer(spriteBatch, assetLoader, mapBoundary,
+                    camera)
             };
         }
 

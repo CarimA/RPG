@@ -36,7 +36,7 @@ namespace PhotoVs.Logic.PlayerData
 
         public Player(Services services)
         {
-            var config = services.Config;
+            var config = services.Get<Config>();
 
             Name = "Player";
 

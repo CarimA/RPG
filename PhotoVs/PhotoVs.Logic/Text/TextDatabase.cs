@@ -12,15 +12,20 @@ namespace PhotoVs.Logic.Text
 {
     public class TextDatabase : ITextDatabase
     {
-        private readonly Services _services;
         private readonly Dictionary<Languages, Language> _languages;
+
+        private readonly Config _config;
+        private readonly Player _player;
+        private readonly IAssetLoader _assetLoader;
 
         public TextDatabase(Services services)
         {
-            _services = services;
-            var assetLoader = services.AssetLoader;
+            _config = services.Get<Config>();
+            _player = services.Get<Player>();
+            _assetLoader = services.Get<IAssetLoader>();
+
             var deserializer = new Deserializer();
-            var sr = new StringReader(assetLoader.GetAsset<string>("text.yml"));
+            var sr = new StringReader(_assetLoader.GetAsset<string>("text.yml"));
             var data = deserializer.Deserialize<Dictionary<string, Dictionary<Languages, string>>>(sr);
 
             _languages = new Dictionary<Languages, Language>();
@@ -30,7 +35,7 @@ namespace PhotoVs.Logic.Text
                 {
                     _languages.Add(language,
                         new Language(data["Language"][language],
-                        assetLoader.GetAsset<SpriteFont>($"fonts/{data["LanguageFont"][language]}")));
+                            _assetLoader.GetAsset<SpriteFont>($"fonts/{data["LanguageFont"][language]}")));
                 }
 
                 foreach (var kvp in data)
@@ -45,12 +50,12 @@ namespace PhotoVs.Logic.Text
 
         public SpriteFont GetFont()
         {
-            return _languages[_services.Config.Language].Font;
+            return _languages[_config.Language].Font;
         }
 
         public string GetText(string id)
         {
-            var language = _services.Config.Language;
+            var language = _config.Language;
             if (_languages[language].Text.TryGetValue(id, out var value))
             {
                 // parse any embedded language tags
@@ -74,7 +79,7 @@ namespace PhotoVs.Logic.Text
         private string MatchFlagMarkup(Match match)
         {
             var flag = match.Groups[1].Value;
-            return _services.Player.Flags[flag].ToString();
+            return _player.Flags[flag].ToString();
         }
     }
 }

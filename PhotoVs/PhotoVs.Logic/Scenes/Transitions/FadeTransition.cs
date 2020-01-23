@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Graphics;
+using PhotoVs.Models.Assets;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes.Transitions
@@ -14,11 +16,18 @@ namespace PhotoVs.Logic.Scenes.Transitions
         private readonly float _maxFadeOutTime;
 
         private readonly Services _services;
+        private readonly Renderer _renderer;
+        private readonly IAssetLoader _assetLoader;
+        private readonly SpriteBatch _spriteBatch;
 
         public FadeTransition(Services services, Color fadeColor, float fadeInTime = 0.35f,
             float fadeOutTime = 0.35f)
         {
             _services = services;
+            _renderer = _services.Get<Renderer>();
+            _assetLoader = _services.Get<IAssetLoader>();
+            _spriteBatch = _services.Get<SpriteBatch>();
+
             _fadeColor = fadeColor;
             _maxFadeInTime = fadeInTime;
             _fadeInTime = fadeInTime;
@@ -41,18 +50,16 @@ namespace PhotoVs.Logic.Scenes.Transitions
 
         public void Draw(GameTime gameTime)
         {
-            var spriteBatch = _services.SpriteBatch;
-            var assetLoader = _services.AssetLoader;
-            var canvasSize = _services.Renderer.CanvasSize;
-            var fadeTexture = assetLoader.GetAsset<Texture2D>("interfaces/black.png");
+            var canvasSize = _renderer.CanvasSize;
+            var fadeTexture = _assetLoader.GetAsset<Texture2D>("interfaces/black.png");
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(fadeTexture, new Rectangle(0, 0, canvasSize.GetWidth(), canvasSize.GetHeight()),
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(fadeTexture, new Rectangle(0, 0, canvasSize.GetWidth(), canvasSize.GetHeight()),
                 _hasSwitched
                     ? _fadeColor * (_fadeOutTime / _maxFadeOutTime)
                     : _fadeColor * (1f - _fadeInTime / _maxFadeInTime)
             );
-            spriteBatch.End();
+            _spriteBatch.End();
         }
 
         public bool ShouldSwitch()

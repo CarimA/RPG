@@ -2,6 +2,7 @@
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.FSM.States;
 using PhotoVs.Logic.Scenes.Transitions;
+using PhotoVs.Models.ECS;
 using PhotoVs.Models.FSM;
 
 namespace PhotoVs.Logic.Scenes
@@ -11,6 +12,7 @@ namespace PhotoVs.Logic.Scenes
         private ITransition _activeTransition;
         private object[] _nextArgs;
         private IScene _nextState;
+
         public Services Services { get; }
         public ISceneManager SceneManager { get; }
 
@@ -21,6 +23,7 @@ namespace PhotoVs.Logic.Scenes
 
         public SceneMachine(Services services)
         {
+
             Services = services;
             ControllerRecommendationScreen = new ControllerRecommendationScreen(this);
             OverworldScene = new OverworldScene(this);
@@ -28,8 +31,8 @@ namespace PhotoVs.Logic.Scenes
             TextInputScene = new TextInputScene(this);
 
             SceneManager = new SceneManager(this,
-                Services.GlobalSystems,
-                Services.GlobalGameObjects);
+                Services.Get<ISystemCollection>(),
+                Services.Get<IGameObjectCollection>());
         }
 
         // todo: move to individual states to control scene flow and

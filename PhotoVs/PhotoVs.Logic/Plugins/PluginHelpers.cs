@@ -8,12 +8,12 @@ namespace PhotoVs.Logic.Plugins
     {
         public Dialogue Dialogue(string name, string dialogue)
         {
-            return new Dialogue(Services.SceneMachine, name, dialogue);
+            return new Dialogue(SceneMachine, name, dialogue);
         }
 
         public TextInput TextInput(string question, string defaultText = "", int limit = 15)
         {
-            return new TextInput(Services.SceneMachine, question, defaultText, limit);
+            return new TextInput(SceneMachine, question, defaultText, limit);
         }
 
         public Pause Pause(float time)
@@ -23,11 +23,9 @@ namespace PhotoVs.Logic.Plugins
 
         public IEnumerator LockMovement(Func<IEnumerator> action)
         {
-            Services.Player.LockMovement();
-
+            Player.LockMovement();
             yield return Spawn(action());
-
-            Services.Player.UnlockMovement();
+            Player.UnlockMovement();
         }
     }
 }

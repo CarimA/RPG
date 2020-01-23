@@ -16,8 +16,6 @@ namespace PhotoVs.Engine
 
         public delegate void InteractEventHandler(object sender, IGameObject player, IGameObject script);
 
-        public delegate void ServiceSetEventHandler(object sender, object service);
-
         public delegate void VoidEventHandler(object sender);
 
         public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventAction;
@@ -26,11 +24,9 @@ namespace PhotoVs.Engine
         public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventRun;
         public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventStand;
         public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventWalk;
-        public readonly IndexedEvent<Type, ServiceSetEventHandler> OnServiceSet;
 
         public Events()
         {
-            OnServiceSet = new IndexedEvent<Type, ServiceSetEventHandler>();
             OnInteractEventAction = new IndexedEvent<string, InteractEventHandler>();
             OnInteractEventEnter = new IndexedEvent<string, InteractEventHandler>();
             OnInteractEventExit = new IndexedEvent<string, InteractEventHandler>();
@@ -54,12 +50,6 @@ namespace PhotoVs.Engine
 
         public event VoidEventHandler OnGameStart;
         public event CollisionEventHandler OnCollision;
-
-        public void RaiseOnServiceSet<T>(T service)
-        {
-            Logger.Write.Trace($"EVENT - Invoking OnServiceSet ({typeof(T).Name})");
-            if (OnServiceSet.TryGetValue(typeof(T), out var value)) value?.Invoke(this, service);
-        }
 
         public void RaiseOnGameStart()
         {

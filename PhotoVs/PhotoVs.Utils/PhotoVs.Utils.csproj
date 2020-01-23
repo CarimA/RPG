@@ -75,6 +75,7 @@
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Extensions\SpriteFontExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IEquatableByRef.cs" />
     <Compile Include="Compression\InflateBlocks.cs" />
     <Compile Include="Compression\InflateCodes.cs" />
