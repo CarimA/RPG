@@ -16,7 +16,7 @@ namespace PhotoVs.Logic.Scenes
         public Services Services { get; }
         public ISceneManager SceneManager { get; }
 
-        internal ControllerRecommendationScreen ControllerRecommendationScreen { get; }
+        public ControllerRecommendationScreen ControllerRecommendationScreen { get; }
         internal DialogueScene DialogueScene { get; }
         internal TextInputScene TextInputScene { get; }
         internal OverworldScene OverworldScene { get; }

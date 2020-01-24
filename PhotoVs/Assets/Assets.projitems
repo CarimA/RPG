@@ -60,4 +60,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Tilesets\pocket-tileset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Tilesets\test.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Plugins\PluginTest.cs" />
+  </ItemGroup>
 </Project>

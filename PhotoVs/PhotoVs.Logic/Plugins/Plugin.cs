@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using PhotoVs.Engine.Scheduler;
+using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 
@@ -7,20 +9,38 @@ namespace PhotoVs.Logic.Plugins
 {
     public abstract partial class Plugin
     {
-        public abstract string Name { get; }
-        public abstract string Version { get; }
-        internal Coroutines Coroutines { get; set; }
-        internal SceneMachine SceneMachine { get; set; }
-        internal Player Player { get; set; }
+        public virtual string Name { get; }
+        public virtual int Version { get; }
 
-        public virtual void Bind(Services services)
-        {
-        }
+        internal Services Services { get; set; }
 
         public IEnumerator Spawn(IEnumerator routine)
         {
-            Coroutines.Start(routine);
+            Services.Get<Coroutines>().Start(routine);
             return routine;
+        }
+
+        public IEnumerator LockMovement(Func<IEnumerator> action)
+        {
+            var player = Services.Get<Player>();
+            player.LockMovement();
+            yield return Spawn(action());
+            player.UnlockMovement();
+        }
+
+        public Dialogue Dialogue(string name, string dialogue)
+        {
+            return new Dialogue(Services.Get<SceneMachine>(), name, dialogue);
+        }
+
+        public TextInput TextInput(string question, string defaultText = "", int limit = 15)
+        {
+            return new TextInput(Services.Get<SceneMachine>(), question, defaultText, limit);
+        }
+
+        public Pause Pause(float time)
+        {
+            return new Pause(time);
         }
     }
 }
