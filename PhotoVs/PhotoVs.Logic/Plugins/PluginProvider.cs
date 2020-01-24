@@ -163,7 +163,7 @@ namespace PhotoVs.Plugins
 
         private (CSharpCodeProvider, CompilerParameters) SetupCompiler(IEnumerable<string> references)
         {
-            var provider = new CSharpCodeProvider();
+            var provider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider(); //new CSharpCodeProvider();
             var parameters = new CompilerParameters();
             parameters.ReferencedAssemblies.AddRange(references.ToArray());
 

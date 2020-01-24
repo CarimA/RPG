@@ -2,8 +2,8 @@
 {
     private readonly SceneMachine _sceneMachine;
 
-    public override string Name { get { return "Test"; } }
-    public override int Version { get { return 1; } }
+    public override string Name => "Test";
+    public override int Version => 1;
 
     public PluginTest(Services services)
     {
@@ -26,8 +26,8 @@ public class TestPlugin : Plugin
     private ITextDatabase _db;
     private Player _player;
 
-    public override string Name { get { return "Test2"; } }
-    public override int Version { get { return 1; } }
+    public override string Name => "Test2";
+    public override int Version => 1;
 
     // public override string Name { get; } = "Test Plugin";
     //public override int Version { get; } = 1;
