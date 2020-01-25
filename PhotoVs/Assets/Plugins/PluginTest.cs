@@ -50,29 +50,6 @@ public class TestPlugin : Plugin
 
     private IEnumerator DoThis()
     {
-        _camera.Set(new List<Vector2>
-                {
-                    new Vector2(-600, -600),
-                    new Vector2(600, 600)
-                });
-
-        var text = TextInput("Hi", "Test", 10);
-        yield return text;
-
-        yield return Spawn(WaitTest());
-        Logger.Write.Trace("Test 1");
-
-        //yield return Dialogue("test", $"Hello {text.Text}!");
-        yield return Dialogue("test", _db.GetText("Intro"));
-        Logger.Write.Trace("Test 2");
-        yield return Pause(3f);
-        Logger.Write.Trace("Test 3");
-
-        _camera.Follow(_player);
-    }
-
-    private IEnumerator WaitTest()
-    {
-        yield return Pause(3f);
+        yield return Dialogue("Test Name", "I don't really have much to say.");
     }
 }

@@ -79,6 +79,11 @@ namespace PhotoVs.Engine.Graphics
             var width = _window.ClientBounds.Width;
             var height = _window.ClientBounds.Height;
 
+            if (width == 0 || height == 0)
+            {
+                return;
+            }
+
             _graphics.PreferredBackBufferWidth = width;
             _graphics.PreferredBackBufferHeight = height;
             _graphics.ApplyChanges();

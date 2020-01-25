@@ -34,7 +34,7 @@ namespace PhotoVs.Logic.Text
                 if (!_languages.ContainsKey(language))
                     _languages.Add(language,
                         new Language(data["Language"][language],
-                            _assetLoader.GetAsset<SpriteFont>($"fonts/{data["LanguageFont"][language]}")));
+                            _assetLoader.GetAsset<SpriteFont>($"ui/fonts/{data["LanguageFont"][language]}")));
 
                 foreach (var kvp in data)
                     if (data[kvp.Key].ContainsKey(language))

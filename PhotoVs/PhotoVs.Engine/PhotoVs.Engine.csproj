@@ -93,7 +93,6 @@
     <Compile Include="Graphics\PolygonPrimitive.cs" />
     <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="Graphics\RenderMode.cs" />
-    <Compile Include="Graphics\ShakingBox.cs" />
     <Compile Include="Graphics\TextureAtlases\NinePatchRegion2D.cs" />
     <Compile Include="Graphics\TextureAtlases\TextureAtlasExtensions.cs" />
     <Compile Include="Graphics\TextureAtlases\TextureRegion2D.cs" />

@@ -59,7 +59,7 @@ MM_Exit:
 
 Intro:
   EnglishUK: |-
-    [outline Black]Hang on, now.[wait 1.5]
+    [outline Red]Hang on, now.[wait 1.5]
     Give me just a sec.[.].[.].[.][eop]
     Hi!
     Nice to see you again, and once again, congrats on your new job at the [color Yellow]Museum of Digital Arts[/color]![eop]

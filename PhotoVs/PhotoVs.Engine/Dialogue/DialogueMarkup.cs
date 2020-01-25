@@ -10,6 +10,7 @@ namespace PhotoVs.Engine.Dialogue
     public class DialogueMarkup
     {
         private readonly SpriteFont _font;
+        private readonly SpriteFont _outlineFont;
         private readonly Dictionary<int, List<IMarkup>> _markupIndex;
         private readonly float _maxCharTime;
 
@@ -27,9 +28,10 @@ namespace PhotoVs.Engine.Dialogue
         public bool IsFinished { get; set; }
         public bool IsPaused { get; set; }
 
-        public DialogueMarkup(SpriteFont font, Vector2 origin, string text, int lines, int width)
+        public DialogueMarkup(SpriteFont font, SpriteFont outlineFont, Vector2 origin, string text, int lines, int width)
         {
             _font = font;
+            _outlineFont = outlineFont;
             _origin = origin;
             _maxLines = lines;
             _remainingLines = lines;
@@ -155,22 +157,7 @@ namespace PhotoVs.Engine.Dialogue
                 // todo: set active colour or position changing
                 if (outlineColor != Color.Transparent)
                 {
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(-1, -1),
-                        outlineColor);
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(1, 1),
-                        outlineColor);
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(1, -1),
-                        outlineColor);
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(-1, 1),
-                        outlineColor);
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(-1, 0),
-                        outlineColor);
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(1, 0),
-                        outlineColor);
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(0, -1),
-                        outlineColor);
-                    spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake + new Vector2(0, 1),
-                        outlineColor);
+                    spriteBatch.DrawString(_outlineFont, "" + c, _origin + position + wave + shake, outlineColor);
                 }
 
                 spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake, activeColor);

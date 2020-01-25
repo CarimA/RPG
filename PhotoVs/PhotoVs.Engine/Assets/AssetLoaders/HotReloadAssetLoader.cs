@@ -37,6 +37,9 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             if (_streamProvider == null)
                 return;
 
+            if (e.FullPath.EndsWith(".log"))
+                return;
+
             if (e.ChangeType != WatcherChangeTypes.Changed)
                 return;
 

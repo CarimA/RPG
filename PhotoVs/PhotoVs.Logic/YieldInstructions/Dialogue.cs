@@ -26,6 +26,11 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
                 return true;
             }
 
+            if (!(_sceneMachine.Peek() is DialogueScene))
+            {
+                return true;
+            }
+
             return false;
         }
     }

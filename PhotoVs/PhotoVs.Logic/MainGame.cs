@@ -158,8 +158,8 @@ namespace PhotoVs.Logic
                 Window,
                 new ColorGrading(GraphicsDevice,
                     canvas,
-                    _assetLoader.GetAsset<Effect>("colorgrading/color.dx11"),
-                    _assetLoader.GetAsset<Texture2D>("colorgrading/aap128.png")),
+                    _assetLoader.GetAsset<Effect>("shaders/color.dx11"),
+                    _assetLoader.GetAsset<Texture2D>("ui/luts/aap128.png")),
                 canvas);
             return renderer;
         }
@@ -188,7 +188,7 @@ namespace PhotoVs.Logic
                 new SProcessInput(),
                 new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
                 new STakeScreenshot(GraphicsDevice, _renderer, _spriteBatch,
-                    _assetLoader.GetAsset<SpriteFont>("fonts/mono.fnt"))
+                    _assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_12.fnt"))
             };
             return globalSystems;
         }

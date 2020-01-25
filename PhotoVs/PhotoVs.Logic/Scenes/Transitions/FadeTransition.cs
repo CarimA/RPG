@@ -52,7 +52,7 @@ namespace PhotoVs.Logic.Scenes.Transitions
         public void Draw(GameTime gameTime)
         {
             var canvasSize = _renderer.CanvasSize;
-            var fadeTexture = _assetLoader.GetAsset<Texture2D>("interfaces/black.png");
+            var fadeTexture = _assetLoader.GetAsset<Texture2D>("ui/pixel.png");
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(fadeTexture, new Rectangle(0, 0, canvasSize.GetWidth(), canvasSize.GetHeight()),

@@ -24,7 +24,6 @@ namespace PhotoVs.Logic.Scenes
         private DialogueMarkup _dialogue;
 
         private string _name;
-        private ShakingBox _shakingBox;
 
         // todo: text log by saving a queue
 
@@ -45,14 +44,15 @@ namespace PhotoVs.Logic.Scenes
 
         public void DrawUI(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_assetLoader.GetAsset<Texture2D>("portraits/test2.png"), new Vector2(0, 0),
-                Color.White);
-            _spriteBatch.End();
+            var dialogue = _assetLoader.GetAsset<Texture2D>("ui/dialogue.png");
+            var portrait = _assetLoader.GetAsset<Texture2D>("portraits/test.png");
+            var bold = _assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_outline_12.fnt");
 
-            _spriteBatch.Begin(rasterizerState: RasterizerState.CullNone, samplerState: SamplerState.PointClamp);
-            _shakingBox.Draw(gameTime);
-            _spriteBatch.DrawString(_textDatabase.GetFont(), _name, new Vector2(126, 94), Color.White);
+            _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+            _spriteBatch.Draw(dialogue, new Vector2(12, 108), new Rectangle(304, 0, 58, 58), Color.White);
+            _spriteBatch.Draw(portrait, new Vector2(12, 108), Color.White);
+            _spriteBatch.Draw(dialogue, new Vector2(7, 103), new Rectangle(0, 0, 304, 68), Color.White);
+            _spriteBatch.DrawString(bold, _name, new Vector2(79, 109), Color.Yellow);
             _dialogue.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
         }
@@ -61,7 +61,6 @@ namespace PhotoVs.Logic.Scenes
         {
             var input = _player.Input;
 
-            _shakingBox.Update(gameTime);
 
             _dialogue.FastForward = input.ActionDown(InputActions.Run);
             _dialogue.Update(gameTime);
@@ -86,19 +85,12 @@ namespace PhotoVs.Logic.Scenes
             _name = args[0].ToString();
             var dialogue = args[1].ToString();
 
-            var x = 110 ;
-            var y = 110 ;
-            _shakingBox = new ShakingBox(_spriteBatch, new List<RectangleF>
-            {
-                new RectangleF(x, y, 200 , 65 ),
-                new RectangleF(x + (15 - 3) , y - 20 , 90 , 25 )
-            });
-
-            _dialogue = new DialogueMarkup(_textDatabase.GetFont(),
-                new Vector2(113 , 114 ), //320 - TextWidth - 20, 133),
+            _dialogue = new DialogueMarkup(_assetLoader.GetAsset<SpriteFont>("ui/fonts/outline_12.fnt"), 
+                _assetLoader.GetAsset<SpriteFont>("ui/fonts/border_12.fnt"),
+                new Vector2(79, 126), //320 - TextWidth - 20, 133),
                 dialogue,
-                2,
-                200 );
+                3,
+                228 );
 
             IsFinished = false;
         }
