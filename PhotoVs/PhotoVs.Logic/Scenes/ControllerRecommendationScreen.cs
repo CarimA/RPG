@@ -44,11 +44,11 @@ namespace PhotoVs.Logic.Scenes
         {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
 
-            _spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(320 / 2, 10), Color.White);
-            _spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(320 / 2, 180  - 40),
+            _spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(160, 10), Color.White);
+            _spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(160, 146),
                 Color.White);
 
-            _spriteBatch.Draw(_gamepadIcon, new Vector2(96, 82), Color.White);
+            _spriteBatch.Draw(_gamepadIcon, new Vector2(124, 68), new Rectangle(1, 1, 73, 45), Color.White);
 
             _spriteBatch.End();
         }

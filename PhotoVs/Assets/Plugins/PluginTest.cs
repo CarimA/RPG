@@ -50,6 +50,6 @@ public class TestPlugin : Plugin
 
     private IEnumerator DoThis()
     {
-        yield return Dialogue("Test Name", "I don't really have much to say.");
+        yield return Dialogue("Test Name", "I don't really have much to say.\nHere's a line.\nAnd another line.\nAnd another one?!");
     }
 }

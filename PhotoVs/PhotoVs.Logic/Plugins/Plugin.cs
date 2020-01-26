@@ -7,7 +7,7 @@ using PhotoVs.Logic.Scenes;
 
 namespace PhotoVs.Logic.Plugins
 {
-    public abstract partial class Plugin
+    public abstract class Plugin
     {
         public virtual string Name { get; }
         public virtual int Version { get; }
