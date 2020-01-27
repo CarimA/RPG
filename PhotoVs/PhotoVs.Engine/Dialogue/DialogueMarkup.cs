@@ -193,6 +193,15 @@ namespace PhotoVs.Engine.Dialogue
 
             foreach (var t in text)
             {
+                if (p == '.')
+                {
+                    activeMarkups.Add(new WaitMarkup(0.75f));
+                }
+                else if (p == ',')
+                {
+                    activeMarkups.Add(new WaitMarkup(0.4f));
+                }
+
                 if (t == '\n')
                 {
                     AddMarkup(markupIndex, index, new NewLineMarkup());
@@ -290,6 +299,7 @@ namespace PhotoVs.Engine.Dialogue
                 }
                 else
                 {
+
                     if (isBuffering)
                     {
                         buffer += t;
