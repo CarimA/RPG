@@ -40,9 +40,9 @@ namespace PhotoVs.Logic.Scenes
         {
         }
 
-        public void DrawUI(GameTime gameTime)
+        public void DrawUI(GameTime gameTime, Matrix uiOrigin)
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, transformMatrix: uiOrigin);
 
             _spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(160, 10), Color.White);
             _spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(160, 146),

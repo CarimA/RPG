@@ -9,7 +9,7 @@ namespace PhotoVs.Logic.Scenes
         {
         }
 
-        public void DrawUI(GameTime gameTime)
+        public void DrawUI(GameTime gameTime, Matrix uiOrigin)
         {
         }
 

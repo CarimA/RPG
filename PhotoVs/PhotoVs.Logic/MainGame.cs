@@ -222,9 +222,7 @@ namespace PhotoVs.Logic
 
             _renderer.SetRenderMode(RenderMode.Game);
             _sceneMachine.Draw(gameTime);
-
-            _renderer.SetRenderMode(RenderMode.UI);
-            _sceneMachine.DrawUI(gameTime);
+            _sceneMachine.DrawUI(gameTime, _renderer.GetUIOrigin());
 
             _renderer.Draw(_spriteBatch);
 

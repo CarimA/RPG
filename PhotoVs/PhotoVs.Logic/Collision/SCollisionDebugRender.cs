@@ -52,7 +52,7 @@ namespace PhotoVs.Logic.Collision
         {
         }
 
-        public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection)
+        public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection, Matrix uiOrigin)
         {
         }
 

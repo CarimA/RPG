@@ -52,7 +52,7 @@ namespace PhotoVs.Logic.Scenes
         {
         }
 
-        public void DrawUI(GameTime gameTime)
+        public void DrawUI(GameTime gameTime, Matrix uiOrigin)
         {
             var font = _assetLoader.GetAsset<SpriteFont>("ui/fonts/plain_12.fnt");
 
@@ -62,7 +62,7 @@ namespace PhotoVs.Logic.Scenes
             var offsetX = 320 / 2 - cellWidth * KeyboardCellWidth() / 2;
             var offsetY = 180 / 2 - cellHeight * KeyboardCellHeight() / 2 + 20;
 
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: uiOrigin);
 
             var questionSize = font.MeasureString(_question).X;
             var qX = (int) (320 / 2 - questionSize / 2);

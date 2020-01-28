@@ -61,7 +61,7 @@ namespace PhotoVs.Logic.WorldZoning
             _camera.Detach(_spriteBatch);
         }
 
-        public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection)
+        public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection, Matrix uiOrigin)
         {
         }
 

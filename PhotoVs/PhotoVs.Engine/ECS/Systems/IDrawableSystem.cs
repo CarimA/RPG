@@ -7,6 +7,6 @@ namespace PhotoVs.Models.ECS
         void BeforeDraw(GameTime gameTime);
         void Draw(GameTime gameTime, IGameObjectCollection entities);
         void AfterDraw(GameTime gameTime);
-        void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection);
+        void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection, Matrix uiOrigin);
     }
 }

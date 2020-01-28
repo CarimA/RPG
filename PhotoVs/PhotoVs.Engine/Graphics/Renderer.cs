@@ -15,7 +15,6 @@ namespace PhotoVs.Engine.Graphics
         public CanvasSize CanvasSize { get; }
 
         public VirtualRenderTarget2D GameView { get; private set; }
-        public VirtualRenderTarget2D UIView { get; }
 
         public Size2 RenderSize
         {
@@ -33,7 +32,6 @@ namespace PhotoVs.Engine.Graphics
             _graphicsDevice = graphicsDevice;
             _colorGrading = colorGrading;
             GameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
-            UIView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
             CanvasSize = canvasSize;
 
             UpdateViewports(null, null);
@@ -50,10 +48,6 @@ namespace PhotoVs.Engine.Graphics
                     _graphicsDevice.SetRenderTarget(GameView);
                     _graphicsDevice.Clear(Color.Black);
                     break;
-                case RenderMode.UI:
-                    _graphicsDevice.SetRenderTarget(UIView);
-                    _graphicsDevice.Clear(Color.Transparent);
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(renderMode), renderMode, null);
             }
@@ -63,13 +57,13 @@ namespace PhotoVs.Engine.Graphics
         {
             var width = _graphics.PreferredBackBufferWidth;
             var height = _graphics.PreferredBackBufferHeight;
-            var gameView = _colorGrading.Filter(spriteBatch, GameView);
+
+            var gameView = GameView; //_colorGrading.Filter(spriteBatch, GameView);
             gameView.UpdateViewport(width, height);
 
             SetRenderMode(RenderMode.None);
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
             gameView.DrawScaled(spriteBatch);
-            UIView.DrawScaled(spriteBatch);
             spriteBatch.End();
         }
 
@@ -107,9 +101,14 @@ namespace PhotoVs.Engine.Graphics
             }
 
             GameView.UpdateViewport(width, height, false);
-            UIView.UpdateViewport(width, height);
 
             _window.ClientSizeChanged += UpdateViewports;
+        }
+
+        public Matrix GetUIOrigin()
+        {
+            return Matrix.CreateTranslation(new Vector3((GameView.Width / 2) - (CanvasSize.GetWidth() / 2),
+                (GameView.Height / 2) - (CanvasSize.GetHeight() / 2), 0));
         }
     }
 }

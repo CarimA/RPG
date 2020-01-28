@@ -9,30 +9,30 @@ namespace PhotoVs.Engine
         public IGameObject Moving { get; set; }
         public IGameObject Stationary { get; set; }
     }
+    public class InteractEventArgs : EventArgs
+    {
+        public IGameObject Player { get; set; }
+        public IGameObject Script { get; set; }
+    }
+
 
     public sealed class Events
     {
-        public delegate void CollisionEventHandler(object sender, CollisionEventArgs e);
-
-        public delegate void InteractEventHandler(object sender, IGameObject player, IGameObject script);
-
-        public delegate void VoidEventHandler(object sender);
-
-        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventAction;
-        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventEnter;
-        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventExit;
-        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventRun;
-        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventStand;
-        public readonly IndexedEvent<string, InteractEventHandler> OnInteractEventWalk;
+        public readonly IndexedEvent<string, Action<InteractEventArgs>> OnInteractEventAction;
+        public readonly IndexedEvent<string, Action<InteractEventArgs>> OnInteractEventEnter;
+        public readonly IndexedEvent<string, Action<InteractEventArgs>> OnInteractEventExit;
+        public readonly IndexedEvent<string, Action<InteractEventArgs>> OnInteractEventRun;
+        public readonly IndexedEvent<string, Action<InteractEventArgs>> OnInteractEventStand;
+        public readonly IndexedEvent<string, Action<InteractEventArgs>> OnInteractEventWalk;
 
         public Events()
         {
-            OnInteractEventAction = new IndexedEvent<string, InteractEventHandler>();
-            OnInteractEventEnter = new IndexedEvent<string, InteractEventHandler>();
-            OnInteractEventExit = new IndexedEvent<string, InteractEventHandler>();
-            OnInteractEventStand = new IndexedEvent<string, InteractEventHandler>();
-            OnInteractEventWalk = new IndexedEvent<string, InteractEventHandler>();
-            OnInteractEventRun = new IndexedEvent<string, InteractEventHandler>();
+            OnInteractEventAction = new IndexedEvent<string, Action<InteractEventArgs>>();
+            OnInteractEventEnter = new IndexedEvent<string, Action<InteractEventArgs>>();
+            OnInteractEventExit = new IndexedEvent<string, Action<InteractEventArgs>>();
+            OnInteractEventStand = new IndexedEvent<string, Action<InteractEventArgs>>();
+            OnInteractEventWalk = new IndexedEvent<string, Action<InteractEventArgs>>();
+            OnInteractEventRun = new IndexedEvent<string, Action<InteractEventArgs>>();
         }
 
         // events which would be nice
@@ -48,8 +48,8 @@ namespace PhotoVs.Engine
          * OnStandEnd
          */
 
-        public event VoidEventHandler OnGameStart;
-        public event CollisionEventHandler OnCollision;
+        public Action OnGameStart;
+        public Action<CollisionEventArgs> OnCollision;
 
         public void RaiseOnGameStart()
         {

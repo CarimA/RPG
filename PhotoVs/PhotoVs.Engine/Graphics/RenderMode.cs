@@ -3,7 +3,6 @@
     public enum RenderMode
     {
         None = 0,
-        Game,
-        UI
+        Game
     }
 }

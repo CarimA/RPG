@@ -73,9 +73,9 @@ namespace PhotoVs.Logic.Scenes
             SceneManager.Draw(gameTime);
         }
 
-        public void DrawUI(GameTime gameTime)
+        public void DrawUI(GameTime gameTime, Matrix uiOrigin)
         {
-            SceneManager.DrawUI(gameTime);
+            SceneManager.DrawUI(gameTime, uiOrigin);
             _activeTransition?.Draw(gameTime);
         }
     }

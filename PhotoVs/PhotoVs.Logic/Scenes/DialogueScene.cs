@@ -38,7 +38,7 @@ namespace PhotoVs.Logic.Scenes
         {
         }
 
-        public void DrawUI(GameTime gameTime)
+        public void DrawUI(GameTime gameTime, Matrix uiOrigin)
         {
             var slice = _assetLoader.GetAsset<Texture2D>("ui/slices/main.png");
             var slice2 = _assetLoader.GetAsset<Texture2D>("ui/slices/main_noborder.png");
@@ -48,7 +48,7 @@ namespace PhotoVs.Logic.Scenes
             var portrait = _assetLoader.GetAsset<Texture2D>("portraits/test.png");
             var bold = _assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_outline_12.fnt");
 
-            _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+            _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: uiOrigin);
 
             _spriteBatch.Draw(pixel, new Rectangle(12, 108, 294, 58), new Rectangle(0, 0, 1, 1), Color.White);
             _spriteBatch.Draw(darkPixel, new Rectangle(70, 108, 236, 16), new Rectangle(0, 0, 1, 1), Color.White);
