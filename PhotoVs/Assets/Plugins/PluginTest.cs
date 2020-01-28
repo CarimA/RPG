@@ -23,7 +23,7 @@
 public class TestPlugin : Plugin
 {
     private SCamera _camera;
-    private ITextDatabase _db;
+    private TextDatabase _db;
     private Player _player;
 
     public override string Name => "Test2";
@@ -35,7 +35,7 @@ public class TestPlugin : Plugin
 
         events.OnInteractEventEnter["example_event"] += InteractEventHandler;
 
-        _db = services.Get<ITextDatabase>();
+        _db = services.Get<TextDatabase>();
         _camera = services.Get<SCamera>();
         _player = services.Get<Player>();
     }

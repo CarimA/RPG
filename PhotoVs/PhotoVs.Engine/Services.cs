@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using PhotoVs.Utils.Logging;
 
-namespace PhotoVs.Logic
+namespace PhotoVs.Engine
 {
     public class Services
     {

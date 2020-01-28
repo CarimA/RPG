@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using PhotoVs.Engine;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.FSM.States;
 using PhotoVs.Logic.Scenes.Transitions;

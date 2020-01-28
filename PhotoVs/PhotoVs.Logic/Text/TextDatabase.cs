@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Models.Assets;
 using YamlDotNet.Serialization;

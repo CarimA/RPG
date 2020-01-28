@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 
-namespace PhotoVs.Logic.Plugins
+namespace PhotoVs.Engine.Plugins
 {
     public class PluginProvider
     {
@@ -87,7 +87,8 @@ namespace PhotoVs.Plugins
                 Logger.Write.Error($"{failures.Count()} errors found in plugin \"{filename}\"");
                 foreach (var error in failures)
                 {
-                    Logger.Write.Error($"\t{error.Id}: {error.GetMessage()}");
+                    var line = error.Location.GetLineSpan().StartLinePosition;
+                    Logger.Write.Error($"Line {line.Line - _namespaces.Count() - 3} Column {line.Character} {error.Id}: {error.GetMessage()}");
                 }
             }
             else

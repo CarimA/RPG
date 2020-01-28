@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using PhotoVs.Engine.Scheduler;
-using PhotoVs.Engine.Scheduler.YieldInstructions;
-using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Scenes;
 
-namespace PhotoVs.Logic.Plugins
+namespace PhotoVs.Engine.Plugins
 {
     public abstract class Plugin
     {
@@ -20,7 +16,7 @@ namespace PhotoVs.Logic.Plugins
             return routine;
         }
 
-        public IEnumerator LockMovement(Func<IEnumerator> action)
+        /*public IEnumerator LockMovement(Func<IEnumerator> action)
         {
             var player = Services.Get<Player>();
             player.LockMovement();
@@ -41,6 +37,6 @@ namespace PhotoVs.Logic.Plugins
         public Pause Pause(float time)
         {
             return new Pause(time);
-        }
+        }*/
     }
 }
