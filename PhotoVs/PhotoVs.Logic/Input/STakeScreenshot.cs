@@ -4,13 +4,11 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml.Linq;
 using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Logic.Properties;
 using PhotoVs.Models.ECS;
 
 namespace PhotoVs.Logic.Input
@@ -108,13 +106,15 @@ namespace PhotoVs.Logic.Input
 
         private async void UploadToDiscord(RenderTarget2D rt)
         {
-            using var ms = new MemoryStream();
+            // todo: fix for .net core
+
+            /*using var ms = new MemoryStream();
 
             rt.SaveAsPng(ms, 1280, 720);
 
             using var request = new WebClient();
 
-            var clientId = Resources.ResourceManager.GetString("IMGUR_CLIENT_ID");
+            var clientId = System.Resources.ResourceManager.GetString("IMGUR_CLIENT_ID");
             request.Headers.Add("Authorization", "Client-ID " + clientId);
             var values = new NameValueCollection {{"image", Convert.ToBase64String(ms.GetBuffer())}};
             var res = request.UploadValues("https://api.imgur.com/3/upload.xml", values);
@@ -124,17 +124,10 @@ namespace PhotoVs.Logic.Input
             foreach (var data in XDocument.Load(response).Descendants("data"))
             {
                 var val = data.Element("link").Value;
-
                 var embed = "{\"embeds\":[{\"image\":{\"url\":\"" + val + "\"}}]}";
-                var desc = Interaction.InputBox("Want to add a description?");
-
-                if (desc != string.Empty)
-                    embed = "{\"embeds\":[{\"description\":\"" + desc + "\", \"image\":{\"url\":\"" + val + "\"}}]}";
-
-                Clipboard.SetText(val);
-                await new HttpClient().PostAsync(Resources.ResourceManager.GetString("DISCORD_WEBHOOK_URL"),
+                await new HttpClient().PostAsync(System.Resources.ResourceManager.GetString("DISCORD_WEBHOOK_URL"),
                     new StringContent(embed, Encoding.UTF8, "application/json"));
-            }
+            }*/
         }
     }
 }

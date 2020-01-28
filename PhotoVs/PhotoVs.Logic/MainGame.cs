@@ -121,6 +121,8 @@ namespace PhotoVs.Logic
 
             _events.RaiseOnGameStart();
 
+            _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);
+
             base.Initialize();
         }
 
@@ -158,7 +160,7 @@ namespace PhotoVs.Logic
                 Window,
                 new ColorGrading(GraphicsDevice,
                     canvas,
-                    _assetLoader.GetAsset<Effect>("shaders/color.dx11"),
+                    _assetLoader.GetAsset<Effect>("shaders/color.ogl"),
                     _assetLoader.GetAsset<Texture2D>("ui/luts/aap128.png")),
                 canvas);
             return renderer;

@@ -14,6 +14,14 @@ using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic.Plugins
 {
+    class CSharpCodeProvider { 
+    }
+
+    class CompilerParameters
+    {
+
+    }
+
     public class PluginProvider
     {
         private readonly CSharpCodeProvider _provider;
@@ -68,9 +76,9 @@ namespace PhotoVs.Plugins
 {{
     {script} 
 }}";
-            var results = _provider.CompileAssemblyFromSource(_parameters, code);
+            //var results = _provider.CompileAssemblyFromSource(_parameters, code);
 
-            if (results.Errors.HasErrors)
+            /*if (results.Errors.HasErrors)
             {
                 Logger.Write.Error($"{results.Errors.Count} errors found in plugin \"{filename}\"");
                 foreach (CompilerError error in results.Errors)
@@ -99,7 +107,7 @@ namespace PhotoVs.Plugins
                     Logger.Write.Error($"Could not load plugin \"{filename}\"");
                     Logger.Write.Error(e.ToString());
                 }
-            }
+            }*/
         }
 
         private bool IsScript(string filename)
@@ -165,10 +173,10 @@ namespace PhotoVs.Plugins
         {
             var provider = new CSharpCodeProvider();
             var parameters = new CompilerParameters();
-            parameters.ReferencedAssemblies.AddRange(references.ToArray());
+            //parameters.ReferencedAssemblies.AddRange(references.ToArray());
 
-            parameters.GenerateInMemory = true;
-            parameters.GenerateExecutable = false;
+            //parameters.GenerateInMemory = true;
+            //parameters.GenerateExecutable = false;
             return (provider, parameters);
         }
 
