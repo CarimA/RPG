@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Text;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.ECS;
 using PhotoVs.Models.FSM;
-using PhotoVs.Models.Text;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes
@@ -17,7 +17,7 @@ namespace PhotoVs.Logic.Scenes
         private readonly Player _player;
         private readonly SceneMachine _scene;
         private readonly SpriteBatch _spriteBatch;
-        private readonly ITextDatabase _textDatabase;
+        private readonly TextDatabase _textDatabase;
         private float _continueTime;
         private string _copyrightNotice;
         private SpriteFont _font;
@@ -29,7 +29,7 @@ namespace PhotoVs.Logic.Scenes
         {
             _scene = scene;
             _player = _scene.Services.Get<Player>();
-            _textDatabase = _scene.Services.Get<ITextDatabase>();
+            _textDatabase = _scene.Services.Get<TextDatabase>();
             _assetLoader = _scene.Services.Get<IAssetLoader>();
             _spriteBatch = _scene.Services.Get<SpriteBatch>();
             Entities = new GameObjectCollection();

@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue;
-using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Text;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.FSM;
-using PhotoVs.Models.Text;
-using PhotoVs.Utils;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes
@@ -21,7 +18,6 @@ namespace PhotoVs.Logic.Scenes
         private readonly Player _player;
         private readonly SceneMachine _scene;
         private readonly SpriteBatch _spriteBatch;
-        private readonly ITextDatabase _textDatabase;
         private DialogueMarkup _dialogue;
 
         private string _name;
@@ -34,7 +30,6 @@ namespace PhotoVs.Logic.Scenes
         {
             _scene = scene;
             _player = _scene.Services.Get<Player>();
-            _textDatabase = _scene.Services.Get<ITextDatabase>();
             _assetLoader = _scene.Services.Get<IAssetLoader>();
             _spriteBatch = _scene.Services.Get<SpriteBatch>();
         }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +12,6 @@ using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scheduler;
-using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.Debug;
 using PhotoVs.Logic.Input;
@@ -25,7 +22,6 @@ using PhotoVs.Logic.Text;
 using PhotoVs.Models.Assets;
 using PhotoVs.Models.Audio;
 using PhotoVs.Models.ECS;
-using PhotoVs.Models.Text;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic
@@ -132,7 +128,7 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new TextTypeLoader())
                 .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new SpriteFontTypeLoader(GraphicsDevice, assetLoader))
-                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(GraphicsDevice, _assetLoader, 32))
+                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(32))
                 .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;
@@ -144,7 +140,7 @@ namespace PhotoVs.Logic
             return audio;
         }
 
-        private ITextDatabase CreateTextDatabase()
+        private TextDatabase CreateTextDatabase()
         {
             var textDatabase = new TextDatabase(_services);
             return textDatabase;

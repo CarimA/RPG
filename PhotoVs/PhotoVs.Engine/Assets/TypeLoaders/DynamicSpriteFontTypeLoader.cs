@@ -7,14 +7,10 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
 {
     public class DynamicSpriteFontTypeLoader : ITypeLoader<DynamicSpriteFont>
     {
-        private IAssetLoader _assetLoader;
         private readonly int _defaultFontSize;
-        private GraphicsDevice _graphicsDevice;
 
-        public DynamicSpriteFontTypeLoader(GraphicsDevice graphicsDevice, IAssetLoader loader, int defaultFontSize)
+        public DynamicSpriteFontTypeLoader(int defaultFontSize)
         {
-            _graphicsDevice = graphicsDevice;
-            _assetLoader = loader;
             _defaultFontSize = defaultFontSize;
         }
 

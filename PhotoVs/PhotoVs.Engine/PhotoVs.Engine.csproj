@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PhotoVs.Models\PhotoVs.Models.csproj" />
     <ProjectReference Include="..\PhotoVs.Utils\PhotoVs.Utils.csproj" />
   </ItemGroup>
 

@@ -5,12 +5,11 @@ using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Models.Assets;
-using PhotoVs.Models.Text;
 using YamlDotNet.Serialization;
 
 namespace PhotoVs.Logic.Text
 {
-    public class TextDatabase : ITextDatabase
+    public class TextDatabase
     {
         private readonly IAssetLoader _assetLoader;
 
