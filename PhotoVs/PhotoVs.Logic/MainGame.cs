@@ -121,8 +121,6 @@ namespace PhotoVs.Logic
 
             _events.RaiseOnGameStart();
 
-            _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);
-
             base.Initialize();
         }
 

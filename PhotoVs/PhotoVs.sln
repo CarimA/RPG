@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoVs.Models", "PhotoVs.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoVs.Utils", "PhotoVs.Utils\PhotoVs.Utils.csproj", "{6ED8DD11-C580-4427-B69B-B0E52697EEA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoVs.Core.Desktop", "PhotoVs.Core.Desktop\PhotoVs.Core.Desktop.csproj", "{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoVs.Desktop", "PhotoVs.Desktop\PhotoVs.Desktop.csproj", "{ED62AEAD-E710-4121-9D70-369C3CC34F78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +53,14 @@ Global
 		{6ED8DD11-C580-4427-B69B-B0E52697EEA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6ED8DD11-C580-4427-B69B-B0E52697EEA6}.Release|x86.ActiveCfg = Release|Any CPU
 		{6ED8DD11-C580-4427-B69B-B0E52697EEA6}.Release|x86.Build.0 = Release|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Debug|x86.Build.0 = Debug|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Release|x86.ActiveCfg = Release|Any CPU
-		{E49D375C-25D8-4E2E-8E28-3287F0BCAE3B}.Release|x86.Build.0 = Release|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Debug|x86.Build.0 = Debug|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED62AEAD-E710-4121-9D70-369C3CC34F78}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
