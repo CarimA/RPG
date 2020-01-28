@@ -1,34 +1,22 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.CSharp;
-using PhotoVs.Engine.Scheduler;
-using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Scenes;
-using PhotoVs.Models.Assets;
+using System.Runtime.Loader;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic.Plugins
 {
-    class CSharpCodeProvider { 
-    }
-
-    class CompilerParameters
-    {
-
-    }
-
     public class PluginProvider
     {
-        private readonly CSharpCodeProvider _provider;
-        private readonly CompilerParameters _parameters;
         private readonly List<string> _namespaces;
         private readonly string _usings;
         private readonly Services _services;
+        private readonly List<string> _references;
 
         public PluginProvider(Services services)
         {
@@ -37,9 +25,10 @@ namespace PhotoVs.Logic.Plugins
             var types = GetTypesFromAssemblies(assemblies);
             _namespaces = GetNamespacesFromTypes(types);
             _namespaces.Add("System.Collections");
-            var references = GetReferencesFromAssemblies(assemblies);
+            _namespaces.Add("System.Runtime");
+            _namespaces.Add("System");
+            _references = GetReferencesFromAssemblies(assemblies);
             _usings = GenerateUsings(_namespaces);
-            (_provider, _parameters) = SetupCompiler(references);
         }
 
         public void LoadPlugins(string directory)
@@ -76,21 +65,39 @@ namespace PhotoVs.Plugins
 {{
     {script} 
 }}";
-            //var results = _provider.CompileAssemblyFromSource(_parameters, code);
+            var assemblyName = Path.GetRandomFileName();
+            var syntaxTree = CSharpSyntaxTree.ParseText(code);
+            var refs = _references.Select(
+                reference => MetadataReference.CreateFromFile(reference));
+            var compilation = CSharpCompilation.Create(
+                assemblyName,
+                syntaxTrees: new[] { syntaxTree },
+                references: refs,
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            /*if (results.Errors.HasErrors)
+            using var ms = new MemoryStream();
+            var result = compilation.Emit(ms);
+
+            if (!result.Success)
             {
-                Logger.Write.Error($"{results.Errors.Count} errors found in plugin \"{filename}\"");
-                foreach (CompilerError error in results.Errors)
+                var failures = result.Diagnostics.Where(
+                    diagnostic => diagnostic.IsWarningAsError ||
+                    diagnostic.Severity == DiagnosticSeverity.Error);
+
+                Logger.Write.Error($"{failures.Count()} errors found in plugin \"{filename}\"");
+                foreach (var error in failures)
                 {
-                    Logger.Write.Error($"L{error.Line - (_namespaces.Count() + 4)} ({error.ErrorNumber}): {error.ErrorText}");
+                    Logger.Write.Error($"\t{error.Id}: {error.GetMessage()}");
                 }
             }
             else
             {
                 try
                 {
-                    var assembly = results.CompiledAssembly;
+                    // reset stream position to 0 to re-read for assembly generation
+                    ms.Position = 0;
+
+                    var assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
                     var plugins = assembly
                         .GetTypes()
                         .Where(type => typeof(Plugin).IsAssignableFrom(type));
@@ -107,7 +114,7 @@ namespace PhotoVs.Plugins
                     Logger.Write.Error($"Could not load plugin \"{filename}\"");
                     Logger.Write.Error(e.ToString());
                 }
-            }*/
+            }
         }
 
         private bool IsScript(string filename)
@@ -122,11 +129,7 @@ namespace PhotoVs.Plugins
 
         private bool IsAllowed(string reference)
         {
-            return !(reference.StartsWith("mscorlib")
-                || reference.StartsWith("Microsoft.GeneratedCode")
-                || reference.StartsWith("Microsoft.VisualStudio")
-                || reference.StartsWith("Accessibility")
-                || reference.StartsWith("System.Runtime"));
+            return !reference.StartsWith("Microsoft.GeneratedCode");
         }
 
         private IEnumerable<Assembly> GetAssemblies()
@@ -160,24 +163,13 @@ namespace PhotoVs.Plugins
                 .ToList();
         }
 
-        private IEnumerable<string> GetReferencesFromAssemblies(IEnumerable<Assembly> assemblies)
+        private List<string> GetReferencesFromAssemblies(IEnumerable<Assembly> assemblies)
         {
             return assemblies
-                .SelectMany(assembly => assembly.GetReferencedAssemblies()
-                    .Select(a => a.Name + ".dll"))
+                .Select(assembly => assembly.Location)
                 .Where(IsAllowed)
-                .Distinct();
-        }
-
-        private (CSharpCodeProvider, CompilerParameters) SetupCompiler(IEnumerable<string> references)
-        {
-            var provider = new CSharpCodeProvider();
-            var parameters = new CompilerParameters();
-            //parameters.ReferencedAssemblies.AddRange(references.ToArray());
-
-            //parameters.GenerateInMemory = true;
-            //parameters.GenerateExecutable = false;
-            return (provider, parameters);
+                .Distinct()
+                .ToList();
         }
 
         private string GenerateUsings(IEnumerable<string> namespaces)
