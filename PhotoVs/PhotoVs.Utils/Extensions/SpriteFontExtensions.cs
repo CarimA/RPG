@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PhotoVs.Utils.Extensions
@@ -7,6 +8,12 @@ namespace PhotoVs.Utils.Extensions
     {
         public static string WrapText(this SpriteFont font, string text, float maxLineWidth)
         {
+            if (font == null)
+                throw new ArgumentNullException(nameof(font));
+
+            if (text == null)
+                throw new ArgumentNullException(nameof(text));
+
             var words = text.Split(' ');
             var sb = new StringBuilder();
             var lineWidth = 0f;

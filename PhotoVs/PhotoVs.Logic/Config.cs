@@ -35,7 +35,7 @@ namespace PhotoVs.Logic
                 var obj = deserializer.Deserialize<Config>(text);
                 return obj;
             }
-            catch (FileNotFoundException _)
+            catch (FileNotFoundException)
             {
                 var config = New();
                 config.Save();

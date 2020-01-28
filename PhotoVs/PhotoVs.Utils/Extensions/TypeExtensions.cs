@@ -8,6 +8,9 @@ namespace PhotoVs.Utils.Extensions
     {
         public static List<Type> GetInterfaces(this Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             if (type.IsClass == false) return new List<Type>();
 
             var allInterfaces = new HashSet<Type>(type.GetInterfaces());

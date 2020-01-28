@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace PhotoVs.Utils.Extensions
 {
@@ -11,6 +12,15 @@ namespace PhotoVs.Utils.Extensions
             Vector2 anchor,
             Color color)
         {
+            if (spriteBatch == null)
+                throw new ArgumentNullException(nameof(spriteBatch));
+
+            if (font == null)
+                throw new ArgumentNullException(nameof(font));
+
+            if (text == null)
+                throw new ArgumentNullException(nameof(text));
+
             var pos = anchor;
             foreach (var line in text.Split('\n'))
             {
@@ -24,6 +34,9 @@ namespace PhotoVs.Utils.Extensions
         public static void DrawNineSlice(this SpriteBatch spriteBatch, Texture2D texture, Rectangle destination,
             Rectangle source)
         {
+            if (spriteBatch == null)
+                throw new ArgumentNullException(nameof(spriteBatch));
+
             var sliceWidth = source.Width / 3;
             var sliceHeight = source.Height / 3;
 
