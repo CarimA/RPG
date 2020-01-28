@@ -58,7 +58,7 @@ namespace PhotoVs.Engine.Graphics
             var width = _graphics.PreferredBackBufferWidth;
             var height = _graphics.PreferredBackBufferHeight;
 
-            var gameView = GameView; //_colorGrading.Filter(spriteBatch, GameView);
+            var gameView = _colorGrading.Filter(spriteBatch, GameView);
             gameView.UpdateViewport(width, height);
 
             SetRenderMode(RenderMode.None);

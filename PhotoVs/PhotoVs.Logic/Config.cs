@@ -26,6 +26,10 @@ namespace PhotoVs.Logic
         public Dictionary<InputActions, List<Buttons>> ControlsGamepad { get; set; }
         public Dictionary<InputActions, List<Keys>> ControlsKeyboard { get; set; }
 
+        // Screenshot Uploads
+        public string DiscordWebhookUrl { get; set; }
+        public string ImgurClientId { get; set; }
+
         public static Config Load()
         {
             try
@@ -88,7 +92,10 @@ namespace PhotoVs.Logic
                     [InputActions.Run] = new List<Keys> {Keys.X, Keys.O},
                     [InputActions.Fullscreen] = new List<Keys> {Keys.F1},
                     [InputActions.Screenshot] = new List<Keys> {Keys.F12}
-                }
+                },
+
+                DiscordWebhookUrl = "",
+                ImgurClientId = ""
             };
 
             return config;

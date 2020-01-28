@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Resources;
 using System.Text;
 using System.Xml.Linq;
 using Microsoft.VisualBasic;
@@ -19,14 +20,16 @@ namespace PhotoVs.Logic.Input
         private readonly GraphicsDevice _graphicsDevice;
         private readonly Renderer _renderer;
         private readonly SpriteBatch _spriteBatch;
+        private readonly Config _config;
 
         public STakeScreenshot(GraphicsDevice graphicsDevice, Renderer renderer, SpriteBatch spriteBatch,
-            SpriteFont font)
+            SpriteFont font, Config config)
         {
             _graphicsDevice = graphicsDevice;
             _renderer = renderer;
             _spriteBatch = spriteBatch;
             _font = font;
+            _config = config;
         }
 
         public int Priority { get; set; } = 999;
@@ -61,6 +64,7 @@ namespace PhotoVs.Logic.Input
 
             var data = new Color[width * height];
             _graphicsDevice.GetBackBufferData(data);
+
             using var tex = new Texture2D(_graphicsDevice, width, height);
             tex.SetData(data);
 
@@ -78,16 +82,6 @@ namespace PhotoVs.Logic.Input
             var y = sHeight - 20 - size.Y;
             var t = 2;
 
-            _spriteBatch.DrawString(_font, text, new Vector2(x + t, y - t), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(x + t, y + t), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(x - t, y - t), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(x - t, y + t), Color.Black);
-
-            _spriteBatch.DrawString(_font, text, new Vector2(x + t, y), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(x - t, y), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(x, y - t), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(x, y + t), Color.Black);
-
             _spriteBatch.DrawString(_font, text, new Vector2(x, y), Color.Yellow);
 
             _spriteBatch.End();
@@ -98,23 +92,21 @@ namespace PhotoVs.Logic.Input
                 $"PhotoVs/Screenshots/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{Guid.NewGuid().ToString()}.png"));
             rt.SaveAsPng(stream, sWidth, sHeight);
 
-            UploadToDiscord(rt);
+            UploadToDiscord(rt, sWidth, sHeight);
 
             rt.Dispose();
             stream.Dispose();
         }
 
-        private async void UploadToDiscord(RenderTarget2D rt)
+        private async void UploadToDiscord(RenderTarget2D rt, int width, int height)
         {
-            // todo: fix for .net core
+            using var ms = new MemoryStream();
 
-            /*using var ms = new MemoryStream();
-
-            rt.SaveAsPng(ms, 1280, 720);
+            rt.SaveAsPng(ms, width, height);
 
             using var request = new WebClient();
 
-            var clientId = System.Resources.ResourceManager.GetString("IMGUR_CLIENT_ID");
+            var clientId = _config.ImgurClientId;
             request.Headers.Add("Authorization", "Client-ID " + clientId);
             var values = new NameValueCollection {{"image", Convert.ToBase64String(ms.GetBuffer())}};
             var res = request.UploadValues("https://api.imgur.com/3/upload.xml", values);
@@ -125,9 +117,9 @@ namespace PhotoVs.Logic.Input
             {
                 var val = data.Element("link").Value;
                 var embed = "{\"embeds\":[{\"image\":{\"url\":\"" + val + "\"}}]}";
-                await new HttpClient().PostAsync(System.Resources.ResourceManager.GetString("DISCORD_WEBHOOK_URL"),
+                await new HttpClient().PostAsync(_config.DiscordWebhookUrl,
                     new StringContent(embed, Encoding.UTF8, "application/json"));
-            }*/
+            }
         }
     }
 }

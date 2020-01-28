@@ -13,7 +13,7 @@
         events.OnGameStart += EventsOnOnGameStart;
     }
 
-    private void EventsOnOnGameStart(object sender)
+    private void EventsOnOnGameStart()
     {
         _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);
     }
@@ -41,7 +41,7 @@ public class TestPlugin : IPlugin
         events.OnInteractEventEnter["example_event"] += InteractEventHandler;
     }
 
-    private void InteractEventHandler(object sender, IGameObject player, IGameObject script)
+    private void InteractEventHandler(IGameObject player, IGameObject script)
     {
         _scheduler.Spawn(_scheduler.LockMovement(DoThis));
     }
