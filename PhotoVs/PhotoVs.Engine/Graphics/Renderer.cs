@@ -36,8 +36,7 @@ namespace PhotoVs.Engine.Graphics
             UIView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
             CanvasSize = canvasSize;
 
-            window.ClientSizeChanged += (sender, e) => { UpdateViewports(); };
-            UpdateViewports();
+            UpdateViewports(null, null);
         }
 
         public void SetRenderMode(RenderMode renderMode)
@@ -74,8 +73,11 @@ namespace PhotoVs.Engine.Graphics
             spriteBatch.End();
         }
 
-        private void UpdateViewports()
+        private void UpdateViewports(object sender, EventArgs e)
         {
+            // stop stack overflows
+            _window.ClientSizeChanged -= UpdateViewports;
+
             var width = _window.ClientBounds.Width;
             var height = _window.ClientBounds.Height;
 
@@ -106,6 +108,8 @@ namespace PhotoVs.Engine.Graphics
 
             GameView.UpdateViewport(width, height, false);
             UIView.UpdateViewport(width, height);
+
+            _window.ClientSizeChanged += UpdateViewports;
         }
     }
 }
