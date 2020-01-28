@@ -28,6 +28,8 @@ namespace PhotoVs.Logic
 {
     public class MainGame : Game
     {
+        private readonly IPlatform _platform;
+
         private readonly Events _events;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly Services _services;
@@ -41,10 +43,12 @@ namespace PhotoVs.Logic
         private SceneMachine _sceneMachine;
         private SpriteBatch _spriteBatch;
 
-        public MainGame()
+        public MainGame(IPlatform platform)
         {
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+
+            _platform = platform;
 
             // todo: figure out how to abstract this away
             var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -157,7 +161,7 @@ namespace PhotoVs.Logic
                 Window,
                 new ColorGrading(GraphicsDevice,
                     canvas,
-                    _assetLoader.GetAsset<Effect>("shaders/color.ogl"),
+                    _assetLoader.GetAsset<Effect>(_platform.PaletteShader),
                     _assetLoader.GetAsset<Texture2D>("ui/luts/aap128.png")),
                 canvas);
             return renderer;
@@ -187,7 +191,8 @@ namespace PhotoVs.Logic
                 new SProcessInput(),
                 new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
                 new STakeScreenshot(GraphicsDevice, _renderer, _spriteBatch,
-                    _assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_12.fnt"))
+                    _assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_outline_12.fnt"),
+                        _services.Get<Config>())
             };
             return globalSystems;
         }
