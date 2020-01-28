@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.Transforms;
 
@@ -24,6 +27,8 @@ namespace PhotoVs.Logic.PlayerData
 
     public class Player : GameObject
     {
+        private readonly Coroutines _coroutines;
+
         private readonly CInput _input;
 
         private readonly CPosition _position;
@@ -37,6 +42,7 @@ namespace PhotoVs.Logic.PlayerData
         public Player(Services services)
         {
             var config = services.Get<Config>();
+            _coroutines = services.Get<Coroutines>();
 
             Name = "Player";
 

@@ -62,6 +62,7 @@ namespace PhotoVs.Logic
             _services = new Services();
             _events = new Events();
             _services.Set(_events);
+
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
@@ -109,6 +110,8 @@ namespace PhotoVs.Logic
             _info = new DiagnosticInfo(_spriteBatch, _assetLoader);
 
             if (_services.Get<Config>().Fullscreen) EnableFullscreen();
+
+            _services.Set(new Scheduler(_services));
 
             _pluginProvider = new PluginProvider(_services);
             _services.Set(_pluginProvider);

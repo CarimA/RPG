@@ -101,12 +101,11 @@ namespace PhotoVs.Plugins
                     var assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
                     var plugins = assembly
                         .GetTypes()
-                        .Where(type => typeof(Plugin).IsAssignableFrom(type));
+                        .Where(type => typeof(IPlugin).IsAssignableFrom(type));
 
                     foreach (var plugin in plugins)
                     {
-                        var obj = (Plugin)Activator.CreateInstance(plugin, _services);
-                        obj.Services = _services;
+                        var obj = (IPlugin)Activator.CreateInstance(plugin, _services);
                         Logger.Write.Info($"Loaded plugin: {obj.Name} - v{obj.Version}");
                     }
                 }
