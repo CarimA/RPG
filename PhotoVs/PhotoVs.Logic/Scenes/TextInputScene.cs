@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.FSM;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.FSM;
 
 namespace PhotoVs.Logic.Scenes
 {

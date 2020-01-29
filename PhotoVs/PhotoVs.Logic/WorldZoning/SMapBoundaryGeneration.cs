@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Logic.Camera;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Logic.WorldZoning
 {

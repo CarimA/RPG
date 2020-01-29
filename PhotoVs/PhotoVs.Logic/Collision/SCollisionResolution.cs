@@ -6,7 +6,7 @@ using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Logic.WorldZoning;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Utils;
 
 namespace PhotoVs.Logic.Collision

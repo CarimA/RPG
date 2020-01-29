@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Engine.ECS.Systems

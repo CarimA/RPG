@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using PhotoVs.Models.Audio;
+using PhotoVs.Engine.Audio;
 
 namespace PhotoVs.Engine.Audio
 {

@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.Transforms;
 using PhotoVs.Logic.WorldZoning;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Collision

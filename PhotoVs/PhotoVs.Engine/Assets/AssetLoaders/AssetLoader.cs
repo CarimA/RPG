@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
-using PhotoVs.Models.Assets;
+using PhotoVs.Engine.Assets;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders

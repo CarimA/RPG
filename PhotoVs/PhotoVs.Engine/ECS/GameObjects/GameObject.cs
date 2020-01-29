@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using PhotoVs.Engine.ECS.Components;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Engine.ECS.GameObjects
 {

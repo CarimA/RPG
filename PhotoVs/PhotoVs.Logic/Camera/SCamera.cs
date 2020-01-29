@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Transforms;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Utils;
 
 namespace PhotoVs.Logic.Camera

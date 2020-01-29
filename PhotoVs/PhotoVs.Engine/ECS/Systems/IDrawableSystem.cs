@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace PhotoVs.Models.ECS
+namespace PhotoVs.Engine.ECS
 {
     public interface IDrawableSystem : ISystem
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace PhotoVs.Models.Audio
+namespace PhotoVs.Engine.Audio
 {
     public interface IAudio
     {

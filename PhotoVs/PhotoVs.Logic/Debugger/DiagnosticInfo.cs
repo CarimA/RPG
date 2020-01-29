@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Models.Assets;
+using PhotoVs.Engine.Assets;
 
 namespace PhotoVs.Logic.Debug
 {

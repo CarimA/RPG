@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Utils;
 
 namespace PhotoVs.Logic.Transforms

@@ -1,6 +1,6 @@
-﻿using PhotoVs.Models.ECS;
+﻿using PhotoVs.Engine.ECS;
 
-namespace PhotoVs.Models.FSM
+namespace PhotoVs.Engine.FSM
 {
     public interface ISystemScene : IScene
     {

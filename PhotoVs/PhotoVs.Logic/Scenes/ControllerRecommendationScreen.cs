@@ -4,9 +4,9 @@ using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.ECS;
-using PhotoVs.Models.FSM;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.FSM;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PhotoVs.Models.FSM;
+using PhotoVs.Engine.FSM;
 
 namespace PhotoVs.Engine.FSM.States
 {

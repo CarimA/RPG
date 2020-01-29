@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using PhotoVs.Models.Assets;
+using PhotoVs.Engine.Assets;
 
 namespace PhotoVs.Engine.Assets.StreamProviders
 {

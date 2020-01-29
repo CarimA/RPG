@@ -1,4 +1,4 @@
-﻿namespace PhotoVs.Models.ECS
+﻿namespace PhotoVs.Engine.ECS
 {
     public interface IComponent
     {

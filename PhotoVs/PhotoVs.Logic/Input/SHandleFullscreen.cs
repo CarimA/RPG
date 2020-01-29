@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Logic.Input
 {

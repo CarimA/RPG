@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Models.Assets;
+using PhotoVs.Engine.Assets;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes.Transitions

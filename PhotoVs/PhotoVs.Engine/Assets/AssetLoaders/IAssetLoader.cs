@@ -1,4 +1,4 @@
-﻿namespace PhotoVs.Models.Assets
+﻿namespace PhotoVs.Engine.Assets
 {
     public interface IAssetLoader
     {

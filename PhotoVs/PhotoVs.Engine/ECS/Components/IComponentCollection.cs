@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PhotoVs.Models.ECS
+namespace PhotoVs.Engine.ECS
 {
     public interface IComponentCollection : IList<IComponent>
     {

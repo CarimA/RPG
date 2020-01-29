@@ -1,5 +1,5 @@
 ﻿using System;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine

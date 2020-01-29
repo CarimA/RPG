@@ -19,9 +19,9 @@ using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.Audio;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Audio;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic

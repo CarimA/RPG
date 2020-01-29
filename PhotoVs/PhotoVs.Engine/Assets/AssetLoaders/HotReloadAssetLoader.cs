@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using PhotoVs.Engine.Scheduler;
-using PhotoVs.Models.Assets;
+using PhotoVs.Engine.Assets;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders

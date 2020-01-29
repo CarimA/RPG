@@ -1,4 +1,4 @@
-﻿namespace PhotoVs.Models.FSM
+﻿namespace PhotoVs.Engine.FSM
 {
     public interface IState
     {

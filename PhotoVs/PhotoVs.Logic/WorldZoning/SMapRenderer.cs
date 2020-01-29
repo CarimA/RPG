@@ -6,8 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Logic.Camera;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Logic.WorldZoning
 {

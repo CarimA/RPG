@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using PhotoVs.Logic.Transforms;
-using PhotoVs.Models.ECS;
+using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Logic.Movement
 {

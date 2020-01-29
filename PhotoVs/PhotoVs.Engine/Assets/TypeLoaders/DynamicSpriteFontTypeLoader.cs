@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Models.Assets;
+using PhotoVs.Engine.Assets;
 using SpriteFontPlus;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders

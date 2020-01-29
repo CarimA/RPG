@@ -3,8 +3,8 @@ using PhotoVs.Engine;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.FSM.States;
 using PhotoVs.Logic.Scenes.Transitions;
-using PhotoVs.Models.ECS;
-using PhotoVs.Models.FSM;
+using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.FSM;
 
 namespace PhotoVs.Logic.Scenes
 {

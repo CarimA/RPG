@@ -4,8 +4,8 @@ using PhotoVs.Engine.Dialogue;
 using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.FSM;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.FSM;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes

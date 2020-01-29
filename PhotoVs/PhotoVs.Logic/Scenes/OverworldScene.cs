@@ -6,9 +6,9 @@ using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.Collision;
 using PhotoVs.Logic.Movement;
 using PhotoVs.Logic.WorldZoning;
-using PhotoVs.Models.Assets;
-using PhotoVs.Models.ECS;
-using PhotoVs.Models.FSM;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.FSM;
 
 namespace PhotoVs.Logic.Scenes
 {
