@@ -1,15 +1,14 @@
 ﻿using System;
 using PhotoVs.Logic;
-using PhotoVs.Platform.Desktop;
 
-namespace PhotoVs.Core.Windows
+namespace PhotoVs.Platform.WindowsDX
 {
     public static class Program
     {
         [STAThread]
         static void Main()
         {
-            using var game = new MainGame(new WindowsPlatform());
+            using var game = new MainGame(new WindowsDXPlatform());
             game.Run();
         }
     }
