@@ -62,6 +62,10 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PhotoVs.Engine\PhotoVs.Engine.csproj">
+      <Project>{0890CE27-29B9-4A08-A03F-E732BCE83231}</Project>
+      <Name>PhotoVs.Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PhotoVs.Logic\PhotoVs.Logic.csproj">
       <Project>{f5725bb9-05a3-47a5-ba53-0e9e8161a5a9}</Project>
       <Name>PhotoVs.Logic</Name>
