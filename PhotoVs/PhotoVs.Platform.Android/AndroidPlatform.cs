@@ -10,7 +10,7 @@ namespace PhotoVs.Platform.Android
 {
     public class AndroidPlatform : IPlatform
     {
-        public string PaletteShader => "shaders/color.ogl";
+        public string PaletteShader => "color.ogl";
         public IStreamProvider StreamProvider { get; set; }
 
         public AndroidPlatform(AssetManager assetManager)
