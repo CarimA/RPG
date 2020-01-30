@@ -18,7 +18,7 @@ namespace PhotoVs.Platform.Android
     {
         protected override void OnCreate(Bundle bundle)
         {
-            foreach (var s in Assets.List(""))
+            foreach (var s in Assets.List("" ))
             {
                 System.Diagnostics.Debug.Print(s);
             }
