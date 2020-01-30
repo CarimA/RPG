@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 //using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -62,20 +61,14 @@ namespace PhotoVs.Engine.Plugins
             var script = _assetLoader.GetAsset<string>(filename);
             var code = $@"{_usings}
 
-namespace PhotoVs.Logic
+namespace PhotoVs.Plugins
 {{
     {script} 
 }}";
             var assemblyName = Path.GetRandomFileName();
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var refs = _assemblies.Select(
-                reference =>
-                {
-                    var formatter = new BinaryFormatter();
-                    var ms = new MemoryStream();
-                    formatter.Serialize(ms, reference);
-                    return MetadataReference.CreateFromImage(ms.GetBuffer());
-                });
+            var refs = _references.Select(
+                reference => MetadataReference.CreateFromFile(reference));
             var compilation = CSharpCompilation.Create(
                 assemblyName,
                 syntaxTrees: new[] { syntaxTree },
@@ -136,16 +129,14 @@ namespace PhotoVs.Logic
 
         private bool IsAllowed(string reference)
         {
-            return !(reference.StartsWith("Microsoft.GeneratedCode")
-                || reference.StartsWith("mscorlib"));
+            return !(reference.StartsWith("Microsoft.GeneratedCode"));
         }
 
         private List<Assembly> GetAssemblies()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Distinct()
-                .Where(IsAllowed)
-                .ToList();
+                .Where(IsAllowed);
         }
 
         private IEnumerable<Type> GetTypesFromAssemblies(IEnumerable<Assembly> assemblies)
