@@ -136,7 +136,8 @@ namespace PhotoVs.Plugins
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Distinct()
-                .Where(IsAllowed);
+                .Where(IsAllowed)
+                .ToList();
         }
 
         private IEnumerable<Type> GetTypesFromAssemblies(IEnumerable<Assembly> assemblies)
