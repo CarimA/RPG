@@ -5,6 +5,7 @@
         <TargetFrameworks>
             net472;
             netcoreapp3.1;
+            monoandroid6;
         </TargetFrameworks>
         <Optimize>true</Optimize>
         <Configurations>Debug;Release</Configurations>
@@ -31,6 +32,11 @@
 
     <ItemGroup Label="NETCore reference" Condition="'$(TargetFramework)'=='netcoreapp3.1'">
         <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7" />
+    </ItemGroup>
+
+    <ItemGroup Label="Android reference" Condition="'$(TargetFramework)'=='monoandroid6'">
+        <PackageReference Include="MonoGame.Framework.Android" Version="3.7.1.189" />
+        <Reference Include="System.Xml.Linq" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,5 +1,6 @@
 using Android.App;
 using Android.Content.PM;
+using Android.Content.Res;
 using Android.OS;
 using Android.Views;
 using PhotoVs.Logic;
@@ -18,15 +19,23 @@ namespace PhotoVs.Platform.Android
     {
         protected override void OnCreate(Bundle bundle)
         {
-            foreach (var s in Assets.List("shaders"))
-            {
-                System.Diagnostics.Debug.Print(s);
-            }
+            debugAsset(Assets, "");
 
             base.OnCreate(bundle);
             var g = new MainGame(new AndroidPlatform(Assets));
             SetContentView((View)g.Services.GetService(typeof(View)));
             g.Run();
+        }
+
+        private void debugAsset(AssetManager asset, string folder)
+        {
+            var a = asset.List(folder);
+
+            foreach (var s in a)
+            {
+                System.Diagnostics.Debug.Print("ASSET IS HERE: " + s);
+                debugAsset(asset, s);
+            }
         }
     }
 }

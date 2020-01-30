@@ -27,7 +27,6 @@ namespace PhotoVs.Platform.Android
 
         public Stream GetFile(string filepath)
         {
-            filepath = filepath.Replace('\\', '/');
             return _assetManager.Open(RootDirectory + filepath);
         }
 
