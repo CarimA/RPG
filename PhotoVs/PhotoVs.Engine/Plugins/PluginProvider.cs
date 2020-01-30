@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
+//using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using PhotoVs.Utils.Extensions;
@@ -98,7 +98,7 @@ namespace PhotoVs.Plugins
                     // reset stream position to 0 to re-read for assembly generation
                     ms.Position = 0;
 
-                    var assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
+                    var assembly = Assembly.Load(ms.GetBuffer());// AssemblyLoadContext.Default.LoadFromStream(ms);
                     var plugins = assembly
                         .GetTypes()
                         .Where(type => typeof(IPlugin).IsAssignableFrom(type));
