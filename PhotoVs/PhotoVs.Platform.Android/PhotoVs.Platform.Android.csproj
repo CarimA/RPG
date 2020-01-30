@@ -65,12 +65,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndroidStreamProvider.cs" />
+    <AndroidAsset Include="Assets\Plugins\PluginTest.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AndroidPlatform.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Shaders\color.dx11" />
+    <AndroidAsset Include="Assets\Shaders\color.ogl" />
+    <AndroidAsset Include="Assets\UI\Fonts\bold_12.fnt" />
+    <AndroidAsset Include="Assets\UI\Fonts\bold_outline_12.fnt" />
+    <AndroidAsset Include="Assets\UI\Fonts\border_12.fnt" />
+    <AndroidAsset Include="Assets\UI\Fonts\outline_12.fnt" />
+    <AndroidAsset Include="Assets\UI\Fonts\plain_12.fnt" />
+    <AndroidAsset Include="Assets\text.yml" />
+    <AndroidAsset Include="Assets\Maps\test\-01_00.tmx" />
+    <AndroidAsset Include="Assets\Maps\test\00_00.tmx" />
+    <AndroidAsset Include="Assets\Maps\test\01_00.tmx" />
+    <AndroidAsset Include="Assets\Maps\test\game.world" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -80,7 +93,6 @@
     <AndroidResource Include="Resources\Drawable\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\" />
     <Folder Include="Resources\Layout\" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +113,87 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Shaders\color.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Tilesets\bl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Tilesets\blockout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Tilesets\new-tileset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Tilesets\pocket-tileset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Tilesets\test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\blue_pixel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\darkblue_pixel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\gamepad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\pixel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\Fonts\bold_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\Fonts\bold_outline_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\Fonts\border_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\Fonts\outline_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\Fonts\plain_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\LUTs\aap128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\Slices\main.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\UI\Slices\main_noborder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Audio\BGM\key.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Audio\BGM\main1.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Audio\SFX\accept.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Audio\SFX\button.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Audio\SFX\click.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Audio\SFX\click_high.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Audio\SFX\deny.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Portraits\test.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
