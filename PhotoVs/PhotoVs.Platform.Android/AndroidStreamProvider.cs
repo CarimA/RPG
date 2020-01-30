@@ -32,16 +32,29 @@ namespace PhotoVs.Platform.Android
 
         public IEnumerable<string> GetFiles(string directory)
         {
-            return _assetManager.List(directory)
+            directory = RemoveTrailingSlash(RootDirectory + directory);
+            var results = _assetManager.List(directory);
+            return results
                 .ToList()
-                .Where(asset => !GetFiles(asset).Any());
+                .Where(asset => !GetFiles(asset).Any())
+                .Select(asset => directory + "/" + asset);
         }
 
         public IEnumerable<string> GetDirectories(string directory)
         {
-            return _assetManager.List(directory)
+            return _assetManager.List(RemoveTrailingSlash(RootDirectory + directory))
                 .ToList()
                 .Where(asset => GetFiles(asset).Any());
+        }
+
+        private string RemoveTrailingSlash(string input)
+        {
+            if (input.Last() == '/')
+            {
+                return input.Substring(0, input.LastIndexOf('/'));
+            }
+
+            return input;
         }
     }
 }

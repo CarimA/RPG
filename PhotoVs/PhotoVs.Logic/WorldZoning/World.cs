@@ -22,10 +22,10 @@ namespace PhotoVs.Logic.WorldZoning
 
         public void LoadMaps(string directory)
         {
-            _assetLoader
+            var directories = _assetLoader
                 .GetStreamProvider()
-                .GetDirectories(directory)
-                .ForEach(LoadMap);
+                .GetDirectories(directory);
+            directories.ForEach(LoadMap);
         }
 
         private void LoadMap(string directory)

@@ -18,45 +18,10 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
 
         public SpriteFont Load(Stream stream)
         {
-            SpriteFont font;
-
-            switch (stream)
-            {
-                case FileStream fs when fs.Name.EndsWith("fnt"):
-                {
-                    using var reader = new StreamReader(stream);
-                    var fontData = reader.ReadToEnd();
-
-                    font = BMFontLoader.LoadXml(fontData,
-                        name => new TextureWithOffset(_assetLoader.GetAsset<Texture2D>(name)));
-                    break;
-                }
-
-                case FileStream fs when fs.Name.EndsWith("ttf"):
-                {
-                    using var memory = new MemoryStream();
-                    stream.CopyTo(memory);
-                    var bytes = memory.ToArray();
-
-                    var bake = TtfFontBaker.Bake(
-                        bytes,
-                        48,
-                        1024,
-                        1024,
-                        new[]
-                        {
-                            CharacterRange.BasicLatin,
-                            CharacterRange.Latin1Supplement,
-                            CharacterRange.LatinExtendedA,
-                            CharacterRange.LatinExtendedB
-                        });
-                    font = bake.CreateSpriteFont(_graphicsDevice);
-                    break;
-                }
-
-                default:
-                    throw new InvalidDataException(nameof(stream));
-            }
+            using var reader = new StreamReader(stream);
+            var fontData = reader.ReadToEnd();
+            var font = BMFontLoader.LoadXml(fontData,
+                name => new TextureWithOffset(_assetLoader.GetAsset<Texture2D>(name)));
 
             return font;
         }

@@ -16,8 +16,15 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
 
         public Effect Load(Stream stream)
         {
-            using var reader = new BinaryReader(stream);
-            return new Effect(_graphicsDevice, reader.ReadBytes((int) reader.BaseStream.Length));
+            using var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            var bytes = ms.ToArray();
+            return new Effect(_graphicsDevice, bytes);
+
+            /*using var reader = new BinaryReader(stream);
+            var length = (int)reader.BaseStream.Length;
+            var bytes = reader.ReadBytes(length);
+            return new Effect(_graphicsDevice, bytes);*/
         }
     }
 }

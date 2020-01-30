@@ -119,8 +119,8 @@ namespace PhotoVs.Logic
 
             _pluginProvider = new PluginProvider(_services);
             _services.Set(_pluginProvider);
-            _pluginProvider.LoadPlugins("assets/plugins/");
-            _pluginProvider.LoadMods();
+            _pluginProvider.LoadPlugins("plugins/");
+            //_pluginProvider.LoadMods();
 
             _events.RaiseOnGameStart();
 

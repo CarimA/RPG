@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 //using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using PhotoVs.Engine.Assets;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 
@@ -16,30 +18,29 @@ namespace PhotoVs.Engine.Plugins
         private readonly List<string> _namespaces;
         private readonly string _usings;
         private readonly Services _services;
+        private readonly IAssetLoader _assetLoader;
+        private readonly IStreamProvider _streamProvider;
         private readonly List<string> _references;
+        private readonly List<Assembly> _assemblies;
 
         public PluginProvider(Services services)
         {
             _services = services;
-            var assemblies = GetAssemblies();
-            var types = GetTypesFromAssemblies(assemblies);
+            _assetLoader = _services.Get<IAssetLoader>();
+            _streamProvider = _assetLoader.GetStreamProvider();
+            _assemblies = GetAssemblies();
+            var types = GetTypesFromAssemblies(_assemblies);
             _namespaces = GetNamespacesFromTypes(types);
             _namespaces.Add("System.Collections");
             _namespaces.Add("System.Runtime");
             _namespaces.Add("System");
-            _references = GetReferencesFromAssemblies(assemblies);
+            _references = GetReferencesFromAssemblies(_assemblies);
             _usings = GenerateUsings(_namespaces);
         }
 
         public void LoadPlugins(string directory)
         {
-            if (!Directory.Exists(directory))
-            {
-                Logger.Write.Error($"Could not find \"{directory}\" to load plugins from.");
-                return;
-            }
-
-            var scripts = Directory
+            var scripts = _streamProvider
                 .GetFiles(directory)
                 .Where(IsScript);
 
@@ -58,17 +59,23 @@ namespace PhotoVs.Engine.Plugins
 
         private void LoadScript(string filename)
         {
-            var script = File.ReadAllText(filename);
+            var script = _assetLoader.GetAsset<string>(filename);
             var code = $@"{_usings}
 
-namespace PhotoVs.Plugins
+namespace PhotoVs.Logic
 {{
     {script} 
 }}";
             var assemblyName = Path.GetRandomFileName();
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var refs = _references.Select(
-                reference => MetadataReference.CreateFromFile(reference));
+            var refs = _assemblies.Select(
+                reference =>
+                {
+                    var formatter = new BinaryFormatter();
+                    var ms = new MemoryStream();
+                    formatter.Serialize(ms, reference);
+                    return MetadataReference.CreateFromImage(ms.GetBuffer());
+                });
             var compilation = CSharpCompilation.Create(
                 assemblyName,
                 syntaxTrees: new[] { syntaxTree },
@@ -129,14 +136,16 @@ namespace PhotoVs.Plugins
 
         private bool IsAllowed(string reference)
         {
-            return !reference.StartsWith("Microsoft.GeneratedCode");
+            return !(reference.StartsWith("Microsoft.GeneratedCode")
+                || reference.StartsWith("mscorlib"));
         }
 
-        private IEnumerable<Assembly> GetAssemblies()
+        private List<Assembly> GetAssemblies()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Distinct()
-                .Where(IsAllowed);
+                .Where(IsAllowed)
+                .ToList();
         }
 
         private IEnumerable<Type> GetTypesFromAssemblies(IEnumerable<Assembly> assemblies)

@@ -130,7 +130,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
         private string SanitiseFilename(string filename)
         {
-            return filename.Replace('/', '\\').ToLowerInvariant();
+            return filename.ToLowerInvariant();
         }
     }
 }

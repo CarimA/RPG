@@ -16,24 +16,23 @@ namespace PhotoVs.Engine.Assets.StreamProviders
 
         public IEnumerable<string> GetFiles(string directory)
         {
-            return Directory.GetFiles(RootDirectory + directory, "*").ToList()
-                .Select(RemoveRootDirectory);
+            var results = Directory.GetFiles(RootDirectory + directory, "*")
+                .ToList()
+                .Select(dir => dir.Substring(RootDirectory.Length));
+            return results;
         }
 
         public IEnumerable<string> GetDirectories(string directory)
         {
-            return Directory.GetDirectories(RootDirectory + directory).ToList()
-                .Select(RemoveRootDirectory);
+            var results = Directory.GetDirectories(RootDirectory + directory)
+                .ToList()
+                .Select(dir => dir.Substring(RootDirectory.Length));
+            return results;
         }
 
         public Stream GetFile(string filepath)
         {
             return new FileStream(RootDirectory + filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        }
-
-        private string RemoveRootDirectory(string input)
-        {
-            return input.Substring(RootDirectory.Length);
         }
     }
 }
