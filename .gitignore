@@ -350,3 +350,5 @@ MigrationBackup/
 .ionide/
 /PhotoVs/PhotoVs.Logic/Properties/Resources.resx
 /PhotoVs/PhotoVs.Logic/Properties/Resources.Designer.cs
+
+/PhotoVs/PhotoVs.Platform.Android/Assets
