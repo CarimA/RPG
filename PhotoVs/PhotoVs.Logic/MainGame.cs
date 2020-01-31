@@ -23,6 +23,7 @@ using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Utils.Logging;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic
 {
@@ -119,7 +120,8 @@ namespace PhotoVs.Logic
 
             _pluginProvider = new PluginProvider(_services);
             _services.Set(_pluginProvider);
-            _pluginProvider.LoadPlugins("plugins/");
+            AppDomain.CurrentDomain.GetAssemblies().ForEach(_pluginProvider.LoadPluginFromAssembly);
+            //_pluginProvider.LoadPlugins("plugins/");
             //_pluginProvider.LoadMods();
 
             _events.RaiseOnGameStart();
