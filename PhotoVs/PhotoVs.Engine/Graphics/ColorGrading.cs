@@ -31,9 +31,9 @@ namespace PhotoVs.Engine.Graphics
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
 
             _effect.CurrentTechnique.Passes[0].Apply();
-            _effect.Parameters["palette"].SetValue(_lut);
-            _effect.Parameters["tex_width"].SetValue((float) _lut.Width);
-            _effect.Parameters["tex_height"].SetValue((float) _lut.Height);
+            _effect.Parameters["LutTexture"].SetValue(_lut);
+            _effect.Parameters["LutWidth"].SetValue((float) _lut.Width);
+            _effect.Parameters["LutHeight"].SetValue((float) _lut.Height);
 
             spriteBatch.Draw(pass, Vector2.Zero, Color.White);
 
