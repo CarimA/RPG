@@ -72,8 +72,14 @@ namespace PhotoVs.Logic
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
                 PreferredBackBufferWidth = 320,
-                PreferredBackBufferHeight = 180
+                PreferredBackBufferHeight = 180,
+                SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight
             };
+            if (_platform.OverrideFullscreen)
+            {
+                _graphicsDeviceManager.IsFullScreen = true;
+            }
+            _graphicsDeviceManager.ApplyChanges();
             _services.Set(_graphicsDeviceManager);
         }
 

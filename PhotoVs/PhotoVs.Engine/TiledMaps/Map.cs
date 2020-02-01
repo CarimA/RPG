@@ -84,7 +84,7 @@ namespace PhotoVs.Engine.TiledMaps
         {
             using (var reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
             {
-                var map = reader.ContainsJson() ? reader.ReadJsonMap() : reader.ReadTmxMap();
+                var map = reader.ReadTmxMap();
 
                 if (tsLoader != null)
                     foreach (var item in map.Tilesets)

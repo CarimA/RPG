@@ -10,6 +10,7 @@ namespace PhotoVs.Platform.Android
 {
     public class AndroidPlatform : IPlatform
     {
+        public bool OverrideFullscreen => true;
         public string PaletteShader => "shaders/color.ogl";
         public IStreamProvider StreamProvider { get; set; }
 

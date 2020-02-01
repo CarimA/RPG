@@ -40,10 +40,10 @@ namespace PhotoVs.Logic.WorldZoning
 
         private void LoadMap(string directory)
         {
-            _assetLoader
+            var files = _assetLoader
                 .GetStreamProvider()
-                .GetFiles(directory)
-                .ForEach(LoadChunk);
+                .GetFiles(directory);
+            files.ForEach(LoadChunk);
         }
 
         private void LoadChunk(string file)

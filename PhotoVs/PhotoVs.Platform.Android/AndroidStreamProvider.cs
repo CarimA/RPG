@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 
 using Android.App;
@@ -32,19 +33,41 @@ namespace PhotoVs.Platform.Android
 
         public IEnumerable<string> GetFiles(string directory)
         {
+            directory = Sanitise(directory);
             directory = RemoveTrailingSlash(RootDirectory + directory);
             var results = _assetManager.List(directory);
             return results
                 .ToList()
-                .Where(asset => !GetFiles(asset).Any())
-                .Select(asset => directory + "/" + asset);
+                .Select(asset => directory + "/" + asset)
+                .Where(IsFile);
         }
 
         public IEnumerable<string> GetDirectories(string directory)
         {
-            return _assetManager.List(RemoveTrailingSlash(RootDirectory + directory))
-                .ToList()
-                .Where(asset => GetFiles(asset).Any());
+            directory = Sanitise(directory);
+            directory = RemoveTrailingSlash(RootDirectory + directory);
+            var list = _assetManager.List(RootDirectory + directory).ToList();
+            var results = list
+                .Select(asset => directory + "/" + asset)
+                .Where(IsDirectory);
+            return results;
+        }
+
+        private bool IsFile(string filepath)
+        {
+            var result = !IsDirectory(filepath);
+            return result;
+        }
+
+        private bool IsDirectory(string filepath)
+        {
+            var result = _assetManager.List(filepath);
+            return result.Length > 0;
+        }
+
+        private string Sanitise(string input)
+        {
+            return input.Replace('\\', '/');
         }
 
         private string RemoveTrailingSlash(string input)

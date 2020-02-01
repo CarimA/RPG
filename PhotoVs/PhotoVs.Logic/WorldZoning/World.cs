@@ -30,12 +30,22 @@ namespace PhotoVs.Logic.WorldZoning
 
         private void LoadMap(string directory)
         {
-            _maps[directory] = new ChunkedMap(_assetLoader, directory);
+            var name = directory.Replace('\\', '/');
+            if (name.Contains("/"))
+            {
+                name = name.Substring(name.LastIndexOf('/') + 1);
+            }
+            _maps[name] = new ChunkedMap(_assetLoader, directory);
         }
 
         public ChunkedMap GetMap(string map)
         {
-            return _maps[map];
+            var name = map.Replace('\\', '/');
+            if (name.Contains("/"))
+            {
+                name = name.Substring(name.LastIndexOf('/') + 1);
+            }
+            return _maps[name];
         }
     }
 }

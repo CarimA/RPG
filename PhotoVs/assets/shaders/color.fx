@@ -24,19 +24,14 @@ struct VertexShaderOutput
 	float2 TextureCoordinates : TEXCOORD0;
 };
 
-float4 zeroes = float4(0, 0, 0, 0);
-float4 ones = float4(1, 1, 1, 1);
-float4 units = float4(31, 31, 31, 31);
-
 float4 main(VertexShaderOutput input) : COLOR
 {
 	// get colour of current pixel
 	float4 color = tex2D(s0, input.TextureCoordinates);
-	color = floor(lerp(zeroes, units, color));
 
 	// check colour against lookup table
-	float2 position = float2(((color.r * 32) + color.g) / LutWidth, color.b / LutHeight);
-	
+	float2 position = float2(((floor(color.r * 31.0) * 32.0) + floor(color.g * 31.0)) / LutWidth, floor(color.b * 31.0) / LutHeight);
+
 	// return colour from lookup table
 	float4 new_color = tex2D(LutTextureSampler, position);
 

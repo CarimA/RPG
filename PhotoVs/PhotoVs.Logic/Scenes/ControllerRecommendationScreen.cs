@@ -59,7 +59,7 @@ namespace PhotoVs.Logic.Scenes
 
         public void Enter(params object[] args)
         {
-            _continueTime = 16f;
+            _continueTime = 5f;
             _isChanging = false;
 
             var font = _textDatabase.GetFont();
