@@ -9,6 +9,7 @@ namespace PhotoVs.Platform.Desktop
 {
     public class DesktopPlatform : IPlatform
     {
+        public bool OverrideFullscreen => false;
         public string PaletteShader => "shaders/color.ogl";
         public IStreamProvider StreamProvider { get; set; }
 

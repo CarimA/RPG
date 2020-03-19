@@ -40,6 +40,8 @@ namespace PhotoVs.Logic.Scenes
 
         public void DrawUI(GameTime gameTime, Matrix uiOrigin)
         {
+            var x = 180;
+            var y = 170;
             var slice = _assetLoader.GetAsset<Texture2D>("ui/slices/main.png");
             var slice2 = _assetLoader.GetAsset<Texture2D>("ui/slices/main_noborder.png");
             var darkPixel = _assetLoader.GetAsset<Texture2D>("ui/darkblue_pixel.png");
@@ -50,20 +52,20 @@ namespace PhotoVs.Logic.Scenes
 
             _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: uiOrigin);
 
-            _spriteBatch.Draw(pixel, new Rectangle(12, 108, 294, 58), new Rectangle(0, 0, 1, 1), Color.White);
-            _spriteBatch.Draw(darkPixel, new Rectangle(70, 108, 236, 16), new Rectangle(0, 0, 1, 1), Color.White);
-            _spriteBatch.Draw(portrait, new Vector2(12, 108), Color.White);
-            _spriteBatch.DrawNineSlice(slice, new Rectangle(7, 103, 304, 68), new Rectangle(0, 0, 21, 21));
-            _spriteBatch.DrawNineSlice(slice2, new Rectangle(7, 103, 68, 68), new Rectangle(0, 0, 21, 21));
+            _spriteBatch.Draw(pixel, new Rectangle(x + 12, y + 108, 294, 58), new Rectangle(0, 0, 1, 1), Color.White);
+            _spriteBatch.Draw(darkPixel, new Rectangle(x + 70, y + 108, 236, 16), new Rectangle(0, 0, 1, 1), Color.White);
+            _spriteBatch.Draw(portrait, new Vector2(x + 12, y + 108), Color.White);
+            _spriteBatch.DrawNineSlice(slice, new Rectangle(x + 7, y + 103, 304, 68), new Rectangle(0, 0, 21, 21));
+            _spriteBatch.DrawNineSlice(slice2, new Rectangle(x + 7, y + 103, 68, 68), new Rectangle(0, 0, 21, 21));
 
-            _spriteBatch.DrawString(bold, _name, new Vector2(79, 109), Color.Yellow);
+            _spriteBatch.DrawString(bold, _name, new Vector2(x + 79, y + 109), Color.Yellow);
             _dialogue.Draw(gameTime, _spriteBatch);
 
             if (_dialogue.IsPaused || _dialogue.IsFinished)
             {
                 var next = _assetLoader.GetAsset<Texture2D>("ui/next.png");
                 var drift = ((float) System.Math.Sin(gameTime.TotalGameTime.TotalSeconds * 8) * 2) - 1;
-                _spriteBatch.Draw(next, new Vector2(291, 162 + drift), Color.White);
+                _spriteBatch.Draw(next, new Vector2(x + 291, y + 162 + drift), Color.White);
             }
 
             _spriteBatch.End();

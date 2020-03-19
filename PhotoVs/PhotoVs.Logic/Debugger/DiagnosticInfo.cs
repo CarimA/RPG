@@ -78,10 +78,10 @@ namespace PhotoVs.Logic.Debug
                 _fpsTicks = 0;
             }
 
-            var barWidth = (int) (_spriteBatch.GraphicsDevice.Viewport.Width / 1.5);
-            var x = _spriteBatch.GraphicsDevice.Viewport.Width / 2 - barWidth / 2;
+            var barWidth = (int) (_spriteBatch.GraphicsDevice.Viewport.Width / 4);
+            var x = 20;
             var barHeight = 10;
-            var y = _spriteBatch.GraphicsDevice.Viewport.Height - 40 - barHeight;
+            var y = _spriteBatch.GraphicsDevice.Viewport.Height - 20 - barHeight;
             _backgroundBarOutline.SetPoints(new List<Vector2>
             {
                 new Vector2(x - 1, y - 1),
