@@ -26,7 +26,7 @@ namespace PhotoVs.Logic.Scenes
             var spriteBatch = _scene.Services.Get<SpriteBatch>();
 
             _world = new World(spriteBatch, assetLoader);
-            _world.LoadMaps("maps\\");
+            _world.LoadMaps("maps/");
             var mapBoundary = new SMapBoundaryGeneration(_world, camera);
 
             Entities = new GameObjectCollection();

@@ -20,11 +20,6 @@ namespace PhotoVs.Engine.Plugins
             _services = services;
         }
 
-        public void LoadPluginsFromDirectory(string directory)
-        {
-            throw new NotImplementedException();
-        }
-
         public void LoadPluginFromAssembly(Assembly assembly)
         {
             var types = assembly

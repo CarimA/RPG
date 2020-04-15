@@ -21,14 +21,15 @@
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.2" />
+    <PackageReference Include="MonoGame.Framework.MacOS" Version="3.7.1.189" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PhotoVs.Logic\PhotoVs.Logic.csproj" />
   </ItemGroup>
-
+  
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="RD &quot;$(TargetDir)\Assets\&quot; /S /Q&#xD;&#xA;XCOPY &quot;$(SolutionDir)Assets&quot; &quot;$(TargetDir)\Assets\&quot; /E /Y" />
   </Target>
-
+  
 </Project>
