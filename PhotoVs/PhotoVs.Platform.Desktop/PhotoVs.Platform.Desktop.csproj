@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ApplicationIcon />
-    <StartupObject />
+    <MonoGamePlatform>DesktopGL</MonoGamePlatform>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants></DefineConstants>
+    <DefineConstants>OGL</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -16,20 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <MonoGameContentReference Include="**\*.mgcb" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.2" />
-    <PackageReference Include="MonoGame.Framework.MacOS" Version="3.7.1.189" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PhotoVs.Logic\PhotoVs.Logic.csproj" />
   </ItemGroup>
-  
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="RD &quot;$(TargetDir)\Assets\&quot; /S /Q&#xD;&#xA;XCOPY &quot;$(SolutionDir)Assets&quot; &quot;$(TargetDir)\Assets\&quot; /E /Y" />
-  </Target>
   
 </Project>
