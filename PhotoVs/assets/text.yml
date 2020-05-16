@@ -1,97 +1,81 @@
-﻿# Language Config
+﻿# Start a line with # for a comment
+
+# Anything between curly braces {...} are commands that shold not be translated
+
+# INLINE TEXT COMMANDS
+# {+flag} - replaces this command with the value in the flag "flag"
+# {=text} - replaces this command with the value of the text in the corresponding language at "text" in this file
+# {# Red}this text is red{/#}
+# {# 255 0 0}this text is red{/#}
+# {o Red}this text has a red outline{/o}
+# {o 255 0 0}this text has a red outline{/o}
+# {~}wavy text{/~}
+# {s}shaking text{/s}
+# {. 2} - creates a pause for 2 seconds.
+# {.} - alias for {. 0.5}
+# {n} - forces a new line break
+# {np} - forces a new page break
+
 Language:
-    EnglishUK: English
-    French: Français
-    Spanish: Español
-    Italian: Italiano
-    German: Deutsche
-    ChineseTD: 繁体中文
-    ChineseSD: 简体中文
-    Korean: 한국말
-    Japanese: 日本語
-    Russian: русский
-    PortugueseBR: Portugais
+  EnglishUK: English
+  French: Français
+  Spanish: Español
+  Italian: Italiano
+  German: Deutsche
+  ChineseTD: 繁体中文
+  ChineseSD: 简体中文
+  Korean: 한국말
+  Japanese: 日本語
+  Russian: русский
+  PortugueseBR: Portugais
 
 LanguageIcon:
-    EnglishUK: englishuk.png
+  EnglishUK: englishuk.png
+
+LanguageOrder:
+  EnglishUK: 0
 
 LanguageFont:
-    EnglishUK: plain_12.fnt
-    French: plain_12.fnt
-    Spanish: plain_12.fnt
-    Italian: plain_12.fnt
-    German: plain_12.fnt
-    ChineseTD: plain_12.fnt
-    ChineseSD: plain_12.fnt
-    Korean: plain_12.fnt
-    Japanese: plain_12.fnt
-    Russian: plain_12.fnt
-    PortugueseBR: plain_12.fnt
+  EnglishUK: plain_12.fnt
 
 # Controller Recommendation Screen
 CR_PlayWithAGamepad:
-    EnglishUK: You should play with a gamepad (but a keyboard works too!)
+  EnglishUK: You should play with a gamepad (but a keyboard works too!)
 
 CR_CopyrightNotice:
-    EnglishUK: PhotoVs (c) 2019-2020 Glaciate. Developed and published by Glaciate.
+  EnglishUK: PhotoVs (c) 2019-2020 Glaciate. Developed and published by Glaciate.
 
 # Main Menu
 MM_NewGame:
-    EnglishUK: New Game
+  EnglishUK: New Game
 
 MM_ContinueGame:
-    EnglishUK: Continue
+  EnglishUK: Continue
 
 MM_Options:
-    EnglishUK: Options
+  EnglishUK: Options
 
 MM_Discord:
-    EnglishUK: Discord Server
+  EnglishUK: Discord Server
    
 MM_Exit:
-    EnglishUK: Quit Game
+  EnglishUK: Quit Game
 
 # Intro Cutscene
 
-Intro:
+CS_Intro:
   EnglishUK: |-
-    [outline Red]Hang on, now.[wait 1.5]
-    Give me just a sec.[.].[.].[.][eop]
+    {o Red}Hang on, now.{. 1.5}
+    Give me just a sec.{.}.{.}.{.}{np}
     Hi!
-    Nice to see you again, and once again, congrats on your new job at the [color Yellow]Museum of Digital Arts[/color]![eop]
-    That's [color Yellow]M[.]o[.]D[.]A[.][/color] for short, by the way.[eop]
-    As you know, at the [color Yellow]MoDA[/color], we research historical artefacts and depictions of primarily Photons in past times.[eop]
-    Your role will involve assisting in this research work, alongside tracking forgeries and art thefts.[eop]
-    Having to relocate is a bit of a pain, isn't it?[eop]
-    I'm sure you'll love it here, though![eop]
-    Over here in [color Yellow]Chroma City[/color], we live pretty peacefully with the mysterious creatures known as [color HotPink]Photons[/color].[eop]
-    We complement each other pretty well, help each other to accomplish difficult tasks...even having Photons battle each other is particularly popular![eop]
-    The bonds between people and Photons are pretty tight![eop]
-    All right. I just need some information about you, so I can have your curator license ready.[eop]
-    Let's start with your picture, mind sending me one?[/outline]
-
-IntroPicture:
-  EnglishUK: |-
-    Just to check, this is the one you want?
-
-IntroPictureNo:
-  EnglishUK: |-
-    No? Okay, just send me a different one.
-
-IntroPictureYes:
-  EnglishUK: |-
-    Great!\nAnd now, mind spelling out your name in the chat for me?
-
-IntroName:
-  EnglishUK: |-
-    So, you go by [color Cyan][flag my_name][/color]?
-
-IntroNameNo:
-  EnglishUK: |-
-    Typo? That's fine, just correct it for me.
-
-IntroNameYes:
-  EnglishUK: |-
-    Alright. And...that's it!
-    I'll get that sent off to the [color Yellow]Photon Commission[/yellow], then.[eop]
-    I'll send [color Cyan][flag friend_name][/cyan] to come pick you up at the station. I can't wait to see you in person!
+    Nice to see you again, and once again, congrats on your new job at the {# Yellow}Museum of Digital Arts{/#}!{np}
+    That's {# Yellow}M{.}o{.}D{.}A{.}{/#} for short, by the way.{np}
+    As you know, at the {# Yellow}MoDA{/#}, we research historical artefacts and depictions of primarily Photons in past times.{np}
+    Your role will involve assisting in this research work, alongside tracking forgeries and art thefts.{np}
+    Having to relocate is a bit of a pain, isn't it?{np}
+    I'm sure you'll love it here, though!{np}
+    Over here in {# Yellow}Chroma City{/#}, we live pretty peacefully with the mysterious creatures known as {# HotPink}Photons{/#}.{np}
+    We complement each other pretty well, help each other to accomplish difficult tasks...even having Photons battle each other is particularly popular!{np}
+    The bonds between people and Photons are pretty tight!{np}
+    All right. I just need some information about you, so I can have your curator license ready.{np}
+    Let's start with your picture, mind sending me one?{/o}
