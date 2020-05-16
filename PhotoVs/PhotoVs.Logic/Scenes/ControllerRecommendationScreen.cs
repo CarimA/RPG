@@ -33,7 +33,7 @@ namespace PhotoVs.Logic.Scenes
             _assetLoader = _scene.Services.Get<IAssetLoader>();
             _spriteBatch = _scene.Services.Get<SpriteBatch>();
             Entities = new GameObjectCollection();
-            Systems = new SystemCollection();
+            Systems = new SystemCollection<ISystem>();
         }
 
         public void Draw(GameTime gameTime)
@@ -54,7 +54,7 @@ namespace PhotoVs.Logic.Scenes
         }
 
         public IGameObjectCollection Entities { get; }
-        public ISystemCollection Systems { get; }
+        public ISystemCollection<ISystem>  Systems { get; }
         public bool IsBlocking { get; set; }
 
         public void Enter(params object[] args)

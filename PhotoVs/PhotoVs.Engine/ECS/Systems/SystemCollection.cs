@@ -4,7 +4,7 @@ using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Engine.ECS.Systems
 {
-    public class SystemCollection : List<ISystem>, ISystemCollection
+    public class SystemCollection<T> : List<T>, ISystemCollection<T> where T : ISystem
     {
         private int _hash = 487;
 
@@ -12,24 +12,24 @@ namespace PhotoVs.Engine.ECS.Systems
         {
         }
 
-        public SystemCollection(IEnumerable<ISystem> collection) : base(collection)
+        public SystemCollection(IEnumerable<T> collection) : base(collection)
         {
             collection.ForEach(Reseed);
         }
 
-        public new void Add(ISystem system)
+        public new void Add(T system)
         {
             Reseed(system);
             base.Add(system);
         }
 
-        public new void Remove(ISystem system)
+        public new void Remove(T system)
         {
             Reseed(system);
             base.Remove(system);
         }
 
-        private void Reseed(ISystem system)
+        private void Reseed(T system)
         {
             unchecked
             {

@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS.GameObjects;
@@ -20,7 +19,6 @@ using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 using PhotoVs.Engine.Assets;
-using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Utils.Logging;
 using PhotoVs.Utils.Extensions;
@@ -71,8 +69,8 @@ namespace PhotoVs.Logic
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
-                PreferredBackBufferWidth = 320,
-                PreferredBackBufferHeight = 180,
+                PreferredBackBufferWidth = 320 * 2,
+                PreferredBackBufferHeight = 180 * 2,
                 SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight
             };
             if (_platform.OverrideFullscreen)
@@ -191,9 +189,9 @@ namespace PhotoVs.Logic
             return camera;
         }
 
-        private ISystemCollection CreateGlobalSystems()
+        private ISystemCollection<ISystem> CreateGlobalSystems()
         {
-            var globalSystems = new SystemCollection
+            var globalSystems = new SystemCollection<ISystem>
             {
                 _camera,
                 new SProcessInput(),

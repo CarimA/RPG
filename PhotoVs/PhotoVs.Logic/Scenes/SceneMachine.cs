@@ -31,7 +31,7 @@ namespace PhotoVs.Logic.Scenes
             TextInputScene = new TextInputScene(this);
 
             SceneManager = new SceneManager(this,
-                Services.Get<ISystemCollection>(),
+                Services.Get<ISystemCollection<ISystem>>(),
                 Services.Get<IGameObjectCollection>());
         }
 

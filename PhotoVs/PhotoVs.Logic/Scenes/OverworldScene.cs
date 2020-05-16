@@ -30,7 +30,7 @@ namespace PhotoVs.Logic.Scenes
             var mapBoundary = new SMapBoundaryGeneration(_world, camera);
 
             Entities = new GameObjectCollection();
-            Systems = new SystemCollection
+            Systems = new SystemCollection<ISystem>
             {
                 new SProcessMovement(),
                 new SProcessVelocity(),
@@ -46,7 +46,7 @@ namespace PhotoVs.Logic.Scenes
 
         public bool IsBlocking { get; set; }
         public IGameObjectCollection Entities { get; }
-        public ISystemCollection Systems { get; }
+        public ISystemCollection<ISystem> Systems { get; }
 
         public void Enter(params object[] args)
         {

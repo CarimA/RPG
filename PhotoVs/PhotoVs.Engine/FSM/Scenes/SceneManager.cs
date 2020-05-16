@@ -12,7 +12,7 @@ namespace PhotoVs.Engine.FSM.Scenes
     public class SceneManager : ISceneManager
     {
         private readonly IGameObjectCollection _globalEntities;
-        private readonly ISystemCollection _globalSystems;
+        private readonly ISystemCollection<ISystem> _globalSystems;
         private readonly StateMachine<IScene> _scenes;
         private IGameObjectCollection _entitiesCache;
         private int _globalEntitiesHash;
@@ -21,9 +21,9 @@ namespace PhotoVs.Engine.FSM.Scenes
         private int _localEntitiesHash;
         private int _localSystemsHash;
 
-        private SystemCollection _systemsCache;
+        private SystemCollection<ISystem> _systemsCache;
 
-        public SceneManager(StateMachine<IScene> scenes, ISystemCollection globalSystems,
+        public SceneManager(StateMachine<IScene> scenes, ISystemCollection<ISystem> globalSystems,
             IGameObjectCollection globalEntities)
         {
             _scenes = scenes;
@@ -154,20 +154,20 @@ namespace PhotoVs.Engine.FSM.Scenes
                     uiOrigin);
         }
 
-        private ISystemCollection GetCombinedSystems(ISystemScene currentState)
+        private ISystemCollection<ISystem> GetCombinedSystems(ISystemScene currentState)
         {
-            var globalSystems = _globalSystems as SystemCollection;
+            var globalSystems = _globalSystems as SystemCollection<ISystem>;
             if (_globalSystemsHash != globalSystems.GetUniqueSeed() ||
-                _localSystemsHash != ((SystemCollection) currentState.Systems).GetUniqueSeed())
+                _localSystemsHash != ((SystemCollection<ISystem>)currentState.Systems).GetUniqueSeed())
             {
                 _globalSystemsHash = globalSystems.GetUniqueSeed();
-                _localSystemsHash = ((SystemCollection) currentState.Systems).GetUniqueSeed();
+                _localSystemsHash = ((SystemCollection<ISystem>)currentState.Systems).GetUniqueSeed();
 
                 // Logger.Debug($"System Cache changed: Global [{_globalSystemsHash}], Local [{_localSystemsHash}]");
 
                 var systems = currentState.Systems.Concat(_globalSystems).ToList();
                 systems.Sort(SortByPriority);
-                _systemsCache = new SystemCollection(systems);
+                _systemsCache = new SystemCollection<ISystem>(systems);
             }
 
             return _systemsCache;

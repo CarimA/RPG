@@ -2,7 +2,7 @@
 
 namespace PhotoVs.Engine.ECS
 {
-    public interface ISystemCollection : IList<ISystem>
+    public interface ISystemCollection<T> : IList<T> where T : ISystem
     {
     }
 }
