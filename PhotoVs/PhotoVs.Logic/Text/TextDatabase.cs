@@ -31,6 +31,11 @@ namespace PhotoVs.Logic.Text
             _languages = new Dictionary<Languages, Language>();
             foreach (Languages language in Enum.GetValues(typeof(Languages)))
             {
+                if (!data["LanguageFont"].ContainsKey(language))
+                {
+                    continue;
+                }
+
                 if (!_languages.ContainsKey(language))
                     _languages.Add(language,
                         new Language(data["Language"][language],
@@ -53,8 +58,8 @@ namespace PhotoVs.Logic.Text
             if (_languages[language].Text.TryGetValue(id, out var value))
             {
                 // parse any embedded language tags
-                value = Regex.Replace(value, "\\[text (.+?)\\]", MatchTextMarkup);
-                value = Regex.Replace(value, "\\[flag (.+?)\\]", MatchFlagMarkup);
+                value = Regex.Replace(value, "\\{= (.+?)\\}", MatchTextMarkup);
+                value = Regex.Replace(value, "\\{\\+ (.+?)\\}", MatchFlagMarkup);
             }
             else
             {

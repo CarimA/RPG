@@ -206,12 +206,12 @@ namespace PhotoVs.Engine.Dialogue
                 {
                     AddMarkup(markupIndex, index, new NewLineMarkup());
                 }
-                else if (t == '[' && p != '\\')
+                else if (t == '{' && p != '\\')
                 {
                     buffer = "";
                     isBuffering = true;
                 }
-                else if (t == ']' && isBuffering)
+                else if (t == '}' && isBuffering)
                 {
                     isBuffering = false;
                     var args = buffer.Split(' ');
@@ -219,17 +219,17 @@ namespace PhotoVs.Engine.Dialogue
 
                     switch (markup)
                     {
-                        case "nl":
+                        case "n":
                             activeMarkups.Add(new NewLineMarkup());
                             break;
 
-                        case "eop":
+                        case "np":
                             activeMarkups.Add(new EndOfParagraphMarkup());
                             output += " ";
                             index++;
                             break;
 
-                        case "color":
+                        case "#":
                             if (args.Length > 1)
                             {
                                 var prop = typeof(Color).GetProperty(args[1]);
@@ -246,36 +246,39 @@ namespace PhotoVs.Engine.Dialogue
 
                             break;
 
-                        case "/color":
+                        case "/#":
                             activeMarkups.RemoveAt(activeMarkups.FindLastIndex(m => m is ColorMarkup));
                             break;
 
-                        case "wave":
+                        case "~":
                             activeMarkups.Add(new WaveMarkup());
                             break;
 
-                        case "/wave":
+                        case "/~":
                             activeMarkups.RemoveAt(activeMarkups.FindLastIndex(m => m is WaveMarkup));
                             break;
 
-                        case "shake":
+                        case "s":
                             activeMarkups.Add(new ShakeMarkup());
                             break;
 
-                        case "/shake":
+                        case "/s":
                             activeMarkups.RemoveAt(activeMarkups.FindLastIndex(m => m is ShakeMarkup));
                             break;
 
-                        case "wait":
-                            var wait = float.Parse(args[1]);
-                            activeMarkups.Add(new WaitMarkup(wait));
-                            break;
-
                         case ".":
-                            activeMarkups.Add(new WaitMarkup());
+                            if (args.Length > 0)
+                            {
+                                var wait = float.Parse(args[1]);
+                                activeMarkups.Add(new WaitMarkup(wait));
+                            }
+                            else
+                            {
+                                activeMarkups.Add(new WaitMarkup());
+                            }
                             break;
 
-                        case "outline":
+                        case "o":
                             if (args.Length > 1)
                             {
                                 var prop = typeof(Color).GetProperty(args[1]);
@@ -292,7 +295,7 @@ namespace PhotoVs.Engine.Dialogue
 
                             break;
 
-                        case "/outline":
+                        case "/o":
                             activeMarkups.RemoveAt(activeMarkups.FindLastIndex(m => m is OutlineMarkup));
                             break;
                     }
