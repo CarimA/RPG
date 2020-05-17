@@ -57,22 +57,18 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             var positionA = moving.Components.Get<CPosition>();
             var collisionBoundA = moving.Components.Get<CCollisionBound>();
 
-            Vector2 baseVelocity, velocity;
+            // check that A is actually moving
+            if (positionA.DeltaPosition == Vector2.Zero)
+            {
+                return;
+            }
+
             var compA = new RectangleF(positionA.Position.X + collisionBoundA.InflatedBounds.Left,
                 positionA.Position.Y + collisionBoundA.InflatedBounds.Top,
                 collisionBoundA.InflatedBounds.Width,
                 collisionBoundA.InflatedBounds.Height);
 
-            // next, check if A is actually moving and possesses a velocity
-            if (moving.Components.TryGet(out CVelocity velocityA) && velocityA.Velocity != Vector2.Zero)
-            {
-                velocity = velocityA.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                baseVelocity = velocity;
-            }
-            else
-            {
-                return;
-            }
+            var velocity = positionA.DeltaPosition;
 
             foreach (var stationary in stationaryEntities)
             {
@@ -112,22 +108,21 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 }
             }
 
-            velocityA.VelocityIntent.Add(velocity - baseVelocity); // * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            positionA.VelocityIntent.Add(velocity); // * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         private static void ProcessVelocityIntents(IGameObject entity)
         {
-            if (!entity.Components.TryGet(out CVelocity velocity) ||
-                !entity.Components.TryGet(out CPosition position))
+            if (!entity.Components.TryGet(out CPosition position))
                 return;
 
-            if (velocity.VelocityIntent.Count == 0)
+            if (position.VelocityIntent.Count == 0)
                 return;
 
-            position.Position += new Vector2(velocity.VelocityIntent.Average(x => x.X),
-                velocity.VelocityIntent.Average(y => y.Y));
+            position.Position += new Vector2(position.VelocityIntent.Average(x => x.X),
+                position.VelocityIntent.Average(y => y.Y));
 
-            velocity.VelocityIntent.Clear();
+            position.VelocityIntent.Clear();
         }
     }
 }

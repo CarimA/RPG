@@ -13,7 +13,6 @@ namespace PhotoVs.Engine.GameInput
         public Dictionary<T, List<Keys>> KeyMappings;
         public Vector2 LeftStick;
         public Dictionary<T, float> PressedTime;
-
         public Dictionary<T, bool> WasPressed;
 
         public Input(PlayerIndex playerIndex, Dictionary<T, List<Buttons>> buttonMappings,

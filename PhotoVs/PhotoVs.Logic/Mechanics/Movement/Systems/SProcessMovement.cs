@@ -13,7 +13,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         public int Priority { get; set; } = -2;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInput), typeof(CVelocity) };
+        public Type[] Requires { get; } = { typeof(CInput), typeof(CPosition) };
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -24,13 +24,15 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             foreach (var entity in entities)
             {
                 var input = entity.Components.Get<CInput>();
-                var velocity = entity.Components.Get<CVelocity>();
+                var position = entity.Components.Get<CPosition>();
 
                 var movement = input.Input.GetAxis();
 
                 if (movement == Vector2.Zero)
                 {
-                    velocity.Velocity = Vector2.Zero;
+                    // this looks redundant but it's actually to indicate that nothing changed
+                    // so the Position setter can run and set LastPosition
+                    position.Position = position.Position;
                     break;
                 }
 
@@ -49,7 +51,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                     movement *= isRunning ? 350 : 200;
                 }
 
-                velocity.Velocity = movement;
+                position.Position += movement * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 

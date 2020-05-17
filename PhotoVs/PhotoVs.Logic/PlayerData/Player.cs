@@ -31,8 +31,8 @@ namespace PhotoVs.Logic.PlayerData
         private readonly CInput _input;
 
         private readonly CPosition _position;
-        private readonly float RunSpeed = 295f;
-        private readonly float WalkSpeed = 140f;
+        private readonly float RunSpeed = 125f;
+        private readonly float WalkSpeed = 70f;
         public Dictionary<string, object> Flags { get; }
         public bool CanMove { get; set; }
 
@@ -57,7 +57,6 @@ namespace PhotoVs.Logic.PlayerData
                 config.ControlsKeyboard));
 
             Components.Add(_input);
-            Components.Add(new CVelocity { Velocity = new Vector2(0, 0) });
             Components.Add(CCollisionBound.Circle(16, 8));
             Components.Add(new CSize { Size = new Vector2(32, 32) });
         }

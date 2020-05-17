@@ -49,7 +49,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         private void HandleInteraction(IGameObject entity, IGameObjectCollection scripts)
         {
             var input = entity.Components.Get<CInput>().Input;
-            var velocity = entity.Components.Get<CVelocity>();
+            var position = entity.Components.Get<CPosition>();
 
             if (!(entity is Player player))
                 return;
@@ -72,7 +72,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                         _events.RaiseOnInteractEventEnter(scriptName, player, script);
                     }
 
-                    if (velocity.Velocity != Vector2.Zero)
+                    if (position.DeltaPosition != Vector2.Zero)
                     {
                         // todo: make it only run every x ticks to simulate footsteps
                         if (input.ActionDown(InputActions.Run))
