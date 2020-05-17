@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using PhotoVs.Logic.YieldInstructions;
 
 namespace PhotoVs.Logic
 {

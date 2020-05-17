@@ -1,5 +1,6 @@
 ﻿using System;
 using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine

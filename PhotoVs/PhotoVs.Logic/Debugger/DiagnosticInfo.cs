@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Assets;
 
-namespace PhotoVs.Logic.Debug
+namespace PhotoVs.Logic.Debugger
 {
     public class DiagnosticInfo
     {

@@ -1,4 +1,4 @@
-﻿namespace PhotoVs.Logic.Input
+﻿namespace PhotoVs.Logic.Mechanics.Input
 {
     public enum InputActions
     {

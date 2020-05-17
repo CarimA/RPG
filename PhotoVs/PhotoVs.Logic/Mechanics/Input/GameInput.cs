@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.GameInput;
 
-namespace PhotoVs.Logic.Input
+namespace PhotoVs.Logic.Mechanics.Input
 {
     public class GameInput : Input<InputActions>
     {

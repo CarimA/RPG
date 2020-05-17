@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PhotoVs.Engine.ECS
+namespace PhotoVs.Engine.ECS.Systems
 {
     public interface ISystem
     {

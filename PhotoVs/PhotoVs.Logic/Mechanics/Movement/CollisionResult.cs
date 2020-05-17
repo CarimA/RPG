@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using PhotoVs.Logic.Transforms;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Logic.Mechanics.Movement.Components;
 
-namespace PhotoVs.Logic.Collision
+namespace PhotoVs.Logic.Mechanics.Movement
 {
     public struct CollisionResult
     {

@@ -3,16 +3,16 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Resources;
 using System.Text;
 using System.Xml.Linq;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Logic.Mechanics.Input.Components;
 
-namespace PhotoVs.Logic.Input
+namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
     public class STakeScreenshot : IUpdateableSystem
     {

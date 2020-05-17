@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
 
 namespace PhotoVs.Logic.Battle
 {

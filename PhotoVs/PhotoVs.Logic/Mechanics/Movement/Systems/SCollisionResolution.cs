@@ -4,12 +4,13 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
-using PhotoVs.Logic.Transforms;
-using PhotoVs.Logic.WorldZoning;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.World.Components;
+using PhotoVs.Logic.Mechanics.World.Systems;
 using PhotoVs.Utils;
 
-namespace PhotoVs.Logic.Collision
+namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     public class SCollisionResolution : IUpdateableSystem
     {

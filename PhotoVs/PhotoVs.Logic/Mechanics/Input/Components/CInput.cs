@@ -1,6 +1,6 @@
-﻿using PhotoVs.Engine.ECS;
+﻿using PhotoVs.Engine.ECS.Components;
 
-namespace PhotoVs.Logic.Input
+namespace PhotoVs.Logic.Mechanics.Input.Components
 {
     public class CInput : IComponent
     {

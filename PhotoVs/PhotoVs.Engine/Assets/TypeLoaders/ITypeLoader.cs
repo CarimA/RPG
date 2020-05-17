@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace PhotoVs.Engine.Assets
+namespace PhotoVs.Engine.Assets.TypeLoaders
 {
     public interface ITypeLoader<out T>
     {

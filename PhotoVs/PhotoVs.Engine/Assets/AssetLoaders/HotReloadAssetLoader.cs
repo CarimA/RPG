@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders

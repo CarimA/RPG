@@ -5,8 +5,9 @@ using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.Scheduler;
-using PhotoVs.Logic.Input;
-using PhotoVs.Logic.Transforms;
+using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics.Input.Components;
+using PhotoVs.Logic.Mechanics.Movement.Components;
 
 namespace PhotoVs.Logic.PlayerData
 {

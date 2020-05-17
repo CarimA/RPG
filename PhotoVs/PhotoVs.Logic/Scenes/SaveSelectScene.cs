@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.FSM;
+using PhotoVs.Engine.FSM.Scenes;
 
 namespace PhotoVs.Logic.Scenes
 {

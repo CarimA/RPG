@@ -1,4 +1,4 @@
-﻿namespace PhotoVs.Logic.Camera
+﻿namespace PhotoVs.Logic.Mechanics.Camera
 {
     public class ScreenShake
     {

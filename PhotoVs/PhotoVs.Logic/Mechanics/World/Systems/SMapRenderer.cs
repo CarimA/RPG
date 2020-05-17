@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
-using PhotoVs.Logic.Camera;
-using PhotoVs.Engine.Assets;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
 
-namespace PhotoVs.Logic.WorldZoning
+namespace PhotoVs.Logic.Mechanics.World.Systems
 {
     public class SMapRenderer : IDrawableSystem
     {

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
-using PhotoVs.Logic.Input;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics.Input.Components;
+using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.World.Components;
+using PhotoVs.Logic.Mechanics.World.Systems;
 using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Transforms;
-using PhotoVs.Logic.WorldZoning;
-using PhotoVs.Engine.ECS;
 
-namespace PhotoVs.Logic.Collision
+namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     internal class SProcessInteractionEvents : IUpdateableSystem
     {

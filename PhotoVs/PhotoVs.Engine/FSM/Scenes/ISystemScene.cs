@@ -1,6 +1,7 @@
-﻿using PhotoVs.Engine.ECS;
+﻿using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
 
-namespace PhotoVs.Engine.FSM
+namespace PhotoVs.Engine.FSM.Scenes
 {
     public interface ISystemScene : IScene
     {

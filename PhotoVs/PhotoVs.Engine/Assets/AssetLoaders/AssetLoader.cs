@@ -5,6 +5,8 @@ using System.IO;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Assets.StreamProviders;
+using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders

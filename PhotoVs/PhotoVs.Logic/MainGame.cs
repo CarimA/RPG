@@ -12,14 +12,14 @@ using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Plugins;
 using PhotoVs.Engine.Scheduler;
-using PhotoVs.Logic.Camera;
-using PhotoVs.Logic.Debug;
-using PhotoVs.Logic.Input;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.ECS;
+using PhotoVs.Logic.Debugger;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
+using PhotoVs.Logic.Mechanics.Input.Systems;
 using PhotoVs.Utils.Logging;
 using PhotoVs.Utils.Extensions;
 

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.TiledMaps;
-using PhotoVs.Logic.Camera;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
 
-namespace PhotoVs.Logic.WorldZoning
+namespace PhotoVs.Logic.Mechanics.World.Systems
 {
     public class SMapBoundaryGeneration : IUpdateableSystem
     {

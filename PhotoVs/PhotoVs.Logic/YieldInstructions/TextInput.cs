@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.Scenes;
 
-namespace PhotoVs.Engine.Scheduler.YieldInstructions
+namespace PhotoVs.Logic.YieldInstructions
 {
     public class TextInput : IYieldInstruction
     {

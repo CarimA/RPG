@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using PhotoVs.Engine.ECS.Components;
 
-namespace PhotoVs.Engine.ECS
+namespace PhotoVs.Engine.ECS.GameObjects
 {
     public interface IGameObject
     {

@@ -1,8 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Logic.Mechanics.Input.Components;
 
-namespace PhotoVs.Logic.Input
+namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
     public class SProcessInput : IUpdateableSystem
     {

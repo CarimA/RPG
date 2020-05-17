@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.Components;
 
-namespace PhotoVs.Logic.Transforms
+namespace PhotoVs.Logic.Mechanics.Movement.Components
 {
     public class CVelocity : IComponent
     {

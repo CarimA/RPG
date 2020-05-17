@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Utils.Extensions;
 
-namespace PhotoVs.Logic.WorldZoning
+namespace PhotoVs.Logic.Mechanics.World
 {
     public class World
     {

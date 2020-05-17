@@ -1,8 +1,7 @@
 ﻿using System;
 using PhotoVs.Logic;
-using PhotoVs.Platform.Desktop;
 
-namespace PhotoVs.Core.Desktop
+namespace PhotoVs.Platform.Desktop
 {
     public static class Program
     {

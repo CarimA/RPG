@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework.Input;
-using PhotoVs.Logic.Input;
+using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.PlayerData;
 using YamlDotNet.Serialization;
 

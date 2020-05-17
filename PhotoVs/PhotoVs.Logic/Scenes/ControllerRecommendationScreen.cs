@@ -5,8 +5,10 @@ using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
 using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.FSM;
+using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes

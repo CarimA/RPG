@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.Components;
 using PhotoVs.Utils;
 
-namespace PhotoVs.Logic.Transforms
+namespace PhotoVs.Logic.Mechanics.Movement.Components
 {
     public class CCollisionBound : IComponent
     {

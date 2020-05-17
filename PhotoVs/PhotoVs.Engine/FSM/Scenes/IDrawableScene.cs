@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace PhotoVs.Engine.FSM
+namespace PhotoVs.Engine.FSM.Scenes
 {
     public interface IDrawableScene : IScene
     {

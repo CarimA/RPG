@@ -1,11 +1,12 @@
 ﻿using PhotoVs.Engine;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Plugins;
-using PhotoVs.Logic.Camera;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 using System.Collections;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
 
 namespace PhotoVs.Logic.Plugins
 {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using PhotoVs.Engine.ECS.GameObjects;
 
-namespace PhotoVs.Engine.ECS
+namespace PhotoVs.Engine.ECS.Systems
 {
     public interface IDrawableSystem : ISystem
     {

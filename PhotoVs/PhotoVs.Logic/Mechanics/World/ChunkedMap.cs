@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Engine.TiledMaps.Objects;
-using PhotoVs.Logic.Camera;
-using PhotoVs.Logic.Transforms;
-using PhotoVs.Engine.Assets;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
+using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
 
-namespace PhotoVs.Logic.WorldZoning
+namespace PhotoVs.Logic.Mechanics.World
 {
     public class ChunkedMap
     {

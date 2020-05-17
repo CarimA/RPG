@@ -1,4 +1,7 @@
-﻿namespace PhotoVs.Engine.Assets
+﻿using PhotoVs.Engine.Assets.StreamProviders;
+using PhotoVs.Engine.Assets.TypeLoaders;
+
+namespace PhotoVs.Engine.Assets.AssetLoaders
 {
     public interface IAssetLoader
     {

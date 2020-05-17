@@ -1,11 +1,13 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using PhotoVs.Logic.Input;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics.Input.Components;
+using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Transforms;
-using PhotoVs.Engine.ECS;
 
-namespace PhotoVs.Logic.Movement
+namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     public class SProcessMovement : IUpdateableSystem
     {

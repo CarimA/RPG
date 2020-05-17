@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Logic.Camera;
-using PhotoVs.Logic.Transforms;
-using PhotoVs.Logic.WorldZoning;
-using PhotoVs.Engine.Assets;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
+using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.World.Components;
+using PhotoVs.Logic.Mechanics.World.Systems;
 using PhotoVs.Utils.Extensions;
 
-namespace PhotoVs.Logic.Collision
+namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     public class SCollisionDebugRender : IDrawableSystem
     {
