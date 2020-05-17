@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS;
-
-namespace PhotoVs.Logic.Battles.TurnOrder
+﻿namespace PhotoVs.Logic.Battles.TurnOrder
 {
     public class TurnLoop
     {

@@ -2,10 +2,7 @@
 using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.FSM;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Systems;

@@ -15,8 +15,6 @@ using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
-using PhotoVs.Engine.Assets;
-using PhotoVs.Engine.ECS;
 using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input.Systems;

@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
-
-using Android.App;
-using Android.Content;
 using Android.Content.Res;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Assets.StreamProviders;
 
 namespace PhotoVs.Platform.Android
 {

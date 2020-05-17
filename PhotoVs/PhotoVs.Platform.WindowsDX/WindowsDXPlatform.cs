@@ -1,5 +1,4 @@
-﻿using PhotoVs.Engine.Assets;
-using PhotoVs.Engine.Assets.StreamProviders;
+﻿using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Logic;
 
 namespace PhotoVs.Platform.WindowsDX

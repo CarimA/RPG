@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;

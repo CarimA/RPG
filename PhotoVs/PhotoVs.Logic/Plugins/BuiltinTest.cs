@@ -1,5 +1,4 @@
 ﻿using PhotoVs.Engine;
-using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Plugins;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;

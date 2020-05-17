@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.ECS.GameObjects;
+﻿using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Utils.Collections;
 
 namespace PhotoVs.Logic.Battle
 {

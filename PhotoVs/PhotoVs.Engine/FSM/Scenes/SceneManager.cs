@@ -4,8 +4,6 @@ using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.States;
-using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.FSM;
 
 namespace PhotoVs.Engine.FSM.Scenes
 {

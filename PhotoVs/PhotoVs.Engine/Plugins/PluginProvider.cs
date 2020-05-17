@@ -1,13 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using PhotoVs.Utils.Extensions;
+﻿using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhotoVs.Engine.Plugins
 {

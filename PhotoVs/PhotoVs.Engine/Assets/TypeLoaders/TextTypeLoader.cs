@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using PhotoVs.Engine.Assets;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {

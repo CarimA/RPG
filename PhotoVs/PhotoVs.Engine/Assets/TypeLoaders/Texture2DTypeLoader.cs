@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.Assets;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {

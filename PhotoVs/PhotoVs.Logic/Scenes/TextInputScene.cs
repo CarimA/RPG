@@ -2,9 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Logic.PlayerData;
-using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.FSM;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
 

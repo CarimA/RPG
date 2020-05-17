@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
 using PhotoVs.Logic.PlayerData;
-using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using YamlDotNet.Serialization;
 
