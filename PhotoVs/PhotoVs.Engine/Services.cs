@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PhotoVs.Utils.Logging;
+using System;
 using System.Collections.Generic;
-using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine
 {
@@ -15,7 +15,8 @@ namespace PhotoVs.Engine
 
         public T Get<T>()
         {
-            if (_cache.TryGetValue(typeof(T), out var value)) return (T) value;
+            if (_cache.TryGetValue(typeof(T), out var value))
+                return (T)value;
 
             throw new KeyNotFoundException();
         }

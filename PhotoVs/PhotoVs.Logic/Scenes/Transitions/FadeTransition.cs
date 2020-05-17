@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
-using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.Graphics;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes.Transitions

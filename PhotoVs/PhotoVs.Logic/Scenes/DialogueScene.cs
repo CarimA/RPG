@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.Dialogue;
-using PhotoVs.Logic.PlayerData;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.Dialogue;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes
@@ -63,7 +63,7 @@ namespace PhotoVs.Logic.Scenes
             if (_dialogue.IsPaused || _dialogue.IsFinished)
             {
                 var next = _assetLoader.GetAsset<Texture2D>("ui/next.png");
-                var drift = ((float) System.Math.Sin(gameTime.TotalGameTime.TotalSeconds * 8) * 2) - 1;
+                var drift = ((float)System.Math.Sin(gameTime.TotalGameTime.TotalSeconds * 8) * 2) - 1;
                 _spriteBatch.Draw(next, new Vector2(x + 291, y + 162 + drift), Color.White);
             }
 
@@ -98,12 +98,12 @@ namespace PhotoVs.Logic.Scenes
             _name = args[0].ToString();
             var dialogue = args[1].ToString();
 
-            _dialogue = new DialogueMarkup(_assetLoader.GetAsset<SpriteFont>("ui/fonts/outline_12.fnt"), 
+            _dialogue = new DialogueMarkup(_assetLoader.GetAsset<SpriteFont>("ui/fonts/outline_12.fnt"),
                 _assetLoader.GetAsset<SpriteFont>("ui/fonts/border_12.fnt"),
                 new Vector2(79, 126), //320 - TextWidth - 20, 133),
                 dialogue,
                 3,
-                228 );
+                228);
 
             IsFinished = false;
         }

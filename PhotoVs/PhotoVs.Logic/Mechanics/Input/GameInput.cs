@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.GameInput;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Mechanics.Input
 {

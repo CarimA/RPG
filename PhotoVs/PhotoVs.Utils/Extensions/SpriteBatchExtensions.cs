@@ -25,7 +25,7 @@ namespace PhotoVs.Utils.Extensions
             foreach (var line in text.Split('\n'))
             {
                 var width = font.MeasureString(line).X;
-                pos.X = (int) (anchor.X - width / 2);
+                pos.X = (int)(anchor.X - width / 2);
                 spriteBatch.DrawString(font, line, pos, color);
                 pos.Y += font.LineSpacing;
             }

@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Utils;
+using System;
 
 namespace PhotoVs.Engine.Graphics
 {

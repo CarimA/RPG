@@ -4,7 +4,7 @@ namespace PhotoVs.Engine.TiledMaps
 {
     internal static class Helpers
     {
-        private static readonly bool[] translate = {false, true};
+        private static readonly bool[] translate = { false, true };
 
         public static int? ParseInt32(this string str)
         {

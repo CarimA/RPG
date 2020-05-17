@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
-using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes
@@ -53,7 +53,7 @@ namespace PhotoVs.Logic.Scenes
         }
 
         public IGameObjectCollection Entities { get; }
-        public ISystemCollection<ISystem>  Systems { get; }
+        public ISystemCollection<ISystem> Systems { get; }
         public bool IsBlocking { get; set; }
 
         public void Enter(params object[] args)
@@ -66,8 +66,8 @@ namespace PhotoVs.Logic.Scenes
             _gamepadIcon = _assetLoader.GetAsset<Texture2D>("ui/gamepad.png");
             _font = font;
 
-            _playWithAGamepad = _font.WrapText(_textDatabase.GetText("CR_PlayWithAGamepad"), 320  - 40);
-            _copyrightNotice = _font.WrapText(_textDatabase.GetText("CR_CopyrightNotice"), 320  - 80);
+            _playWithAGamepad = _font.WrapText(_textDatabase.GetText("CR_PlayWithAGamepad"), 320 - 40);
+            _copyrightNotice = _font.WrapText(_textDatabase.GetText("CR_CopyrightNotice"), 320 - 80);
         }
 
         public void Exit()

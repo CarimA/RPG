@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Text
 {

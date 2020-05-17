@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Logic.Mechanics.Movement.Components;
+using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Mechanics.Movement
 {

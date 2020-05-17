@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace PhotoVs.Logic.Debugger
 {
@@ -70,7 +70,7 @@ namespace PhotoVs.Logic.Debugger
         public void Draw(GameTime gameTime)
         {
             _fpsTicks++;
-            _fpsTimer -= (float) gameTime.ElapsedGameTime.TotalSeconds;
+            _fpsTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (_fpsTimer <= 0)
             {
                 _fps = _fpsTicks;
@@ -78,7 +78,7 @@ namespace PhotoVs.Logic.Debugger
                 _fpsTicks = 0;
             }
 
-            var barWidth = (int) (_spriteBatch.GraphicsDevice.Viewport.Width / 4);
+            var barWidth = (int)(_spriteBatch.GraphicsDevice.Viewport.Width / 4);
             var x = 20;
             var barHeight = 10;
             var y = _spriteBatch.GraphicsDevice.Viewport.Height - 20 - barHeight;
@@ -97,7 +97,7 @@ namespace PhotoVs.Logic.Debugger
                 new Vector2(x, y + barHeight)
             });
 
-            var updateWidth = (int) (barWidth / 60f * _lastUpdate.TotalMilliseconds);
+            var updateWidth = (int)(barWidth / 60f * _lastUpdate.TotalMilliseconds);
 
             _updateBar.SetPoints(new List<Vector2>
             {
@@ -108,7 +108,7 @@ namespace PhotoVs.Logic.Debugger
             });
 
             var nx = x + updateWidth;
-            var drawWidth = (int) (barWidth / 60f * _lastDraw.TotalMilliseconds);
+            var drawWidth = (int)(barWidth / 60f * _lastDraw.TotalMilliseconds);
 
             _drawBar.SetPoints(new List<Vector2>
             {

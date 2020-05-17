@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Dialogue.Markups;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Engine.Dialogue
 {
@@ -52,7 +52,7 @@ namespace PhotoVs.Engine.Dialogue
         {
             if (!IsPaused && !IsFinished)
             {
-                _charTime -= (float) gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 25 : 1);
+                _charTime -= (float)gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 25 : 1);
 
                 if (_charTime <= 0)
                 {
@@ -94,7 +94,8 @@ namespace PhotoVs.Engine.Dialogue
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (_text == string.Empty) return;
+            if (_text == string.Empty)
+                return;
 
             var activeColor = Color.White;
             var outlineColor = Color.Transparent;
@@ -144,7 +145,7 @@ namespace PhotoVs.Engine.Dialogue
 
                         if (effect is WaveMarkup)
                             wave = new Vector2(0,
-                                (float) Math.Sin(10 * gameTime.TotalGameTime.TotalSeconds + i * 0.6) * 3 - 1.5f);
+                                (float)Math.Sin(10 * gameTime.TotalGameTime.TotalSeconds + i * 0.6) * 3 - 1.5f);
 
                         if (effect is ShakeMarkup)
                             // todo: limit to time
@@ -236,7 +237,7 @@ namespace PhotoVs.Engine.Dialogue
                                 if (prop == null)
                                     activeMarkups.Add(new ColorMarkup(default));
                                 else
-                                    activeMarkups.Add(new ColorMarkup((Color) prop.GetValue(null, null)));
+                                    activeMarkups.Add(new ColorMarkup((Color)prop.GetValue(null, null)));
                             }
                             else
                             {
@@ -285,7 +286,7 @@ namespace PhotoVs.Engine.Dialogue
                                 if (prop == null)
                                     activeMarkups.Add(new OutlineMarkup(default));
                                 else
-                                    activeMarkups.Add(new OutlineMarkup((Color) prop.GetValue(null, null)));
+                                    activeMarkups.Add(new OutlineMarkup((Color)prop.GetValue(null, null)));
                             }
                             else
                             {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.TiledMaps;
@@ -14,6 +10,10 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
@@ -117,7 +117,7 @@ namespace PhotoVs.Logic.Mechanics.World
         {
             var entity = new GameObject();
             var bounds = new CCollisionBound(obj.Polygon.Select(point => new Vector2(point.X, point.Y)).ToList());
-            var position = new CPosition {Position = new Vector2(x + obj.X, y + obj.Y)};
+            var position = new CPosition { Position = new Vector2(x + obj.X, y + obj.Y) };
             entity.Components.Add(bounds);
             entity.Components.Add(position);
 
@@ -137,7 +137,7 @@ namespace PhotoVs.Logic.Mechanics.World
         {
             var entity = new GameObject();
             var bounds = CCollisionBound.Rectangle(new Vector2(obj.Width, obj.Height));
-            var position = new CPosition {Position = new Vector2(x + obj.X, y + obj.Y)};
+            var position = new CPosition { Position = new Vector2(x + obj.X, y + obj.Y) };
 
             entity.Components.Add(bounds);
             entity.Components.Add(position);

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Android.Content.Res;
+using PhotoVs.Engine.Assets.StreamProviders;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Android.Content.Res;
-using PhotoVs.Engine.Assets.StreamProviders;
 
 namespace PhotoVs.Platform.Android
 {

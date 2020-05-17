@@ -577,7 +577,7 @@ namespace PhotoVs.Utils.Compression
                 if (value.HasValue && !charToByte.ContainsKey(value.Value))
                 {
                     var msg =
-                        $"Cannot use the character [{value.Value}] (int value {(int) value.Value}) as fallback value "
+                        $"Cannot use the character [{value.Value}] (int value {(int)value.Value}) as fallback value "
                         + "- the fallback character itself is not supported by the encoding.";
                     throw new EncoderFallbackException(msg);
                 }
@@ -666,7 +666,7 @@ namespace PhotoVs.Utils.Compression
                 {
                     //throw exception
                     var msg =
-                        $"The encoding [{WebName}] cannot encode the character [{character}] (int value {(int) character}). Set the FallbackCharacter property in order to suppress this exception and encode a default character instead.";
+                        $"The encoding [{WebName}] cannot encode the character [{character}] (int value {(int)character}). Set the FallbackCharacter property in order to suppress this exception and encode a default character instead.";
                     throw new EncoderFallbackException(msg);
                 }
 

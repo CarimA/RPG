@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Logic.PlayerData;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.PlayerData;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Scenes
 {
@@ -65,7 +65,7 @@ namespace PhotoVs.Logic.Scenes
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: uiOrigin);
 
             var questionSize = font.MeasureString(_question).X;
-            var qX = (int) (320 / 2 - questionSize / 2);
+            var qX = (int)(320 / 2 - questionSize / 2);
             var qY = offsetY - 40;
 
             _spriteBatch.DrawString(font, _question, new Vector2(qX, qY), Color.HotPink);
@@ -81,50 +81,50 @@ namespace PhotoVs.Logic.Scenes
                     : Text[i]).ToString();
                 var characterSize = font.MeasureString(character).X;
 
-                _spriteBatch.DrawString(font, character, new Vector2((int) (tX + (14 * i - characterSize / 2)), tY),
+                _spriteBatch.DrawString(font, character, new Vector2((int)(tX + (14 * i - characterSize / 2)), tY),
                     Color.White);
             }
 
             for (var y = 0; y < KeyboardCellHeight(); y++)
-            for (var x = 0; x < KeyboardCellWidth(); x++)
-            {
-                // ^ is shift
-                // & is next keyboard
-                // £ is delete
-                // $ is submit
-                var character = GetKey(x, y);
-
-                switch (character)
+                for (var x = 0; x < KeyboardCellWidth(); x++)
                 {
-                    case "|":
-                        continue;
+                    // ^ is shift
+                    // & is next keyboard
+                    // £ is delete
+                    // $ is submit
+                    var character = GetKey(x, y);
 
-                    case "^":
-                        character = "^";
-                        break;
+                    switch (character)
+                    {
+                        case "|":
+                            continue;
 
-                    case "&":
-                        character = "->";
-                        break;
+                        case "^":
+                            character = "^";
+                            break;
 
-                    case "£":
-                        character = "<-";
-                        break;
+                        case "&":
+                            character = "->";
+                            break;
 
-                    case "$":
-                        character = "SUBMIT";
-                        break;
+                        case "£":
+                            character = "<-";
+                            break;
+
+                        case "$":
+                            character = "SUBMIT";
+                            break;
+                    }
+
+                    var characterSize = font.MeasureString(character);
+                    var dX = offsetX + (int)(cellWidth * x + (cellWidth / 2 - characterSize.X / 2));
+                    var dY = offsetY + (int)(cellHeight * y + (cellHeight / 2 - characterSize.Y / 2));
+                    var color = y == _cursorY && x == _cursorX
+                        ? Color.Yellow
+                        : Color.White;
+
+                    _spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
                 }
-
-                var characterSize = font.MeasureString(character);
-                var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.X / 2));
-                var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Y / 2));
-                var color = y == _cursorY && x == _cursorX
-                    ? Color.Yellow
-                    : Color.White;
-
-                _spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
-            }
 
             _spriteBatch.End();
         }

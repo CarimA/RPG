@@ -54,7 +54,7 @@
 
         internal static DeflateManagerConfig Lookup(CompressionLevel level)
         {
-            return Table[(int) level];
+            return Table[(int)level];
         }
     }
 }

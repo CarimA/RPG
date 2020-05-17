@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.States;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Engine.FSM.Scenes
 {
@@ -175,10 +175,10 @@ namespace PhotoVs.Engine.FSM.Scenes
         {
             var globalGameObjects = _globalEntities as GameObjectCollection;
             if (_globalEntitiesHash != globalGameObjects.GetUniqueSeed() ||
-                _localEntitiesHash != ((GameObjectCollection) currentState.Entities).GetUniqueSeed())
+                _localEntitiesHash != ((GameObjectCollection)currentState.Entities).GetUniqueSeed())
             {
                 _globalEntitiesHash = globalGameObjects.GetUniqueSeed();
-                _localEntitiesHash = ((GameObjectCollection) currentState.Entities).GetUniqueSeed();
+                _localEntitiesHash = ((GameObjectCollection)currentState.Entities).GetUniqueSeed();
 
                 // Logger.Debug($"Entity Cache changed: Global [{_globalEntitiesHash}], Local [{_localEntitiesHash}]");
 

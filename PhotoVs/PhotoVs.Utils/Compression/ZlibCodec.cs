@@ -115,7 +115,7 @@ namespace PhotoVs.Utils.Compression
         /// <summary>
         ///     The Adler32 checksum on the data transferred through the codec so far. You probably don't need to look at this.
         /// </summary>
-        internal int Adler32 => (int) _Adler32;
+        internal int Adler32 => (int)_Adler32;
 
 
         /// <summary>
@@ -466,7 +466,7 @@ namespace PhotoVs.Utils.Compression
         {
             if (istate != null)
                 throw new ZlibException("You may not call InitializeDeflate() after calling InitializeInflate().");
-            dstate = new DeflateManager {WantRfc1950HeaderBytes = wantRfc1950Header};
+            dstate = new DeflateManager { WantRfc1950HeaderBytes = wantRfc1950Header };
 
             return dstate.Initialize(this, CompressLevel, WindowBits, Strategy);
         }

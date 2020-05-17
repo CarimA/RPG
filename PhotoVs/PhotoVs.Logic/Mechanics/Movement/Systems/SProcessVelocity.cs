@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
+using System;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -10,7 +10,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         public int Priority { get; set; } = 0;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(CPosition), typeof(CVelocity)};
+        public Type[] Requires { get; } = { typeof(CPosition), typeof(CVelocity) };
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -23,7 +23,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 var position = entity.Components.Get<CPosition>();
                 var velocity = entity.Components.Get<CVelocity>().Velocity;
 
-                position.Position += velocity * (float) gameTime.ElapsedGameTime.TotalSeconds;
+                position.Position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 

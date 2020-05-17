@@ -254,7 +254,7 @@ namespace PhotoVs.Utils.Compression
                     return 0; // EOF
                 var bytesRemaining = _lengthLimit - _Crc32.TotalBytesRead;
                 if (bytesRemaining < count)
-                    bytesToRead = (int) bytesRemaining;
+                    bytesToRead = (int)bytesRemaining;
             }
 
             var n = _innerStream.Read(buffer, offset, bytesToRead);

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Utils.Collections
 {
@@ -40,19 +40,19 @@ namespace PhotoVs.Utils.Collections
         public void Insert(Rectangle bounds, T value)
         {
             for (var x = bounds.Left; x < bounds.Right; x++)
-            for (var y = bounds.Top; y < bounds.Bottom; y++)
-                Insert(x, y, value);
+                for (var y = bounds.Top; y < bounds.Bottom; y++)
+                    Insert(x, y, value);
         }
 
         public IEnumerable<T> GetInBoundary(Rectangle bounds)
         {
             for (var x = bounds.Left; x < bounds.Right; x++)
-            for (var y = bounds.Top; y < bounds.Bottom; y++)
-            {
-                var cell = this[x, y];
-                if (cell != null)
-                    yield return cell;
-            }
+                for (var y = bounds.Top; y < bounds.Bottom; y++)
+                {
+                    var cell = this[x, y];
+                    if (cell != null)
+                        yield return cell;
+                }
         }
 
         private static long HashPosition(int x, int y)

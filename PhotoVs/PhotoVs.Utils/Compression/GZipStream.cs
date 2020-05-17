@@ -501,7 +501,7 @@ namespace PhotoVs.Utils.Compression
             if (!LastModified.HasValue)
                 LastModified = DateTime.Now;
             var delta = LastModified.Value - _unixEpoch;
-            var timet = (int) delta.TotalSeconds;
+            var timet = (int)delta.TotalSeconds;
             Array.Copy(BitConverter.GetBytes(timet), 0, header, i, 4);
             i += 4;
 

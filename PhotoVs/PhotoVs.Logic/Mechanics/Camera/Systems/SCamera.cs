@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.Camera.Systems
 {
@@ -72,7 +72,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
         private Action<ScreenShake> UpdateShake(GameTime gameTime)
         {
-            var dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             return tuple => tuple.Duration -= dt;
         }
 
@@ -187,8 +187,8 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             var intensity = ShakeIntensity();
             _transform = Matrix.CreateTranslation(new Vector3(-_lerpPosition.X, -_lerpPosition.Y, 0)) *
                          Matrix.CreateTranslation(new Vector3(
-                             -((float) (_random.NextDouble() * intensity * 2) - intensity),
-                             -((float) (_random.NextDouble() * intensity * 2) - intensity), 0)) *
+                             -((float)(_random.NextDouble() * intensity * 2) - intensity),
+                             -((float)(_random.NextDouble() * intensity * 2) - intensity), 0)) *
                          Matrix.CreateScale(new Vector3(_lerpZoom, _lerpZoom, 1)) *
                          Matrix.CreateTranslation(new Vector3(_renderer.RenderSize.Width / 2,
                              _renderer.RenderSize.Height / 2,
@@ -290,7 +290,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
                 MathHelper.Max(topLeft.X, MathHelper.Max(topRight.X, MathHelper.Max(bottomLeft.X, bottomRight.X))),
                 MathHelper.Max(topLeft.Y, MathHelper.Max(topRight.Y, MathHelper.Max(bottomLeft.Y, bottomRight.Y))));
 
-            var bounds = new Rectangle((int) min.X, (int) min.Y, (int) (max.X - min.X), (int) (max.Y - min.Y));
+            var bounds = new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
             return bounds;
         }
 

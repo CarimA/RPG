@@ -10,7 +10,7 @@ namespace PhotoVs.Utils.Extensions
             if (gameTime == null)
                 throw new ArgumentNullException(nameof(gameTime));
 
-            return (float) gameTime.ElapsedGameTime.TotalSeconds;
+            return (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

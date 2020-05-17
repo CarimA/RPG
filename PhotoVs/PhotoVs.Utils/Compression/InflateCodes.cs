@@ -43,8 +43,8 @@ namespace PhotoVs.Utils.Compression
         internal void Init(int bl, int bd, int[] tl, int tl_index, int[] td, int td_index)
         {
             mode = START;
-            lbits = (byte) bl;
-            dbits = (byte) bd;
+            lbits = (byte)bl;
+            dbits = (byte)bd;
             ltree = tl;
             ltree_index = tl_index;
             dtree = td;
@@ -408,7 +408,7 @@ namespace PhotoVs.Utils.Compression
 
                         r = ZlibConstants.Z_OK;
 
-                        blocks.window[q++] = (byte) lit;
+                        blocks.window[q++] = (byte)lit;
                         m--;
 
                         mode = START;
@@ -537,7 +537,7 @@ namespace PhotoVs.Utils.Compression
                     b >>= tp[tp_index_t_3 + 1];
                     k -= tp[tp_index_t_3 + 1];
 
-                    s.window[q++] = (byte) tp[tp_index_t_3 + 2];
+                    s.window[q++] = (byte)tp[tp_index_t_3 + 2];
                     m--;
                     continue;
                 }
@@ -701,7 +701,7 @@ namespace PhotoVs.Utils.Compression
                         {
                             b >>= tp[tp_index_t_3 + 1];
                             k -= tp[tp_index_t_3 + 1];
-                            s.window[q++] = (byte) tp[tp_index_t_3 + 2];
+                            s.window[q++] = (byte)tp[tp_index_t_3 + 2];
                             m--;
                             break;
                         }

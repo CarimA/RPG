@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
@@ -10,6 +8,8 @@ using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Logic.Mechanics.World.Systems;
 using PhotoVs.Logic.PlayerData;
+using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -28,7 +28,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         public int Priority { get; set; } = -1;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(CInput)};
+        public Type[] Requires { get; } = { typeof(CInput) };
 
         public void BeforeUpdate(GameTime gameTime)
         {

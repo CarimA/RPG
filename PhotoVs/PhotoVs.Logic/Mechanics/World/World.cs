@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Utils.Extensions;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Mechanics.World
 {

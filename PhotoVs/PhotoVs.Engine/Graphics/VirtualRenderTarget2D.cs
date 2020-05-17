@@ -14,8 +14,8 @@ namespace PhotoVs.Engine.Graphics
 
         public void UpdateViewport(int displayWidth, int displayHeight, bool crop = true)
         {
-            var widthScale = displayWidth / (double) Width;
-            var heightScale = displayHeight / (double) Height;
+            var widthScale = displayWidth / (double)Width;
+            var heightScale = displayHeight / (double)Height;
 
             if (crop)
             {

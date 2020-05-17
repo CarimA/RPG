@@ -1,12 +1,12 @@
-﻿using System;
+﻿using PhotoVs.Engine.Assets.StreamProviders;
+using PhotoVs.Engine.Assets.TypeLoaders;
+using PhotoVs.Engine.Scheduler;
+using PhotoVs.Engine.Scheduler.YieldInstructions;
+using PhotoVs.Utils.Logging;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using PhotoVs.Engine.Scheduler;
-using PhotoVs.Engine.Scheduler.YieldInstructions;
-using PhotoVs.Engine.Assets.StreamProviders;
-using PhotoVs.Engine.Assets.TypeLoaders;
-using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
@@ -34,7 +34,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             {
                 _lastUsed[filepath] = Environment.TickCount;
                 if (asset != null)
-                    return (T) asset;
+                    return (T)asset;
             }
             else
             {

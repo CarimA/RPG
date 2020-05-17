@@ -1,7 +1,7 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using SpriteFontPlus;
+using System.IO;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {

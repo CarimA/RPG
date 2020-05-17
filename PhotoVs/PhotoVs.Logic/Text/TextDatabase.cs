@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Logic.PlayerData;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine;
-using PhotoVs.Logic.PlayerData;
-using PhotoVs.Engine.Assets.AssetLoaders;
 using YamlDotNet.Serialization;
 
 namespace PhotoVs.Logic.Text

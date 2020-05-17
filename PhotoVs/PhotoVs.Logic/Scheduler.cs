@@ -3,9 +3,9 @@ using PhotoVs.Engine.Scheduler;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
+using PhotoVs.Logic.YieldInstructions;
 using System;
 using System.Collections;
-using PhotoVs.Logic.YieldInstructions;
 
 namespace PhotoVs.Logic
 {
@@ -29,7 +29,7 @@ namespace PhotoVs.Logic
         }
 
         public IEnumerator LockMovement(Func<IEnumerator> action)
-        {            
+        {
             _player.LockMovement();
             yield return Spawn(action());
             _player.UnlockMovement();

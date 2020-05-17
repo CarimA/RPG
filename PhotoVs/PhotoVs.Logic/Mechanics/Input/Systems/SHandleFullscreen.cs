@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input.Components;
+using System;
 
 namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
@@ -25,7 +25,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
 
         public int Priority { get; set; } = -999;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(CInput)};
+        public Type[] Requires { get; } = { typeof(CInput) };
 
         public void Update(GameTime gameTime, IGameObjectCollection entities)
         {

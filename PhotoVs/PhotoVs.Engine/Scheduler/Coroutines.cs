@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Scheduler.YieldInstructions;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace PhotoVs.Engine.Scheduler
 {

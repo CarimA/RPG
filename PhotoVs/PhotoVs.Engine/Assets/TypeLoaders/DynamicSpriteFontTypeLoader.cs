@@ -1,5 +1,5 @@
-﻿using System.IO;
-using SpriteFontPlus;
+﻿using SpriteFontPlus;
+using System.IO;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {

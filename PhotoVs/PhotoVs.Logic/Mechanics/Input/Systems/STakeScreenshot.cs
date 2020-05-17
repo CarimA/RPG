@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Engine.Graphics;
+using PhotoVs.Logic.Mechanics.Input.Components;
+using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Xml.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.ECS.GameObjects;
-using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.Graphics;
-using PhotoVs.Logic.Mechanics.Input.Components;
 
 namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
@@ -34,7 +34,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
 
         public int Priority { get; set; } = 999;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = {typeof(CInput)};
+        public Type[] Requires { get; } = { typeof(CInput) };
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -59,8 +59,8 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             var width = _graphicsDevice.PresentationParameters.BackBufferWidth;
             var height = _graphicsDevice.PresentationParameters.BackBufferHeight;
 
-            var sWidth = (int) _renderer.RenderSize.Width * 4;
-            var sHeight = (int) _renderer.RenderSize.Height * 4;
+            var sWidth = (int)_renderer.RenderSize.Width * 4;
+            var sHeight = (int)_renderer.RenderSize.Height * 4;
 
             var data = new Color[width * height];
             _graphicsDevice.GetBackBufferData(data);
@@ -108,7 +108,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
 
             var clientId = _config.ImgurClientId;
             request.Headers.Add("Authorization", "Client-ID " + clientId);
-            var values = new NameValueCollection {{"image", Convert.ToBase64String(ms.GetBuffer())}};
+            var values = new NameValueCollection { { "image", Convert.ToBase64String(ms.GetBuffer()) } };
             var res = request.UploadValues("https://api.imgur.com/3/upload.xml", values);
 
             using var response = new MemoryStream(res);

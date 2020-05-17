@@ -32,9 +32,9 @@ namespace PhotoVs.Engine.Graphics
 
             _effect.CurrentTechnique.Passes[0].Apply();
             _effect.Parameters["LutTexture"].SetValue(_lut);
-            _effect.Parameters["LutWidth"].SetValue((float) _lut.Width);
-            _effect.Parameters["LutHeight"].SetValue((float) _lut.Height);
-            
+            _effect.Parameters["LutWidth"].SetValue((float)_lut.Width);
+            _effect.Parameters["LutHeight"].SetValue((float)_lut.Height);
+
             spriteBatch.Draw(pass, Vector2.Zero, Color.White);
 
             spriteBatch.End();

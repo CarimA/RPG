@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine;
@@ -12,14 +10,16 @@ using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Plugins;
 using PhotoVs.Engine.Scheduler;
-using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Scenes;
-using PhotoVs.Logic.Text;
 using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input.Systems;
-using PhotoVs.Utils.Logging;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Scenes;
+using PhotoVs.Logic.Text;
 using PhotoVs.Utils.Extensions;
+using PhotoVs.Utils.Logging;
+using System;
+using System.IO;
 
 namespace PhotoVs.Logic
 {
@@ -116,7 +116,8 @@ namespace PhotoVs.Logic
 
             _info = new DiagnosticInfo(_spriteBatch, _assetLoader);
 
-            if (_services.Get<Config>().Fullscreen) EnableFullscreen();
+            if (_services.Get<Config>().Fullscreen)
+                EnableFullscreen();
 
             _services.Set(new Scheduler(_services));
 

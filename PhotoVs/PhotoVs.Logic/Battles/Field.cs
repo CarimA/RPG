@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using PhotoVs.Utils.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using PhotoVs.Utils.Collections;
 
 namespace PhotoVs.Logic.Battles
 {
@@ -111,7 +111,8 @@ namespace PhotoVs.Logic.Battles
 
         public void Update(GameTime gameTime)
         {
-            if (_activePhoton.HasMoved) NextPhoton();
+            if (_activePhoton.HasMoved)
+                NextPhoton();
         }
     }
 }

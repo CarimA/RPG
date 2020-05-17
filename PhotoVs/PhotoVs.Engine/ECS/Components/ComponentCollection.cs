@@ -7,7 +7,7 @@ namespace PhotoVs.Engine.ECS.Components
     {
         public T Get<T>() where T : IComponent
         {
-            return (T) Find(Is<T>);
+            return (T)Find(Is<T>);
         }
 
         public bool TryGet<T>(out T component) where T : IComponent

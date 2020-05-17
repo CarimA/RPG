@@ -68,12 +68,12 @@ namespace PhotoVs.Utils
                 throw new ArgumentNullException(nameof(values));
 
             return values.Length switch
-                {
+            {
                 1 => new Thickness(values[0]),
                 2 => new Thickness(values[0], values[1]),
                 4 => new Thickness(values[0], values[1], values[2], values[3]),
                 _ => throw new FormatException("Invalid thickness"),
-                };
+            };
         }
 
         public static Thickness Parse(string value)
@@ -82,7 +82,7 @@ namespace PhotoVs.Utils
                 throw new ArgumentNullException(nameof(value));
 
             var values = value
-                .Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToArray();
 

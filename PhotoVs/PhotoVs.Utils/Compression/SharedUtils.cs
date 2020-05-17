@@ -13,7 +13,7 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The resulting number from the shift operation</returns>
         internal static int URShift(int number, int bits)
         {
-            return (int) ((uint) number >> bits);
+            return (int)((uint)number >> bits);
         }
 
 #if NOT
@@ -56,7 +56,7 @@ namespace PhotoVs.Utils.Compression
                 return -1;
 
             for (var index = start; index < start + bytesRead; index++)
-                target[index] = (byte) charArray[index];
+                target[index] = (byte)charArray[index];
 
             return bytesRead;
         }

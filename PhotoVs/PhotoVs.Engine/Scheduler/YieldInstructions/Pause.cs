@@ -13,7 +13,7 @@ namespace PhotoVs.Engine.Scheduler.YieldInstructions
 
         public bool Continue(GameTime gameTime)
         {
-            var dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Time -= dt;
             return Time <= 0f;
         }
