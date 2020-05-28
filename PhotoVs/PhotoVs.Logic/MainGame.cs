@@ -77,6 +77,10 @@ namespace PhotoVs.Logic
             }
             _graphicsDeviceManager.ApplyChanges();
             _services.Set(_graphicsDeviceManager);
+
+            // use screen refresh rate
+            _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            IsFixedTimeStep = false;
         }
 
         protected override void Initialize()
