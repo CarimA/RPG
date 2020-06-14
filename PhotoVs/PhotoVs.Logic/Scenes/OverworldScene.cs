@@ -14,7 +14,7 @@ namespace PhotoVs.Logic.Scenes
     public class OverworldScene : ISystemScene
     {
         private readonly SceneMachine _scene;
-        private readonly World _world;
+        private readonly Overworld _world;
 
         public OverworldScene(SceneMachine scene)
         {
@@ -24,21 +24,19 @@ namespace PhotoVs.Logic.Scenes
             var assetLoader = _scene.Services.Get<IAssetLoader>();
             var spriteBatch = _scene.Services.Get<SpriteBatch>();
 
-            _world = new World(spriteBatch, assetLoader);
+            _world = new Overworld(spriteBatch, assetLoader);
             _world.LoadMaps("maps/");
-            var mapBoundary = new SMapBoundaryGeneration(_world, camera);
+            _world.SetMap("test");
 
             Entities = new GameObjectCollection();
             Systems = new SystemCollection<ISystem>
             {
+                new SRenderOverworld(_world, spriteBatch, camera),
                 new SProcessMovement(),
-                mapBoundary,
-                new SCollisionDebugRender(spriteBatch, assetLoader, mapBoundary,
-                    camera),
-                new SCollisionResolution(events, mapBoundary),
-                new SProcessInteractionEvents(events, mapBoundary),
-                new SMapRenderer(spriteBatch, assetLoader, mapBoundary,
-                    camera)
+                new SCollisionDebugRender(spriteBatch, assetLoader,
+                    _world, camera),
+                new SCollisionResolution(_world, camera, events),
+                new SProcessInteractionEvents(events, camera, _world)
             };
         }
 

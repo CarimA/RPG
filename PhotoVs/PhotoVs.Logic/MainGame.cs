@@ -20,6 +20,9 @@ using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 using System;
 using System.IO;
+using System.Text;
+using System.Xml;
+using PhotoVs.Engine.TiledMaps;
 
 namespace PhotoVs.Logic
 {
@@ -132,6 +135,17 @@ namespace PhotoVs.Logic
             //_pluginProvider.LoadMods();
 
             _events.RaiseOnGameStart();
+
+            // todo: turn this postprocess step into a command line tool
+            /*var convertMap = _assetLoader.GetAsset<Map>("albion.tmx");
+            TmxMap.CompressLayers(convertMap, _assetLoader);
+
+            using (var filestream = new FileStream("test.tmx", FileMode.Create)){
+                using (var writer = new XmlTextWriter(filestream, Encoding.UTF8))
+                {
+                    writer.WriteMapElements(convertMap);
+                }
+            }*/
 
             base.Initialize();
         }

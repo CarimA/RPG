@@ -4,23 +4,26 @@ using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World.Components;
-using PhotoVs.Logic.Mechanics.World.Systems;
 using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
+using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     public class SCollisionResolution : IUpdateableSystem
     {
+        private Overworld _overworld;
+        private SCamera _camera;
         private readonly Events _gameEvents;
-        private readonly SMapBoundaryGeneration _mapBoundary;
 
-        public SCollisionResolution(Events gameEvents, SMapBoundaryGeneration mapBoundary)
+        public SCollisionResolution(Overworld overworld, SCamera camera, Events gameEvents)
         {
+            _overworld = overworld;
+            _camera = camera;
             _gameEvents = gameEvents;
-            _mapBoundary = mapBoundary;
         }
 
         public int Priority { get; set; } = -1;
@@ -33,7 +36,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         public void Update(GameTime gameTime, IGameObjectCollection entities)
         {
-            var stationaryList = _mapBoundary.GetCollisions();
+            var stationaryList = _overworld.GetMap().GetCollisions(_camera);
             var movingList = new GameObjectCollection();
 
             foreach (var entity in entities)

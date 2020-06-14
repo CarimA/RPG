@@ -6,10 +6,10 @@ using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World.Components;
-using PhotoVs.Logic.Mechanics.World.Systems;
 using PhotoVs.Utils.Extensions;
 using System;
 using System.Collections.Generic;
+using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -17,17 +17,16 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         private readonly IAssetLoader _assetLoader;
         private readonly SCamera _camera;
-        private readonly SMapBoundaryGeneration _mapBoundary;
-
+        private readonly Overworld _overworld;
         private readonly SpriteBatch _spriteBatch;
 
         public SCollisionDebugRender(SpriteBatch spriteBatch, IAssetLoader assetLoader,
-            SMapBoundaryGeneration mapBoundary, SCamera camera)
+            Overworld overworld, SCamera camera)
         {
             _spriteBatch = spriteBatch;
             _assetLoader = assetLoader;
-            _mapBoundary = mapBoundary;
             _camera = camera;
+            _overworld = overworld;
         }
 
         public int Priority { get; set; } = 99;
@@ -43,9 +42,9 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             _camera.Attach(_spriteBatch);
 
             entities.ForEach(Draw);
-            _mapBoundary.GetCollisions()?.ForEach(Draw);
-            _mapBoundary.GetScripts()?.ForEach(Draw);
-            _mapBoundary.GetZones()?.ForEach(Draw);
+            _overworld.GetMap().GetCollisions(_camera)?.ForEach(Draw);
+            _overworld.GetMap().GetScripts(_camera)?.ForEach(Draw);
+            _overworld.GetMap().GetZones(_camera)?.ForEach(Draw);
 
             _camera.Detach(_spriteBatch);
         }

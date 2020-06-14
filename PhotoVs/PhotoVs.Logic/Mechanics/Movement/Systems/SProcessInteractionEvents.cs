@@ -6,10 +6,11 @@ using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World.Components;
-using PhotoVs.Logic.Mechanics.World.Systems;
 using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
+using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -17,11 +18,13 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         private readonly HashSet<IGameObject> _enteredScripts;
         private readonly Events _events;
-        private readonly SMapBoundaryGeneration _mapBoundary;
+        private readonly SCamera _camera;
+        private readonly Overworld _overworld;
 
-        public SProcessInteractionEvents(Events events, SMapBoundaryGeneration mapBoundary)
+        public SProcessInteractionEvents(Events events, SCamera camera, Overworld overworld)
         {
-            _mapBoundary = mapBoundary;
+            _camera = camera;
+            _overworld = overworld;
             _events = events;
             _enteredScripts = new HashSet<IGameObject>();
         }
@@ -36,7 +39,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         public void Update(GameTime gameTime, IGameObjectCollection entities)
         {
-            var scripts = _mapBoundary.GetScripts();
+            var scripts = _overworld.GetMap().GetScripts(_camera);
 
             foreach (var entity in entities)
                 HandleInteraction(entity, scripts);

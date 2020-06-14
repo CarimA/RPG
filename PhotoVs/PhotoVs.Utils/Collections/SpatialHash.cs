@@ -1,9 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Utils.Collections
 {
+    public class SpatialHash<TItem> : SpatialHash<TItem, List<TItem>> where TItem : new()
+    {
+        public SpatialHash(int cellSize) : base(cellSize)
+        {
+            
+        }
+    }
+
     public class SpatialHash<TItem, TList> where TList : IList<TItem>, new()
     {
         private readonly Dictionary<int, TList> _cells;
@@ -53,13 +62,13 @@ namespace PhotoVs.Utils.Collections
             var snapTop = Snap(bounds.Top) - _cellSize;
             var snapBottom = Snap(bounds.Bottom) + _cellSize;
 
-            for (var x = snapLeft; x < snapRight; x += _cellSize)
-                for (var y = snapTop; y < snapBottom; y += _cellSize)
+            for (var x = snapLeft; x <= snapRight; x += _cellSize)
+                for (var y = snapTop; y <= snapBottom; y += _cellSize)
                 {
                     var points = GetPoint(x, y);
                     foreach (var point in points)
-                        if (!output.Contains(point))
-                            output.Add(point);
+                        //if (!output.Contains(point))
+                        output.Add(point);
                 }
 
             return output;
@@ -67,8 +76,8 @@ namespace PhotoVs.Utils.Collections
 
         private void ForRange(RectangleF range, Action<int, int> action)
         {
-            for (var x = Snap(range.Left); x < Snap(range.Right); x += _cellSize)
-                for (var y = Snap(range.Top); y < Snap(range.Bottom); y += _cellSize)
+            for (var x = Snap(range.Left); x <= Snap(range.Right); x += _cellSize)
+                for (var y = Snap(range.Top); y <= Snap(range.Bottom); y += _cellSize)
                     action(x, y);
         }
 
@@ -79,8 +88,8 @@ namespace PhotoVs.Utils.Collections
             var snapTop = Snap(range.Top) - _cellSize;
             var snapBottom = Snap(range.Bottom) + _cellSize;
 
-            for (var x = snapLeft; x < snapRight; x += _cellSize)
-                for (var y = snapTop; y < snapBottom; y += _cellSize)
+            for (var x = snapLeft; x <= snapRight; x += _cellSize)
+                for (var y = snapTop; y <= snapBottom; y += _cellSize)
                     action(x, y);
         }
 

@@ -100,7 +100,7 @@ namespace PhotoVs.Logic.Scenes
 
             _dialogue = new DialogueMarkup(_assetLoader.GetAsset<SpriteFont>("ui/fonts/outline_12.fnt"),
                 _assetLoader.GetAsset<SpriteFont>("ui/fonts/border_12.fnt"),
-                new Vector2(79, 126), //320 - TextWidth - 20, 133),
+                new Vector2(180 + 79, 170 + 109 + 18), //320 - TextWidth - 20, 133),
                 dialogue,
                 3,
                 228);
