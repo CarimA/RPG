@@ -223,13 +223,13 @@ namespace PhotoVs.Logic.Mechanics.World
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, SCamera camera, Action<SpriteBatch, GameTime> drawBetween)
         {
-            var (maskTiles, fringeTiles) = GetTilesInBoundary(camera.VisibleArea());
+            //var (maskTiles, fringeTiles) = GetTilesInBoundary(camera.VisibleArea());
 
             camera.Attach(spriteBatch);
 
-            DrawLayer(maskTiles, spriteBatch, gameTime);
+            DrawLayer(_maskTiles, camera, spriteBatch, gameTime);
             drawBetween(spriteBatch, gameTime);
-            DrawLayer(fringeTiles, spriteBatch, gameTime);
+            DrawLayer(_fringeTiles, camera, spriteBatch, gameTime);
 
             camera.Detach(spriteBatch);
 
@@ -237,14 +237,14 @@ namespace PhotoVs.Logic.Mechanics.World
             //System.Diagnostics.Debug.WriteLine("Drew " + fringeTiles.Count + " fringes");
         }
 
-        private (List<Tile>, List<Tile>) GetTilesInBoundary(Rectangle boundaries)
+        private (IEnumerable<Tile>, IEnumerable<Tile>) GetTilesInBoundary(Rectangle boundaries)
         {
             return (_maskTiles.Get(boundaries), _fringeTiles.Get(boundaries));
         }
 
-        private void DrawLayer(List<Tile> tiles, SpriteBatch spriteBatch, GameTime gameTime)
+        private void DrawLayer(SpatialHash<Tile> tiles, SCamera camera, SpriteBatch spriteBatch, GameTime gameTime)
         {
-            foreach (var tile in tiles)
+            foreach (var tile in tiles.Get(camera.VisibleArea()))
             {
                 spriteBatch.Draw(tile.Texture,
                     new Rectangle(tile.X, tile.Y, _cellWidth, _cellHeight),
@@ -253,17 +253,18 @@ namespace PhotoVs.Logic.Mechanics.World
             }
         }
 
-        public GameObjectCollection GetCollisions(SCamera camera)
+
+        public IEnumerable<IGameObject> GetCollisions(SCamera camera)
         {
             return _collisions.Get(camera.VisibleArea());
         }
 
-        public GameObjectCollection GetScripts(SCamera camera)
+        public IEnumerable<IGameObject> GetScripts(SCamera camera)
         {
             return _scripts.Get(camera.VisibleArea());
         }
 
-        public GameObjectCollection GetZones(SCamera camera)
+        public IEnumerable<IGameObject> GetZones(SCamera camera)
         {
             return _zones.Get(camera.VisibleArea());
         }

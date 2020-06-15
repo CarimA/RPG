@@ -37,16 +37,19 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         public void Update(GameTime gameTime, IGameObjectCollection entities)
         {
             var stationaryList = _overworld.GetMap().GetCollisions(_camera);
+            var extraStationaryList = new GameObjectCollection();
             var movingList = new GameObjectCollection();
 
             foreach (var entity in entities)
                 if (entity.Components.Has<CSolid>())
-                    stationaryList.Add(entity);
+                    extraStationaryList.Add(entity);
                 else
                     movingList.Add(entity);
 
+            extraStationaryList.AddRange(stationaryList);
+
             foreach (var moving in movingList)
-                Move(moving, stationaryList, gameTime);
+                Move(moving, extraStationaryList, gameTime);
             movingList.ForEach(ProcessVelocityIntents);
         }
 

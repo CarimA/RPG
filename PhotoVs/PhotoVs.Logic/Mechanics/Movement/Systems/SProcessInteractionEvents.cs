@@ -49,7 +49,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
         }
 
-        private void HandleInteraction(IGameObject entity, IGameObjectCollection scripts)
+        private void HandleInteraction(IGameObject entity, IEnumerable<IGameObject> scripts)
         {
             var input = entity.Components.Get<CInput>().Input;
             var position = entity.Components.Get<CPosition>();

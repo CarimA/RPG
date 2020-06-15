@@ -13,7 +13,7 @@ namespace PhotoVs.Utils.Collections
         }
     }
 
-    public class SpatialHash<TItem, TList> where TList : IList<TItem>, new()
+    public class SpatialHash<TItem, TList> where TList : IEnumerable<TItem>, IList<TItem>, new()
     {
         private readonly Dictionary<int, TList> _cells;
         private readonly int _cellSize;
@@ -53,9 +53,9 @@ namespace PhotoVs.Utils.Collections
             return _cells.TryGetValue(HashPosition(x, y), out var value) ? value : _empty;
         }
 
-        public TList Get(Rectangle bounds)
+        public IEnumerable<TItem> Get(Rectangle bounds)
         {
-            var output = new TList();
+            //var output = new TList();
 
             var snapLeft = Snap(bounds.Left) - _cellSize;
             var snapRight = Snap(bounds.Right) + _cellSize;
@@ -68,10 +68,11 @@ namespace PhotoVs.Utils.Collections
                     var points = GetPoint(x, y);
                     foreach (var point in points)
                         //if (!output.Contains(point))
-                        output.Add(point);
+                        yield return point;
+                        //output.Add(point);
                 }
 
-            return output;
+            //return output;
         }
 
         private void ForRange(RectangleF range, Action<int, int> action)
