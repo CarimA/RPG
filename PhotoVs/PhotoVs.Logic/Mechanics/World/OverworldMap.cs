@@ -224,12 +224,13 @@ namespace PhotoVs.Logic.Mechanics.World
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, SCamera camera, Action<SpriteBatch, GameTime> drawBetween)
         {
             //var (maskTiles, fringeTiles) = GetTilesInBoundary(camera.VisibleArea());
+            var boundaries = camera.VisibleArea();
 
             camera.Attach(spriteBatch);
 
-            DrawLayer(_maskTiles, camera, spriteBatch, gameTime);
+            DrawLayer(_maskTiles, boundaries, spriteBatch, gameTime);
             drawBetween(spriteBatch, gameTime);
-            DrawLayer(_fringeTiles, camera, spriteBatch, gameTime);
+            DrawLayer(_fringeTiles, boundaries, spriteBatch, gameTime);
 
             camera.Detach(spriteBatch);
 
@@ -242,9 +243,9 @@ namespace PhotoVs.Logic.Mechanics.World
             return (_maskTiles.Get(boundaries), _fringeTiles.Get(boundaries));
         }
 
-        private void DrawLayer(SpatialHash<Tile> tiles, SCamera camera, SpriteBatch spriteBatch, GameTime gameTime)
+        private void DrawLayer(SpatialHash<Tile> tiles, Rectangle boundaries, SpriteBatch spriteBatch, GameTime gameTime)
         {
-            foreach (var tile in tiles.Get(camera.VisibleArea()))
+            foreach (var tile in tiles.Get(boundaries))
             {
                 spriteBatch.Draw(tile.Texture,
                     new Rectangle(tile.X, tile.Y, _cellWidth, _cellHeight),

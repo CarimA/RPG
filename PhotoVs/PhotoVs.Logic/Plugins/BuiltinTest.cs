@@ -1,4 +1,5 @@
-﻿using PhotoVs.Engine;
+﻿using System;
+using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.Plugins;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
@@ -48,12 +49,32 @@ namespace PhotoVs.Logic.Plugins
             _camera = services.Get<SCamera>();
             _player = services.Get<Player>();
 
-            events.OnInteractEventEnter["example_event"] += InteractEventHandler;
+            //events.OnInteractEventEnter["example_event"] += InteractEventHandler;
+            int startTick = 0;
+
+            events.OnInteractEventEnter["example_event"] += (o, gameObject) =>
+            {
+                startTick = Environment.TickCount;
+            };
+
+            events.OnInteractEventExit["example_event"] += (o, gameObject) =>
+            {
+                var endTick = Environment.TickCount;
+
+                _scheduler.Spawn(TellHowLong(endTick - startTick));
+            };
         }
 
         private void InteractEventHandler(IGameObject player, IGameObject script)
         {
             _scheduler.Spawn(_scheduler.LockMovement(DoThis));
+        }
+
+        private IEnumerator TellHowLong(int ticks)
+        {
+            _player.LockMovement();
+            yield return _scheduler.Dialogue("Debugger", "It took {# Yellow}" + ticks + " ticks{/#} to walk through.");
+            _player.UnlockMovement();
         }
 
         private IEnumerator DoThis()
