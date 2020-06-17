@@ -9,7 +9,7 @@ namespace PhotoVs.Utils.Logging
         public static Logger Write =>
             _instance ??= new Logger
             {
-                //new ConsoleLogger(LogLevel.Trace),
+                new ConsoleLogger(LogLevel.Trace),
                 //new TextLogger(LogLevel.Trace)
             };
 

@@ -2,15 +2,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.FSM.Scenes;
-using PhotoVs.Logic.Mechanics.Input;
-using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
 using PhotoVs.Utils.Extensions;
-using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Scenes
 {
-	public class TitleScene : IUpdateableScene, IDrawableScene
+    public class TitleScene : IUpdateableScene, IDrawableScene
 	{
 		private readonly SceneMachine _sceneMachine;
 		

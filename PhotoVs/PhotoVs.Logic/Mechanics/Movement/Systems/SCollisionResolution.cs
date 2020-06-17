@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
@@ -8,6 +7,8 @@ using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PhotoVs.Engine.Events;
+using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.World;
 
@@ -17,13 +18,13 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         private Overworld _overworld;
         private SCamera _camera;
-        private readonly Events _gameEvents;
+        private readonly EventQueue _gameEvents;
 
-        public SCollisionResolution(Overworld overworld, SCamera camera, Events gameEvents)
+        public SCollisionResolution(Overworld overworld, SCamera camera, EventQueue gameEvents)
         {
             _overworld = overworld;
             _camera = camera;
-            _gameEvents = gameEvents;
+            _gameEvents= gameEvents;
         }
 
         public int Priority { get; set; } = -1;
@@ -98,7 +99,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 if (!result.AreIntersecting)
                     continue;
 
-                _gameEvents.RaiseOnCollision(moving, stationary);
+                _gameEvents.Notify(EventType.COLLISION, new InteractEventArgs(this, moving, stationary));
             }
 
             if (minimumTranslations.Count > 0)

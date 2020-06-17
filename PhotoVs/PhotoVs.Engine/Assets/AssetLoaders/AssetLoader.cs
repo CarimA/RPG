@@ -27,7 +27,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             coroutines.Start(UnloadUnusedAssets());
         }
 
-        public T GetAsset<T>(string filepath) where T : class
+        public T GetAsset<T>(string filepath, bool includeRoot = true) where T : class
         {
             filepath = SanitiseFilename(filepath);
             if (_assetCache.TryGetValue(filepath, out var asset))
@@ -38,19 +38,19 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             }
             else
             {
-                LoadAsset<T>(filepath);
-                return GetAsset<T>(filepath);
+                LoadAsset<T>(filepath, includeRoot);
+                return GetAsset<T>(filepath, includeRoot);
             }
 
             Logger.Write.Fatal("Could not find asset \"{0}\"", filepath);
             throw new FileNotFoundException();
         }
 
-        public void LoadAsset<T>(string filepath) where T : class
+        public void LoadAsset<T>(string filepath, bool includeRoot = true) where T : class
         {
             filepath = SanitiseFilename(filepath);
             var loader = _typeLoaders[typeof(T)];
-            using var stream = _streamProvider.GetFile(filepath);
+            using var stream = _streamProvider.GetFile(filepath, includeRoot);
             var asset = (loader as ITypeLoader<T>)?.Load(stream);
             if (asset != null)
             {

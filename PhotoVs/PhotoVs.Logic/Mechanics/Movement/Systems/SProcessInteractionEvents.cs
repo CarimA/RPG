@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input;
@@ -9,6 +8,8 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
+using PhotoVs.Engine.Events;
+using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.World;
 
@@ -17,11 +18,11 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     internal class SProcessInteractionEvents : IUpdateableSystem
     {
         private readonly HashSet<IGameObject> _enteredScripts;
-        private readonly Events _events;
+        private readonly EventQueue _events;
         private readonly SCamera _camera;
         private readonly Overworld _overworld;
 
-        public SProcessInteractionEvents(Events events, SCamera camera, Overworld overworld)
+        public SProcessInteractionEvents(EventQueue events, SCamera camera, Overworld overworld)
         {
             _camera = camera;
             _overworld = overworld;
@@ -67,12 +68,12 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 if (result.AreIntersecting)
                 {
                     if (input.ActionPressed(InputActions.Action))
-                        _events.RaiseOnInteractEventAction(scriptName, player, script);
+                        _events.Notify(EventType.INTERACT_ACTION + ":" + scriptName, new InteractEventArgs(this, player, script));
 
                     if (!_enteredScripts.Contains(script))
                     {
                         _enteredScripts.Add(script);
-                        _events.RaiseOnInteractEventEnter(scriptName, player, script);
+                        _events.Notify(EventType.INTERACT_AREA_ENTER + ":" + scriptName, new InteractEventArgs(this, player, script));
                     }
 
                     if (position.DeltaPosition != Vector2.Zero)
@@ -82,27 +83,26 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                         {
                             if (player.CanMove)
                                 // todo: should only fire on footstep touching ground
-                                _events.RaiseOnInteractEventRun(scriptName, player, script);
+                                _events.Notify(EventType.INTERACT_AREA_RUN + ":" + scriptName, new InteractEventArgs(this, player, script));
                         }
                         else
                         {
                             if (player.CanMove)
-                                _events.RaiseOnInteractEventWalk(scriptName, player, script);
+                                _events.Notify(EventType.INTERACT_AREA_WALK + ":" + scriptName, new InteractEventArgs(this, player, script));
                         }
                     }
                     else
                     {
                         if (player.CanMove)
-                            _events.RaiseOnInteractEventStand(scriptName, player, script);
+                            _events.Notify(EventType.INTERACT_AREA_STAND + ":" + scriptName, new InteractEventArgs(this, player, script));
                     }
                 }
                 else
                 {
-                    if (_enteredScripts.Contains(script))
-                    {
-                        _enteredScripts.Remove(script);
-                        _events.RaiseOnInteractEventExit(scriptName, player, script);
-                    }
+                    if (!_enteredScripts.Contains(script)) continue;
+
+                    _enteredScripts.Remove(script);
+                    _events.Notify(EventType.INTERACT_AREA_EXIT + ":" + scriptName, new InteractEventArgs(this, player, script));
                 }
             }
         }

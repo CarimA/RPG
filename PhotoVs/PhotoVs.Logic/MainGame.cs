@@ -20,9 +20,8 @@ using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 using System;
 using System.IO;
-using System.Text;
-using System.Xml;
-using PhotoVs.Engine.TiledMaps;
+using PhotoVs.Engine.Events;
+using PhotoVs.Logic.Events;
 
 namespace PhotoVs.Logic
 {
@@ -30,7 +29,7 @@ namespace PhotoVs.Logic
     {
         private readonly IPlatform _platform;
 
-        private readonly Events _events;
+        private readonly EventQueue _events;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly Services _services;
         private IAssetLoader _assetLoader;
@@ -64,7 +63,7 @@ namespace PhotoVs.Logic
             Logger.Write.Trace("Creating [My Documents]/PhotoVs");
 
             _services = new Services();
-            _events = new Events();
+            _events = new EventQueue();
             _services.Set(_events);
 
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
@@ -131,10 +130,10 @@ namespace PhotoVs.Logic
             _pluginProvider = new PluginProvider(_services);
             _services.Set(_pluginProvider);
             AppDomain.CurrentDomain.GetAssemblies().ForEach(_pluginProvider.LoadPluginFromAssembly);
-            //_pluginProvider.LoadPlugins("plugins/");
-            //_pluginProvider.LoadMods();
+            _pluginProvider.LoadPlugins("logic/");
+            _pluginProvider.LoadMods();
 
-            _events.RaiseOnGameStart();
+            _events.Notify(EventType.GAME_START, new GameEventArgs(this));
 
             // todo: turn this postprocess step into a command line tool
             /*var convertMap = _assetLoader.GetAsset<Map>("albion.tmx");
@@ -159,7 +158,8 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new SpriteFontTypeLoader(GraphicsDevice, assetLoader))
                 .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(32))
-                .RegisterTypeLoader(new MapTypeLoader());
+                .RegisterTypeLoader(new MapTypeLoader())
+                .RegisterTypeLoader(new ZipTypeLoader());
 
             return assetLoader;
         }
@@ -228,6 +228,8 @@ namespace PhotoVs.Logic
 
         protected override void Update(GameTime gameTime)
         {
+            _events.Process();
+
             _info.BeforeUpdate();
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
