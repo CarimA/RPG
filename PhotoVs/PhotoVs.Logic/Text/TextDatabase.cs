@@ -5,6 +5,7 @@ using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 
@@ -41,10 +42,11 @@ namespace PhotoVs.Logic.Text
                         new Language(data["Language"][language],
                             _assetLoader.Get<SpriteFont>($"ui/fonts/{data["LanguageFont"][language]}")));
 
-                foreach (var kvp in data)
-                    if (data[kvp.Key].ContainsKey(language))
-                        _languages[language].Text.Add(kvp.Key, kvp.Value[language]);
+                foreach (var kvp in data.Where(kvp => data[kvp.Key].ContainsKey(language)))
+                    _languages[language].Text.Add(kvp.Key, kvp.Value[language]);
             }
+
+            sr.Dispose();
         }
 
         public SpriteFont GetFont()

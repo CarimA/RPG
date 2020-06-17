@@ -18,24 +18,6 @@ using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
-    public struct Tile
-    {
-        public int X;
-        public int Y;
-        public int SourceX;
-        public int SourceY;
-        public readonly Texture2D Texture;
-
-        public Tile(int x, int y, int sourceX, int sourceY, Texture2D texture)
-        {
-            X = x;
-            Y = y;
-            SourceX = sourceX;
-            SourceY = sourceY;
-            Texture = texture;
-        }
-    }
-
     public class OverworldMap
     {
         private IAssetLoader _assetLoader;
@@ -257,16 +239,19 @@ namespace PhotoVs.Logic.Mechanics.World
 
         public IEnumerable<IGameObject> GetCollisions(SCamera camera)
         {
+            if (camera == null) throw new ArgumentNullException(nameof(camera));
             return _collisions.Get(camera.VisibleArea());
         }
 
         public IEnumerable<IGameObject> GetScripts(SCamera camera)
         {
+            if (camera == null) throw new ArgumentNullException(nameof(camera));
             return _scripts.Get(camera.VisibleArea());
         }
 
         public IEnumerable<IGameObject> GetZones(SCamera camera)
         {
+            if (camera == null) throw new ArgumentNullException(nameof(camera));
             return _zones.Get(camera.VisibleArea());
         }
     }

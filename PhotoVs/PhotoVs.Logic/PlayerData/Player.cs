@@ -9,21 +9,6 @@ using System.Collections.Generic;
 
 namespace PhotoVs.Logic.PlayerData
 {
-    public enum Languages
-    {
-        EnglishUK,
-        French,
-        Spanish,
-        Italian,
-        German,
-        ChineseTD,
-        ChineseSD,
-        Korean,
-        Japanese,
-        Russian,
-        PortugueseBR
-    }
-
     public class Player : GameObject
     {
         private readonly Coroutines _coroutines;
