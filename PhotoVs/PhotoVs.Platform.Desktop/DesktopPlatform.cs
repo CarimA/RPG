@@ -1,4 +1,6 @@
-﻿using PhotoVs.Engine.Assets.StreamProviders;
+﻿using System;
+using System.IO;
+using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Logic;
 
 namespace PhotoVs.Platform.Desktop
@@ -11,7 +13,9 @@ namespace PhotoVs.Platform.Desktop
 
         public DesktopPlatform()
         {
-            StreamProvider = new FileSystemStreamProvider("assets/");
+            StreamProvider = new FileSystemStreamProvider(
+                "content\\",
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "PhotoVs"));
         }
     }
 }

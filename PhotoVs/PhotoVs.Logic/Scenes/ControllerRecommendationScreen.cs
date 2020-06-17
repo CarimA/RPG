@@ -63,7 +63,7 @@ namespace PhotoVs.Logic.Scenes
 
             var font = _textDatabase.GetFont();
 
-            _gamepadIcon = _assetLoader.GetAsset<Texture2D>("ui/gamepad.png");
+            _gamepadIcon = _assetLoader.Get<Texture2D>("ui/gamepad.png");
             _font = font;
 
             _playWithAGamepad = _font.WrapText(_textDatabase.GetText("CR_PlayWithAGamepad"), 320 - 40);

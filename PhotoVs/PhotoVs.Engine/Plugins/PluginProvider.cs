@@ -30,7 +30,7 @@ namespace PhotoVs.Engine.Plugins
         {
             _services = services;
             _assetLoader = _services.Get<IAssetLoader>();
-            _streamProvider = _assetLoader.GetStreamProvider();
+            _streamProvider = _assetLoader.StreamProvider;
             _assemblies = GetAssemblies();
             var types = GetTypesFromAssemblies(_assemblies);
             _namespaces = GetNamespacesFromTypes(types);
@@ -44,10 +44,10 @@ namespace PhotoVs.Engine.Plugins
         public void LoadPlugins(string directory)
         {
             var scripts = _streamProvider
-                .GetFiles(directory)
+                .EnumerateFiles(DataLocation.Content, directory)
                 .Where(IsScript);
 
-            if (scripts.Count() == 0)
+            if (!scripts.Any())
                 return;
 
             Logger.Write.Info($"Found {scripts.Count()} scripts. ");
@@ -65,32 +65,35 @@ namespace PhotoVs.Engine.Plugins
 
         public void LoadMods()
         {
-            var modDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "PhotoVs\\Mods");
-            var files = _assetLoader
-                .GetStreamProvider()
-                .GetFiles(modDirectory, false);
+            var files = _streamProvider
+                .EnumerateFiles(DataLocation.Storage, "mods");
 
-            LoadPluginsFromZip(modDirectory);
+            files.ForEach(LoadPluginsFromZip);
         }
 
         private void LoadPluginsFromZip(string filename)
         {
-            var assetLoader = _services.Get<IAssetLoader>();
-            using var zip = assetLoader.GetAsset<ZipStorer>(filename);
+            var streamProvider = _assetLoader.StreamProvider;
+            using var zip = ZipStorer.Open(streamProvider.Read(DataLocation.Storage, filename), FileAccess.Read, true);
             var files = zip.ReadCentralDir();
             foreach (var file in files)
             {
                 using var ms = new MemoryStream();
                 zip.ExtractFile(file, ms);
                 var script = Encoding.UTF8.GetString(ms.ToArray());
-                LoadScript(script);
+                LoadString(script);
             }
             zip.Close();
         }
 
         private void LoadScript(string filename)
         {
-            var script = _assetLoader.GetAsset<string>(filename);
+            var script = _assetLoader.Get<string>(filename);
+            LoadString(script);
+        }
+
+        private void LoadString(string script)
+        {
             var code = $@"{_usings}
 
 namespace PhotoVs.Plugins
@@ -116,7 +119,7 @@ namespace PhotoVs.Plugins
                     diagnostic => diagnostic.IsWarningAsError ||
                     diagnostic.Severity == DiagnosticSeverity.Error);
 
-                Logger.Write.Error($"{failures.Count()} errors found in plugin \"{filename}\"");
+                Logger.Write.Error($"{failures.Count()} errors found in plugin");
                 foreach (var error in failures)
                 {
                     var line = error.Location.GetLineSpan().StartLinePosition;

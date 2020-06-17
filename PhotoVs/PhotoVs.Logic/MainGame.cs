@@ -49,19 +49,6 @@ namespace PhotoVs.Logic
 
             _platform = platform;
 
-            // todo: figure out how to abstract this away
-            var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save1"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save2"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Saves/Save3"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Mods"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Screenshots"));
-            Directory.CreateDirectory(Path.Combine(myDocs, "PhotoVs/Logs"));
-
-            Logger.Write.Trace("Creating [My Documents]/PhotoVs");
-
             _services = new Services();
             _events = new EventQueue();
             _services.Set(_events);
@@ -158,8 +145,7 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new SpriteFontTypeLoader(GraphicsDevice, assetLoader))
                 .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(32))
-                .RegisterTypeLoader(new MapTypeLoader())
-                .RegisterTypeLoader(new ZipTypeLoader());
+                .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;
         }
@@ -184,8 +170,8 @@ namespace PhotoVs.Logic
                 Window,
                 new ColorGrading(GraphicsDevice,
                     canvas,
-                    _assetLoader.GetAsset<Effect>(_platform.PaletteShader),
-                    _assetLoader.GetAsset<Texture2D>("ui/luts/aap128.png")),
+                    _assetLoader.Get<Effect>(_platform.PaletteShader),
+                    _assetLoader.Get<Texture2D>("ui/luts/aap128.png")),
                 canvas);
             return renderer;
         }
@@ -214,7 +200,7 @@ namespace PhotoVs.Logic
                 new SProcessInput(),
                 new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
                 new STakeScreenshot(GraphicsDevice, _renderer, _spriteBatch,
-                    _assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_outline_12.fnt"),
+                    _assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt"),
                         _services.Get<Config>())
             };
             return globalSystems;

@@ -41,13 +41,13 @@ namespace PhotoVs.Logic.Scenes
         {
             var x = 180;
             var y = 170;
-            var slice = _assetLoader.GetAsset<Texture2D>("ui/slices/main.png");
-            var slice2 = _assetLoader.GetAsset<Texture2D>("ui/slices/main_noborder.png");
-            var darkPixel = _assetLoader.GetAsset<Texture2D>("ui/darkblue_pixel.png");
-            var pixel = _assetLoader.GetAsset<Texture2D>("ui/blue_pixel.png");
+            var slice = _assetLoader.Get<Texture2D>("ui/slices/main.png");
+            var slice2 = _assetLoader.Get<Texture2D>("ui/slices/main_noborder.png");
+            var darkPixel = _assetLoader.Get<Texture2D>("ui/darkblue_pixel.png");
+            var pixel = _assetLoader.Get<Texture2D>("ui/blue_pixel.png");
 
-            var portrait = _assetLoader.GetAsset<Texture2D>("portraits/test.png");
-            var bold = _assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_outline_12.fnt");
+            var portrait = _assetLoader.Get<Texture2D>("portraits/test.png");
+            var bold = _assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt");
 
             _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: uiOrigin);
 
@@ -62,7 +62,7 @@ namespace PhotoVs.Logic.Scenes
 
             if (_dialogue.IsPaused || _dialogue.IsFinished)
             {
-                var next = _assetLoader.GetAsset<Texture2D>("ui/next.png");
+                var next = _assetLoader.Get<Texture2D>("ui/next.png");
                 var drift = ((float)System.Math.Sin(gameTime.TotalGameTime.TotalSeconds * 8) * 2) - 1;
                 _spriteBatch.Draw(next, new Vector2(x + 291, y + 162 + drift), Color.White);
             }
@@ -98,8 +98,8 @@ namespace PhotoVs.Logic.Scenes
             _name = args[0].ToString();
             var dialogue = args[1].ToString();
 
-            _dialogue = new DialogueMarkup(_assetLoader.GetAsset<SpriteFont>("ui/fonts/outline_12.fnt"),
-                _assetLoader.GetAsset<SpriteFont>("ui/fonts/border_12.fnt"),
+            _dialogue = new DialogueMarkup(_assetLoader.Get<SpriteFont>("ui/fonts/outline_12.fnt"),
+                _assetLoader.Get<SpriteFont>("ui/fonts/border_12.fnt"),
                 new Vector2(180 + 79, 170 + 109 + 18), //320 - TextWidth - 20, 133),
                 dialogue,
                 3,

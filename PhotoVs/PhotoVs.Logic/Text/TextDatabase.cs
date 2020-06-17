@@ -25,7 +25,7 @@ namespace PhotoVs.Logic.Text
             _assetLoader = services.Get<IAssetLoader>();
 
             var deserializer = new Deserializer();
-            var sr = new StringReader(_assetLoader.GetAsset<string>("text.yml"));
+            var sr = new StringReader(_assetLoader.Get<string>("text.yml"));
             var data = deserializer.Deserialize<Dictionary<string, Dictionary<Languages, string>>>(sr);
 
             _languages = new Dictionary<Languages, Language>();
@@ -39,7 +39,7 @@ namespace PhotoVs.Logic.Text
                 if (!_languages.ContainsKey(language))
                     _languages.Add(language,
                         new Language(data["Language"][language],
-                            _assetLoader.GetAsset<SpriteFont>($"ui/fonts/{data["LanguageFont"][language]}")));
+                            _assetLoader.Get<SpriteFont>($"ui/fonts/{data["LanguageFont"][language]}")));
 
                 foreach (var kvp in data)
                     if (data[kvp.Key].ContainsKey(language))

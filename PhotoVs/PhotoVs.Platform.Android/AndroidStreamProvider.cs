@@ -1,8 +1,10 @@
-﻿using Android.Content.Res;
+﻿using System;
+using Android.Content.Res;
 using PhotoVs.Engine.Assets.StreamProviders;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PhotoVs.Engine.Assets;
 
 namespace PhotoVs.Platform.Android
 {
@@ -10,11 +12,6 @@ namespace PhotoVs.Platform.Android
     {
         public string RootDirectory { get; } = "";
         private readonly AssetManager _assetManager;
-
-        public AndroidStreamProvider(AssetManager assetManager)
-        {
-            _assetManager = assetManager;
-        }
 
         public Stream GetFile(string filepath)
         {
@@ -68,6 +65,64 @@ namespace PhotoVs.Platform.Android
             }
 
             return input;
+        }
+
+        public string ContentDirectory { get; }
+        public string StorageDirectory { get; }
+        public AndroidStreamProvider(AssetManager assetManager)
+        {
+            _assetManager = assetManager;
+            throw new NotImplementedException("hey you forgot something");
+        }
+
+        public void Write(DataLocation location, string filepath, Stream stream)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Stream Read(DataLocation location, string filepath)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Delete(DataLocation location, string filepath)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Copy(DataLocation location, string oldFilepath, string newFilepath)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Move(DataLocation location, string oldFilepath, string newFilepath)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool Exists(DataLocation location, string filepath)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void CreateDirectory(DataLocation location, string directory)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<string> EnumerateFiles(DataLocation location, string directory)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<string> EnumerateDirectories(DataLocation location, string directory)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string GetFilepath(DataLocation location, string filepath)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

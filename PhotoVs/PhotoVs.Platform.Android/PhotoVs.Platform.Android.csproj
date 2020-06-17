@@ -66,18 +66,6 @@
     <Compile Include="AndroidPlatform.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\maps\test\-01_00.tmx" />
-    <AndroidAsset Include="Assets\maps\test\00_00.tmx" />
-    <AndroidAsset Include="Assets\maps\test\01_00.tmx" />
-    <AndroidAsset Include="Assets\maps\test\game.world" />
-    <AndroidAsset Include="Assets\shaders\color.dx11" />
-    <AndroidAsset Include="Assets\shaders\color.ogl" />
-    <AndroidAsset Include="Assets\ui\fonts\bold_12.fnt" />
-    <AndroidAsset Include="Assets\ui\fonts\bold_outline_12.fnt" />
-    <AndroidAsset Include="Assets\ui\fonts\border_12.fnt" />
-    <AndroidAsset Include="Assets\ui\fonts\outline_12.fnt" />
-    <AndroidAsset Include="Assets\ui\fonts\plain_12.fnt" />
-    <AndroidAsset Include="Assets\text.yml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -108,92 +96,11 @@
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\portraits\test.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\shaders\color.fx" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\tilesets\bl.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\tilesets\blockout.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\tilesets\new-tileset.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\tilesets\pocket-tileset.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\tilesets\test.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\blue_pixel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\darkblue_pixel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\gamepad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\next.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\pixel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\fonts\bold_12_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\fonts\bold_outline_12_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\fonts\border_12_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\fonts\outline_12_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\fonts\plain_12_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\luts\aap128.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\slices\main.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\ui\slices\main_noborder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\audio\bgm\key.ogg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\audio\bgm\main1.ogg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\audio\sfx\accept.ogg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\audio\sfx\button.ogg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\audio\sfx\click.ogg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\audio\sfx\click_high.ogg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\audio\sfx\deny.ogg" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <PropertyGroup>
-    <PreBuildEvent>RD "$(ProjectDir)\Assets\" /S /Q
-XCOPY "$(SolutionDir)Assets" "$(ProjectDir)\Assets\" /E /Y</PreBuildEvent>
+    <PreBuildEvent>RD "$(ProjectDir)\content\" /S /Q
+XCOPY "$(SolutionDir)content" "$(ProjectDir)\content\" /E /Y</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

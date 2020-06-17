@@ -33,7 +33,7 @@ namespace PhotoVs.Logic.Debugger
         public DiagnosticInfo(SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
             _spriteBatch = spriteBatch;
-            _font = assetLoader.GetAsset<SpriteFont>("ui/fonts/bold_12.fnt");
+            _font = assetLoader.Get<SpriteFont>("ui/fonts/bold_12.fnt");
 
             _updateTimer = new Stopwatch();
             _drawTimer = new Stopwatch();

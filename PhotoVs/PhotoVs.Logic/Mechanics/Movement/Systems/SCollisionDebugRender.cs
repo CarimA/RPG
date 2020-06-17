@@ -112,7 +112,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             var angle =
                 (float)Math.Atan2(edge.Y, edge.X);
 
-            _spriteBatch.Draw(_assetLoader.GetAsset<Texture2D>("ui/pixel.png"),
+            _spriteBatch.Draw(_assetLoader.Get<Texture2D>("ui/pixel.png"),
                 new Rectangle( // rectangle defines shape of line and position of start of line
                     (int)start.X,
                     (int)start.Y,

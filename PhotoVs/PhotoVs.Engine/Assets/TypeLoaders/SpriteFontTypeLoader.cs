@@ -21,7 +21,7 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
             using var reader = new StreamReader(stream);
             var fontData = reader.ReadToEnd();
             var font = BMFontLoader.LoadXml(fontData,
-                name => new TextureWithOffset(_assetLoader.GetAsset<Texture2D>(name)));
+                name => new TextureWithOffset(_assetLoader.Get<Texture2D>(name)));
 
             return font;
         }

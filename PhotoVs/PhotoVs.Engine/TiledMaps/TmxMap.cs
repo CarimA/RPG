@@ -86,8 +86,8 @@ namespace PhotoVs.Engine.TiledMaps
 
                         if (!textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
                         {
-                            tilesetTexture = assetLoader.GetAsset<Texture2D>(tilesetPath);
-                            textureCache.Add(tilesetPath, assetLoader.GetAsset<Texture2D>(tilesetPath));
+                            tilesetTexture = assetLoader.Get<Texture2D>(tilesetPath);
+                            textureCache.Add(tilesetPath, assetLoader.Get<Texture2D>(tilesetPath));
                         }
 
                         var colorData = GetTextureData(tilesetTexture,
@@ -132,8 +132,8 @@ namespace PhotoVs.Engine.TiledMaps
 
                         if (!textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
                         {
-                            tilesetTexture = assetLoader.GetAsset<Texture2D>(tilesetPath);
-                            textureCache.Add(tilesetPath, assetLoader.GetAsset<Texture2D>(tilesetPath));
+                            tilesetTexture = assetLoader.Get<Texture2D>(tilesetPath);
+                            textureCache.Add(tilesetPath, assetLoader.Get<Texture2D>(tilesetPath));
                         }
 
                         var colorData = GetTextureData(tilesetTexture,

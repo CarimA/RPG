@@ -2,6 +2,7 @@
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Utils.Extensions;
 using System.Collections.Generic;
+using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.TiledMaps;
 
 namespace PhotoVs.Logic.Mechanics.World
@@ -25,8 +26,8 @@ namespace PhotoVs.Logic.Mechanics.World
         public void LoadMaps(string directory)
         {
             var files = _assetLoader
-                .GetStreamProvider()
-                .GetFiles(directory);
+                .StreamProvider
+                .EnumerateFiles(DataLocation.Content, directory);
             files.ForEach(LoadMap);
         }
 
@@ -40,7 +41,7 @@ namespace PhotoVs.Logic.Mechanics.World
 
             name = name.Substring(0, name.Length - ".tmx".Length);
 
-            _maps[name] = new OverworldMap(_assetLoader.GetAsset<Map>(filepath), _assetLoader);
+            _maps[name] = new OverworldMap(_assetLoader.Get<Map>(filepath), _assetLoader);
         }
 
         public void SetMap(string map)

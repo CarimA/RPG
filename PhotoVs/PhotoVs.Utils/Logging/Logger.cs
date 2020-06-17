@@ -10,7 +10,7 @@ namespace PhotoVs.Utils.Logging
             _instance ??= new Logger
             {
                 new ConsoleLogger(LogLevel.Trace),
-                //new TextLogger(LogLevel.Trace)
+                new TextLogger(LogLevel.Trace)
             };
 
         public void Trace(string message, params object[] args)

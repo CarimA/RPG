@@ -7,27 +7,38 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
     public class AssetLoader : IAssetLoader
     {
-        protected readonly Dictionary<string, object> _assetCache;
-        protected readonly Dictionary<string, int> _lastUsed;
-        protected readonly IStreamProvider _streamProvider;
-        protected readonly Dictionary<Type, object> _typeLoaders;
+        public IStreamProvider StreamProvider { get; }
+
+        private readonly Dictionary<string, object> _assetCache;
+        private readonly Dictionary<string, int> _lastUsed;
+        private readonly Dictionary<Type, object> _typeLoaders;
 
         public AssetLoader(Coroutines coroutines, IStreamProvider streamProvider)
         {
             _lastUsed = new Dictionary<string, int>();
             _assetCache = new Dictionary<string, object>();
             _typeLoaders = new Dictionary<Type, object>();
-            _streamProvider = streamProvider;
+            StreamProvider = streamProvider;
 
             coroutines.Start(UnloadUnusedAssets());
         }
 
-        public T GetAsset<T>(string filepath, bool includeRoot = true) where T : class
+        public T GetStorage<T>(string filepath) where T : class
+        {
+            var loader = _typeLoaders[typeof(T)];
+            using var stream = StreamProvider.Read(DataLocation.Storage, filepath);
+            var asset = (loader as ITypeLoader<T>)?.Load(stream);
+            return asset;
+        }
+
+        public T Get<T>(string filepath) where T : class
         {
             filepath = SanitiseFilename(filepath);
             if (_assetCache.TryGetValue(filepath, out var asset))
@@ -38,19 +49,19 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             }
             else
             {
-                LoadAsset<T>(filepath, includeRoot);
-                return GetAsset<T>(filepath, includeRoot);
+                Load<T>(filepath);
+                return Get<T>(filepath);
             }
 
             Logger.Write.Fatal("Could not find asset \"{0}\"", filepath);
             throw new FileNotFoundException();
         }
 
-        public void LoadAsset<T>(string filepath, bool includeRoot = true) where T : class
+        public void Load<T>(string filepath) where T : class
         {
             filepath = SanitiseFilename(filepath);
             var loader = _typeLoaders[typeof(T)];
-            using var stream = _streamProvider.GetFile(filepath, includeRoot);
+            using var stream = StreamProvider.Read(DataLocation.Content, filepath);
             var asset = (loader as ITypeLoader<T>)?.Load(stream);
             if (asset != null)
             {
@@ -64,7 +75,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             }
         }
 
-        public bool UnloadAsset(string filepath)
+        public bool Unload(string filepath)
         {
             filepath = SanitiseFilename(filepath);
 
@@ -77,15 +88,10 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             return result;
         }
 
-        public bool IsAssetLoaded(string filepath)
+        public bool IsLoaded(string filepath)
         {
             filepath = SanitiseFilename(filepath);
             return _assetCache.ContainsKey(filepath);
-        }
-
-        public IStreamProvider GetStreamProvider()
-        {
-            return _streamProvider;
         }
 
         public IAssetLoader RegisterTypeLoader<T>(ITypeLoader<T> typeLoader)
@@ -110,16 +116,11 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
                 yield return pause;
                 pause.Time = time;
 
-                foreach (var kvp in _lastUsed)
+                foreach (var kvp in _lastUsed.Where(kvp => _assetCache.ContainsKey(kvp.Key))
+                    .Where(kvp => kvp.Value < Environment.TickCount - 8000))
                 {
-                    if (!_assetCache.ContainsKey(kvp.Key))
-                        continue;
-
-                    if (kvp.Value < Environment.TickCount - 8000)
-                    {
-                        toRemove.Add(kvp.Key);
-                        UnloadAsset(kvp.Key);
-                    }
+                    toRemove.Add(kvp.Key);
+                    Unload(kvp.Key);
                 }
 
                 foreach (var key in toRemove)

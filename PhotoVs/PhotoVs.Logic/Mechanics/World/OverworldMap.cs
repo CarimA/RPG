@@ -109,8 +109,8 @@ namespace PhotoVs.Logic.Mechanics.World
 
                         if (!textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
                         {
-                            tilesetTexture = _assetLoader.GetAsset<Texture2D>(tilesetPath);
-                            textureCache.Add(tilesetPath, _assetLoader.GetAsset<Texture2D>(tilesetPath));
+                            tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
+                            textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
                         }
 
                         var posX = map.XOffset + (x * map.CellWidth) + layer.X;

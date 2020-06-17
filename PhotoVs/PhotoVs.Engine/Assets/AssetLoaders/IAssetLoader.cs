@@ -5,13 +5,15 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 {
     public interface IAssetLoader
     {
-        T GetAsset<T>(string filepath) where T : class;
-        void LoadAsset<T>(string filepath) where T : class;
-        bool UnloadAsset(string filepath);
+        IStreamProvider StreamProvider { get; }
 
-        bool IsAssetLoaded(string filepath);
+        T Get<T>(string filepath) where T : class;
+        T GetStorage<T>(string filepath) where T : class;
+        void Load<T>(string filepath) where T : class;
+        bool Unload(string filepath);
 
-        IStreamProvider GetStreamProvider();
+        bool IsLoaded(string filepath);
+
         IAssetLoader RegisterTypeLoader<T>(ITypeLoader<T> typeLoader);
     }
 }
