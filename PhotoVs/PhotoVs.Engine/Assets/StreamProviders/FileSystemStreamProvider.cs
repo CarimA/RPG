@@ -115,11 +115,12 @@ namespace PhotoVs.Engine.Assets.StreamProviders
 
         private string FixFilename(string filename)
         {
-            filename = filename.Replace("/", "\\");
+            filename = filename.Replace("\\\\", "/");
+            filename = filename.Replace("\\", "/");
             filename = filename.ToLowerInvariant();
 
-            if (filename.StartsWith("\\"))
-                filename = filename.Substring("\\".Length);
+            if (filename.StartsWith("/"))
+                filename = filename.Substring("/".Length);
 
             return filename;
         }
@@ -128,8 +129,8 @@ namespace PhotoVs.Engine.Assets.StreamProviders
         {
             directory = FixFilename(directory);
 
-            if (!directory.EndsWith("\\"))
-                directory += "\\";
+            if (!directory.EndsWith("/"))
+                directory += "/";
 
             return directory;
         }
