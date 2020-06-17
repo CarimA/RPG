@@ -33,7 +33,7 @@ namespace PhotoVs.Engine.Assets.StreamProviders
             var path = GetFilepath(location, filepath);
             using var fileStream = new FileStream(path, FileMode.OpenOrCreate, System.IO.FileAccess.Write);
             var bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, (int) stream.Length);
+            stream.Read(bytes, 0, (int)stream.Length);
             fileStream.Write(bytes, 0, bytes.Length);
         }
 

@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
+using System;
 
 namespace PhotoVs.Logic.Mechanics.World.Systems
 {
@@ -54,12 +54,12 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         public void AfterDraw(GameTime gameTime)
         {
-            
+
         }
 
         public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection, Matrix uiOrigin)
         {
-            
+
 
         }
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS.GameObjects;
@@ -15,6 +11,10 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
@@ -85,48 +85,48 @@ namespace PhotoVs.Logic.Mechanics.World
                         isMask = false;
 
                     for (int y = 0, i = 0; y < layer.Height; y++)
-                    for (var x = 0; x < layer.Width; x++, i++)
-                    {
-                        var gid = layer.Data[i];
-                        if (gid == 0)
-                            continue;
-
-                        if (!tilesetCache.TryGetValue(gid, out var tileset))
+                        for (var x = 0; x < layer.Width; x++, i++)
                         {
-                            tileset = map.Tilesets.Single(ts =>
-                                gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
-                            tilesetCache.Add(gid, tileset);
+                            var gid = layer.Data[i];
+                            if (gid == 0)
+                                continue;
+
+                            if (!tilesetCache.TryGetValue(gid, out var tileset))
+                            {
+                                tileset = map.Tilesets.Single(ts =>
+                                    gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
+                                tilesetCache.Add(gid, tileset);
+                            }
+
+                            var tile = tileset[gid];
+
+                            if (!replaceCache.TryGetValue(tileset.ImagePath, out var tilesetPath))
+                            {
+                                tilesetPath = tileset.ImagePath.Replace("../", "");
+                                tilesetPath = "tilesets/" + Path.GetFileName(tilesetPath);
+                                replaceCache.Add(tileset.ImagePath, tilesetPath);
+                            }
+
+                            if (!textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
+                            {
+                                tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
+                                textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
+                            }
+
+                            var posX = map.XOffset + (x * map.CellWidth) + layer.X;
+                            var posY = map.YOffset + (y * map.CellHeight) + layer.Y;
+
+                            var tileData = new Tile(posX, posY, tile.Left, tile.Top, tilesetTexture);
+
+                            if (isMask)
+                            {
+                                _maskTiles.Add(tileData, new RectangleF(posX, posY, tile.Width, tile.Height));
+                            }
+                            else
+                            {
+                                _fringeTiles.Add(tileData, new Rectangle(posX, posY, tile.Width, tile.Height));
+                            }
                         }
-
-                        var tile = tileset[gid];
-
-                        if (!replaceCache.TryGetValue(tileset.ImagePath, out var tilesetPath))
-                        {
-                            tilesetPath = tileset.ImagePath.Replace("../", "");
-                            tilesetPath = "tilesets/" + Path.GetFileName(tilesetPath);
-                            replaceCache.Add(tileset.ImagePath, tilesetPath);
-                        }
-
-                        if (!textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
-                        {
-                            tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
-                            textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
-                        }
-
-                        var posX = map.XOffset + (x * map.CellWidth) + layer.X;
-                        var posY = map.YOffset + (y * map.CellHeight) + layer.Y;
-
-                        var tileData = new Tile(posX, posY, tile.Left, tile.Top, tilesetTexture);
-
-                        if (isMask)
-                        {
-                            _maskTiles.Add(tileData, new RectangleF(posX, posY, tile.Width, tile.Height));
-                        }
-                        else
-                        {
-                            _fringeTiles.Add(tileData, new Rectangle(posX, posY, tile.Width, tile.Height));
-                        }
-                    }
                 });
         }
 
@@ -151,7 +151,7 @@ namespace PhotoVs.Logic.Mechanics.World
                 });
         }
 
-        private void ProcessObject(SpatialHash<IGameObject, GameObjectCollection> hash, BaseObject obj, 
+        private void ProcessObject(SpatialHash<IGameObject, GameObjectCollection> hash, BaseObject obj,
             Action<IGameObject, BaseObject> func)
         {
             switch (obj)
@@ -167,7 +167,7 @@ namespace PhotoVs.Logic.Mechanics.World
             }
         }
 
-        private void ProcessPolygonObject(SpatialHash<IGameObject, GameObjectCollection> hash, PolygonObject obj, 
+        private void ProcessPolygonObject(SpatialHash<IGameObject, GameObjectCollection> hash, PolygonObject obj,
             Action<IGameObject, BaseObject> func)
         {
             var entity = new GameObject();

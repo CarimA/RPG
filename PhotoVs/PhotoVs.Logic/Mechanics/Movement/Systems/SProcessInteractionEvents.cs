@@ -1,17 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Engine.Events;
+using PhotoVs.Logic.Events;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
-using PhotoVs.Engine.Events;
-using PhotoVs.Logic.Events;
-using PhotoVs.Logic.Mechanics.Camera.Systems;
-using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -99,7 +99,8 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 }
                 else
                 {
-                    if (!_enteredScripts.Contains(script)) continue;
+                    if (!_enteredScripts.Contains(script))
+                        continue;
 
                     _enteredScripts.Remove(script);
                     _events.Notify(EventType.INTERACT_AREA_EXIT + ":" + scriptName, new InteractEventArgs(this, player, script));

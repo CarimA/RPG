@@ -8,7 +8,7 @@ namespace PhotoVs.Utils.Collections
     {
         public SpatialHash(int cellSize) : base(cellSize)
         {
-            
+
         }
     }
 
@@ -68,7 +68,7 @@ namespace PhotoVs.Utils.Collections
                     foreach (var point in points)
                         //if (!output.Contains(point))
                         yield return point;
-                        //output.Add(point);
+                    //output.Add(point);
                 }
 
             //return output;

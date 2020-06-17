@@ -1,12 +1,12 @@
-﻿using PhotoVs.Engine.TiledMaps.Layers;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.TiledMaps.Layers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.Assets.AssetLoaders;
 
 namespace PhotoVs.Engine.TiledMaps
 {
@@ -307,14 +307,14 @@ namespace PhotoVs.Engine.TiledMaps
             texture.GetData<Color>(imageData);
 
             return GetImageData(imageData, texture.Width, rect);
-        } 
+        }
 
         private static Color[] GetImageData(Color[] colorData, int width, Rectangle rectangle)
         {
             Color[] color = new Color[rectangle.Width * rectangle.Height];
             for (int x = 0; x < rectangle.Width; x++)
-            for (int y = 0; y < rectangle.Height; y++)
-                color[x + y * rectangle.Width] = colorData[x + rectangle.X + (y + rectangle.Y) * width];
+                for (int y = 0; y < rectangle.Height; y++)
+                    color[x + y * rectangle.Width] = colorData[x + rectangle.X + (y + rectangle.Y) * width];
             return color;
         }
 

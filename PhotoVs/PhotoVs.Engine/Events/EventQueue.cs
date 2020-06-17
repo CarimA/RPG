@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PhotoVs.Utils.Logging;
+using System;
 using System.Collections.Generic;
-using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Events
 {

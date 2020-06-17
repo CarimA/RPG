@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
-using PhotoVs.Engine.Assets.StreamProviders;
+﻿using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Logic;
+using System;
+using System.IO;
 
 namespace PhotoVs.Platform.WindowsDX
 {
@@ -14,7 +14,7 @@ namespace PhotoVs.Platform.WindowsDX
         public WindowsDXPlatform()
         {
             StreamProvider = new FileSystemStreamProvider(
-                "content\\", 
+                "content\\",
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "PhotoVs"));
         }
     }

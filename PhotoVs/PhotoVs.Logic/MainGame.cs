@@ -7,21 +7,19 @@ using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Plugins;
 using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.Debugger;
+using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input.Systems;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 using PhotoVs.Utils.Extensions;
-using PhotoVs.Utils.Logging;
 using System;
-using System.IO;
-using PhotoVs.Engine.Events;
-using PhotoVs.Logic.Events;
 
 namespace PhotoVs.Logic
 {

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.Components;
+using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Components
 {
@@ -9,7 +9,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Components
         public Vector2 LastPosition { get; set; }
         private Vector2 _position;
         public Vector2 Position
-        { 
+        {
             get
             {
                 return _position;
@@ -21,7 +21,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Components
             }
         }
         public List<Vector2> VelocityIntent { get; set; }
-        
+
         public Vector2 DeltaPosition
         {
             get

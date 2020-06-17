@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Engine.Events;
+using PhotoVs.Logic.Events;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PhotoVs.Engine.Events;
-using PhotoVs.Logic.Events;
-using PhotoVs.Logic.Mechanics.Camera.Systems;
-using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -24,7 +24,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
             _overworld = overworld;
             _camera = camera;
-            _gameEvents= gameEvents;
+            _gameEvents = gameEvents;
         }
 
         public int Priority { get; set; } = -1;

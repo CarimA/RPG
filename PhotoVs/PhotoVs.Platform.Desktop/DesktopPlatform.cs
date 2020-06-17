@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
-using PhotoVs.Engine.Assets.StreamProviders;
+﻿using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Logic;
+using System;
+using System.IO;
 
 namespace PhotoVs.Platform.Desktop
 {
