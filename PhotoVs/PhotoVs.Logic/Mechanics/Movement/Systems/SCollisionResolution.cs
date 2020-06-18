@@ -11,6 +11,7 @@ using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PhotoVs.Engine.Events.EventArgs;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {

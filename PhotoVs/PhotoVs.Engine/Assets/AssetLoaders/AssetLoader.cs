@@ -1,7 +1,5 @@
 ﻿using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Engine.Assets.TypeLoaders;
-using PhotoVs.Engine.Scheduler;
-using PhotoVs.Engine.Scheduler.YieldInstructions;
 using PhotoVs.Utils.Logging;
 using System;
 using System.Collections;
@@ -19,14 +17,12 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         private readonly Dictionary<string, int> _lastUsed;
         private readonly Dictionary<Type, object> _typeLoaders;
 
-        public AssetLoader(Coroutines coroutines, IStreamProvider streamProvider)
+        public AssetLoader(IStreamProvider streamProvider)
         {
             _lastUsed = new Dictionary<string, int>();
             _assetCache = new Dictionary<string, object>();
             _typeLoaders = new Dictionary<Type, object>();
             StreamProvider = streamProvider;
-
-            coroutines.Start(UnloadUnusedAssets());
         }
 
         public T Get<T>(string filepath) where T : class
@@ -94,31 +90,6 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             }
 
             return this;
-        }
-
-        private IEnumerator UnloadUnusedAssets()
-        {
-            var time = 8f;
-            var pause = new Pause(time);
-            var toRemove = new List<string>();
-
-            while (true)
-            {
-                yield return pause;
-                pause.Time = time;
-
-                foreach (var kvp in _lastUsed.Where(kvp => _assetCache.ContainsKey(kvp.Key))
-                    .Where(kvp => kvp.Value < Environment.TickCount - 8000))
-                {
-                    toRemove.Add(kvp.Key);
-                    Unload(kvp.Key);
-                }
-
-                foreach (var key in toRemove)
-                    _lastUsed.Remove(key);
-
-                toRemove.Clear();
-            }
         }
 
         private string SanitiseFilename(string filename)

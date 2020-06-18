@@ -9,8 +9,6 @@ using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Engine.Plugins;
-using PhotoVs.Engine.Scheduler;
 using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
@@ -24,6 +22,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Xml;
+using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.TiledMaps;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -38,10 +37,8 @@ namespace PhotoVs.Logic
         private readonly Services _services;
         private IAssetLoader _assetLoader;
         private SCamera _camera;
-        private Coroutines _coroutines;
         private DiagnosticInfo _info;
         private Player _player;
-        private PluginProvider _pluginProvider;
         private Renderer _renderer;
         private SceneMachine _sceneMachine;
         private SpriteBatch _spriteBatch;
@@ -83,9 +80,6 @@ namespace PhotoVs.Logic
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _services.Set(_spriteBatch);
 
-            _coroutines = new Coroutines();
-            _services.Set(_coroutines);
-
             _services.Set(Config.Load());
 
             _assetLoader = CreateAssetLoader();
@@ -116,14 +110,6 @@ namespace PhotoVs.Logic
             if (_services.Get<Config>().Fullscreen)
                 EnableFullscreen();
 
-            _services.Set(new Scheduler(_services));
-
-            _pluginProvider = new PluginProvider(_services);
-            _services.Set(_pluginProvider);
-            AppDomain.CurrentDomain.GetAssemblies().ForEach(_pluginProvider.LoadPluginFromAssembly);
-            _pluginProvider.LoadPlugins("logic/");
-            _pluginProvider.LoadMods();
-
             _events.Notify(EventType.GAME_START, new GameEventArgs(this));
 
             base.Initialize();
@@ -142,7 +128,7 @@ namespace PhotoVs.Logic
 
         private IAssetLoader CreateAssetLoader()
         {
-            var assetLoader = new AssetLoader(_coroutines, _platform.StreamProvider);
+            var assetLoader = new AssetLoader(_platform.StreamProvider);
             assetLoader
                 .RegisterTypeLoader(new EffectTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new TextTypeLoader())
@@ -226,7 +212,6 @@ namespace PhotoVs.Logic
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _coroutines.Update(gameTime);
             _sceneMachine.Update(gameTime);
 
             base.Update(gameTime);
