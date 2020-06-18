@@ -42,13 +42,14 @@ namespace PhotoVs.Engine.TiledMaps
             var transparencyCache = new Dictionary<int, bool>();
             var opaqueCache = new Dictionary<int, bool>();
             var textureCache = new Dictionary<string, Texture2D>();
-
-            bool fringeStart = false;
+            var fringeStart = false;
 
             foreach (var layer in map.Layers)
             {
                 if (!(layer is TileLayer tileLayer))
                 {
+                    // todo: figure out something that can process collision shapes 
+                    // by merging into convex shapes and splitting up accidentally created concave shapes into separate polygons
                     outputLayers.Add(layer);
                     continue;
                 }
@@ -93,17 +94,7 @@ namespace PhotoVs.Engine.TiledMaps
                         var colorData = GetTextureData(tilesetTexture,
                             new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height));
 
-
-                        bool foundOpaque = true;
-                        for (var t = 0; t < colorData.Length; t++)
-                        {
-                            var color = colorData[t];
-                            if (color != Color.Transparent)
-                            {
-                                foundOpaque = false;
-                                break;
-                            }
-                        }
+                        var foundOpaque = colorData.All(color => color == Color.Transparent);
 
                         transparencyCache[data] = foundOpaque;
                         if (foundOpaque)
@@ -140,16 +131,7 @@ namespace PhotoVs.Engine.TiledMaps
                             new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height));
 
 
-                        bool foundOpaque = true;
-                        for (var t = 0; t < colorData.Length; t++)
-                        {
-                            var color = colorData[t];
-                            if (color == Color.Transparent)
-                            {
-                                foundOpaque = false;
-                                break;
-                            }
-                        }
+                        var foundOpaque = colorData.All(color => color != Color.Transparent);
 
                         opaqueCache[data] = foundOpaque;
                         completelyOpaque = foundOpaque;
@@ -191,32 +173,32 @@ namespace PhotoVs.Engine.TiledMaps
                         {
                             foreach (var currentLayer in maskLayers)
                             {
-                                if (currentLayer.Data[i] == 0 || currentLayer.Data[i] == data || completelyOpaque)
-                                {
-                                    // found something that could be compressed
-                                    currentLayer.Data[i] = data;
-                                    foundLower = true;
-                                    break;
-                                }
+                                if (currentLayer.Data[i] != 0 && currentLayer.Data[i] != data && !completelyOpaque)
+                                    continue;
+                                
+                                // found something that could be compressed
+                                currentLayer.Data[i] = data;
+                                foundLower = true;
+                                break;
                             }
 
-                            if (!foundLower)
+                            if (foundLower)
+                                continue;
+
+                            // need to add a layer
+                            var newLayer = new TileLayer
                             {
-                                // need to add a layer
-                                var newLayer = new TileLayer
-                                {
-                                    Data = new int[tileLayer.Data.Length],
-                                    Height = tileLayer.Height,
-                                    Width = tileLayer.Width,
-                                    Opacity = 1,
-                                    Visible = true,
-                                    Name = "M" + (maskLayers.Count + 1),
-                                    Encoding = "csv",
-                                    LayerType = LayerType.tilelayer
-                                };
-                                newLayer.Data[i] = data;
-                                maskLayers.Add(newLayer);
-                            }
+                                Data = new int[tileLayer.Data.Length],
+                                Height = tileLayer.Height,
+                                Width = tileLayer.Width,
+                                Opacity = 1,
+                                Visible = true,
+                                Name = "M" + (maskLayers.Count + 1),
+                                Encoding = "csv",
+                                LayerType = LayerType.tilelayer
+                            };
+                            newLayer.Data[i] = data;
+                            maskLayers.Add(newLayer);
                         }
                     }
                     else
@@ -244,7 +226,7 @@ namespace PhotoVs.Engine.TiledMaps
                             else
                             {
                                 fringeLayers[0].Data[i] = data;
-                                for (int e = 1; e < fringeLayers.Count; e++)
+                                for (var e = 1; e < fringeLayers.Count; e++)
                                 {
                                     fringeLayers[e].Data[i] = 0;
                                 }
@@ -260,32 +242,32 @@ namespace PhotoVs.Engine.TiledMaps
                         {
                             foreach (var currentLayer in fringeLayers)
                             {
-                                if (currentLayer.Data[i] == 0 || currentLayer.Data[i] == data)
-                                {
-                                    // found something that could be compressed
-                                    currentLayer.Data[i] = data;
-                                    foundLower = true;
-                                    break;
-                                }
+                                if (currentLayer.Data[i] != 0 && currentLayer.Data[i] != data)
+                                    continue;
+                                
+                                // found something that could be compressed
+                                currentLayer.Data[i] = data;
+                                foundLower = true;
+                                break;
                             }
 
-                            if (!foundLower)
+                            if (foundLower)
+                                continue;
+                            
+                            // need to add a layer
+                            var newLayer = new TileLayer
                             {
-                                // need to add a layer
-                                var newLayer = new TileLayer
-                                {
-                                    Data = new int[tileLayer.Data.Length],
-                                    Height = tileLayer.Height,
-                                    Width = tileLayer.Width,
-                                    Opacity = 1,
-                                    Visible = true,
-                                    Name = "F" + (fringeLayers.Count + 1),
-                                    Encoding = "csv",
-                                    LayerType = LayerType.tilelayer
-                                };
-                                newLayer.Data[i] = data;
-                                fringeLayers.Add(newLayer);
-                            }
+                                Data = new int[tileLayer.Data.Length],
+                                Height = tileLayer.Height,
+                                Width = tileLayer.Width,
+                                Opacity = 1,
+                                Visible = true,
+                                Name = "F" + (fringeLayers.Count + 1),
+                                Encoding = "csv",
+                                LayerType = LayerType.tilelayer
+                            };
+                            newLayer.Data[i] = data;
+                            fringeLayers.Add(newLayer);
                         }
                     }
                 }
@@ -316,6 +298,14 @@ namespace PhotoVs.Engine.TiledMaps
                 for (int y = 0; y < rectangle.Height; y++)
                     color[x + y * rectangle.Width] = colorData[x + rectangle.X + (y + rectangle.Y) * width];
             return color;
+        }
+
+        public static void WriteWholeMap(this XmlWriter writer, Map map)
+        {
+            writer.WriteStartElement("map");
+            writer.WriteMapAttributes(map);
+            writer.WriteMapElements(map);
+            writer.WriteEndElement();
         }
 
         public static void WriteMapAttributes(this XmlWriter writer, Map map)

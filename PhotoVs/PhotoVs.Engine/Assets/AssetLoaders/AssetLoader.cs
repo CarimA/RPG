@@ -29,14 +29,6 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             coroutines.Start(UnloadUnusedAssets());
         }
 
-        public T GetStorage<T>(string filepath) where T : class
-        {
-            var loader = _typeLoaders[typeof(T)];
-            using var stream = StreamProvider.Read(DataLocation.Storage, filepath);
-            var asset = (loader as ITypeLoader<T>)?.Load(stream);
-            return asset;
-        }
-
         public T Get<T>(string filepath) where T : class
         {
             filepath = SanitiseFilename(filepath);

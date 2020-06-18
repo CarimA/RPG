@@ -16,8 +16,8 @@ namespace PhotoVs.Logic.PlayerData
         private readonly CInput _input;
 
         private readonly CPosition _position;
-        private readonly float RunSpeed = 125f;
-        private readonly float WalkSpeed = 70f;
+        private readonly float RunSpeed = 150f;
+        private readonly float WalkSpeed = 95f;
         public Dictionary<string, object> Flags { get; }
         public bool CanMove { get; set; }
 

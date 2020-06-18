@@ -20,6 +20,12 @@ using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 using PhotoVs.Utils.Extensions;
 using System;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Xml;
+using PhotoVs.Engine.TiledMaps;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
 {
@@ -120,18 +126,18 @@ namespace PhotoVs.Logic
 
             _events.Notify(EventType.GAME_START, new GameEventArgs(this));
 
+            base.Initialize();
+        }
+
+        private void PostprocessMap(string inputFile, string outputFile)
+        {
             // todo: turn this postprocess step into a command line tool
-            /*var convertMap = _assetLoader.GetAsset<Map>("albion.tmx");
+            var convertMap = _assetLoader.Get<Map>(inputFile);
             TmxMap.CompressLayers(convertMap, _assetLoader);
 
-            using (var filestream = new FileStream("test.tmx", FileMode.Create)){
-                using (var writer = new XmlTextWriter(filestream, Encoding.UTF8))
-                {
-                    writer.WriteMapElements(convertMap);
-                }
-            }*/
-
-            base.Initialize();
+            using var filestream = new FileStream(outputFile, FileMode.Create);
+            using var writer = new XmlTextWriter(filestream, Encoding.UTF8);
+            writer.WriteWholeMap(convertMap);
         }
 
         private IAssetLoader CreateAssetLoader()
