@@ -13,9 +13,9 @@ public class PluginTest : IPlugin
         _sceneMachine = services.Get<SceneMachine>();
 
         _events = services.Get<EventQueue>();
-        gameStartId = _events.Subscribe(EventType.GAME_START, EventsOnOnGameStart);
     }
 
+    [Trigger(EventType.GAME_START)]
     private void EventsOnOnGameStart(IGameEventArgs gameEventArgs)
     {
         _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);

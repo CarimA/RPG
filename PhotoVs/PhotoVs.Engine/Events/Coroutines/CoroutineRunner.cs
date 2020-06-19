@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Events.Coroutines.Instruction;
+
+namespace PhotoVs.Engine.Events.Coroutines
+{
+    public class CoroutineRunner
+    {
+        // Timings guide: https://www.alanzucconi.com/2017/02/15/nested-coroutines-in-unity/
+
+        private readonly List<Coroutine> _coroutines;
+
+        public CoroutineRunner()
+        {
+            _coroutines = new List<Coroutine>();
+        }
+
+        public void Start(Coroutine coroutine)
+        {
+            _coroutines.Add(coroutine);
+        }
+
+        public void Stop(Coroutine coroutine)
+        {
+            _coroutines.Remove(coroutine);
+        }
+
+        public void StopAll()
+        {
+            _coroutines.Clear();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            for (var i = 0; i < _coroutines.Count; i++)
+            {
+                var coroutine = _coroutines[i];
+
+                // this coroutine has finished
+                if (coroutine.Current == null)
+                    if (!coroutine.MoveNext())
+                        _coroutines.RemoveAt(i--);
+
+                switch (coroutine.Current)
+                {
+                    case IYield instruction:
+                        if (instruction.CanContinue(gameTime))
+                            if (!coroutine.MoveNext())
+                                _coroutines.RemoveAt(i--);
+                        break;
+
+                    case Coroutine routine:
+                        if (routine.Current is IYield yielder)
+                            if (yielder.CanContinue(gameTime))
+                                if (!routine.MoveNext())
+                                    if (!coroutine.MoveNext())
+                                        _coroutines.RemoveAt(i--);
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException(coroutine.Current.GetType().ToString());
+                }
+            }
+        }
+    }
+}

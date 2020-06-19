@@ -26,9 +26,20 @@ namespace PhotoVs.Engine.Events
             _notifications = new List<(string, IGameEventArgs)>();
         }
 
-        public string Subscribe(string eventType, Action<IGameEventArgs> gameEvent)
+        public string Reserve()
         {
             var id = Guid.NewGuid().ToString();
+            return id;
+        }
+        public string Subscribe(string eventId, string eventType, Action<IGameEventArgs> gameEvent)
+        {
+            _toSubscribe.Add((eventType, eventId, gameEvent));
+            return eventId;
+        }
+
+        public string Subscribe(string eventType, Action<IGameEventArgs> gameEvent)
+        {
+            var id = Reserve();
             _toSubscribe.Add((eventType, id, gameEvent));
             return id;
         }
@@ -77,9 +88,13 @@ namespace PhotoVs.Engine.Events
         {
             foreach (var toUnsubscribe in _toUnsubscribe)
             {
+                var eventId = _eventTypeReference[toUnsubscribe];
                 _events.Remove(toUnsubscribe);
-                _subscriptions[_eventTypeReference[toUnsubscribe]].Remove(toUnsubscribe);
+                _subscriptions[eventId].Remove(toUnsubscribe);
                 _eventTypeReference.Remove(toUnsubscribe);
+
+                if (_subscriptions[eventId].Count == 0)
+                    _subscriptions.Remove(eventId);
 
                 Logger.Write.Trace($"Unsubscribing ID: {toUnsubscribe}).");
             }

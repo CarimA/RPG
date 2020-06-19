@@ -22,7 +22,9 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Xml;
+using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
+using PhotoVs.Engine.Events.Plugins;
 using PhotoVs.Engine.TiledMaps;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -42,6 +44,8 @@ namespace PhotoVs.Logic
         private Renderer _renderer;
         private SceneMachine _sceneMachine;
         private SpriteBatch _spriteBatch;
+        private CoroutineRunner _coroutineRunner;
+        private PluginProvider _pluginProvider;
 
         public MainGame(IPlatform platform)
         {
@@ -52,7 +56,9 @@ namespace PhotoVs.Logic
 
             _services = new Services();
             _events = new EventQueue();
+            _coroutineRunner = new CoroutineRunner();
             _services.Set(_events);
+            _services.Set(_coroutineRunner);
 
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
@@ -109,6 +115,14 @@ namespace PhotoVs.Logic
 
             if (_services.Get<Config>().Fullscreen)
                 EnableFullscreen();
+
+            _services.Set(new EventCommands(_services));
+
+            _pluginProvider = new PluginProvider(_services);
+            _services.Set(_pluginProvider);
+            AppDomain.CurrentDomain.GetAssemblies().ForEach(_pluginProvider.LoadPluginFromAssembly);
+            _pluginProvider.LoadPlugins("logic/");
+            _pluginProvider.LoadMods();
 
             _events.Notify(EventType.GAME_START, new GameEventArgs(this));
 
@@ -212,6 +226,7 @@ namespace PhotoVs.Logic
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _coroutineRunner.Update(gameTime);
             _sceneMachine.Update(gameTime);
 
             base.Update(gameTime);
