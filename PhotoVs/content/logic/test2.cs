@@ -1,28 +1,14 @@
-public class PluginTest : IPlugin
+public class PluginTest : Plugin
 {
-    public string Name => "Test";
-
-    private readonly EventCommands EventCommands;
-
-    private readonly SceneMachine _sceneMachine;
-    private readonly EventQueue _events;
-    private readonly Player _player;
-    
-    public PluginTest(Services services)
-    {
-        EventCommands = services.Get<EventCommands>();
-
-        _sceneMachine = services.Get<SceneMachine>();
-        _player = services.Get<Player>();
-        _events = services.Get<EventQueue>();
-    }
+    public string Name => "PluginTest";
 
     [GameEvent]
     [Trigger(EventType.GAME_START)]
     [RunOnce]
     void UseAControllerDummy(IGameEventArgs args)
     {
-        _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);
+        var sceneMachine = Services.Get<SceneMachine>();
+        sceneMachine.Push(sceneMachine.ControllerRecommendationScreen);
     }
 
     int startTick = 0;
@@ -39,13 +25,15 @@ public class PluginTest : IPlugin
     void StopTrackingTimeToWalk(IGameEventArgs args)
     {
         var endTick = Environment.TickCount;
-        EventCommands.Spawn(SayHowLong(endTick - startTick));
+        Spawn(SayHowLong(endTick - startTick));
     }
 
     IEnumerator SayHowLong(int ticks)
     {
-        _player.LockMovement();
-        yield return EventCommands.Dialogue("Debugger", "It took {# Yellow}" + ticks + " ticks{/#} to walk through.");
-        _player.UnlockMovement();
+        var player = Services.Get<Player>();
+
+        player.LockMovement();
+        yield return Dialogue("Debugger", "It took {# Yellow}" + ticks + " ticks{/#} to walk through.");
+        player.UnlockMovement();
     }
 }

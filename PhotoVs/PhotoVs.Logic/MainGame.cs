@@ -24,8 +24,8 @@ using System.Text;
 using System.Xml;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
-using PhotoVs.Engine.Events.Plugins;
 using PhotoVs.Engine.TiledMaps;
+using PhotoVs.Logic.Events.Plugins;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
@@ -116,8 +116,6 @@ namespace PhotoVs.Logic
             if (_services.Get<Config>().Fullscreen)
                 EnableFullscreen();
 
-            _services.Set(new EventCommands(_services));
-
             _pluginProvider = new PluginProvider(_services);
             _services.Set(_pluginProvider);
             AppDomain.CurrentDomain.GetAssemblies().ForEach(_pluginProvider.LoadPluginFromAssembly);
@@ -142,7 +140,7 @@ namespace PhotoVs.Logic
 
         private IAssetLoader CreateAssetLoader()
         {
-            var assetLoader = new AssetLoader(_platform.StreamProvider);
+            var assetLoader = new AssetLoader(_services, _platform.StreamProvider);
             assetLoader
                 .RegisterTypeLoader(new EffectTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new TextTypeLoader())

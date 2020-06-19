@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PhotoVs.Engine.Events.Coroutines;
+using PhotoVs.Engine.Events.Coroutines.Instructions;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
@@ -17,12 +19,14 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         private readonly Dictionary<string, int> _lastUsed;
         private readonly Dictionary<Type, object> _typeLoaders;
 
-        public AssetLoader(IStreamProvider streamProvider)
+        public AssetLoader(Services services, IStreamProvider streamProvider)
         {
             _lastUsed = new Dictionary<string, int>();
             _assetCache = new Dictionary<string, object>();
             _typeLoaders = new Dictionary<Type, object>();
             StreamProvider = streamProvider;
+
+            services.Get<CoroutineRunner>().Start(new Coroutine(UnloadUnusedAssets()));
         }
 
         public T Get<T>(string filepath) where T : class
@@ -95,6 +99,31 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         private string SanitiseFilename(string filename)
         {
             return filename.ToLowerInvariant();
+        }
+
+        private IEnumerator UnloadUnusedAssets()
+        {
+            const float time = 20f;
+            var pause = new Wait(time);
+            var toRemove = new List<string>();
+
+            while (true)
+            {
+                yield return pause;
+                pause.SetTime(time);
+
+                foreach (var kvp in _lastUsed.Where(kvp => _assetCache.ContainsKey(kvp.Key))
+                    .Where(kvp => kvp.Value < Environment.TickCount - (time * 1000)))
+                {
+                    toRemove.Add(kvp.Key);
+                    Unload(kvp.Key);
+                }
+
+                foreach (var key in toRemove)
+                    _lastUsed.Remove(key);
+
+                toRemove.Clear();
+            }
         }
     }
 }

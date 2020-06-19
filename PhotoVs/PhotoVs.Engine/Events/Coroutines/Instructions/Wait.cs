@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Utils.Extensions;
 
-namespace PhotoVs.Engine.Events.Coroutines.Instruction
+namespace PhotoVs.Engine.Events.Coroutines.Instructions
 {
     public class Wait : IYield
     {
         private float _time;
 
         public Wait(float time)
+        {
+            _time = time;
+        }
+
+        public void SetTime(float time)
         {
             _time = time;
         }

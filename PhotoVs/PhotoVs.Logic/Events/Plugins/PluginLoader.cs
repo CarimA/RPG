@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing.Text;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -9,16 +7,18 @@ using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using PhotoVs.Engine;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.StreamProviders;
+using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
-using PhotoVs.Engine.Events.Plugins.Attributes;
+using PhotoVs.Logic.Events.Plugins.Attributes;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 
-namespace PhotoVs.Engine.Events.Plugins
+namespace PhotoVs.Logic.Events.Plugins
 {
     public class PluginProvider
     {
@@ -158,7 +158,9 @@ namespace PhotoVs.Plugins
         {
             try
             {
-                var obj = (IPlugin)Activator.CreateInstance(type, _services);
+                var obj = (Plugin)Activator.CreateInstance(type);
+                obj.Initialise(_services);
+                
                 var methods = type
                     .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
                     .Where(method => method.GetCustomAttributes(typeof(GameEventAttribute), false).Length > 0);
@@ -210,7 +212,7 @@ namespace PhotoVs.Plugins
 
         private bool IsPlugin(Type type)
         {
-            return typeof(IPlugin).IsAssignableFrom(type) && type != typeof(IPlugin);
+            return typeof(Plugin).IsAssignableFrom(type) && type != typeof(Plugin);
         }
 
         private bool IsScript(string filename)

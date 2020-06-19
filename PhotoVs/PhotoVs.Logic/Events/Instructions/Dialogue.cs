@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine.Events.Coroutines.Instruction;
+using PhotoVs.Engine.Events.Coroutines.Instructions;
 using PhotoVs.Logic.Scenes;
 
 namespace PhotoVs.Logic.Events.Instructions

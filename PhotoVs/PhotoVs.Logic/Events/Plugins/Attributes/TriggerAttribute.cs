@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PhotoVs.Engine.Events.Plugins.Attributes
+namespace PhotoVs.Logic.Events.Plugins.Attributes
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class TriggerAttribute : Attribute
