@@ -166,7 +166,7 @@ namespace PhotoVs.Logic
 
         private Renderer CreateRenderer()
         {
-            var canvas = new CanvasSize(320 * 2, 180 * 2);
+            var canvas = new CanvasSize(640, 360);
             var renderer = new Renderer(GraphicsDevice,
                 _graphicsDeviceManager,
                 Window,

@@ -15,6 +15,11 @@
          * OnRunEnd
          * OnStandStart
          * OnStandEnd
+         *
+         * ZoneLoad
+         * ZoneUnload
+         * MapLoad
+         * MapUnload
          */
 
         public const string INTERACT_ACTION = "INTERACT_ACTION";

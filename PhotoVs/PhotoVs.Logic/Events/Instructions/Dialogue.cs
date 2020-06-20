@@ -25,19 +25,11 @@ namespace PhotoVs.Logic.Events.Instructions
 
         public bool CanContinue(GameTime gameTime)
         {
-            if (_sceneMachine.Peek() is DialogueScene dialogueScene
-                && dialogueScene.IsFinished)
-            {
-                _sceneMachine.Pop();
-                return true;
-            }
+            if (!(_sceneMachine.Peek() is DialogueScene dialogueScene) || !dialogueScene.IsFinished)
+                return !(_sceneMachine.Peek() is DialogueScene);
+            _sceneMachine.Pop();
+            return true;
 
-            if (!(_sceneMachine.Peek() is DialogueScene))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

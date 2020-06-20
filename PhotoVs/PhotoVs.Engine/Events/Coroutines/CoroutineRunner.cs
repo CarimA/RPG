@@ -55,13 +55,27 @@ namespace PhotoVs.Engine.Events.Coroutines
                         break;
 
                     case Coroutine routine:
-                        if (routine.Current is IYield yielder)
-                            if (yielder.CanContinue(gameTime))
+                        if (routine.Current is IYield yieldA)
+                            if (yieldA.CanContinue(gameTime))
                                 if (!routine.MoveNext())
                                     if (!coroutine.MoveNext())
                                         _coroutines.RemoveAt(i--);
                         break;
 
+                    case IEnumerator enumerator:
+                        if (enumerator.Current is IYield yieldB)
+                        {
+                            if (yieldB.CanContinue(gameTime))
+                                if (!enumerator.MoveNext())
+                                    if (!coroutine.MoveNext())
+                                        _coroutines.RemoveAt(i--);
+                        }
+                        else
+                            if (!enumerator.MoveNext())
+                                if (!coroutine.MoveNext())
+                                    _coroutines.RemoveAt(i--);
+
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(coroutine.Current.GetType().ToString());
                 }

@@ -80,7 +80,7 @@ namespace PhotoVs.Logic.Text
         private string MatchFlagMarkup(Match match)
         {
             var flag = match.Groups[1].Value;
-            return _player.Flags[flag].ToString();
+            return _player.PlayerData.GetVariable(flag).ToString();
         }
     }
 }

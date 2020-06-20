@@ -189,6 +189,11 @@ namespace PhotoVs.Engine.FSM.Scenes
             return _entitiesCache;
         }
 
+        public IGameObjectCollection GetGameObjects()
+        {
+            return _entitiesCache;
+        }
+
         private int SortByPriority(ISystem a, ISystem b)
         {
             return a.Priority.CompareTo(b.Priority);

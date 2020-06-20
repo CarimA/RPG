@@ -34,6 +34,8 @@ public class PluginTest : Plugin
 
         player.LockMovement();
         yield return Dialogue("Debugger", "It took {# Yellow}" + ticks + " ticks{/#} to walk through.");
+        yield return Move(GetGameObjectByName("Player"), new Vector2(0, 0), 100);
         player.UnlockMovement();
+
     }
 }

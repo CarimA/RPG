@@ -66,12 +66,8 @@ namespace PhotoVs.Engine.Events
 
         private void ProcessSubscriptions()
         {
-            foreach (var toSubscribe in _toSubscribe)
+            foreach (var (eventType, id, gameEvent) in _toSubscribe)
             {
-                var eventType = toSubscribe.Item1;
-                var id = toSubscribe.Item2;
-                var gameEvent = toSubscribe.Item3;
-
                 _events.Add(id, gameEvent);
                 _eventTypeReference.Add(id, eventType);
                 if (!_subscriptions.ContainsKey(eventType))
@@ -104,11 +100,8 @@ namespace PhotoVs.Engine.Events
 
         private void ProcessNotifications()
         {
-            foreach (var notification in _notifications)
+            foreach (var (eventType, gameEvent) in _notifications)
             {
-                var eventType = notification.Item1;
-                var gameEvent = notification.Item2;
-
                 if (!_subscriptions.TryGetValue(eventType, out var subscriptions))
                     continue;
 

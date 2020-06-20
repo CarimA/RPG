@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -15,6 +17,7 @@ using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Logic.Events.Plugins.Attributes;
+using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Extensions;
 using PhotoVs.Utils.Logging;
 
@@ -165,22 +168,68 @@ namespace PhotoVs.Plugins
                     .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
                     .Where(method => method.GetCustomAttributes(typeof(GameEventAttribute), false).Length > 0);
 
+                var player = _services.Get<Player>();
+
                 foreach (var method in methods)
                 {
                     var action = (Action<IGameEventArgs>) method.CreateDelegate(typeof(Action<IGameEventArgs>), obj);
-                    var runOnce = (method.GetCustomAttributes(typeof(RunOnceAttribute), false).Length > 0);
+                    var runOnce = method.GetCustomAttributes(typeof(RunOnceAttribute), false);
                     var triggers = method.GetCustomAttributes(typeof(TriggerAttribute), false);
 
+                    var flagConditions = method.GetCustomAttributes(typeof(FlagConditionAttribute), false)
+                        .ToList();
+
+                    var varConditions = method.GetCustomAttributes(typeof(VariableConditionAttribute), false)
+                        .ToList();
+
                     // if it's running once, we need to reserve some event ids for each trigger and add a call to unsubscribe for each one
-                    if (runOnce)
+                    if (runOnce.Length > 0)
                     {
+                        var optionalFlag = ((RunOnceAttribute) runOnce[0]).OptionalFlag;
+                        if (!string.IsNullOrEmpty(optionalFlag))
+                        {
+                            // add to list of flag conditions here
+                            flagConditions.Add(new FlagConditionAttribute(optionalFlag, false));
+                        }
+
                         var ids = Enumerable.Range(0, triggers.Length).Select(_ => _events.Reserve()).ToList();
                         var act = new Action<IGameEventArgs>(obj =>
                         {
+                            // condition checks here
+                            if (flagConditions.Cast<FlagConditionAttribute>()
+                                .Any(flagCondition => player.PlayerData.GetFlag(flagCondition.Flag) != flagCondition.State))
+                                return;
+
+                            if (varConditions.Cast<VariableConditionAttribute>()
+                                .Any(varCondition =>
+                                {
+                                    var playerVar = player.PlayerData.GetVariable(varCondition.Variable);
+                                    var otherVar = varCondition.Value;
+                                    return varCondition.Equality switch
+                                    {
+                                        Equality.Equals => !(playerVar.Equals(otherVar)),
+                                        Equality.GreaterThan => !(playerVar.CompareTo(otherVar) > 0),
+                                        Equality.GreaterThanOrEquals => !((playerVar.CompareTo(otherVar) > 0) &&
+                                                                          playerVar.Equals(otherVar)),
+                                        Equality.LessThan => !(playerVar.CompareTo(otherVar) < 0),
+                                        Equality.LessThanOrEquals => !((playerVar.CompareTo(otherVar) < 0) &&
+                                                                       playerVar.Equals(otherVar)),
+                                        Equality.Not => playerVar.Equals(otherVar),
+                                        _ => throw new InvalidEnumArgumentException(nameof(varCondition.Equality)),
+                                    };
+                                }))
+                                return;
+
                             action(obj);
+
                             foreach (var id in ids)
                             {
                                 _events.Unsubscribe(id);
+                            }
+
+                            if (!string.IsNullOrEmpty(optionalFlag))
+                            {
+                                player.PlayerData.SetFlag(optionalFlag, true);
                             }
                         });
 
@@ -193,10 +242,39 @@ namespace PhotoVs.Plugins
                     }
                     else
                     {
+                        var act = new Action<IGameEventArgs>(obj =>
+                        {
+                            if (flagConditions.Cast<FlagConditionAttribute>()
+                                .Any(flagCondition => player.PlayerData.GetFlag(flagCondition.Flag) != flagCondition.State))
+                                return;
+
+                            if (varConditions.Cast<VariableConditionAttribute>()
+                                .Any(varCondition =>
+                                {
+                                    var playerVar = player.PlayerData.GetVariable(varCondition.Variable);
+                                    var otherVar = varCondition.Value;
+                                    return varCondition.Equality switch
+                                    {
+                                        Equality.Equals => !(playerVar.Equals(otherVar)),
+                                        Equality.GreaterThan => !(playerVar.CompareTo(otherVar) > 0),
+                                        Equality.GreaterThanOrEquals => !((playerVar.CompareTo(otherVar) > 0) &&
+                                                                          playerVar.Equals(otherVar)),
+                                        Equality.LessThan => !(playerVar.CompareTo(otherVar) < 0),
+                                        Equality.LessThanOrEquals => !((playerVar.CompareTo(otherVar) < 0) &&
+                                                                       playerVar.Equals(otherVar)),
+                                        Equality.Not => playerVar.Equals(otherVar),
+                                        _ => throw new InvalidEnumArgumentException(nameof(varCondition.Equality)),
+                                    };
+                                }))
+                                return;
+
+                            action(obj);
+                        });
+
                         foreach (var trigger in triggers)
                         {
                             var t = (TriggerAttribute) trigger;
-                            _events.Subscribe(t.RunOn, action);
+                            _events.Subscribe(t.RunOn, act);
                         }
                     }
                 }
