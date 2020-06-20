@@ -31,6 +31,7 @@ public class PluginTest : Plugin
     IEnumerator SayHowLong(int ticks)
     {
         var player = Services.Get<Player>();
+        var num = (ticks < 10000000000000) ? 0 : 1;
 
         player.LockMovement();
         yield return Dialogue("Debugger", "It took {# Yellow}" + ticks + " ticks{/#} to walk through.");

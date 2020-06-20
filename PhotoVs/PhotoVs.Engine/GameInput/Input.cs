@@ -12,6 +12,7 @@ namespace PhotoVs.Engine.GameInput
         public Dictionary<T, bool> IsPressed;
         public Dictionary<T, List<Keys>> KeyMappings;
         public Vector2 LeftStick;
+        public float Deadzone;
         public Dictionary<T, float> PressedTime;
         public Dictionary<T, bool> WasPressed;
 
@@ -20,6 +21,7 @@ namespace PhotoVs.Engine.GameInput
         {
             GamePadIndex = playerIndex;
             LeftStick = Vector2.Zero;
+            Deadzone = 0.2f;
             WasPressed = new Dictionary<T, bool>();
             IsPressed = new Dictionary<T, bool>();
             PressedTime = new Dictionary<T, float>();
@@ -136,7 +138,17 @@ namespace PhotoVs.Engine.GameInput
                 }
             }
 
-            LeftStick = gamePad.ThumbSticks.Left * new Vector2(1, -1);
+            var stickInput = gamePad.ThumbSticks.Left * new Vector2(1, -1);
+            if (stickInput.Length() < Deadzone)
+            {
+                LeftStick = Vector2.Zero;
+            }
+            else
+            {
+                var copy = stickInput;
+                copy.Normalize();
+                LeftStick = copy * ((stickInput.Length() - Deadzone) / (1f - Deadzone));
+            }
         }
     }
 }
