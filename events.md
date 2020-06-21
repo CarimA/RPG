@@ -158,22 +158,6 @@ Raised while the player is running on an interactable zone. Provides the player 
 
 ### `INPUT_ACTION_RELEASED` (not implemented yet) (dynamic)
 
-### `INPUT_ACTION_DOWN` (not implemented yet) (dynamic)
-
-### (also returns how long the button has been pressed for)
-
-### `INPUT_ACTION_UP` (not implemented yet) (dynamic)
-
-### `INPUT_ANY_BUTTON_DOWN` (not implemented yet)
-
-### `INPUT_ANY_KEY_DOWN` (not implemented yet)
-
-### `INPUT_ANY_ACTION_DOWN` (not implemented yet)
-
-### `INPUT_LEFT_STICK_AXIS` (not implemented yet)
-
-### `INPUT_RIGHT_STICK_AXIS` (not implemented yet)
-
 ### `ASSET_LOADED` (not implemented yet) (dynamic)
 
 ### `ASSET_UNLOADED` (not implemented yet) (dynamic)
@@ -264,3 +248,5 @@ Todo List:
 - Consider having a `Module` class which is automatically injected with a Service which could help solve ^^^
     - Extract all scenes into a module?
 - Change the camera into a typical class instead of a system
+- Go through all constructors and make it so that it only has Services for anything that requires services
+- Go through all classes and set service requests in the constructor

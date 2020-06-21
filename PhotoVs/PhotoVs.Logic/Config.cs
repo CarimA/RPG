@@ -4,10 +4,12 @@ using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace PhotoVs.Logic
 {
+    [JsonObject(MemberSerialization.OptOut)]
     public class Config
     {
         // General
@@ -30,6 +32,8 @@ namespace PhotoVs.Logic
         public string DiscordWebhookUrl { get; set; }
         public string ImgurClientId { get; set; }
 
+        public int Deadzone { get; set; }
+
         public static Config Load()
         {
             try
@@ -37,6 +41,14 @@ namespace PhotoVs.Logic
                 var text = File.ReadAllText(GetFileLocation());
                 var deserializer = new Deserializer();
                 var obj = deserializer.Deserialize<Config>(text);
+
+                if (obj == null)
+                {
+                    var config = New();
+                    config.Save();
+                    return config;
+                }
+
                 return obj;
             }
             catch (FileNotFoundException)
@@ -69,10 +81,10 @@ namespace PhotoVs.Logic
 
                 ControlsGamepad = new Dictionary<InputActions, List<Buttons>>
                 {
-                    [InputActions.Up] = new List<Buttons> { Buttons.DPadUp },
-                    [InputActions.Down] = new List<Buttons> { Buttons.DPadDown },
-                    [InputActions.Left] = new List<Buttons> { Buttons.DPadLeft },
-                    [InputActions.Right] = new List<Buttons> { Buttons.DPadRight },
+                    [InputActions.Up] = new List<Buttons> { Buttons.DPadUp, Buttons.LeftThumbstickUp },
+                    [InputActions.Down] = new List<Buttons> { Buttons.DPadDown, Buttons.LeftThumbstickDown },
+                    [InputActions.Left] = new List<Buttons> { Buttons.DPadLeft, Buttons.LeftThumbstickLeft },
+                    [InputActions.Right] = new List<Buttons> { Buttons.DPadRight, Buttons.LeftThumbstickRight },
                     [InputActions.Action] = new List<Buttons> { Buttons.A },
                     [InputActions.Submit] = new List<Buttons> { Buttons.Start },
                     [InputActions.Cancel] = new List<Buttons> { Buttons.B },
@@ -93,6 +105,8 @@ namespace PhotoVs.Logic
                     [InputActions.Fullscreen] = new List<Keys> { Keys.F1 },
                     [InputActions.Screenshot] = new List<Keys> { Keys.F12 }
                 },
+
+                Deadzone = 20,
 
                 DiscordWebhookUrl = "",
                 ImgurClientId = ""

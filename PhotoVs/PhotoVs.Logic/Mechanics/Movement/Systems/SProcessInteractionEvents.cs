@@ -5,7 +5,6 @@ using PhotoVs.Engine.Events;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input;
-using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Components;
@@ -13,6 +12,7 @@ using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
 using PhotoVs.Engine.Events.EventArgs;
+using PhotoVs.Logic.Mechanics.Input.Components;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -33,7 +33,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         public int Priority { get; set; } = -1;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInput) };
+        public Type[] Requires { get; } = { typeof(CInputState) };
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -53,7 +53,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         private void HandleInteraction(IGameObject entity, IEnumerable<IGameObject> scripts)
         {
-            var input = entity.Components.Get<CInput>().Input;
+            var input = entity.Components.Get<CInputState>();
             var position = entity.Components.Get<CPosition>();
 
             if (!(entity is Player player))

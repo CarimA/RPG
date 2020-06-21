@@ -2,14 +2,12 @@
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
-using PhotoVs.Logic.Mechanics.Input;
-using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using Newtonsoft.Json;
+using PhotoVs.Logic.Mechanics.Input.Components;
 
 namespace PhotoVs.Logic.PlayerData
 {
@@ -111,14 +109,11 @@ namespace PhotoVs.Logic.PlayerData
 
     public class Player : GameObject
     {
-        private readonly CInput _input;
         public PlayerData PlayerData { get; }
 
         private readonly float RunSpeed = 150f;
         private readonly float WalkSpeed = 95f;
         public bool CanMove { get; set; }
-
-        public GameInput Input => _input.Input;
 
         public Player(Services services)
         {
@@ -131,14 +126,11 @@ namespace PhotoVs.Logic.PlayerData
 
             CanMove = true;
 
-            _input = new CInput(new GameInput(
-                PlayerIndex.One,
-                config.ControlsGamepad,
-                config.ControlsKeyboard));
-
-            Components.Add(_input);
             Components.Add(CCollisionBound.Circle(16, 8));
             Components.Add(new CSize { Size = new Vector2(32, 32) });
+            Components.Add(new CInputState());
+            Components.Add(new CKeyboard(config.ControlsKeyboard));
+            Components.Add(new CController(PlayerIndex.One, config.ControlsGamepad, ((float)config.Deadzone / 100f)));
         }
 
         public float CurrentSpeed(bool runToggled)

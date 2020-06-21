@@ -5,6 +5,7 @@ using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.PlayerData;
 using System.Collections.Generic;
+using PhotoVs.Logic.Mechanics.Input.Components;
 
 namespace PhotoVs.Logic.Scenes
 {
@@ -164,7 +165,7 @@ namespace PhotoVs.Logic.Scenes
             if (IsFinished)
                 return;
 
-            var input = _player.Input;
+            var input = _player.Components.Get<CInputState>();
 
             if (input.ActionPressed(InputActions.Submit))
                 if (Submit())

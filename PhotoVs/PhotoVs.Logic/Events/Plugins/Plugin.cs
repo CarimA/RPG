@@ -7,7 +7,6 @@ using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.Coroutines.Instructions;
 using PhotoVs.Engine.Events.EventArgs;
-using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Events.Instructions;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.PlayerData;
@@ -58,10 +57,11 @@ namespace PhotoVs.Logic.Events.Plugins
         {
             var position = gameObject.Components.Get<CPosition>();
             var done = false;
-            
+            WaitFrame waitFrame;
+
             while (!done)
             {
-                var waitFrame = new WaitFrame();
+                waitFrame = new WaitFrame();
                 yield return waitFrame;
 
                 var direction = targetPosition - position.Position;

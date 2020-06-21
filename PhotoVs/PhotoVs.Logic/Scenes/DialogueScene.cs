@@ -4,6 +4,7 @@ using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Dialogue;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Extensions;
 
@@ -72,8 +73,7 @@ namespace PhotoVs.Logic.Scenes
 
         public void Update(GameTime gameTime)
         {
-            var input = _player.Input;
-
+            var input = _player.Components.Get<CInputState>();
 
             _dialogue.FastForward = input.ActionDown(InputActions.Run);
             _dialogue.Update(gameTime);

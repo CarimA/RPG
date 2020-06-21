@@ -2,10 +2,10 @@
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input;
-using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.PlayerData;
 using System;
+using PhotoVs.Logic.Mechanics.Input.Components;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -13,7 +13,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         public int Priority { get; set; } = -2;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInput), typeof(CPosition) };
+        public Type[] Requires { get; } = { typeof(CInputState), typeof(CPosition) };
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -23,10 +23,10 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
             foreach (var entity in entities)
             {
-                var input = entity.Components.Get<CInput>();
+                var input = entity.Components.Get<CInputState>();
                 var position = entity.Components.Get<CPosition>();
 
-                var movement = input.Input.GetAxis();
+                var movement = input.LeftAxis;
 
                 if (movement == Vector2.Zero)
                 {
@@ -36,7 +36,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                     break;
                 }
 
-                var isRunning = input.Input.ActionDown(InputActions.Run);
+                var isRunning = input.ActionDown(InputActions.Run);
 
                 // todo: make sense
                 if (entity is Player player)

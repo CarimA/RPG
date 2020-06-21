@@ -4,6 +4,7 @@ using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.Scenes;
+using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
 using PhotoVs.Utils.Extensions;
@@ -88,7 +89,7 @@ namespace PhotoVs.Logic.Scenes
                 return;
 
             _continueTime -= gameTime.GetElapsedSeconds();
-            if (_continueTime <= 0f || _player.Input.AnyActionDown())
+            if (_continueTime <= 0f || _player.Components.Get<CInputState>().AnyActionDown())
             {
                 _scene.ChangeToOverworldScene();
                 _isChanging = true;

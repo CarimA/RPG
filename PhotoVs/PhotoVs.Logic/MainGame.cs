@@ -12,13 +12,11 @@ using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
-using PhotoVs.Logic.Mechanics.Input.Systems;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 using PhotoVs.Utils.Extensions;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -26,6 +24,7 @@ using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Logic.Events.Plugins;
+using PhotoVs.Logic.Mechanics.Input.Systems;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
@@ -199,11 +198,13 @@ namespace PhotoVs.Logic
             var globalSystems = new SystemCollection<ISystem>
             {
                 _camera,
-                new SProcessInput(),
-                new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
+                new SProcessInputState(),
+                new SProcessController(),
+                new SProcessKeyboard(),
+                /*new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
                 new STakeScreenshot(GraphicsDevice, _renderer, _spriteBatch,
                     _assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt"),
-                        _services.Get<Config>())
+                        _services.Get<Config>())*/
             };
             return globalSystems;
         }
