@@ -172,11 +172,15 @@ Raised when the game starts
 
 ### 
 
-
-
 Todo List:
 - Implement missing methods
 - Make every IEnumerator function return a wrapped Coroutine instead
-- Change Input to be a typical class that receives inputs instead of a component
-    - Change Input related things to be event driven
+- Change Input to be a typical class that receives inputs and fires events instead of a component + related systems
+    - Change Input related things to be an event driven plugin
+        - Move (SScreenshot) Screenshot out to a plugin
+        - Move (SHandleFullscreen) Fullscreen handling out to a plugin
 - Look at refactoring existing game logic out of the codebase and into plugins
+- Redo how screens work (seriously, it's a mess)
+- Consider having a `Module` class which is automatically injected with a Service which could help solve ^^^
+    - Extract all scenes into a module?
+- Change the camera into a typical class instead of a system
