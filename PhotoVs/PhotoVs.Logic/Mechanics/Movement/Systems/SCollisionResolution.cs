@@ -11,7 +11,12 @@ using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using PhotoVs.Engine.Events.EventArgs;
+using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics.Input.Components;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -34,6 +39,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         public void BeforeUpdate(GameTime gameTime)
         {
+
         }
 
         public void Update(GameTime gameTime, IGameObjectCollection entities)
@@ -46,12 +52,14 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 if (entity.Components.Has<CSolid>())
                     extraStationaryList.Add(entity);
                 else
-                    movingList.Add(entity);
+                    if (entity.Components.Has<CInputState>())
+                        movingList.Add(entity);
 
             extraStationaryList.AddRange(stationaryList);
 
             foreach (var moving in movingList)
                 Move(moving, extraStationaryList, gameTime);
+
             movingList.ForEach(ProcessVelocityIntents);
         }
 
@@ -61,22 +69,35 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         private void Move(IGameObject moving, IGameObjectCollection stationaryEntities, GameTime gameTime)
         {
+            var input = moving.Components.Get<CInputState>();
             var minimumTranslations = new List<Vector2>();
-            var positionA = moving.Components.Get<CPosition>();
-            var collisionBoundA = moving.Components.Get<CCollisionBound>();
+            var position = moving.Components.Get<CPosition>();
+            var collisionBound = moving.Components.Get<CCollisionBound>();
 
-            // check that A is actually moving
-            if (positionA.DeltaPosition == Vector2.Zero)
+            var velocity = input.LeftAxis;
+            var isRunning = input.ActionDown(InputActions.Run);
+
+            if (moving is Player player)
             {
-                return;
+                velocity *= player.CurrentSpeed(isRunning);
+                if (!player.CanMove && (player.Components.Has<CKeyboard>() || player.Components.Has<CController>()))
+                    velocity *= 0;
+            }
+            else
+            {
+                velocity *= isRunning ? 200 : 100;
             }
 
-            var compA = new RectangleF(positionA.Position.X + collisionBoundA.InflatedBounds.Left,
-                positionA.Position.Y + collisionBoundA.InflatedBounds.Top,
-                collisionBoundA.InflatedBounds.Width,
-                collisionBoundA.InflatedBounds.Height);
+            velocity *= gameTime.GetElapsedSeconds();
 
-            var velocity = positionA.DeltaPosition;
+            // check that A is actually moving
+            if (velocity == Vector2.Zero)
+                return;
+
+            var compA = new RectangleF(position.Position.X + collisionBound.InflatedBounds.Left,
+                position.Position.Y + collisionBound.InflatedBounds.Top,
+                collisionBound.InflatedBounds.Width,
+                collisionBound.InflatedBounds.Height);
 
             foreach (var stationary in stationaryEntities)
             {
@@ -116,7 +137,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 }
             }
 
-            positionA.VelocityIntent.Add(velocity); // * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            position.VelocityIntent.Add(velocity); // * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         private static void ProcessVelocityIntents(IGameObject entity)

@@ -32,7 +32,6 @@ namespace PhotoVs.Logic.Scenes
             Systems = new SystemCollection<ISystem>
             {
                 new SRenderOverworld(_world, spriteBatch, camera),
-                new SProcessMovement(),
                 new SCollisionDebugRender(spriteBatch, assetLoader,
                     _world, camera),
                 new SCollisionResolution(_world, camera, events),

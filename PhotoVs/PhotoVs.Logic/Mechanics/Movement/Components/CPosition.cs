@@ -19,13 +19,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Components
         }
         public List<Vector2> VelocityIntent { get; set; }
 
-        public Vector2 DeltaPosition
-        {
-            get
-            {
-                return Position - LastPosition;
-            }
-        }
+        public Vector2 DeltaPosition => Position - LastPosition;
 
         public CPosition()
         {

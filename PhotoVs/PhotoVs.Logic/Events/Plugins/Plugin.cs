@@ -8,6 +8,7 @@ using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.Coroutines.Instructions;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Logic.Events.Instructions;
+using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
@@ -56,8 +57,20 @@ namespace PhotoVs.Logic.Events.Plugins
         public IEnumerator Move(IGameObject gameObject, Vector2 targetPosition, float speed)
         {
             var position = gameObject.Components.Get<CPosition>();
+            var input = gameObject.Components.Get<CInputState>();
+
             var done = false;
             WaitFrame waitFrame;
+
+            if (gameObject.Components.TryGet<CController>(out var controller))
+            {
+                gameObject.Components.Remove(controller);
+            }
+
+            if (gameObject.Components.TryGet<CKeyboard>(out var keyboard))
+            {
+                gameObject.Components.Remove(keyboard);
+            }
 
             while (!done)
             {
@@ -77,8 +90,19 @@ namespace PhotoVs.Logic.Events.Plugins
                 }
                 else
                 {
-                    position.Position += direction * amount;
+                    input.LeftAxis = direction;
+                    //position.Position += direction * amount;
                 }
+            }
+
+            if (controller != null)
+            {
+                gameObject.Components.Add(controller);
+            }
+
+            if (keyboard != null)
+            {
+                gameObject.Components.Add(keyboard);
             }
         }
 

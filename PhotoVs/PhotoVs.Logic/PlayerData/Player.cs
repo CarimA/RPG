@@ -111,8 +111,8 @@ namespace PhotoVs.Logic.PlayerData
     {
         public PlayerData PlayerData { get; }
 
-        private readonly float RunSpeed = 150f;
-        private readonly float WalkSpeed = 95f;
+        private readonly float RunSpeed = 400f;
+        private readonly float WalkSpeed = 140f;
         public bool CanMove { get; set; }
 
         public Player(Services services)
