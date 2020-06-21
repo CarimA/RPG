@@ -1,8 +1,8 @@
 # Game Events
 
-Photeus handles logic by loading external scripts from `content\logic`, `data\mods` and internal scripts from any class that inherits `Plugin` in the game assembly. It does this via reflection at runtime. Scripts that produce runtime errors will not be loaded.
+Photeus handles logic by loading external scripts from `content\logic`, `data\mods` and internal scripts from any class that inherits `Plugin` in the game assembly. It does this with reflection at runtime. Scripts that produce runtime errors will not be loaded.
 
-The base class `Plugin` provides access to all services and all assemblies loaded by the game (as a result, scripts are **not** sandboxed, any caution should be taken when putting scripts from unknown sources into `data\mods`). It also provides a number of helper methods listed under the **Commands** section.
+The base class `Plugin` provides access to all services and all assemblies loaded by the game (as a result, scripts are **not** sandboxed, caution should be taken when putting scripts from unknown sources into `data\mods`). It also provides a number of helper methods listed under the **Event Commands** section.
 
 Plugin scripts are entirely event driven, with each method having *Conditions* and *Triggers* to determine when the events run. The engine has an underlying event queue in which all methods that implement *Triggers Attributes* will automatically be subscribed to the event they request. When an event is raised, if the conditions to run the method is met, determined by *Conditions Attributes*, the method will run. 
 
@@ -33,7 +33,11 @@ void SomeRandomEvent(IGameEventArgs args)
 
 ### `[Trigger("Event ID")]`
 
-More than one trigger can be used for a method.
+The Trigger attribute will cause the engine to subscribe to the event provided in "Event ID".
+
+More than one trigger can be used for a method. 
+
+See the **Triggers** section for a list of constants for events that triggers can subscribe to.
 
 ### `[AutoRunOverworld]` (not implemented yet)
 
@@ -45,82 +49,157 @@ A trigger that runs every frame when in a battle. Can be used for stuff like che
 
 ### `[FlagCondition("Flag ID", Boolean Value)]`
 
+The FlagCondition attribute will cause the engine to add a conditional to the event subscription that checks whether the player's save data has a flag named "Flag ID" and whether it matches the boolean value you specify.
+
 More than one condition can be used for a method.
 
 ### `[VariableCondition("Variable ID", Equality, Value)]`
 
+The VariableCondition attribute will cause the engine to add a conditional to the event subscription that checks whether the player's save data has a flag named "Variable ID" and whether it matches the (IComparable) object you specify in Value, using the equality parameter.
+
+Equality is an enumerable that can be one of six values:
+
+- **Equality.Equals**: checks if the value returned from the flag is equal to the value specified.
+- **Equality.GreaterThan**: checks if the value returned from the flag is greater  than the value specified.
+- **Equality.GreaterThanOrEquals**: checks if the value returned from the flag is greater than or equal to the value specified.
+- **Equality.LessThan**: checks if the value returned from the flag is less than the value specified.
+- **Equality.LessThanOrEquals**: checks if the value returned from the flag is less than or equal to the value specified.
+- **Equality.Not**: checks if the value is not equal to the value specified.
+
 More than one condition can be used for a method.
 
-### `[ScreenCondition("Screen Name")]` (not implemented yet)
+### `[StateCondition("Screen Name")]` (not implemented yet)
 
-A condition that checks what the current active screen is
+The StateCondition attribute will cause the engine to add a conditional to the event subscription that checks whether the game is on the specified state.
+
+More than one condition can be used for a method.
 
 ## Triggers
 
-**GAME_START**  
+### ***About Dynamic Triggers***
+
+Some triggers support the ability to amend the constant to specify a specific instance of the trigger to listen to, for example, *INTERACT_AREA_ENTER* can be modified to *INTERACT_AREA_ENTER:example_event* which will subscribe to an event that is only raised specifically when the player enters the *example_event* boundary.
+
+### `GAME_START`
+
 Raised when the game starts
 
-**SAVE_LOADED**: (not implemented yet)
+### `SAVE_LOADED` (not implemented yet)
+
+Raised when the player loads a save file in the main menu. Provides the index of the save file that was loaded via SaveEventArgs.
+
+### `SAVE_CREATED` (not implemented yet)
+
+Raised when the player creates a new save file in the main menu. Provides the index of the save file that was created via SaveEventArgs.
+
+### `SAVE_CHANGED` (not implemented yet)
+
+Raised when the player saves their game. Provides the index of the save file that was changed via SaveEventArgs.
+
+### `STEP_TAKEN` (not implemented yet)
+
+Raised when a game object takes a step (corresponding to their animations). Provides the game object that took a step via GameObjectEventArgs.
+
+### `MOVEMENT_STATE_CHANGED` (not implemented yet)
+
+Raised when the player changes between walking, running and standing, with both the old and new states reported. Provides the player's game object and movement states via MovementEventArgs.
+
+### `ENTERED_ZONE` (not implemented yet)
+
+Raised when the player enters a new zone. It is a dynamic trigger that can listen to a specific zone being entered. Provides the zone the player has just entered via ZoneEventArgs.
+
+### `EXITED_ZONE` (not implemented yet)
+
+Raised when the player exits a zone. It is a dynamic trigger that can listen to a specific zone being exited. Provides the zone the player has just exited via ZoneEventArgs.
+
+### `ZONE_CHANGED` (not implemented yet)
+
+Raised when the player changes zone. Provides the old zone and new zone via ZoneChangesEventArgs.
+
+### `ENTERED_MAP` (not implemented yet)
+
+Raised when the player enters a new map. It is a dynamic trigger that can listen to a specific map being entered. Provides the map the player has just entered via MapEventArgs.
+
+### `EXITED_MAP` (not implemented yet)
+
+Raised when the player exits a map. It is a dynamic trigger that can listen to a specific map being exited. Provides the map the player has just exited via ZoneEventArgs.
+
+### `MAP_CHANGED` (not implemented yet)
+
+Raised when the player changes map. Provides the old map and new map via MapChangesEventArgs.
+
+### `INTERACT_ACTION` (dynamic)
+
+Raised when the player presses their interact key/button while standing on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
+
+### `INTERACT_AREA_ENTER` (dynamic)
+
+Raised when the player enters an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
+
+### `INTERACT_AREA_EXIT` (dynamic)
+
+Raised when the player exits an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
+
+### `INTERACT_AREA_STAND` (dynamic)
+
+Raised while the player is standing on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
+
+### `INTERACT_AREA_WALK` (dynamic)
+
+Raised while the player is walking on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
+
+### `INTERACT_AREA_RUN` (dynamic)
+
+Raised while the player is running on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
+
+### `COLLISION`:
+
+### `INPUT_ACTION_PRESSED` (not implemented yet) (dynamic)
+
+### `INPUT_ACTION_RELEASED` (not implemented yet) (dynamic)
+
+### `INPUT_ACTION_DOWN` (not implemented yet) (dynamic)
+
+### (also returns how long the button has been pressed for)
+
+### `INPUT_ACTION_UP` (not implemented yet) (dynamic)
+
+### `INPUT_ANY_BUTTON_DOWN` (not implemented yet)
+
+### `INPUT_ANY_KEY_DOWN` (not implemented yet)
+
+### `INPUT_ANY_ACTION_DOWN` (not implemented yet)
+
+### `INPUT_LEFT_STICK_AXIS` (not implemented yet)
+
+### `INPUT_RIGHT_STICK_AXIS` (not implemented yet)
+
+### `ASSET_LOADED` (not implemented yet) (dynamic)
+
+### `ASSET_UNLOADED` (not implemented yet) (dynamic)
+
+### `AUDIO_BGM_PLAYED` (not implemented yet) (dynamic)
+
+### `AUDIO_BGM_STOPPED` (not implemented yet)
+
+### `AUDIO_SFX_PLAYED` (not implemented yet) (dynamic)
+
+### `DIALOGUE_PROGRESSED` (not implemented yet)
+
+Raised with each new character that is added when dialogue runs. Provides the character that was just inserted and the current speaker. Example use: voice sound effects for specific characters.
+
+### `STATE_CHANGED` (not implemented yet) (dynamic)
+
+### `STATE_PUSHED` (not implemented yet) (dynamic)
+
+### `STATE_POPPED` (not implemented yet) (dynamic)
+
+## EventArg Classes (todo)
+
+### `GameEventArgs`
 
 
-**SAVE_CREATED**: (not implemented yet)
-
-
-**STEP**: (not implemented yet)
-
-
-**STARTED_WALKING**: (not implemented yet)
-
-
-**STOPPED_WALKING**: (not implemented yet)
-
-
-**STARTED_RUNNING**: (not implemented yet)
-
-
-**STOPPED_RUNNING**: (not implemented yet)
-
-
-**STARTED_STANDING**: (not implemented yet)
-
-
-**STOPPED_STANDING**: (not implemented yet)
-
-
-**ENTERED_ZONE**: (not implemented yet) (dynamic)
-
-
-**EXITED_ZONE**: (not implemented yet) (dynamic)
-
-
-**ENTERED_MAP**: (not implemented yet) (dynamic)
-
-
-**EXITED_MAP**: (not implemented yet) (dynamic)
-
-
-**INTERACT_ACTION**: (dynamic)
-
-
-**INTERACT_AREA_ENTER**: (dynamic)
-
-
-**INTERACT_AREA_EXIT**: (dynamic)
-
-
-**INTERACT_AREA_STAND**: (dynamic)
-
-
-**INTERACT_AREA_WALK**: (dynamic)
-
-
-**INTERACT_AREA_RUN**: (dynamic)
-
-
-**COLLISION**:
-
-
-## Event Commands
+## Event Commands (todo)
 
 ### `Spawn(IEnumerator) : IEnumerator`
 
@@ -174,7 +253,8 @@ Raised when the game starts
 
 Todo List:
 - Implement missing methods
-- Make every IEnumerator function return a wrapped Coroutine instead
+- Make the dynamic trigger causes raise the plain event too (for example, "INTERACT_AREA_ENTER:example" will also raise "INTERACT_AREA_ENTER")
+- Make every IEnumerator function return a wrapped Coroutine instead (and update the docs to reflect that)
 - Change Input to be a typical class that receives inputs and fires events instead of a component + related systems
     - Change Input related things to be an event driven plugin
         - Move (SScreenshot) Screenshot out to a plugin
