@@ -1,24 +1,42 @@
-public class PluginTest : IPlugin
+public class PluginTest : Plugin
 {
-    private readonly SceneMachine _sceneMachine;
-    private readonly EventQueue _events;
+    public string Name => "PluginTest";
 
-    public string Name => "Test";
-    public int Version => 1;
-
-    private string gameStartId;
-    
-    public PluginTest(Services services)
+    [GameEvent]
+    [Trigger(EventType.GAME_START)]
+    [RunOnce]
+    void UseAControllerDummy(IGameEventArgs args)
     {
-        _sceneMachine = services.Get<SceneMachine>();
-
-        _events = services.Get<EventQueue>();
+        var sceneMachine = Services.Get<SceneMachine>();
+        sceneMachine.Push(sceneMachine.ControllerRecommendationScreen);
     }
 
-    [Trigger(EventType.GAME_START)]
-    private void EventsOnOnGameStart(IGameEventArgs gameEventArgs)
+    int startTick = 0;
+
+    [GameEvent]
+    [Trigger(EventType.INTERACT_AREA_ENTER + ":example_event")]
+    void StartTrackingTimeToWalk(IGameEventArgs args)
     {
-        _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);
-        _events.Unsubscribe(gameStartId);
+        startTick = Environment.TickCount;
+    }
+
+    [GameEvent]
+    [Trigger(EventType.INTERACT_AREA_EXIT + ":example_event")]
+    void StopTrackingTimeToWalk(IGameEventArgs args)
+    {
+        var endTick = Environment.TickCount;
+        Spawn(SayHowLong(endTick - startTick));
+    }
+
+    IEnumerator SayHowLong(int ticks)
+    {
+        var player = Services.Get<Player>();
+        var num = (ticks < 10000000000000) ? 0 : 1;
+
+        //player.LockMovement();
+        yield return Dialogue("Debugger", "It took {# Yellow}" + ticks + " ticks{/#} to walk through.");
+        yield return Move(GetGameObjectByName("Player"), new Vector2(0, 0), 100);
+        //player.UnlockMovement();
+
     }
 }

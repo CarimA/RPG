@@ -11,7 +11,6 @@ using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;

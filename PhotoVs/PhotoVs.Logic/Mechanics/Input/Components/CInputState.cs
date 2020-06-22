@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS.Components;
 
 namespace PhotoVs.Logic.Mechanics.Input.Components
 {
-    public enum InputPriority
-    {
-        GamePad,
-        Keyboard
-    }
-
     public class CInputState : IComponent
     {
         public Dictionary<InputActions, bool> IsPressed { get; }
@@ -23,8 +14,6 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
 
         public Vector2 LeftAxis { get; set; }
         public Vector2 RightAxis { get; set; }
-
-        public InputPriority InputPriority { get; set; }
 
         public CInputState()
         {
@@ -43,7 +32,6 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
 
             LeftAxis = Vector2.Zero;
             RightAxis = Vector2.Zero;
-            InputPriority = InputPriority.GamePad;
         }
 
         public bool ActionPressed(InputActions action)

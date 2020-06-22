@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS.GameObjects;
@@ -45,7 +43,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             var inputState = gameObject.Components.Get<CInputState>();
             ResetIfMissing(gameObject, inputState);
             ProcessState(inputState);
-            CheckPriority(gameObject, inputState);
+            CheckPriority(gameObject);
         }
 
         private void ResetIfMissing(IGameObject gameObject, CInputState inputState)
@@ -68,9 +66,12 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             }
         }
 
-        private void CheckPriority(IGameObject gameObject, CInputState inputState)
+        private void CheckPriority(IGameObject gameObject)
         {
-            var priority = inputState.InputPriority;
+            if (!gameObject.Components.TryGet<CInputPriority>(out var prio))
+                return;
+
+            var priority = prio.InputPriority;
 
             // if either component is missing, give it to the other.
             if (!gameObject.Components.TryGet<CKeyboard>(out var keyboard))
@@ -99,7 +100,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             if (anyButtonDown && !anyKeyDown)
                 priority = InputPriority.GamePad;
 
-            inputState.InputPriority = priority;
+            prio.InputPriority = priority;
         }
 
         public void AfterUpdate(GameTime gameTime)

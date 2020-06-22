@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS.GameObjects;
@@ -48,8 +46,9 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
         {
             var inputState = gameObject.Components.Get<CInputState>();
 
-            if (inputState.InputPriority != InputPriority.Keyboard)
-                return;
+            if (gameObject.Components.TryGet<CInputPriority>(out var priority))
+                if (priority.InputPriority != InputPriority.Keyboard)
+                    return;
 
             var keyboard = gameObject.Components.Get<CKeyboard>();
             var keyInput = Keyboard.GetState();

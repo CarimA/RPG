@@ -15,14 +15,4 @@ namespace PhotoVs.Logic.Events.Plugins.Attributes
             Value = value;
         }
     }
-
-    public enum Equality
-    {
-        Equals,
-        GreaterThan,
-        GreaterThanOrEquals,
-        LessThan,
-        LessThanOrEquals,
-        Not
-    }
 }
