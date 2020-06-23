@@ -29,9 +29,11 @@ namespace PhotoVs.Logic.Debugger
         private TimeSpan _lastDraw;
 
         private TimeSpan _lastUpdate;
+        private MainGame _game;
 
-        public DiagnosticInfo(SpriteBatch spriteBatch, IAssetLoader assetLoader)
+        public DiagnosticInfo(MainGame game, SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
+            _game = game;
             _spriteBatch = spriteBatch;
             _font = assetLoader.Get<SpriteFont>("ui/fonts/bold_12.fnt");
 
@@ -97,7 +99,7 @@ namespace PhotoVs.Logic.Debugger
                 new Vector2(x, y + barHeight)
             });
 
-            var updateWidth = (int)(barWidth / 60f * _lastUpdate.TotalMilliseconds);
+            var updateWidth = (int)(barWidth * _game.TargetElapsedTime.TotalSeconds * _lastUpdate.TotalMilliseconds);
 
             _updateBar.SetPoints(new List<Vector2>
             {
@@ -108,7 +110,7 @@ namespace PhotoVs.Logic.Debugger
             });
 
             var nx = x + updateWidth;
-            var drawWidth = (int)(barWidth / 60f * _lastDraw.TotalMilliseconds);
+            var drawWidth = (int)(barWidth * _game.TargetElapsedTime.TotalSeconds * _lastDraw.TotalMilliseconds);
 
             _drawBar.SetPoints(new List<Vector2>
             {

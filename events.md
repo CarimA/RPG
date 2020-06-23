@@ -307,6 +307,7 @@ Todo List:
   - Shader for water (https://forums.tigsource.com/index.php?topic=40539.msg1104986#msg1104986)
     - in the map post-processor, maybe find tiles that use the water tiles and copy from tiles above + flip upside-down to be rendered in a special water layer?
 - Plugin System:
+  - Change the Triggers (EventType.cs) to an enum with an optional parameter for a string so that the dynamic stuff (or events in general) can be less typo prone
   - Implement missing attributes (triggers/conditions), events and commands
   - Make dynamic triggers raise plain events too (e.g. "INTERACT_AREA_ENTER:example" also raises "INTERACT_AREA_ENTER". Maybe do this automatically as part of the event notifier by checking for colons?)
   - Make every IEnumerator function return a wrapped Coroutine instead (and change docs to reflect that)

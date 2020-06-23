@@ -57,6 +57,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.7708333f, assetLoader.Get<Texture2D>("luts/daycycle8.png"));
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
+
+            var ts = TimeSpan.FromMinutes(2);
+            timeScale = (float)ts.TotalSeconds;
         }
 
         public void BeforeDraw(GameTime gameTime)
@@ -65,10 +68,11 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         }
 
         private Texture2D lut;
+        private float timeScale;
 
         public void Draw(GameTime gameTime, IGameObjectCollection gameObjects)
         {
-            day += (gameTime.GetElapsedSeconds() / 1200f);
+            day += (gameTime.GetElapsedSeconds() / timeScale);
             if (day >= 1f)
                 day %= 1f;
 

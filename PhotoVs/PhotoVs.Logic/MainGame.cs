@@ -111,7 +111,7 @@ namespace PhotoVs.Logic
 
             _services.Set(CreateAudio());
 
-            _info = new DiagnosticInfo(_spriteBatch, _assetLoader);
+            _info = new DiagnosticInfo(this, _spriteBatch, _assetLoader);
 
             if (_services.Get<Config>().Fullscreen)
                 EnableFullscreen();
