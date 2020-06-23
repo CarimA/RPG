@@ -26,7 +26,7 @@ namespace PhotoVs.Logic.Scenes
 
             _world = new Overworld(spriteBatch, assetLoader);
             _world.LoadMaps("maps/");
-            _world.SetMap("test");
+            _world.SetMap("test2");
 
             Entities = new GameObjectCollection();
             Systems = new SystemCollection<ISystem>

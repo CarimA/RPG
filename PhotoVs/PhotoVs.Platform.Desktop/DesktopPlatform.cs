@@ -2,6 +2,7 @@
 using PhotoVs.Logic;
 using System;
 using System.IO;
+using PhotoVs.Engine;
 
 namespace PhotoVs.Platform.Desktop
 {

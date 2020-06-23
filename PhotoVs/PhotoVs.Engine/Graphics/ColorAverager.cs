@@ -5,17 +5,13 @@ namespace PhotoVs.Engine.Graphics
 {
     public class ColorAverager
     {
+        private readonly Renderer _renderer;
         private readonly Effect _effect;
         private readonly GraphicsDevice _graphicsDevice;
         private Texture2D _texA;
         private Texture2D _texB;
         private RenderTarget2D _outputTex;
         private float _phase;
-
-        public RenderTarget2D GetOutputTexture()
-        {
-            return _outputTex;
-        }
 
         public void Set(float phase, Texture2D texA, Texture2D texB)
         {
@@ -29,16 +25,16 @@ namespace PhotoVs.Engine.Graphics
             }
         }
 
-        public ColorAverager(GraphicsDevice graphicsDevice, Effect effect)
+        public ColorAverager(Renderer renderer, Effect effect)
         {
-            _graphicsDevice = graphicsDevice;
+            _renderer = renderer;
+            _graphicsDevice = renderer.GraphicsDevice;
             _effect = effect;
         }
 
-        public void Average(SpriteBatch spriteBatch)
+        public RenderTarget2D Average(SpriteBatch spriteBatch)
         {
-            _graphicsDevice.SetRenderTarget(_outputTex);
-            _graphicsDevice.Clear(Color.Black);
+            _renderer.RequestSubRenderer(_outputTex);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
 
@@ -51,7 +47,8 @@ namespace PhotoVs.Engine.Graphics
 
             spriteBatch.End();
 
-            _graphicsDevice.SetRenderTarget(null);
+            _renderer.RelinquishSubRenderer();
+            return _outputTex;
         }
     }
 }

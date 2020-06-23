@@ -169,8 +169,8 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             var midpoint = rect.Center;
             var distance = Vector2.Distance(rect.TopLeft, rect.BottomRight);
 
-            var zWidth = _renderer.CanvasSize.GetWidth() / rect.Width;
-            var zHeight = _renderer.CanvasSize.GetHeight() / rect.Height;
+            var zWidth = _renderer.VirtualWidth / rect.Width;
+            var zHeight = _renderer.VirtualHeight / rect.Height;
 
             var zoom = Math.Min(zWidth, zHeight);
 
@@ -191,8 +191,8 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
                              -((float)(_random.NextDouble() * intensity * 2) - intensity),
                              -((float)(_random.NextDouble() * intensity * 2) - intensity), 0)) *
                          Matrix.CreateScale(new Vector3(_lerpZoom, _lerpZoom, 1)) *
-                         Matrix.CreateTranslation(new Vector3(_renderer.RenderSize.Width / 2,
-                             _renderer.RenderSize.Height / 2,
+                         Matrix.CreateTranslation(new Vector3(_renderer.GameWidth / 2,
+                             _renderer.GameHeight / 2,
                              0)) *
                          Matrix.CreateRotationZ(_rotate);
             _isDirty = false;
@@ -267,10 +267,10 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             var inverseTransform = Matrix.Invert(_transform);
 
             var topLeft = Vector2.Transform(Vector2.Zero, inverseTransform);
-            var topRight = Vector2.Transform(new Vector2(_renderer.RenderSize.Width, 0), inverseTransform);
-            var bottomLeft = Vector2.Transform(new Vector2(0, _renderer.RenderSize.Height), inverseTransform);
+            var topRight = Vector2.Transform(new Vector2(_renderer.GameWidth, 0), inverseTransform);
+            var bottomLeft = Vector2.Transform(new Vector2(0, _renderer.GameHeight), inverseTransform);
             var bottomRight = Vector2.Transform(
-                new Vector2(_renderer.RenderSize.Width, _renderer.RenderSize.Height),
+                new Vector2(_renderer.GameWidth, _renderer.GameHeight),
                 inverseTransform);
 
             var min = new Vector2(

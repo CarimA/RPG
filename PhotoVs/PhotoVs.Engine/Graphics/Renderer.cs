@@ -1,82 +1,111 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Utils;
-using System;
+using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.Graphics.Filters;
 
 namespace PhotoVs.Engine.Graphics
 {
     public class Renderer
     {
-        private readonly ColorGrading _colorGrading;
+        public GraphicsDevice GraphicsDevice { get; private set; }
+        public SpriteBatch SpriteBatch { get; private set; }
         private readonly GraphicsDeviceManager _graphics;
-        private readonly GraphicsDevice _graphicsDevice;
         private readonly GameWindow _window;
 
-        public CanvasSize CanvasSize { get; }
+        public int VirtualWidth { get; private set; }
+        public int VirtualHeight { get; private set; }
+        public int GameWidth { get; private set; }
+        public int GameHeight { get; private set; }
 
-        public VirtualRenderTarget2D GameView { get; private set; }
+        private Rectangle _display;
 
-        public Size2 RenderSize
+        private RenderTarget2D _mainRenderTarget;
+        private RenderTarget2D _tempRenderTarget;
+
+        //private ColorGradingFilter _globalFilter;
+
+        public Renderer(Services services, int virtualWidth, int virtualHeight)
         {
-            get
-            {
-                return new Size2(GameView.Width, GameView.Height);
-            }
+            GraphicsDevice = services.Get<GraphicsDevice>();
+            SpriteBatch = services.Get<SpriteBatch>();
+            _graphics = services.Get<GraphicsDeviceManager>();
+            _window = services.Get<GameWindow>();
+            VirtualWidth = virtualWidth;
+            VirtualHeight = virtualHeight;
+
+            _display = new Rectangle();
+            UpdateDisplay(null, null);
+
+            //var platform = services.Get<IPlatform>();
+            //var assetLoader = services.Get<IAssetLoader>();
+            //_globalFilter = new ColorGradingFilter(this, 
+            //    assetLoader.Get<Effect>(platform.PaletteShader));
+            //_globalFilter.LookupTable = assetLoader.Get<Texture2D>("ui/luts/aap128.png");
         }
 
-        public Renderer(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, GameWindow window,
-            ColorGrading colorGrading, CanvasSize canvasSize)
-        {
-            _graphics = graphics;
-            _window = window;
-            _graphicsDevice = graphicsDevice;
-            _colorGrading = colorGrading;
-            GameView = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
-            CanvasSize = canvasSize;
-
-            UpdateViewports(null, null);
-        }
-
-        public void SetRenderMode(RenderMode renderMode)
-        {
-            switch (renderMode)
-            {
-                case RenderMode.None:
-                    _graphicsDevice.SetRenderTarget(null);
-                    break;
-                case RenderMode.Game:
-                    _graphicsDevice.SetRenderTarget(GameView);
-                    _graphicsDevice.Clear(Color.Black);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(renderMode), renderMode, null);
-            }
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw()
         {
             var width = _graphics.PreferredBackBufferWidth;
             var height = _graphics.PreferredBackBufferHeight;
 
-            //var gameView = _colorGrading.Filter(spriteBatch, GameView);
-            GameView.UpdateViewport(width, height);
+            //var gameview = _globalFilter.Filter(SpriteBatch, _mainRenderTarget);
 
-            SetRenderMode(RenderMode.None);
-            spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
-            GameView.DrawScaled(spriteBatch);
-            spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
+            SpriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
+            SpriteBatch.Draw(_mainRenderTarget, _display, Color.White);
+            SpriteBatch.End();
         }
 
-        private void UpdateViewports(object sender, EventArgs e)
+        public void BeforeDraw()
         {
-            // stop stack overflows
-            _window.ClientSizeChanged -= UpdateViewports;
+            GraphicsDevice.SetRenderTarget(_mainRenderTarget);
+            GraphicsDevice.Clear(Color.Black);
+        }
+
+        public void RequestSubRenderer(RenderTarget2D renderTarget)
+        {
+            // copy the existing buffer to a temporary buffer so
+            // that it isn't wiped
+            GraphicsDevice.SetRenderTarget(_tempRenderTarget);
+            GraphicsDevice.Clear(Color.Black);
+            SpriteBatch.Begin();
+            SpriteBatch.Draw(_mainRenderTarget, Vector2.Zero, Color.White);
+            SpriteBatch.End();
+
+            GraphicsDevice.SetRenderTarget(renderTarget);
+            GraphicsDevice.Clear(Color.Black);
+        }
+
+        public RenderTarget2D CreateRenderTarget(int width, int height)
+        {
+            return new RenderTarget2D(GraphicsDevice, width, height);
+        }
+
+        public void RelinquishSubRenderer()
+        {
+            GraphicsDevice.SetRenderTarget(_mainRenderTarget);
+            GraphicsDevice.Clear(Color.Black);
+            SpriteBatch.Begin();
+            SpriteBatch.Draw(_tempRenderTarget, Vector2.Zero, Color.White);
+            SpriteBatch.End();
+        }
+
+        private void UpdateDisplay(object sender, EventArgs e)
+        {
+            _window.ClientSizeChanged -= UpdateDisplay;
 
             var width = _window.ClientBounds.Width;
             var height = _window.ClientBounds.Height;
 
             if (width == 0 || height == 0)
             {
+                _window.ClientSizeChanged += UpdateDisplay;
                 return;
             }
 
@@ -84,31 +113,39 @@ namespace PhotoVs.Engine.Graphics
             _graphics.PreferredBackBufferHeight = height;
             _graphics.ApplyChanges();
 
-            var widthScale = width / (double)CanvasSize.GetWidth();
-            var heightScale = height / (double)CanvasSize.GetHeight();
+            var widthScale = width / (double) VirtualWidth;
+            var heightScale = height / (double) VirtualHeight;
+
+            /*_mainRenderTarget = widthScale < heightScale 
+                ? CreateRenderTarget(VirtualWidth, (int)(height / widthScale)) 
+                : CreateRenderTarget((int)(width / heightScale), VirtualHeight);*/
 
             if (widthScale < heightScale)
             {
-                // _viewport.Width = (int)(Width * widthScale);
-                // _viewport.Height = (int)(Height * widthScale);
-                GameView = new VirtualRenderTarget2D(_graphicsDevice, CanvasSize.GetWidth(), (int)(height / widthScale));
+                _mainRenderTarget = CreateRenderTarget(VirtualWidth, (int) (height / widthScale));
+                _tempRenderTarget = CreateRenderTarget(VirtualWidth, (int) (height / widthScale));
             }
             else
             {
-                //_viewport.Width = (int)(Width * heightScale);
-                // _viewport.Height = (int)(Height * heightScale);
-                GameView = new VirtualRenderTarget2D(_graphicsDevice, (int)(width / heightScale), CanvasSize.GetHeight());
+                _mainRenderTarget = CreateRenderTarget((int) (width / heightScale), VirtualHeight);
+                _tempRenderTarget = CreateRenderTarget((int) (width / heightScale), VirtualHeight);
             }
 
-            GameView.UpdateViewport(width, height, false);
+            GameWidth = _mainRenderTarget.Width;
+            GameHeight = _mainRenderTarget.Height;
 
-            _window.ClientSizeChanged += UpdateViewports;
+            _display.Width = width;
+            _display.Height = height;
+            _display.X = 0;
+            _display.Y = 0;
+
+            _window.ClientSizeChanged += UpdateDisplay;
         }
 
         public Matrix GetUIOrigin()
         {
-            return Matrix.CreateTranslation(new Vector3((GameView.Width / 2) - (CanvasSize.GetWidth() / 2),
-                (GameView.Height / 2) - (CanvasSize.GetHeight() / 2), 0));
+            return Matrix.CreateTranslation(new Vector3((GameWidth / 2) - (VirtualWidth / 2),
+                (GameHeight / 2) - (VirtualHeight / 2), 0));
         }
     }
 }

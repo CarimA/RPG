@@ -10,13 +10,14 @@ namespace PhotoVs.Engine.Graphics.Filters
 {
     public class ColorGradingFilter : IDisposable, IFilter
     {
-        private readonly NewRenderer _renderer;
+        private readonly Renderer _renderer;
 
         private readonly Effect _effect;
         private readonly EffectParameter _lutTextureParam;
         private readonly EffectParameter _lutTextureWidthParam;
         private readonly EffectParameter _lutTextureHeightParam;
         private readonly EffectPass _effectPass;
+        private RenderTarget2D _outputTexture;
 
         private Texture2D _lookupTable;
 
@@ -35,7 +36,7 @@ namespace PhotoVs.Engine.Graphics.Filters
             }
         }
 
-        public ColorGradingFilter(NewRenderer renderer, Effect effect)
+        public ColorGradingFilter(Renderer renderer, Effect effect)
         {
             _renderer = renderer;
 
@@ -48,14 +49,21 @@ namespace PhotoVs.Engine.Graphics.Filters
 
         public RenderTarget2D Filter(SpriteBatch spriteBatch, Texture2D inputTexture)
         {
-            _renderer.RequestSubRenderer(inputTexture.Width, inputTexture.Height);
+            if (_outputTexture == null || _outputTexture.Width != inputTexture.Width ||
+                _outputTexture.Height != inputTexture.Height)
+            {
+                _outputTexture = new RenderTarget2D(_renderer.GraphicsDevice, inputTexture.Width, inputTexture.Height);
+            }
+
+            _renderer.RequestSubRenderer(_outputTexture);
 
             _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointClamp);
             _effectPass.Apply();
             _renderer.SpriteBatch.Draw(inputTexture, Vector2.Zero, Color.White);
             _renderer.SpriteBatch.End();
 
-            return _renderer.RelinquishSubRenderer();
+            _renderer.RelinquishSubRenderer();
+            return _outputTexture;
         }
 
         public void Dispose()

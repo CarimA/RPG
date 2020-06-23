@@ -63,8 +63,6 @@ namespace PhotoVs.Logic
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
                 GraphicsProfile = GraphicsProfile.HiDef,
-                PreferredBackBufferWidth = 320 * 2,
-                PreferredBackBufferHeight = 180 * 2,
                 SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight
             };
             if (_platform.OverrideFullscreen)
@@ -73,6 +71,7 @@ namespace PhotoVs.Logic
             }
             _graphicsDeviceManager.ApplyChanges();
             _services.Set(_graphicsDeviceManager);
+            _services.Set(Window);
 
             // use screen refresh rate
             _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
@@ -166,15 +165,7 @@ namespace PhotoVs.Logic
 
         private Renderer CreateRenderer()
         {
-            var canvas = new CanvasSize(640, 360);
-            var renderer = new Renderer(GraphicsDevice,
-                _graphicsDeviceManager,
-                Window,
-                new ColorGrading(GraphicsDevice,
-                    canvas,
-                    _assetLoader.Get<Effect>(_platform.PaletteShader),
-                    _assetLoader.Get<Texture2D>("ui/luts/aap128.png")),
-                canvas);
+            var renderer = new Renderer(_services, 640, 360);
             return renderer;
         }
 
@@ -240,11 +231,10 @@ namespace PhotoVs.Logic
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //_renderer.SetRenderMode(RenderMode.Game);
+            _renderer.BeforeDraw();
             _sceneMachine.Draw(gameTime);
             _sceneMachine.DrawUI(gameTime, _renderer.GetUIOrigin());
-
-            //_renderer.Draw(_spriteBatch);
+            _renderer.Draw();
 
             base.Draw(gameTime);
 

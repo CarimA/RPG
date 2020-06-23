@@ -7,6 +7,7 @@ using System;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Graphics;
+using PhotoVs.Engine.Graphics.Filters;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
 
@@ -29,22 +30,23 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         private float day = 0f;
         private LinearTweener<Texture2D> _dayNight;
-        private ColorGrading _colorGrade;
+        private ColorGradingFilter _colorGrade;
         private ColorAverager _colorAverager;
         private RenderTarget2D _target;
+        private Renderer _renderer;
 
         public SRenderOverworld(Overworld overworld, SpriteBatch spriteBatch, SCamera camera, Services services)
         {
+            _renderer = services.Get<Renderer>();
             _overworld = overworld;
             _spriteBatch = spriteBatch;
             _camera = camera;
 
-            _colorAverager= new ColorAverager(services.Get<GraphicsDevice>(), 
+            _colorAverager= new ColorAverager(services.Get<Renderer>(), 
                 services.Get<IAssetLoader>().Get<Effect>(services.Get<IPlatform>().AverageShader));
-            _colorGrade = new ColorGrading(services.Get<GraphicsDevice>(), new CanvasSize(640, 320), 
-                services.Get<IAssetLoader>().Get<Effect>(services.Get<IPlatform>().PaletteShader), null);
+            _colorGrade = new ColorGradingFilter(services.Get<Renderer>(), 
+                services.Get<IAssetLoader>().Get<Effect>(services.Get<IPlatform>().PaletteShader));
             _dayNight = new LinearTweener<Texture2D>();
-            _target = new RenderTarget2D(spriteBatch.GraphicsDevice, 640, 320);
 
             var assetLoader = services.Get<IAssetLoader>();
             _dayNight.AddPoint(0.041667f, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
@@ -58,7 +60,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
 
-            var ts = TimeSpan.FromMinutes(45);
+            var ts = TimeSpan.FromSeconds(10);
             timeScale = (float)ts.TotalSeconds;
         }
 
@@ -72,6 +74,12 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         public void Draw(GameTime gameTime, IGameObjectCollection gameObjects)
         {
+            if (_target == null || _target.Width != _renderer.GameWidth ||
+                _target.Height != _renderer.GameHeight)
+            {
+                _target = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
+            }
+
             day += (gameTime.GetElapsedSeconds() / timeScale);
             if (day >= 1f)
                 day %= 1f;
@@ -79,13 +87,14 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             var (phase, texA, texB) = _dayNight.GetPhase(day);
             _colorAverager.Set(phase, texA, texB);
             _colorAverager.Average(_spriteBatch);
-            lut = _colorAverager.GetOutputTexture();
+            lut = _colorAverager.Average(_spriteBatch);
 
-            _colorGrade.SetTexture(lut);
+            _colorGrade.LookupTable = lut;
 
             _gameObjects = gameObjects;
 
-            _spriteBatch.GraphicsDevice.SetRenderTarget(_target);
+            _renderer.RequestSubRenderer(_target);
+
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
@@ -98,14 +107,13 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _spriteBatch.End();
 
-            _spriteBatch.GraphicsDevice.SetRenderTarget(null);
+            _renderer.RelinquishSubRenderer();
 
             var output = _colorGrade.Filter(_spriteBatch, _target);
 
-
             _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
             _spriteBatch.Draw(output, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(lut, Vector2.Zero, Color.White);
+            //_spriteBatch.Draw(lut, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(texA, Vector2.Zero + new Vector2(0, texA.Height), Color.White);
             //_spriteBatch.Draw(texB, Vector2.Zero + new Vector2(0, texA.Height) + new Vector2(0, texB.Height), Color.White);
 

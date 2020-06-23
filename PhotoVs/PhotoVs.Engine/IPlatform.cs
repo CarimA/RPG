@@ -1,6 +1,6 @@
 ﻿using PhotoVs.Engine.Assets.StreamProviders;
 
-namespace PhotoVs.Logic
+namespace PhotoVs.Engine
 {
     public interface IPlatform
     {

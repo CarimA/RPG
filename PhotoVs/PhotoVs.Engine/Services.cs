@@ -18,7 +18,7 @@ namespace PhotoVs.Engine
             if (_cache.TryGetValue(typeof(T), out var value))
                 return (T)value;
 
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(typeof(T).Name);
         }
 
         public void Set<T>(T service)
