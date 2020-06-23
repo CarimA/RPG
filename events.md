@@ -74,6 +74,30 @@ The StateCondition attribute will cause the engine to add a conditional to the e
 
 More than one condition can be used for a method.
 
+[TimePhaseCondition(TimePhase)]
+
+- TimePhase.MidNight
+- TimePhase.LateNight
+- TimePhase.Sunrise
+- TimePhase.EarlyMorning
+- TimePhase.LateMorning
+- TimePhase.Noon
+- TimePhase.EarlyAfternoon
+- TimePhase.LateAfternoon
+- TimePhase.EarlyEvening
+- TimePhase.LateEvening
+- TimePhase.EarlyNight
+
+[DayCondtion(Day)]
+
+- Day.Monday
+- Day.Tuesday
+- Day.Wednesday
+- Day.Thursday
+- Day.Friday
+- Day.Saturday
+- Day.Sunday
+
 ## Triggers
 
 ### ***About Dynamic Triggers***
@@ -178,6 +202,10 @@ Raised with each new character that is added when dialogue runs. Provides the ch
 
 ### `STATE_POPPED` (not implemented yet) (dynamic)
 
+TIME_PHASE_CHANGED
+
+DAY_CHANGED
+
 ## EventArg Classes (todo)
 
 ### `GameEventArgs`
@@ -227,18 +255,41 @@ Raised with each new character that is added when dialogue runs. Provides the ch
 
 ### `PlayBgm(string)` (not implemented yet)
 
+EnableMapBgm()
+
+DisableMapBgm()
+
 ### `StopBgm()` (not implemented yet)
 
 ### `PlaySfx(string)` (not implemented yet)
 
 ### `PlaySfx(string, Vector2)` (not implemented yet)
 
+SetTime
+
+SetTimeScale
+
+GetTime
+
+GetTimePhase
+
+SetDay
+
+GetDay
+
+EnableDayCycle
+
+DisableDayCycle
+
 ### 
 
 Todo List:
 - Refactor the Day/Night system a class:
-  - handle the timing, allow getting/setting the time (convert from 24 hour units to 0 to 1 scale and back), and allow enabling/disabling time flow (and tie to event commands + raise events per hour)
+  - handle the timing, allow getting/setting the time (convert from 24 hour units to 0 to 1 scale and back), setting the time scale (rate at which time flows) getting the time phase, and allow enabling/disabling time flow (and tie to event commands + raise events per hour)
+  - Implement day of the week!
   - handle loading the LUT textures for interpolating and provide a method to retrieve it
+  - Try and figure out what's causing DirectX to bug out
+  - Decide on how long a day should be in-game (don't forget that City is 60* faster) (1 hour in albion, 1 min in city?)
 - Refactor (remove?) the renderer classes:
   - Remove CanvasSize (pass it to the Camera instead, see below), VirtualRenderTarget2D and any other uneeded classes
   - Refactor ColorGrading to resemble TextureAverager

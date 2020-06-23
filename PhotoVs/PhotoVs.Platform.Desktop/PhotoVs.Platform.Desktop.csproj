@@ -19,7 +19,4 @@
   <ItemGroup>
     <ProjectReference Include="..\PhotoVs.Logic\PhotoVs.Logic.csproj" />
   </ItemGroup>
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="RD &quot;$(TargetDir)\content\&quot; /S /Q&#xD;&#xA;XCOPY &quot;$(SolutionDir)content&quot; &quot;$(TargetDir)\content\&quot; /E /Y" />
-  </Target>
 </Project>
