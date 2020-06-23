@@ -236,19 +236,35 @@ Raised with each new character that is added when dialogue runs. Provides the ch
 ### 
 
 Todo List:
-- Implement missing methods
-- Make the dynamic trigger causes raise the plain event too (for example, "INTERACT_AREA_ENTER:example" will also raise "INTERACT_AREA_ENTER")
-- Make every IEnumerator function return a wrapped Coroutine instead (and update the docs to reflect that)
-- Change Input to be a typical class that receives inputs and fires events instead of a component + related systems
-    - Change Input related things to be an event driven plugin
-        - Move (SScreenshot) Screenshot out to a plugin
-        - Move (SHandleFullscreen) Fullscreen handling out to a plugin
-- Look at refactoring existing game logic out of the codebase and into plugins
-- Redo how screens work (seriously, it's a mess)
-- Consider having a `Module` class which is automatically injected with a Service which could help solve ^^^
-    - Extract all scenes into a module?
-- Change the camera into a typical class instead of a system
-- Go through all constructors and make it so that it only has Services for anything that requires services
-- Go through all classes and set service requests in the constructor
-
-- rewrite the renderer/color grading stuff/etc
+- Refactor the Day/Night system a class:
+  - handle the timing, allow getting/setting the time (convert from 24 hour units to 0 to 1 scale and back), and allow enabling/disabling time flow (and tie to event commands + raise events per hour)
+  - handle loading the LUT textures for interpolating and provide a method to retrieve it
+- Refactor (remove?) the renderer classes:
+  - Remove CanvasSize (pass it to the Camera instead, see below), VirtualRenderTarget2D and any other uneeded classes
+  - Refactor ColorGrading to resemble TextureAverager
+    - Rename from ColorGrading to ColorGrader 
+  - Change the Camera into a standard class and add a zoom factor which scales to meet the boundary size
+    - problem: this means every pixel gets rendered which makes shaders much slower. Maybe still render to a small buffer and do something like get the backbuffer after everything is done instead of using rendertargets?
+    - Maybe make a Renderer class which anything can "request" a render buffer (which copies what had been rendered up to that point to a new buffer and then provides a rendertarget it can use) and "relinquish" to re-render what was saved and let everything carry on
+  - Change the renderer to be provided a minimum and maximum resolution to be constrained to so that resolutions that are too weird don't cause major issues?
+- Graphics Pass continues:
+  - Lighting/Shadow, figure out an elegant solution, maybe copy what Graveyard Keeper does with its fake lighting/shadows?
+  - Add map-specific and zone-specific colour grading support (maybe support a Plugin Command which can change the global LUT?)
+  - Add a *very* soft vignette
+  - Wind deforming shader (create a duplicated texture with a mask determining how strongly a texel is affected?)
+  - Falling particle leaves
+  - Shader for water (https://forums.tigsource.com/index.php?topic=40539.msg1104986#msg1104986)
+    - in the map post-processor, maybe find tiles that use the water tiles and copy from tiles above + flip upside-down to be rendered in a special water layer?
+- Plugin System:
+  - Implement missing attributes (triggers/conditions), events and commands
+  - Make dynamic triggers raise plain events too (e.g. "INTERACT_AREA_ENTER:example" also raises "INTERACT_AREA_ENTER". Maybe do this automatically as part of the event notifier by checking for colons?)
+  - Make every IEnumerator function return a wrapped Coroutine instead (and change docs to reflect that)
+- Input System:
+  - Refactor STakeScreenshot into a plugin
+  - Refactor SHandleFullscreen into a plugin
+- Generic:
+  - Look at what existing logic can be refactored into a plugin
+  - Redo how screens handle game objects and systems?
+  - Change every `(float)gameTime.ELapsedTime.TotalSeconds` to use the GetElapsedSeconds() extension method.
+  - Go through all constructors and fix them to only require Service (when any of them request for something that Service provides) and create private fields which hold what they ask for (and handle that in the constructor)
+  - Remove all Service private fields
