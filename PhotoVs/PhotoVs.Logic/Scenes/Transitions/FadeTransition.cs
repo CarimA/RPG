@@ -14,8 +14,6 @@ namespace PhotoVs.Logic.Scenes.Transitions
         private readonly float _maxFadeInTime;
         private readonly float _maxFadeOutTime;
         private readonly Renderer _renderer;
-
-        private readonly Services _services;
         private readonly SpriteBatch _spriteBatch;
         private float _fadeInTime;
         private float _fadeOutTime;
@@ -24,10 +22,9 @@ namespace PhotoVs.Logic.Scenes.Transitions
         public FadeTransition(Services services, Color fadeColor, float fadeInTime = 0.35f,
             float fadeOutTime = 0.35f)
         {
-            _services = services;
-            _renderer = _services.Get<Renderer>();
-            _assetLoader = _services.Get<IAssetLoader>();
-            _spriteBatch = _services.Get<SpriteBatch>();
+            _renderer = services.Get<Renderer>();
+            _assetLoader = services.Get<IAssetLoader>();
+            _spriteBatch = services.Get<SpriteBatch>();
 
             _fadeColor = fadeColor;
             _maxFadeInTime = fadeInTime;

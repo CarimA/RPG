@@ -19,8 +19,6 @@ sampler2D texSamplerB = sampler_state
 	Filter = POINT;
 };
 
-float LutWidth;
-float LutHeight;
 float phase;
 
 sampler2D s0 : register(s0);

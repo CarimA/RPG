@@ -58,7 +58,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
 
-            var ts = TimeSpan.FromMinutes(2);
+            var ts = TimeSpan.FromMinutes(45);
             timeScale = (float)ts.TotalSeconds;
         }
 
