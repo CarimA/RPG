@@ -6,6 +6,7 @@ namespace PhotoVs.Logic
     {
         bool OverrideFullscreen { get; }
         string PaletteShader { get; }
+        string AverageShader { get; }
 
         IStreamProvider StreamProvider { get; set; }
     }

@@ -39,14 +39,15 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         public void Draw(GameTime gameTime, IGameObjectCollection entities)
         {
-            _camera.Attach(_spriteBatch);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
+                transformMatrix: _camera.Transform);
 
             entities.ForEach(Draw);
             _overworld.GetMap().GetCollisions(_camera)?.ForEach(Draw);
             _overworld.GetMap().GetScripts(_camera)?.ForEach(Draw);
             _overworld.GetMap().GetZones(_camera)?.ForEach(Draw);
 
-            _camera.Detach(_spriteBatch);
+            _spriteBatch.End();
         }
 
         public void AfterDraw(GameTime gameTime)

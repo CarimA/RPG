@@ -51,13 +51,14 @@ namespace PhotoVs.Logic
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
 
-            _platform = platform;
-
             _services = new Services();
             _events = new EventQueue();
             _coroutineRunner = new CoroutineRunner();
             _services.Set(_events);
             _services.Set(_coroutineRunner);
+            
+            _platform = platform;
+            _services.Set(platform);
 
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
@@ -239,11 +240,11 @@ namespace PhotoVs.Logic
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _renderer.SetRenderMode(RenderMode.Game);
+            //_renderer.SetRenderMode(RenderMode.Game);
             _sceneMachine.Draw(gameTime);
             _sceneMachine.DrawUI(gameTime, _renderer.GetUIOrigin());
 
-            _renderer.Draw(_spriteBatch);
+            //_renderer.Draw(_spriteBatch);
 
             base.Draw(gameTime);
 

@@ -26,12 +26,12 @@ namespace PhotoVs.Logic.Scenes
 
             _world = new Overworld(spriteBatch, assetLoader);
             _world.LoadMaps("maps/");
-            _world.SetMap("test2");
+            _world.SetMap("test");
 
             Entities = new GameObjectCollection();
             Systems = new SystemCollection<ISystem>
             {
-                new SRenderOverworld(_world, spriteBatch, camera),
+                new SRenderOverworld(_world, spriteBatch, camera, scene.Services),
                 new SCollisionDebugRender(spriteBatch, assetLoader,
                     _world, camera),
                 new SCollisionResolution(_world, camera, events),

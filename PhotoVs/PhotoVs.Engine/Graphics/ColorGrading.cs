@@ -7,7 +7,7 @@ namespace PhotoVs.Engine.Graphics
     {
         private readonly Effect _effect;
         private readonly GraphicsDevice _graphicsDevice;
-        private readonly Texture2D _lut;
+        private Texture2D _lut;
         private VirtualRenderTarget2D _view;
 
         public ColorGrading(GraphicsDevice graphicsDevice, CanvasSize canvasSize, Effect effect, Texture2D lut)
@@ -16,6 +16,11 @@ namespace PhotoVs.Engine.Graphics
             _effect = effect;
             _lut = lut;
             _view = new VirtualRenderTarget2D(graphicsDevice, canvasSize.GetWidth(), canvasSize.GetHeight());
+        }
+
+        public void SetTexture(Texture2D lut)
+        {
+            _lut = lut;
         }
 
         public VirtualRenderTarget2D Filter(SpriteBatch spriteBatch, Texture2D pass)

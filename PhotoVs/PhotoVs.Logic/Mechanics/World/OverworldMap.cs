@@ -208,13 +208,9 @@ namespace PhotoVs.Logic.Mechanics.World
             //var (maskTiles, fringeTiles) = GetTilesInBoundary(camera.VisibleArea());
             var boundaries = camera.VisibleArea();
 
-            camera.Attach(spriteBatch);
-
             DrawLayer(_maskTiles, boundaries, spriteBatch, gameTime);
             drawBetween(spriteBatch, gameTime);
             DrawLayer(_fringeTiles, boundaries, spriteBatch, gameTime);
-
-            camera.Detach(spriteBatch);
 
             //System.Diagnostics.Debug.WriteLine("Drew " + maskTiles.Count + " masks");
             //System.Diagnostics.Debug.WriteLine("Drew " + fringeTiles.Count + " fringes");

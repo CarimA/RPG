@@ -250,3 +250,5 @@ Todo List:
 - Change the camera into a typical class instead of a system
 - Go through all constructors and make it so that it only has Services for anything that requires services
 - Go through all classes and set service requests in the constructor
+
+- rewrite the renderer/color grading stuff/etc

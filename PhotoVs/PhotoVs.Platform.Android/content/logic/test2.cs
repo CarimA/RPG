@@ -26,6 +26,7 @@ public class PluginTest : Plugin
     {
         var endTick = Environment.TickCount;
         Spawn(SayHowLong(endTick - startTick));
+        Dialogue("hi", "yeeeeeeeeeeeeeeeeeeet");
     }
 
     IEnumerator SayHowLong(int ticks)
@@ -33,10 +34,9 @@ public class PluginTest : Plugin
         var player = Services.Get<Player>();
         var num = (ticks < 10000000000000) ? 0 : 1;
 
-        //player.LockMovement();
+        player.LockMovement();
         yield return Dialogue("Debugger", "It took {# Yellow}" + ticks + " ticks{/#} to walk through.");
         yield return Move(GetGameObjectByName("Player"), new Vector2(0, 0), 100);
-        //player.UnlockMovement();
-
+        player.UnlockMovement();
     }
 }

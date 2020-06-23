@@ -58,12 +58,12 @@ namespace PhotoVs.Engine.Graphics
             var width = _graphics.PreferredBackBufferWidth;
             var height = _graphics.PreferredBackBufferHeight;
 
-            var gameView = _colorGrading.Filter(spriteBatch, GameView);
-            gameView.UpdateViewport(width, height);
+            //var gameView = _colorGrading.Filter(spriteBatch, GameView);
+            GameView.UpdateViewport(width, height);
 
             SetRenderMode(RenderMode.None);
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
-            gameView.DrawScaled(spriteBatch);
+            GameView.DrawScaled(spriteBatch);
             spriteBatch.End();
         }
 

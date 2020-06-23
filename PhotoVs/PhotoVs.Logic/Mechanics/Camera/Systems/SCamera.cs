@@ -29,6 +29,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
         private IGameObject _target;
 
         private Matrix _transform = Matrix.Identity;
+        public Matrix Transform => _transform;
         private float _zoom;
 
         public SCamera(Renderer renderer)
@@ -195,17 +196,6 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
                              0)) *
                          Matrix.CreateRotationZ(_rotate);
             _isDirty = false;
-        }
-
-        public void Attach(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
-                transformMatrix: _transform);
-        }
-
-        public void Detach(SpriteBatch spriteBatch)
-        {
-            spriteBatch.End();
         }
 
         public void SetZoom(float zoom)
