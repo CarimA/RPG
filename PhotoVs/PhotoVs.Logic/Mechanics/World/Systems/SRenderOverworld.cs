@@ -49,18 +49,20 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight = new LinearTweener<Texture2D>();
 
             var assetLoader = services.Get<IAssetLoader>();
-            _dayNight.AddPoint(0.041667f, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
-            _dayNight.AddPoint(0.1875f, assetLoader.Get<Texture2D>("luts/daycycle2.png"));
+            _dayNight.AddPoint(0, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
+            _dayNight.AddPoint(0.1875f, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
+            _dayNight.AddPoint(0.208334f, assetLoader.Get<Texture2D>("luts/daycycle2.png"));
             _dayNight.AddPoint(0.30208333f, assetLoader.Get<Texture2D>("luts/daycycle3.png"));
             _dayNight.AddPoint(0.41667f, assetLoader.Get<Texture2D>("luts/daycycle4.png"));
-            _dayNight.AddPoint(0.5f, assetLoader.Get<Texture2D>("luts/daycycle5.png"));
+            _dayNight.AddPoint(0.46f, assetLoader.Get<Texture2D>("luts/daycycle5.png"));
+            _dayNight.AddPoint(0.54f, assetLoader.Get<Texture2D>("luts/daycycle5.png"));
             _dayNight.AddPoint(0.58333f, assetLoader.Get<Texture2D>("luts/daycycle6.png"));
             _dayNight.AddPoint(0.6875f, assetLoader.Get<Texture2D>("luts/daycycle7.png"));
             _dayNight.AddPoint(0.7708333f, assetLoader.Get<Texture2D>("luts/daycycle8.png"));
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
 
-            var ts = TimeSpan.FromSeconds(10);
+            var ts = TimeSpan.FromMinutes(1);
             timeScale = (float)ts.TotalSeconds;
         }
 
