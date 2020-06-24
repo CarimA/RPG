@@ -26,7 +26,6 @@ public class PluginTest : Plugin
     {
         var endTick = Environment.TickCount;
         Spawn(SayHowLong(endTick - startTick));
-        Dialogue("hi", "yeeeeeeeeeeeeeeeeeeet");
     }
 
     IEnumerator SayHowLong(int ticks)

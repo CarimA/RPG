@@ -2,8 +2,8 @@
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.Events;
 using PhotoVs.Engine.FSM.Scenes;
+using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Systems;
 using PhotoVs.Logic.Mechanics.World;
@@ -19,7 +19,7 @@ namespace PhotoVs.Logic.Scenes
         public OverworldScene(SceneMachine scene)
         {
             _scene = scene;
-            var events = _scene.Services.Get<EventQueue>();
+            var events = _scene.Services.Get<EventQueue<GameEvents>>();
             var camera = _scene.Services.Get<SCamera>();
             var assetLoader = _scene.Services.Get<IAssetLoader>();
             var spriteBatch = _scene.Services.Get<SpriteBatch>();

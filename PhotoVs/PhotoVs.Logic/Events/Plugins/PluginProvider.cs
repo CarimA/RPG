@@ -12,7 +12,6 @@ using PhotoVs.Engine;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.StreamProviders;
-using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Logic.Events.Plugins.Attributes;
@@ -28,7 +27,7 @@ namespace PhotoVs.Logic.Events.Plugins
         private readonly List<string> _namespaces;
         private readonly string _usings;
         private readonly Services _services;
-        private readonly EventQueue _events;
+        private readonly EventQueue<GameEvents> _events;
         private readonly IAssetLoader _assetLoader;
         private readonly IStreamProvider _streamProvider;
         private readonly List<string> _references;
@@ -37,7 +36,7 @@ namespace PhotoVs.Logic.Events.Plugins
         public PluginProvider(Services services)
         {
             _services = services;
-            _events = services.Get<EventQueue>();
+            _events = services.Get<EventQueue<GameEvents>>();
 
             _assetLoader = _services.Get<IAssetLoader>();
             _streamProvider = _assetLoader.StreamProvider;
@@ -191,7 +190,7 @@ namespace PhotoVs.Plugins
                             flagConditions.Add(new FlagConditionAttribute(optionalFlag, false));
                         }
 
-                        var ids = Enumerable.Range(0, triggers.Length).Select(_ => _events.Reserve()).ToList();
+                        var ids = Enumerable.Range(0, triggers.Length).Select(_ => _events.ReserveId()).ToList();
                         var act = new Action<IGameEventArgs>(obj =>
                         {
                             // condition checks here
@@ -235,7 +234,7 @@ namespace PhotoVs.Plugins
                         for (var i = 0; i < ids.Count; i++)
                         {
                             var t = (TriggerAttribute) triggers[i];
-                            _events.Subscribe(ids[i], t.RunOn, act);
+                            _events.Subscribe(ids[i], t.GameEvent, t.Delimiter, act);
                         }
 
                     }
@@ -273,7 +272,7 @@ namespace PhotoVs.Plugins
                         foreach (var trigger in triggers)
                         {
                             var t = (TriggerAttribute) trigger;
-                            _events.Subscribe(t.RunOn, act);
+                            _events.Subscribe(t.GameEvent, t.Delimiter, act);
                         }
                     }
                 }

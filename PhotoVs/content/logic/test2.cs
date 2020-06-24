@@ -3,7 +3,7 @@ public class PluginTest : Plugin
     public string Name => "PluginTest";
 
     [GameEvent]
-    [Trigger(EventType.GAME_START)]
+    [Trigger(GameEvents.GameStart)]
     [RunOnce]
     void UseAControllerDummy(IGameEventArgs args)
     {
@@ -14,19 +14,29 @@ public class PluginTest : Plugin
     int startTick = 0;
 
     [GameEvent]
-    [Trigger(EventType.INTERACT_AREA_ENTER + ":example_event")]
+    [Trigger(GameEvents.InteractAreaEnter, "example_event")]
     void StartTrackingTimeToWalk(IGameEventArgs args)
     {
         startTick = Environment.TickCount;
     }
 
     [GameEvent]
-    [Trigger(EventType.INTERACT_AREA_EXIT + ":example_event")]
+    [Trigger(GameEvents.InteractAreaEnter)]
+    void Again(IGameEventArgs args)
+    {
+        Spawn(SayCrap());
+    }
+
+    IEnumerator SayCrap() {
+        yield return Dialogue("hi", "this just happens in general.");
+    }
+
+    [GameEvent]
+    [Trigger(GameEvents.InteractAreaExit, "example_event")]
     void StopTrackingTimeToWalk(IGameEventArgs args)
     {
         var endTick = Environment.TickCount;
         Spawn(SayHowLong(endTick - startTick));
-        Dialogue("hi", "yeeeeeeeeeeeeeeeeeeet");
     }
 
     IEnumerator SayHowLong(int ticks)

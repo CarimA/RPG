@@ -7,7 +7,6 @@ using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Events;
@@ -33,7 +32,7 @@ namespace PhotoVs.Logic
     {
         private readonly IPlatform _platform;
 
-        private readonly EventQueue _events;
+        private readonly EventQueue<GameEvents> _events;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly Services _services;
         private IAssetLoader _assetLoader;
@@ -52,7 +51,7 @@ namespace PhotoVs.Logic
             Window.AllowUserResizing = true;
 
             _services = new Services();
-            _events = new EventQueue();
+            _events = new EventQueue<GameEvents>();
             _coroutineRunner = new CoroutineRunner();
             _services.Set(_events);
             _services.Set(_coroutineRunner);
@@ -121,7 +120,7 @@ namespace PhotoVs.Logic
             _pluginProvider.LoadPlugins("logic/");
             _pluginProvider.LoadMods();
 
-            _events.Notify(EventType.GAME_START, new GameEventArgs(this));
+            _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
             base.Initialize();
         }
@@ -209,7 +208,7 @@ namespace PhotoVs.Logic
 
         protected override void Update(GameTime gameTime)
         {
-            _events.Process();
+            _events.ProcessQueue();
 
             _info.BeforeUpdate();
 

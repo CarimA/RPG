@@ -1,5 +1,4 @@
 ﻿using PhotoVs.Engine.Assets.StreamProviders;
-using PhotoVs.Logic;
 using System;
 using System.IO;
 using PhotoVs.Engine;

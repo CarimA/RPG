@@ -1,6 +1,6 @@
 ﻿using Android.Content.Res;
+using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.StreamProviders;
-using PhotoVs.Logic;
 
 namespace PhotoVs.Platform.Android
 {

@@ -3,7 +3,6 @@ using System.Collections;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Engine.ECS.GameObjects;
-using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.Coroutines.Instructions;
 using PhotoVs.Engine.Events.EventArgs;
@@ -160,11 +159,16 @@ namespace PhotoVs.Logic.Events.Plugins
             var player = Services.Get<Player>();
             player.PlayerData.Save();
         }
-
-        public void Notify(string eventType, IGameEventArgs gameEvent)
+        public void Notify(GameEvents eventType, IGameEventArgs gameEvent)
         {
-            var eventQueue = Services.Get<EventQueue>();
+            var eventQueue = Services.Get<EventQueue<GameEvents>>();
             eventQueue.Notify(eventType, gameEvent);
+        }
+
+        public void Notify(GameEvents eventType, string delimiter, IGameEventArgs gameEvent)
+        {
+            var eventQueue = Services.Get<EventQueue<GameEvents>>();
+            eventQueue.Notify(eventType, delimiter, gameEvent);
         }
 
         public void Warp(string map, Vector2 position)

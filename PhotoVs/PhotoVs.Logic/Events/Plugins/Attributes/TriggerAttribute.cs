@@ -5,11 +5,19 @@ namespace PhotoVs.Logic.Events.Plugins.Attributes
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class TriggerAttribute : Attribute
     {
-        public string RunOn { get; }
+        public GameEvents GameEvent { get; }
+        public string Delimiter { get; }
 
-        public TriggerAttribute(string runOn)
+        public TriggerAttribute(GameEvents gameEvents)
         {
-            RunOn = runOn;
+            GameEvent = gameEvents;
+            Delimiter = string.Empty;
+        }
+
+        public TriggerAttribute(GameEvents gameEvents, string delimiter)
+        {
+            GameEvent = gameEvents;
+            Delimiter = delimiter;
         }
     }
 }
