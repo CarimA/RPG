@@ -26,9 +26,7 @@ namespace PhotoVs.Engine.Graphics
 
         private RenderTarget2D _mainRenderTarget;
         private RenderTarget2D _tempRenderTarget;
-
-        //private ColorGradingFilter _globalFilter;
-
+        
         public Renderer(Services services, int virtualWidth, int virtualHeight)
         {
             GraphicsDevice = services.Get<GraphicsDevice>();
@@ -40,20 +38,12 @@ namespace PhotoVs.Engine.Graphics
 
             _display = new Rectangle();
             UpdateDisplay(null, null);
-
-            //var platform = services.Get<IPlatform>();
-            //var assetLoader = services.Get<IAssetLoader>();
-            //_globalFilter = new ColorGradingFilter(this, 
-            //    assetLoader.Get<Effect>(platform.PaletteShader));
-            //_globalFilter.LookupTable = assetLoader.Get<Texture2D>("ui/luts/aap128.png");
         }
 
         public void Draw()
         {
             var width = _graphics.PreferredBackBufferWidth;
             var height = _graphics.PreferredBackBufferHeight;
-
-            //var gameview = _globalFilter.Filter(SpriteBatch, _mainRenderTarget);
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
@@ -115,10 +105,6 @@ namespace PhotoVs.Engine.Graphics
 
             var widthScale = width / (double) VirtualWidth;
             var heightScale = height / (double) VirtualHeight;
-
-            /*_mainRenderTarget = widthScale < heightScale 
-                ? CreateRenderTarget(VirtualWidth, (int)(height / widthScale)) 
-                : CreateRenderTarget((int)(width / heightScale), VirtualHeight);*/
 
             if (widthScale < heightScale)
             {
