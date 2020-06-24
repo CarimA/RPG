@@ -294,9 +294,11 @@ Todo List:
   - Add map-specific and zone-specific colour grading support (maybe support a Plugin Command which can change the global LUT?)
   - Add a *very* soft vignette
   - Wind deforming shader (create a duplicated texture with a mask determining how strongly a texel is affected?)
+    - could perhaps create a _materials, _normals and _height texture with different colour channels used for different things
   - Falling particle leaves
   - Shader for water (https://forums.tigsource.com/index.php?topic=40539.msg1104986#msg1104986)
     - in the map post-processor, maybe find tiles that use the water tiles and copy from tiles above + flip upside-down to be rendered in a special water layer?
+  - Flat grass blowing shader
 - Plugin System:
   - Implement missing attributes (triggers/conditions), events and commands
   - Make every IEnumerator function return a wrapped Coroutine instead (and change docs to reflect that)
