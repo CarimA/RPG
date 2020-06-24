@@ -288,7 +288,6 @@ Todo List:
   - handle the timing, allow getting/setting the time (convert from 24 hour units to 0 to 1 scale and back), setting the time scale (rate at which time flows) getting the time phase, and allow enabling/disabling time flow (and tie to event commands + raise events per hour)
   - Implement day of the week!
   - handle loading the LUT textures for interpolating and provide a method to retrieve it
-  - Try and figure out what's causing DirectX to bug out
   - Decide on how long a day should be in-game (don't forget that City is 60* faster) (1 hour in albion, 1 min in city?)
 - Graphics Pass continues:
   - Lighting/Shadow, figure out an elegant solution, maybe copy what Graveyard Keeper does with its fake lighting/shadows?
