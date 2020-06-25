@@ -318,6 +318,8 @@ Todo List:
       - Keep displacement as its own shader/filter, reuse with wind stuff.
     
     - Redesign the overworld renderer to accept a list of filters?
+    
+    - Figure out what causes the water trail in the reflection (maybe just add a check for if matching colour, remove)
   - Flat grass blowing shader
   - Wind trails
 - Plugin System:
