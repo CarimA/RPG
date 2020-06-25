@@ -13,6 +13,8 @@ namespace PhotoVs.Engine.Graphics
 
         public int VirtualWidth { get; private set; }
         public int VirtualHeight { get; private set; }
+        public int VirtualMaxHeight { get; private set; }
+        public int VirtualMaxWidth { get; private set; }
         public int GameWidth { get; private set; }
         public int GameHeight { get; private set; }
 
@@ -21,7 +23,7 @@ namespace PhotoVs.Engine.Graphics
         private RenderTarget2D _mainRenderTarget;
         private RenderTarget2D _tempRenderTarget;
         
-        public Renderer(Services services, int virtualWidth, int virtualHeight)
+        public Renderer(Services services, int virtualWidth, int virtualHeight, int virtualMaxWidth, int virtualMaxHeight)
         {
             GraphicsDevice = services.Get<GraphicsDevice>();
             SpriteBatch = services.Get<SpriteBatch>();
@@ -29,6 +31,8 @@ namespace PhotoVs.Engine.Graphics
             _window = services.Get<GameWindow>();
             VirtualWidth = virtualWidth;
             VirtualHeight = virtualHeight;
+            VirtualMaxWidth = virtualMaxWidth;
+            VirtualMaxHeight = virtualMaxHeight;
 
             _display = new Rectangle();
             UpdateDisplay(null, null);
@@ -100,24 +104,37 @@ namespace PhotoVs.Engine.Graphics
             var widthScale = width / (double) VirtualWidth;
             var heightScale = height / (double) VirtualHeight;
 
+
             if (widthScale < heightScale)
             {
-                _mainRenderTarget = CreateRenderTarget(VirtualWidth, (int) (height / widthScale));
-                _tempRenderTarget = CreateRenderTarget(VirtualWidth, (int) (height / widthScale));
+                GameWidth = VirtualWidth;
+                GameHeight = (int)(height / widthScale);
             }
             else
             {
-                _mainRenderTarget = CreateRenderTarget((int) (width / heightScale), VirtualHeight);
-                _tempRenderTarget = CreateRenderTarget((int) (width / heightScale), VirtualHeight);
+                GameWidth = (int)(width / heightScale);
+                GameHeight = VirtualHeight;
             }
 
-            GameWidth = _mainRenderTarget.Width;
-            GameHeight = _mainRenderTarget.Height;
+            GameWidth = Math.Min(VirtualMaxWidth, GameWidth);
+            GameHeight = Math.Min(VirtualMaxHeight, GameHeight);
 
-            _display.Width = width;
-            _display.Height = height;
-            _display.X = 0;
-            _display.Y = 0;
+            _mainRenderTarget = CreateRenderTarget(GameWidth, GameHeight);
+            _tempRenderTarget = CreateRenderTarget(GameWidth, GameHeight);
+
+            if (widthScale < heightScale)
+            {
+                _display.Width = (int)(GameWidth * widthScale);
+                _display.Height = (int)(GameHeight * widthScale);
+            }
+            else
+            {
+                _display.Width = (int)(GameWidth * heightScale);
+                _display.Height = (int)(GameHeight * heightScale);
+            }
+
+            _display.X = width / 2 - _display.Width / 2;
+            _display.Y = height / 2 - _display.Height / 2;
 
             _window.ClientSizeChanged += UpdateDisplay;
         }
