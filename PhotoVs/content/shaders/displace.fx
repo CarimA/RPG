@@ -37,6 +37,8 @@ float offsetY;
 float pixHeight;
 float pixWidth;
 
+float maxDisplace = 8;
+
 float4 highlightWater = float4(0.37647058823, 0.70588235294, 0.84705882352, 1.0);
 
 float4 main(VertexShaderOutput input) : COLOR
@@ -44,7 +46,7 @@ float4 main(VertexShaderOutput input) : COLOR
     float4 mask = tex2D(TextureSampler, input.TextureCoordinates);
 
     float4 displace = tex2D(texSamplerDisplace, input.TextureCoordinates + float2(offsetX, offsetY));
-	float2 adjusted = input.TextureCoordinates + (displace.rg * float2(pixWidth * 8, 0) - float2(pixWidth * 4, 0));
+	float2 adjusted = input.TextureCoordinates + ((displace.rg - 0.5) * float2(pixWidth * maxDisplace, 0));
 	float4 output = tex2D(TextureSampler, adjusted);
 
 	if (mask.a == 0)
