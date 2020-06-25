@@ -55,20 +55,10 @@ namespace PhotoVs.Logic.Mechanics.World
 
         public float Progress()
         {
-            var half = _maxTimer / 2;
-            if (_nextUpdate < half)
-            {
-                return (_nextUpdate / _maxTimer) / 2;
-            }
-            else
-            {
-                return 1 - ((_nextUpdate / _maxTimer) / 2);
-            }
-        }
-
-        public float Speed()
-        {
-            return Math.Abs(Force) / 4f;
+            var x = _nextUpdate / _maxTimer;
+            var xn = x - 0.5f;
+            var xs = xn * xn;
+            return -(xs * 4f) + 1f;
         }
     }
 }

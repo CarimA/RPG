@@ -56,8 +56,6 @@ float threshold;
 float4 lightGrass = float4(0.81176470588, 0.81176470588, 0.12549019607, 1.0);
 float4 mediumGrass = float4(0.52156862745, 0.60784313725, 0.1725490196, 1.0);
 float4 darkGrass = float4(0.33725490196, 0.44705882352, 0.19215686274, 1.0);
-float darkConstant;
-float time;
 
 float4 main(VertexShaderOutput input) : COLOR
 {
@@ -67,16 +65,25 @@ float4 main(VertexShaderOutput input) : COLOR
 		return float4(0.0, 0.0, 0.0, 0.0);
 
     float4 noiseA = tex2D(texSamplerNoiseGrass, input.TextureCoordinates);
-    float4 noiseB = tex2D(texSamplerNoise, input.TextureCoordinates + float2(offsetX, offsetY) + (0.5 * sin(time)));
+    float4 noiseB = tex2D(texSamplerNoise, input.TextureCoordinates + float2(offsetX, offsetY));
 	float4 avg = (noiseA + noiseB) / 2;
 
-	if (avg.r > threshold)
+	if (avg.r < threshold)
 		return float4(0.0, 0.0, 0.0, 0.0);
 
     float4 inputColor = tex2D(TextureSampler, input.TextureCoordinates);
+	
+	if (inputColor.r == lightGrass.r && inputColor.g == lightGrass.g && inputColor.b == lightGrass.b)
+		if (avg.r > 0.85)
+			return darkGrass;
+		else
+			return mediumGrass;
 
 	if (inputColor.r == mediumGrass.r && inputColor.g == mediumGrass.g && inputColor.b == mediumGrass.b)
-		return darkGrass;
+		if (avg.r > 0.9)
+			return lightGrass;
+		else
+			return darkGrass;
 
 	return float4(0.0, 0.0, 0.0, 0.0);
 }

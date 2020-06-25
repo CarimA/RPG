@@ -36,6 +36,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private ColorAverager _colorAverager;
         private RenderTarget2D _target;
         private RenderTarget2D _material;
+        private RenderTarget2D _grass;
         private RenderTarget2D _waterReflection;
         private RenderTarget2D _water;
         private RenderTarget2D _combinedWater;
@@ -44,12 +45,15 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private Effect _waterReflectionEffect;
         private Effect _waterEffect;
         private Effect _displaceEffect;
+        private Effect _grassEffect;
         private Renderer _renderer;
         private Wind _wind;
         private Vector2 _windDir;
         private Texture2D _noiseA;
         private Texture2D _noiseB;
         private Texture2D _displacementTexture;
+        private Texture2D _displacementTexture2;
+        private Texture2D _grassTexture;
         private CPosition _playerPosition;
 
         public SRenderOverworld(Overworld overworld, SpriteBatch spriteBatch, SCamera camera, Services services)
@@ -72,10 +76,13 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _waterReflectionEffect = assetLoader.Get<Effect>("shaders/water_reflection.fx");
             _waterEffect = assetLoader.Get<Effect>("shaders/water.fx");
             _displaceEffect = assetLoader.Get<Effect>("shaders/displace.fx");
+            _grassEffect = assetLoader.Get<Effect>("shaders/grass.fx");
 
             _noiseA = assetLoader.Get<Texture2D>("ui/noise.png");
             _noiseB = assetLoader.Get<Texture2D>("ui/noise2.png");
             _displacementTexture = assetLoader.Get<Texture2D>("ui/displacement.png");
+            _displacementTexture2 = assetLoader.Get<Texture2D>("ui/displacement2.png");
+            _grassTexture = assetLoader.Get<Texture2D>("ui/noise3.png");
 
             _dayNight.AddPoint(0, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
             _dayNight.AddPoint(0.1875f, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
@@ -108,12 +115,13 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         public void Draw(GameTime gameTime, IGameObjectCollection gameObjects)
         {
             var cameraRect = _camera.VisibleArea();
+            var tPos = (new Vector2(cameraRect.Left, cameraRect.Top));
 
             _wind.Update(gameTime);
-            _windDir += (_wind.Direction * _wind.Force * 0.00005f);
+            _windDir += _wind.Direction * _wind.Force * gameTime.GetElapsedSeconds();
 
-            waterA -= new Vector2(5.3f, 14.0f) * gameTime.GetElapsedSeconds();
-            waterB -= new Vector2(6.2f, -3.8f) * gameTime.GetElapsedSeconds();
+            waterA -= new Vector2(.53f, 8.40f) * gameTime.GetElapsedSeconds();
+            waterB -= new Vector2(.62f, -5.38f) * gameTime.GetElapsedSeconds();
 
             if (_target == null || _target.Width != _renderer.GameWidth ||
                 _target.Height != _renderer.GameHeight)
@@ -126,6 +134,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 _final = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
                 _combinedWater = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
                 _waterDisplace = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
+                _grass = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
             }
 
             day += (gameTime.GetElapsedSeconds() / timeScale);
@@ -134,7 +143,6 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             var (phase, texA, texB) = _dayNight.GetPhase(day);
             _colorAverager.Set(phase, texA, texB);
-            _colorAverager.Average(_spriteBatch);
             lut = _colorAverager.Average(_spriteBatch);
 
             _colorGrade.LookupTable = lut;
@@ -158,6 +166,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _renderer.RelinquishSubRenderer();
 
+
+
+
             _renderer.RequestSubRenderer(_target);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
@@ -173,6 +184,29 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _renderer.RelinquishSubRenderer();
 
+
+
+
+            _renderer.RequestSubRenderer(_grass);
+
+            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+
+            _grassEffect.Parameters["Texture"].SetValue(_target);
+            _grassEffect.Parameters["texMask"].SetValue(_material);
+            _grassEffect.Parameters["texNoiseGrass"].SetValue(_grassTexture);
+            _grassEffect.Parameters["texNoise"].SetValue(_noiseB);
+            _grassEffect.Parameters["threshold"].SetValue(_wind.Progress().Map(0, 1, 0.08f, 0.33f));
+            _grassEffect.Parameters["darkConstant"].SetValue(0.145f);
+            _grassEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
+            _grassEffect.Parameters["offsetX"].SetValue(((_windDir.X + tPos.X) % _material.Width) / _material.Width);
+            _grassEffect.Parameters["offsetY"].SetValue(((_windDir.Y + tPos.Y) % _material.Height) / _material.Height);
+
+            _grassEffect.CurrentTechnique.Passes[0].Apply();
+            _renderer.SpriteBatch.Draw(_target, Vector2.Zero, Color.White);
+
+            _renderer.SpriteBatch.End();
+
+            _renderer.RelinquishSubRenderer();
 
 
 
@@ -204,14 +238,14 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _waterEffect.Parameters["Texture"].SetValue(_material);
             _waterEffect.Parameters["texNoiseA"].SetValue(_noiseA);
             _waterEffect.Parameters["texNoiseB"].SetValue(_noiseB);
+            _waterEffect.Parameters["pixWidth"].SetValue(1f / _water.Width);
+            _waterEffect.Parameters["pixHeight"].SetValue(1f / _water.Height);
 
-            var texSize = 1024f;
-            var tPos = (new Vector2(cameraRect.Left, cameraRect.Top));
             _waterEffect.Parameters["offsetXA"].SetValue(((waterA.X + tPos.X) % _material.Width) / _material.Width);
             _waterEffect.Parameters["offsetYA"].SetValue(((waterA.Y + tPos.Y) % _material.Height) / _material.Height);
             _waterEffect.Parameters["offsetXB"].SetValue(((waterB.X + tPos.X) % _material.Width) / _material.Width);
             _waterEffect.Parameters["offsetYB"].SetValue(((waterB.Y + tPos.Y) % _material.Height) / _material.Height);
-
+            _waterEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds / 30f);
 
             _waterEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -229,7 +263,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _renderer.RequestSubRenderer(_combinedWater);
             _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
             _renderer.SpriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.4f);
-            _renderer.SpriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.95f);
+            _renderer.SpriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.45f);
             _renderer.SpriteBatch.End();
             _renderer.RelinquishSubRenderer();
 
@@ -241,9 +275,11 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _renderer.RequestSubRenderer(_waterDisplace);
             _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, transformMatrix: _camera.Transform);
             _displaceEffect.Parameters["Texture"].SetValue(_combinedWater);
+            _displaceEffect.Parameters["texMask"].SetValue(_material);
             _displaceEffect.Parameters["texDisplace"].SetValue(_displacementTexture);
-            _displaceEffect.Parameters["offsetX"].SetValue(((waterA.X + tPos.X) % _material.Width) / _material.Width);
-            _displaceEffect.Parameters["offsetY"].SetValue(((waterA.Y + tPos.Y) % _material.Height) / _material.Height);
+            _displaceEffect.Parameters["texDisplace2"].SetValue(_displacementTexture2);
+            _displaceEffect.Parameters["offsetX"].SetValue((((waterA.X * 50) + tPos.X) % _material.Width) / _material.Width);
+            _displaceEffect.Parameters["offsetY"].SetValue((((waterA.Y * 2) + tPos.Y) % _material.Height) / _material.Height);
             _displaceEffect.Parameters["pixWidth"].SetValue(1f / _waterDisplace.Width);
             _displaceEffect.Parameters["pixHeight"].SetValue(1f / _waterDisplace.Height);
             _displaceEffect.CurrentTechnique.Passes[0].Apply();
@@ -261,8 +297,10 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             _spriteBatch.Draw(_target, Vector2.Zero, Color.White);
             _spriteBatch.Draw(_waterDisplace, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.1f);
-            _spriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.1f);
+            //_spriteBatch.Draw(_combinedWater, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.5f);
+            _spriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.2f);
+            _spriteBatch.Draw(_grass, Vector2.Zero, Color.White);
             _spriteBatch.End();
             _renderer.RelinquishSubRenderer();
 
@@ -272,6 +310,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             var output = _colorGrade.Filter(_spriteBatch, _final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            //_spriteBatch.Draw(_material, Vector2.Zero, Color.White);
             _spriteBatch.Draw(_final, Vector2.Zero, Color.White);
             _spriteBatch.End();
 

@@ -164,7 +164,7 @@ namespace PhotoVs.Logic
 
         private Renderer CreateRenderer()
         {
-            var renderer = new Renderer(_services, 640, 360);
+            var renderer = new Renderer(_services, 640, 360, 840, 400);
             return renderer;
         }
 
