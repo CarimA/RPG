@@ -292,12 +292,32 @@ Todo List:
 - Graphics Pass continues:
   - Lighting/Shadow, figure out an elegant solution, maybe copy what Graveyard Keeper does with its fake lighting/shadows?
   - Add map-specific and zone-specific colour grading support (maybe support a Plugin Command which can change the global LUT?)
-  - Add a *very* soft vignette
   - Wind deforming shader (create a duplicated texture with a mask determining how strongly a texel is affected?)
+    
     - could perhaps create a _materials, _normals and _height texture with different colour channels used for different things
   - Falling particle leaves
   - Shader for water (https://forums.tigsource.com/index.php?topic=40539.msg1104986#msg1104986)
-    - in the map post-processor, maybe find tiles that use the water tiles and copy from tiles above + flip upside-down to be rendered in a special water layer?
+    
+    - Tweak parameters more
+    
+    - Find out what's up with texture scaling
+    
+    - Anchor the texture to the world (try out anchoring it with the player position instead of wave and see what happens)
+    
+      - > > > ​            _waterEffect.Parameters["offsetXA"].SetValue(((waterA.X + cRect.Left) % texSize) / texSize);
+        > > >
+        > > > ^ ^ ^ ^ ^ ^ ^ ^ ^ THIS THING.
+    
+    - Add second displacement map with more granular noisemap
+    
+    - Figure out how to add waves shining
+    
+    - Refactor alllll of the code into a filter
+    
+      - Combine the shaders into one with different passes
+      - Keep displacement as its own shader/filter, reuse with wind stuff.
+    
+    - Redesign the overworld renderer to accept a list of filters?
   - Flat grass blowing shader
   - Wind trails
 - Plugin System:
