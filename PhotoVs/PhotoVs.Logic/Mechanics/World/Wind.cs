@@ -43,14 +43,32 @@ namespace PhotoVs.Logic.Mechanics.World
 
             if (_nextUpdate <= 0f)
             {
-                _nextUpdate = (float) ((_random.NextDouble() + 0.5f) * _random.Next(4, 8));
+                _nextUpdate = (float) ((_random.NextDouble() + 0.5f) * _random.Next(2, 6));
                 _maxTimer = _nextUpdate;
                 _targetDirection = _random.NextVector2(_minRange, _maxRange);
                 _targetForce = (float)((_random.NextDouble() + 0.5f) * _random.Next(-4, 4));
             }
 
-            Direction = Vector2.Lerp(Direction, _targetDirection, _nextUpdate / _maxTimer);
-            Force = MathHelper.Lerp(Force, _targetForce, _nextUpdate / _maxTimer);
+            Direction = Vector2.SmoothStep(Direction, _targetDirection, (Progress()) / 10f);
+            Force = MathHelper.SmoothStep(Force, _targetForce, (Progress()) / 10f);
+        }
+
+        public float Progress()
+        {
+            var half = _maxTimer / 2;
+            if (_nextUpdate < half)
+            {
+                return (_nextUpdate / _maxTimer) / 2;
+            }
+            else
+            {
+                return 1 - ((_nextUpdate / _maxTimer) / 2);
+            }
+        }
+
+        public float Speed()
+        {
+            return Math.Abs(Force) / 4f;
         }
     }
 }

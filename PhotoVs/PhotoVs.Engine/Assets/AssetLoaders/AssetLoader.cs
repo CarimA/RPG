@@ -15,12 +15,14 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
     {
         public IStreamProvider StreamProvider { get; }
 
+        private IPlatform _platform { get; }
         private readonly Dictionary<string, object> _assetCache;
         private readonly Dictionary<string, int> _lastUsed;
         private readonly Dictionary<Type, object> _typeLoaders;
 
         public AssetLoader(Services services, IStreamProvider streamProvider)
         {
+            _platform = services.Get<IPlatform>();
             _lastUsed = new Dictionary<string, int>();
             _assetCache = new Dictionary<string, object>();
             _typeLoaders = new Dictionary<Type, object>();
@@ -31,6 +33,9 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
         public T Get<T>(string filepath) where T : class
         {
+            if (filepath.EndsWith(".fx"))
+                filepath = filepath.Replace(".fx", _platform.ShaderFileExtension);
+
             filepath = SanitiseFilename(filepath);
             if (_assetCache.TryGetValue(filepath, out var asset))
             {

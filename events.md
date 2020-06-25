@@ -299,6 +299,7 @@ Todo List:
   - Shader for water (https://forums.tigsource.com/index.php?topic=40539.msg1104986#msg1104986)
     - in the map post-processor, maybe find tiles that use the water tiles and copy from tiles above + flip upside-down to be rendered in a special water layer?
   - Flat grass blowing shader
+  - Wind trails
 - Plugin System:
   - Implement missing attributes (triggers/conditions), events and commands
   - Make every IEnumerator function return a wrapped Coroutine instead (and change docs to reflect that)

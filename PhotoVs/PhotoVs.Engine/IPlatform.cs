@@ -5,9 +5,7 @@ namespace PhotoVs.Engine
     public interface IPlatform
     {
         bool OverrideFullscreen { get; }
-        string PaletteShader { get; }
-        string AverageShader { get; }
-
+        string ShaderFileExtension { get; }
         IStreamProvider StreamProvider { get; set; }
     }
 }

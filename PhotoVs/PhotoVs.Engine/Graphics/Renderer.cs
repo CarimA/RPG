@@ -57,13 +57,13 @@ namespace PhotoVs.Engine.Graphics
             // copy the existing buffer to a temporary buffer so
             // that it isn't wiped
             GraphicsDevice.SetRenderTarget(_tempRenderTarget);
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Transparent);
             SpriteBatch.Begin();
             SpriteBatch.Draw(_mainRenderTarget, Vector2.Zero, Color.White);
             SpriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(renderTarget);
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Transparent);
         }
 
         public RenderTarget2D CreateRenderTarget(int width, int height)

@@ -98,7 +98,11 @@ namespace PhotoVs.Logic.Mechanics.World
                             var posX = map.XOffset + (x * map.CellWidth) + layer.X;
                             var posY = map.YOffset + (y * map.CellHeight) + layer.Y;
 
-                            var tileData = new Tile(posX, posY, tile.Left, tile.Top, tilesetTexture);
+                            var materialPath = tilesetPath.Substring(0, tilesetPath.Length - ".png".Length) +
+                                "_mat.png";
+                            var materialTexture = _assetLoader.Get<Texture2D>(materialPath);
+
+                            var tileData = new Tile(posX, posY, tile.Left, tile.Top, tilesetTexture, materialTexture);
 
                             if (isMask)
                             {
@@ -215,6 +219,17 @@ namespace PhotoVs.Logic.Mechanics.World
             //System.Diagnostics.Debug.WriteLine("Drew " + maskTiles.Count + " masks");
             //System.Diagnostics.Debug.WriteLine("Drew " + fringeTiles.Count + " fringes");
         }
+        public void DrawMaterial(SpriteBatch spriteBatch, GameTime gameTime, SCamera camera, Action<SpriteBatch, GameTime> drawBetween)
+        {
+            //var (maskTiles, fringeTiles) = GetTilesInBoundary(camera.VisibleArea());
+            var boundaries = camera.VisibleArea();
+
+            DrawLayerMaterial(_maskTiles, boundaries, spriteBatch, gameTime);
+            DrawLayerMaterial(_fringeTiles, boundaries, spriteBatch, gameTime);
+
+            //System.Diagnostics.Debug.WriteLine("Drew " + maskTiles.Count + " masks");
+            //System.Diagnostics.Debug.WriteLine("Drew " + fringeTiles.Count + " fringes");
+        }
 
         private (IEnumerable<Tile>, IEnumerable<Tile>) GetTilesInBoundary(Rectangle boundaries)
         {
@@ -231,7 +246,16 @@ namespace PhotoVs.Logic.Mechanics.World
                     Color.White);
             }
         }
-
+        private void DrawLayerMaterial(SpatialHash<Tile> tiles, Rectangle boundaries, SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            foreach (var tile in tiles.Get(boundaries))
+            {
+                spriteBatch.Draw(tile.Material,
+                    new Rectangle(tile.X, tile.Y, _cellWidth, _cellHeight),
+                    new Rectangle(tile.SourceX, tile.SourceY, _cellWidth, _cellHeight),
+                    Color.White);
+            }
+        }
 
         public IEnumerable<IGameObject> GetCollisions(SCamera camera)
         {
