@@ -2,12 +2,8 @@
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Utils.Logging;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using PhotoVs.Engine.Events.Coroutines;
-using PhotoVs.Engine.Events.Coroutines.Instructions;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
@@ -28,7 +24,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             _typeLoaders = new Dictionary<Type, object>();
             StreamProvider = streamProvider;
 
-            services.Get<CoroutineRunner>().Start(new Coroutine(UnloadUnusedAssets()));
+            //services.Get<CoroutineRunner>().Start(new Coroutine(UnloadUnusedAssets()));
         }
 
         public T Get<T>(string filepath) where T : class
@@ -106,7 +102,7 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
             return filename.ToLowerInvariant();
         }
 
-        private IEnumerator UnloadUnusedAssets()
+        /*private IEnumerator UnloadUnusedAssets()
         {
             const float time = 20f;
             var pause = new Wait(time);
@@ -129,6 +125,6 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
                 toRemove.Clear();
             }
-        }
+        }*/
     }
 }

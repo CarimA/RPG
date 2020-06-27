@@ -25,5 +25,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Components
         {
             VelocityIntent = new List<Vector2>();
         }
+
+        public bool Enabled { get; set; }
     }
 }

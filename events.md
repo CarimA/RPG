@@ -293,34 +293,13 @@ Todo List:
   - Lighting/Shadow, figure out an elegant solution, maybe copy what Graveyard Keeper does with its fake lighting/shadows?
   - Add map-specific and zone-specific colour grading support (maybe support a Plugin Command which can change the global LUT?)
   - Wind deforming shader (create a duplicated texture with a mask determining how strongly a texel is affected?)
-    
     - could perhaps create a _materials, _normals and _height texture with different colour channels used for different things
   - Falling particle leaves
-  - Shader for water (https://forums.tigsource.com/index.php?topic=40539.msg1104986#msg1104986)
-    
-    - Tweak parameters more
-    
-    - Find out what's up with texture scaling
-    
-    - Anchor the texture to the world (try out anchoring it with the player position instead of wave and see what happens)
-    
-      - > > > ​            _waterEffect.Parameters["offsetXA"].SetValue(((waterA.X + cRect.Left) % texSize) / texSize);
-        > > >
-        > > > ^ ^ ^ ^ ^ ^ ^ ^ ^ THIS THING.
-    
-    - Add second displacement map with more granular noisemap
-    
-    - Figure out how to add waves shining
-    
+  - Shader for water
     - Refactor alllll of the code into a filter
-    
       - Combine the shaders into one with different passes
       - Keep displacement as its own shader/filter, reuse with wind stuff.
-    
     - Redesign the overworld renderer to accept a list of filters?
-    
-    - Figure out what causes the water trail in the reflection (maybe just add a check for if matching colour, remove)
-  - Flat grass blowing shader
   - Wind trails
 - Plugin System:
   - Implement missing attributes (triggers/conditions), events and commands
@@ -335,3 +314,8 @@ Todo List:
   - Change every `(float)gameTime.ELapsedTime.TotalSeconds` to use the GetElapsedSeconds() extension method.
   - Go through all constructors and fix them to only require Service (when any of them request for something that Service provides) and create private fields which hold what they ask for (and handle that in the constructor)
   - Remove all Service private fields
+  - Figure out what's wrong with the shaders in GL (probably just needs a shader model version bump up)
+  - Add a debug keybind for ScriptHost.Reset
+
+
+  -- sub({ trigger(Events.GameStart, "example_event"), trigger(Events.GameStart, "example_2"), Events.GameStart, tell_them_to_use_a_controller)

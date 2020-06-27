@@ -18,11 +18,11 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     internal class SProcessInteractionEvents : IUpdateableSystem
     {
         private readonly HashSet<IGameObject> _enteredScripts;
-        private readonly EventQueue<GameEvents> _events;
+        private readonly Engine.Events.EventQueue<GameEvents> _events;
         private readonly SCamera _camera;
         private readonly Overworld _overworld;
 
-        public SProcessInteractionEvents(EventQueue<GameEvents> events, SCamera camera, Overworld overworld)
+        public SProcessInteractionEvents(Engine.Events.EventQueue<GameEvents> events, SCamera camera, Overworld overworld)
         {
             _camera = camera;
             _overworld = overworld;

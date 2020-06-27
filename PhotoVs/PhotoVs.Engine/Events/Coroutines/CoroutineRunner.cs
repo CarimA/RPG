@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Events.Coroutines.Instructions;
+using PhotoVs.Engine.Scripting;
 
 namespace PhotoVs.Engine.Events.Coroutines
 {
@@ -67,12 +68,16 @@ namespace PhotoVs.Engine.Events.Coroutines
                                     if (!coroutine.MoveNext())
                                         _coroutines.RemoveAt(i--);
                         }
-                        else
-                            if (!enumerator.MoveNext())
-                                if (!coroutine.MoveNext())
-                                    _coroutines.RemoveAt(i--);
+                        else if (!enumerator.MoveNext())
+                            if (!coroutine.MoveNext())
+                                _coroutines.RemoveAt(i--);
 
                         break;
+                    case null:
+                        coroutine.MoveNext();
+
+                        break;
+
                     default:
                         throw new ArgumentOutOfRangeException(coroutine.Current.GetType().ToString());
                 }

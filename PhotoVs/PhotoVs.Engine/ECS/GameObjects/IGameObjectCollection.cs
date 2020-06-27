@@ -11,5 +11,6 @@ namespace PhotoVs.Engine.ECS.GameObjects
         IGameObjectCollection Any(params Type[] types);
         IGameObjectCollection Except(params Type[] types);
         IGameObjectCollection FindByTag(string tag);
+        IGameObject FindById(string id);
     }
 }

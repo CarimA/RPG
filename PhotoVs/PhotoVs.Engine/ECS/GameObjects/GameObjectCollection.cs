@@ -34,6 +34,11 @@ namespace PhotoVs.Engine.ECS.GameObjects
             return new GameObjectCollection(FindAll(entity => entity.Tags.Contains(tag)));
         }
 
+        public IGameObject FindById(string id)
+        {
+            return Find(entity => entity.ID == id);
+        }
+
         public IGameObjectCollection Any(params Type[] types)
         {
             return new GameObjectCollection(FindAll(entity => types.Any(entity.Components.Has)));

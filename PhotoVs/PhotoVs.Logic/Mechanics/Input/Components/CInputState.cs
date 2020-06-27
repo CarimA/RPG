@@ -76,5 +76,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
 
             return false;
         }
+
+        public bool Enabled { get; set; }
     }
 }

@@ -22,9 +22,9 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         private Overworld _overworld;
         private SCamera _camera;
-        private readonly EventQueue<GameEvents> _gameEvents;
+        private readonly Engine.Events.EventQueue<GameEvents> _gameEvents;
 
-        public SCollisionResolution(Overworld overworld, SCamera camera, EventQueue<GameEvents> gameEvents)
+        public SCollisionResolution(Overworld overworld, SCamera camera, Engine.Events.EventQueue<GameEvents> gameEvents)
         {
             _overworld = overworld;
             _camera = camera;

@@ -4,5 +4,6 @@ namespace PhotoVs.Logic.Mechanics.World.Components
 {
     public class CSolid : IComponent
     {
+        public bool Enabled { get; set; }
     }
 }

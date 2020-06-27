@@ -140,5 +140,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Components
             };
             return new CCollisionBound(points);
         }
+
+        public bool Enabled { get; set; }
     }
 }

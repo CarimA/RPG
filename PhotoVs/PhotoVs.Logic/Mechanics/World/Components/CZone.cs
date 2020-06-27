@@ -10,5 +10,7 @@ namespace PhotoVs.Logic.Mechanics.World.Components
         {
             Name = name;
         }
+
+        public bool Enabled { get; set; }
     }
 }

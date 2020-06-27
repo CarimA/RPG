@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine;
@@ -14,16 +15,17 @@ using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
-using PhotoVs.Utils.Extensions;
-using System;
 using System.IO;
 using System.Text;
 using System.Xml;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
+using PhotoVs.Engine.Scripting;
 using PhotoVs.Engine.TiledMaps;
-using PhotoVs.Logic.Events.Plugins;
 using PhotoVs.Logic.Mechanics.Input.Systems;
+using PhotoVs.Logic.Modules;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
@@ -32,7 +34,7 @@ namespace PhotoVs.Logic
     {
         private readonly IPlatform _platform;
 
-        private readonly EventQueue<GameEvents> _events;
+        private readonly Engine.Events.EventQueue<GameEvents> _events;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly Services _services;
         private IAssetLoader _assetLoader;
@@ -43,7 +45,9 @@ namespace PhotoVs.Logic
         private SceneMachine _sceneMachine;
         private SpriteBatch _spriteBatch;
         private CoroutineRunner _coroutineRunner;
-        private PluginProvider _pluginProvider;
+
+        private ScriptHost _scriptHost;
+
 
         public MainGame(IPlatform platform)
         {
@@ -66,6 +70,8 @@ namespace PhotoVs.Logic
             };
             if (_platform.OverrideFullscreen)
             {
+                _graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                _graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
                 _graphicsDeviceManager.IsFullScreen = true;
             }
             _graphicsDeviceManager.ApplyChanges();
@@ -114,11 +120,22 @@ namespace PhotoVs.Logic
             if (_services.Get<Config>().Fullscreen)
                 EnableFullscreen();
 
-            _pluginProvider = new PluginProvider(_services);
-            _services.Set(_pluginProvider);
-            AppDomain.CurrentDomain.GetAssemblies().ForEach(_pluginProvider.LoadPluginFromAssembly);
-            _pluginProvider.LoadPlugins("logic/");
-            _pluginProvider.LoadMods();
+            _scriptHost = new ScriptHost(_services, 
+                new List<(DataLocation, string)>()
+                {
+                    (DataLocation.Content, "logic/"),
+                    (DataLocation.Storage, "mods/")
+                },
+                new List<Module>
+                {
+                    new EventConditionsModule(_services.Get<Player>()),
+                    new EventTriggersModule(_services.Get<EventQueue<GameEvents>>()),
+                    new SceneMachineModule(_services.Get<SceneMachine>()),
+                    new TimingModule(),
+                    new DialogueModule(_services.Get<SceneMachine>()),
+                    new PlayerModule(_services.Get<Player>()),
+                    new GameObjectModule(_services.Get<IGameObjectCollection>(), _services.Get<Player>())
+                });
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
@@ -216,6 +233,7 @@ namespace PhotoVs.Logic
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _scriptHost.Update(gameTime);
             _coroutineRunner.Update(gameTime);
             _sceneMachine.Update(gameTime);
 

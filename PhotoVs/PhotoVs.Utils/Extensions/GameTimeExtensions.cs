@@ -12,5 +12,13 @@ namespace PhotoVs.Utils.Extensions
 
             return (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
+
+        public static float GetTotalSeconds(this GameTime gameTime)
+        {
+            if (gameTime == null)
+                throw new ArgumentNullException(nameof(gameTime));
+
+            return (float)gameTime.TotalGameTime.TotalSeconds;
+        }
     }
 }

@@ -10,6 +10,12 @@ namespace PhotoVs.Engine.ECS.Components
             return (T)Find(Is<T>);
         }
 
+        public new void Add(IComponent component)
+        {
+            component.Enabled = true;
+            base.Add(component);
+        }
+
         public bool TryGet<T>(out T component) where T : IComponent
         {
             component = Get<T>();

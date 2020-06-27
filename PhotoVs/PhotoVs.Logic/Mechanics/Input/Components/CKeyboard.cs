@@ -35,5 +35,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
         {
             return AnyKeyDown(state, Enum.GetValues(typeof(Keys)).Cast<Keys>());
         }
+
+        public bool Enabled { get; set; }
     }
 }

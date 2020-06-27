@@ -41,5 +41,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
         {
             return AnyButtonDown(state, Enum.GetValues(typeof(Buttons)).Cast<Buttons>());
         }
+
+        public bool Enabled { get; set; }
     }
 }

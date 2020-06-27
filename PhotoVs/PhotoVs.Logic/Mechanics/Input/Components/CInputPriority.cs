@@ -10,5 +10,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
         {
             InputPriority = InputPriority.GamePad;
         }
+
+        public bool Enabled { get; set; }
     }
 }

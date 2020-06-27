@@ -115,8 +115,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _wind.Update(gameTime);
             _windDir += _wind.Direction * _wind.Force * gameTime.GetElapsedSeconds();
 
-            waterA -= new Vector2(.53f, 8.40f) * gameTime.GetElapsedSeconds();
-            waterB -= new Vector2(.62f, -5.38f) * gameTime.GetElapsedSeconds();
+            waterA -= new Vector2(.53f, 2.40f) * gameTime.GetElapsedSeconds();
+            waterB -= new Vector2(.12f, -4.2f) * gameTime.GetElapsedSeconds();
 
             if (_target == null || _target.Width != _renderer.GameWidth ||
                 _target.Height != _renderer.GameHeight)
@@ -217,7 +217,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _waterEffect.Parameters["offsetYA"].SetValue(((waterA.Y + tPos.Y) % _material.Height) / _material.Height);
             _waterEffect.Parameters["offsetXB"].SetValue(((waterB.X + tPos.X) % _material.Width) / _material.Width);
             _waterEffect.Parameters["offsetYB"].SetValue(((waterB.Y + tPos.Y) % _material.Height) / _material.Height);
-            _waterEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds / 30f);
+            _waterEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds / 60f);
 
             _waterEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -234,7 +234,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _renderer.RequestSubRenderer(_combinedWater);
             _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
-            _renderer.SpriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.4f);
+            _renderer.SpriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.76f);
             _renderer.SpriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.45f);
             _renderer.SpriteBatch.End();
             _renderer.RelinquishSubRenderer();
@@ -250,8 +250,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _displaceEffect.Parameters["texMask"].SetValue(_material);
             _displaceEffect.Parameters["texDisplace"].SetValue(_displacementTexture);
             _displaceEffect.Parameters["texDisplace2"].SetValue(_displacementTexture2);
-            _displaceEffect.Parameters["offsetX"].SetValue((((waterA.X * 50) + tPos.X) % _material.Width) / _material.Width);
-            _displaceEffect.Parameters["offsetY"].SetValue((((waterA.Y * 2) + tPos.Y) % _material.Height) / _material.Height);
+            _displaceEffect.Parameters["offsetX"].SetValue((((waterA.X * 15) + tPos.X) % _material.Width) / _material.Width);
+            _displaceEffect.Parameters["offsetY"].SetValue((((waterA.Y * 8) + tPos.Y) % _material.Height) / _material.Height);
+            //_displaceEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds * 1);
             _displaceEffect.Parameters["pixWidth"].SetValue(1f / _waterDisplace.Width);
             _displaceEffect.Parameters["pixHeight"].SetValue(1f / _waterDisplace.Height);
             _displaceEffect.CurrentTechnique.Passes[0].Apply();
@@ -268,10 +269,11 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _renderer.RequestSubRenderer(_final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             _spriteBatch.Draw(_target, Vector2.Zero, Color.White);
+            //_spriteBatch.Draw(_water, Vector2.Zero, Color.White);
+            //_spriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.5f);
             _spriteBatch.Draw(_waterDisplace, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(_combinedWater, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.5f);
-            _spriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.2f);
+            //_spriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.5f);
             _spriteBatch.End();
             _renderer.RelinquishSubRenderer();
 
