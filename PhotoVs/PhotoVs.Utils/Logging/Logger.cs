@@ -13,6 +13,11 @@ namespace PhotoVs.Utils.Logging
                 new TextLogger(LogLevel.Trace)
             };
 
+        public void AddLogger(ILogger logger)
+        {
+            Write.Add(logger);
+        }
+
         public void Trace(string message, params object[] args)
         {
             foreach (var logger in this)

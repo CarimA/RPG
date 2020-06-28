@@ -5,10 +5,11 @@ using PhotoVs.Engine.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic.Debugger
 {
-    public class DiagnosticInfo
+    public class DiagnosticInfo : ILogger
     {
         private readonly PolygonPrimitive _backgroundBar;
 
@@ -33,6 +34,12 @@ namespace PhotoVs.Logic.Debugger
 
         public DiagnosticInfo(MainGame game, SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
+            _logs = new Queue<string>();
+            _retain = 15;
+            SetLogLevel(LogLevel.Trace);
+
+            Logger.Write.AddLogger(this);
+
             _game = game;
             _spriteBatch = spriteBatch;
             _font = assetLoader.Get<SpriteFont>("ui/fonts/bold_12.fnt");
@@ -72,7 +79,7 @@ namespace PhotoVs.Logic.Debugger
         public void Draw(GameTime gameTime)
         {
             _fpsTicks++;
-            _fpsTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _fpsTimer -= (float) gameTime.ElapsedGameTime.TotalSeconds;
             if (_fpsTimer <= 0)
             {
                 _fps = _fpsTicks;
@@ -80,7 +87,7 @@ namespace PhotoVs.Logic.Debugger
                 _fpsTicks = 0;
             }
 
-            var barWidth = (int)(_spriteBatch.GraphicsDevice.Viewport.Width / 4);
+            var barWidth = (int) (_spriteBatch.GraphicsDevice.Viewport.Width / 4);
             var x = 20;
             var barHeight = 10;
             var y = _spriteBatch.GraphicsDevice.Viewport.Height - 20 - barHeight;
@@ -99,7 +106,7 @@ namespace PhotoVs.Logic.Debugger
                 new Vector2(x, y + barHeight)
             });
 
-            var updateWidth = (int)(barWidth * _game.TargetElapsedTime.TotalSeconds * _lastUpdate.TotalMilliseconds);
+            var updateWidth = (int) (barWidth * _game.TargetElapsedTime.TotalSeconds * _lastUpdate.TotalMilliseconds);
 
             _updateBar.SetPoints(new List<Vector2>
             {
@@ -110,7 +117,7 @@ namespace PhotoVs.Logic.Debugger
             });
 
             var nx = x + updateWidth;
-            var drawWidth = (int)(barWidth * _game.TargetElapsedTime.TotalSeconds * _lastDraw.TotalMilliseconds);
+            var drawWidth = (int) (barWidth * _game.TargetElapsedTime.TotalSeconds * _lastDraw.TotalMilliseconds);
 
             _drawBar.SetPoints(new List<Vector2>
             {
@@ -130,28 +137,108 @@ namespace PhotoVs.Logic.Debugger
 
             var text =
                 $"FPS:          {_fps}\nUpdate Avg.:  {_lastUpdate.TotalMilliseconds.ToString("00.000000")} ms\nDraw Avg.:    {_lastDraw.TotalMilliseconds.ToString("00.000000")} ms";
-            var theight = _font.MeasureString(text).Y + 20;
-            var ty = y - theight - 20;
+            var theight = _font.MeasureString(text).Y;
+            var ty = y - theight - 5;
+            x = x + 1;
 
-            if (_spriteBatch.GraphicsDevice.Viewport.Width > x + 420
-                && _spriteBatch.GraphicsDevice.Viewport.Height > ty + theight)
+            _spriteBatch.DrawString(_font,
+                text,
+                new Vector2(x + 1, ty + 1),
+                Color.Black);
+            _spriteBatch.DrawString(_font,
+                text,
+                new Vector2(x - 1, ty + 1),
+                Color.Black);
+            _spriteBatch.DrawString(_font,
+                text,
+                new Vector2(x + 1, ty - 1),
+                Color.Black);
+            _spriteBatch.DrawString(_font,
+                text,
+                new Vector2(x - 1, ty - 1),
+                Color.Black);
+
+            _spriteBatch.DrawString(_font,
+                text,
+                new Vector2(x, ty),
+                Color.Yellow);
+
+            var h = _font.MeasureString(" ").Y;
+            var i = 0;
+            foreach (var log in _logs)
             {
-                _textBackground.SetPoints(new List<Vector2>
-                {
-                    new Vector2(x, ty),
-                    new Vector2(x + 420, ty),
-                    new Vector2(x + 420, ty + theight),
-                    new Vector2(x, ty + theight)
-                });
-
-                _textBackground.Draw();
+                i++;
+                var fy = ty + (h * i) - (_retain * h) - h;
                 _spriteBatch.DrawString(_font,
-                    text,
-                    new Vector2(x + 10, ty + 10),
-                    Color.Yellow);
+                    log,
+                    new Vector2(x + 1, fy + 1),
+                    Color.Black);
+                _spriteBatch.DrawString(_font,
+                    log,
+                    new Vector2(x - 1, fy + 1),
+                    Color.Black);
+                _spriteBatch.DrawString(_font,
+                    log,
+                    new Vector2(x + 1, fy - 1),
+                    Color.Black);
+                _spriteBatch.DrawString(_font,
+                    log,
+                    new Vector2(x - 1, fy - 1),
+                    Color.Black);
+
+                _spriteBatch.DrawString(_font,
+                    log,
+                    new Vector2(x, fy),
+                    Color.AntiqueWhite);
             }
 
             _spriteBatch.End();
         }
+
+        private Queue<string> _logs;
+        private int _retain;
+        private LogLevel _currentLevel;
+
+        public void SetLogLevel(LogLevel level)
+        {
+            _currentLevel = level;
+        }
+
+        public void Log(LogLevel level, string message, params object[] args)
+        {
+            if (level < _currentLevel)
+                return;
+
+            _logs.Enqueue(string.Format($"[{DateTime.Now:hh:mm:ss}]\t{Enum.GetName(typeof(LogLevel), level).ToUpperInvariant()}\t\t{message}", args));
+
+            if (_logs.Count > _retain)
+                _logs.Dequeue();
+        }
+
+        public void LogTrace(string message, params object[] args)
+        {
+            Log(LogLevel.Trace, message, args);
+        }
+
+        public void LogInfo(string message, params object[] args)
+        {
+            Log(LogLevel.Info, message, args);
+        }
+
+        public void LogWarn(string message, params object[] args)
+        {
+            Log(LogLevel.Warn, message, args);
+        }
+
+        public void LogError(string message, params object[] args)
+        {
+            Log(LogLevel.Error, message, args);
+        }
+
+        public void LogFatal(string message, params object[] args)
+        {
+            Log(LogLevel.Fatal, message, args);
+        }
+
     }
 }
