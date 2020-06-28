@@ -44,7 +44,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             }
         }
 
-        private void ProcessInput(IGameObject gameObject, GameTime gameTime)
+        private void ProcessInput(GameObject gameObject, GameTime gameTime)
         {
             var inputState = gameObject.Components.Get<CInputState>();
             

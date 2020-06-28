@@ -13,7 +13,7 @@ namespace PhotoVs.Logic.Mechanics.Movement
         public Vector2 MinimumTranslation;
 
         // todo: please refactor
-        public static CollisionResult Simulate(IGameObject moving, IGameObject stationary, Vector2 velocity)
+        public static CollisionResult Simulate(GameObject moving, GameObject stationary, Vector2 velocity)
         {
             var positionA = moving.Components.Get<CPosition>();
             var positionB = stationary.Components.Get<CPosition>();

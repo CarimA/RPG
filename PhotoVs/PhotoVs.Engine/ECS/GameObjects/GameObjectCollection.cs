@@ -5,7 +5,7 @@ using System.Linq;
 namespace PhotoVs.Engine.ECS.GameObjects
 {
     // todo: oh no
-    public class GameObjectCollection : List<IGameObject>, IGameObjectCollection
+    public class GameObjectCollection : List<GameObject>, IGameObjectCollection
     {
         private int _hash = 487;
 
@@ -13,17 +13,17 @@ namespace PhotoVs.Engine.ECS.GameObjects
         {
         }
 
-        public GameObjectCollection(List<IGameObject> collection) : base(collection)
+        public GameObjectCollection(List<GameObject> collection) : base(collection)
         {
             collection.ForEach(Reseed);
         }
 
-        public IGameObject this[string name]
+        public GameObject this[string name]
         {
             get { return Find(entity => entity.Name == name); }
         }
 
-        public new void Add(IGameObject entity)
+        public new void Add(GameObject entity)
         {
             Reseed(entity);
             base.Add(entity);
@@ -34,7 +34,7 @@ namespace PhotoVs.Engine.ECS.GameObjects
             return new GameObjectCollection(FindAll(entity => entity.Tags.Contains(tag)));
         }
 
-        public IGameObject FindById(string id)
+        public GameObject FindById(string id)
         {
             return Find(entity => entity.ID == id);
         }
@@ -54,13 +54,13 @@ namespace PhotoVs.Engine.ECS.GameObjects
             return new GameObjectCollection(FindAll(entity => types.All(entity.Components.Has)));
         }
 
-        public new void Remove(IGameObject entity)
+        public new void Remove(GameObject entity)
         {
             Reseed(entity);
             base.Remove(entity);
         }
 
-        private void Reseed(IGameObject entity)
+        private void Reseed(GameObject entity)
         {
             unchecked
             {

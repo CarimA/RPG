@@ -17,7 +17,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     internal class SProcessInteractionEvents : IUpdateableSystem
     {
-        private readonly HashSet<IGameObject> _enteredScripts;
+        private readonly HashSet<GameObject> _enteredScripts;
         private readonly Engine.Events.EventQueue<GameEvents> _events;
         private readonly SCamera _camera;
         private readonly Overworld _overworld;
@@ -27,7 +27,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             _camera = camera;
             _overworld = overworld;
             _events = events;
-            _enteredScripts = new HashSet<IGameObject>();
+            _enteredScripts = new HashSet<GameObject>();
         }
 
         public int Priority { get; set; } = -1;
@@ -50,7 +50,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
         }
 
-        private void HandleInteraction(IGameObject entity, IEnumerable<IGameObject> scripts)
+        private void HandleInteraction(GameObject entity, IEnumerable<GameObject> scripts)
         {
             var input = entity.Components.Get<CInputState>();
             var position = entity.Components.Get<CPosition>();

@@ -26,9 +26,9 @@ namespace PhotoVs.Logic.Mechanics.World
 
         private SpatialHash<Tile> _maskTiles;
         private SpatialHash<Tile> _fringeTiles;
-        private SpatialHash<IGameObject, GameObjectCollection> _collisions;
-        private SpatialHash<IGameObject, GameObjectCollection> _scripts;
-        private SpatialHash<IGameObject, GameObjectCollection> _zones;
+        private SpatialHash<GameObject, GameObjectCollection> _collisions;
+        private SpatialHash<GameObject, GameObjectCollection> _scripts;
+        private SpatialHash<GameObject, GameObjectCollection> _zones;
 
         private readonly int _cellWidth;
         private readonly int _cellHeight;
@@ -44,9 +44,9 @@ namespace PhotoVs.Logic.Mechanics.World
             var chunkSize = 256;
             _maskTiles = new SpatialHash<Tile>(chunkSize);
             _fringeTiles = new SpatialHash<Tile>(chunkSize);
-            _collisions = new SpatialHash<IGameObject, GameObjectCollection>(chunkSize);
-            _scripts = new SpatialHash<IGameObject, GameObjectCollection>(chunkSize);
-            _zones = new SpatialHash<IGameObject, GameObjectCollection>(chunkSize);
+            _collisions = new SpatialHash<GameObject, GameObjectCollection>(chunkSize);
+            _scripts = new SpatialHash<GameObject, GameObjectCollection>(chunkSize);
+            _zones = new SpatialHash<GameObject, GameObjectCollection>(chunkSize);
 
             ParseTiles(map);
             ParseObjects(map);
@@ -137,8 +137,8 @@ namespace PhotoVs.Logic.Mechanics.World
                 });
         }
 
-        private void ProcessObject(SpatialHash<IGameObject, GameObjectCollection> hash, BaseObject obj,
-            Action<IGameObject, BaseObject> func)
+        private void ProcessObject(SpatialHash<GameObject, GameObjectCollection> hash, BaseObject obj,
+            Action<GameObject, BaseObject> func)
         {
             switch (obj)
             {
@@ -153,8 +153,8 @@ namespace PhotoVs.Logic.Mechanics.World
             }
         }
 
-        private void ProcessPolygonObject(SpatialHash<IGameObject, GameObjectCollection> hash, PolygonObject obj,
-            Action<IGameObject, BaseObject> func)
+        private void ProcessPolygonObject(SpatialHash<GameObject, GameObjectCollection> hash, PolygonObject obj,
+            Action<GameObject, BaseObject> func)
         {
             var entity = new GameObject();
             var bounds = new CCollisionBound(obj.Polygon.Select(point => new Vector2(point.X, point.Y)).ToList());
@@ -172,8 +172,8 @@ namespace PhotoVs.Logic.Mechanics.World
             ));
         }
 
-        private void ProcessRectangleObject(SpatialHash<IGameObject, GameObjectCollection> hash, RectangleObject obj,
-            Action<IGameObject, BaseObject> func)
+        private void ProcessRectangleObject(SpatialHash<GameObject, GameObjectCollection> hash, RectangleObject obj,
+            Action<GameObject, BaseObject> func)
         {
             var entity = new GameObject();
             var bounds = CCollisionBound.Rectangle(new Vector2(obj.Width, obj.Height));
@@ -192,17 +192,17 @@ namespace PhotoVs.Logic.Mechanics.World
             ));
         }
 
-        private void ProcessCollision(IGameObject entity, BaseObject obj)
+        private void ProcessCollision(GameObject entity, BaseObject obj)
         {
             entity.Components.Add(new CSolid(true));
         }
 
-        private void ProcessScript(IGameObject entity, BaseObject obj)
+        private void ProcessScript(GameObject entity, BaseObject obj)
         {
             entity.Components.Add(new CScript(obj.Properties["script"]));
         }
 
-        private void ProcessZone(IGameObject entity, BaseObject obj)
+        private void ProcessZone(GameObject entity, BaseObject obj)
         {
             entity.Components.Add(new CZone(obj.Properties["zone"]));
         }
@@ -257,19 +257,19 @@ namespace PhotoVs.Logic.Mechanics.World
             }
         }
 
-        public IEnumerable<IGameObject> GetCollisions(SCamera camera)
+        public IEnumerable<GameObject> GetCollisions(SCamera camera)
         {
             if (camera == null) throw new ArgumentNullException(nameof(camera));
             return _collisions.Get(camera.VisibleArea());
         }
 
-        public IEnumerable<IGameObject> GetScripts(SCamera camera)
+        public IEnumerable<GameObject> GetScripts(SCamera camera)
         {
             if (camera == null) throw new ArgumentNullException(nameof(camera));
             return _scripts.Get(camera.VisibleArea());
         }
 
-        public IEnumerable<IGameObject> GetZones(SCamera camera)
+        public IEnumerable<GameObject> GetZones(SCamera camera)
         {
             if (camera == null) throw new ArgumentNullException(nameof(camera));
             return _zones.Get(camera.VisibleArea());

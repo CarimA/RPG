@@ -25,7 +25,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
         private float _permanentShake;
         private Vector2 _position;
         private float _rotate;
-        private IGameObject _target;
+        private GameObject _target;
 
         private Matrix _transform = Matrix.Identity;
         public Matrix Transform => _transform;
@@ -224,7 +224,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             _permanentShake = intensity;
         }
 
-        public void Follow(IGameObject target)
+        public void Follow(GameObject target)
         {
             if (_target == target)
                 return;

@@ -5,10 +5,10 @@ namespace PhotoVs.Engine.Events.EventArgs
     public class InteractEventArgs : IGameEventArgs
     {
         public object Sender { get; }
-        public IGameObject ObjectA { get; }
-        public IGameObject ObjectB { get; }
+        public GameObject ObjectA { get; }
+        public GameObject ObjectB { get; }
 
-        public InteractEventArgs(object sender, IGameObject objectA, IGameObject objectB)
+        public InteractEventArgs(object sender, GameObject objectA, GameObject objectB)
         {
             Sender = sender;
             ObjectA = objectA;

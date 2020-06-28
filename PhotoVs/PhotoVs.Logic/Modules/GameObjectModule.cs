@@ -98,7 +98,7 @@ namespace PhotoVs.Logic.Modules
             }
         }
 
-        private void SetInputs(IGameObject gameObject, bool state)
+        private void SetInputs(GameObject gameObject, bool state)
         {
             if (state)
             {

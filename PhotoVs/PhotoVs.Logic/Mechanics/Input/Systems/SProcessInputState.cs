@@ -38,7 +38,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             entities.ForEach(ProcessInput);
         }
 
-        private void ProcessInput(IGameObject gameObject)
+        private void ProcessInput(GameObject gameObject)
         {
             var inputState = gameObject.Components.Get<CInputState>();
             ResetIfMissing(gameObject, inputState);
@@ -46,7 +46,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             CheckPriority(gameObject);
         }
 
-        private void ResetIfMissing(IGameObject gameObject, CInputState inputState)
+        private void ResetIfMissing(GameObject gameObject, CInputState inputState)
         {
             if (gameObject.Components.Has<CKeyboard>() && gameObject.Components.Has<CController>())
                 return;
@@ -66,7 +66,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             }
         }
 
-        private void CheckPriority(IGameObject gameObject)
+        private void CheckPriority(GameObject gameObject)
         {
             if (!gameObject.Components.TryGet<CInputPriority>(out var prio))
                 return;

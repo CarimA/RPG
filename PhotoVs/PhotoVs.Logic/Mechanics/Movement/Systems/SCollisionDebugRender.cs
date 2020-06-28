@@ -58,7 +58,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
         }
 
-        private void Draw(IGameObject entity)
+        private void Draw(GameObject entity)
         {
             var position = entity.Components.Get<CPosition>();
             var bounds = entity.Components.Get<CCollisionBound>();

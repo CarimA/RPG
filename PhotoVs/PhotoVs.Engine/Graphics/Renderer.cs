@@ -53,7 +53,7 @@ namespace PhotoVs.Engine.Graphics
         public void BeforeDraw()
         {
             GraphicsDevice.SetRenderTarget(_mainRenderTarget);
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
         }
 
         public void RequestSubRenderer(RenderTarget2D renderTarget)

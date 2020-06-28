@@ -65,7 +65,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
         }
 
-        private void Move(IGameObject moving, IGameObjectCollection stationaryEntities, GameTime gameTime)
+        private void Move(GameObject moving, IGameObjectCollection stationaryEntities, GameTime gameTime)
         {
             var input = moving.Components.Get<CInputState>();
             var minimumTranslations = new List<Vector2>();
@@ -138,7 +138,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             position.VelocityIntent.Add(velocity); // * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
-        private static void ProcessVelocityIntents(IGameObject entity)
+        private static void ProcessVelocityIntents(GameObject entity)
         {
             if (!entity.Components.TryGet(out CPosition position))
                 return;
