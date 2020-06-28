@@ -1,8 +1,6 @@
-﻿using PhotoVs.Engine.ECS.Components;
-
-namespace PhotoVs.Logic.Mechanics.World.Components
+﻿namespace PhotoVs.Logic.Mechanics.World.Components
 {
-    public class CScript : IComponent
+    public class CScript
     {
         public string Name;
 
@@ -10,7 +8,5 @@ namespace PhotoVs.Logic.Mechanics.World.Components
         {
             Name = name;
         }
-
-        public bool Enabled { get; set; }
     }
 }

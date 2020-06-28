@@ -174,10 +174,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             var zoom = Math.Min(zWidth, zHeight);
 
             var follow = new GameObject();
-            follow.Components.Add(new CPosition
-            {
-                Position = midpoint
-            });
+            follow.Components.Add(new CPosition(midpoint));
             Follow(follow);
             _zoom = zoom;
         }

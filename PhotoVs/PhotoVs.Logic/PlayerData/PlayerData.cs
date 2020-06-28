@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 
@@ -17,7 +18,7 @@ namespace PhotoVs.Logic.PlayerData
 
         public PlayerData()
         {
-            Position = new CPosition();
+            Position = new CPosition(Vector2.Zero);
             Flags = new Dictionary<string, bool>();
             Variables = new Dictionary<string, IComparable>();
         }

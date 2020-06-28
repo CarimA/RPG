@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.Components;
 
 namespace PhotoVs.Logic.Mechanics.Input.Components
 {
-    public class CInputState : IComponent
+    public class CInputState
     {
         public Dictionary<InputActions, bool> IsPressed { get; }
         public Dictionary<InputActions, float> PressedTime { get; }
@@ -76,7 +75,5 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
 
             return false;
         }
-
-        public bool Enabled { get; set; }
     }
 }

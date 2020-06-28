@@ -73,6 +73,11 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
 
             var priority = prio.InputPriority;
 
+            // if both components exist, give it to the one that has input if the other does not.
+            // if both components exist and both are pushing inputs, keep it on whatever had it last frame
+            var anyKeyDown = false;
+            var anyButtonDown = false;
+
             // if either component is missing, give it to the other.
             if (!gameObject.Components.TryGet<CKeyboard>(out var keyboard))
                 priority = InputPriority.GamePad;
@@ -80,15 +85,11 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             if (!gameObject.Components.TryGet<CController>(out var controller))
                 priority = InputPriority.Keyboard;
 
-            // if both components exist, give it to the one that has input if the other does not.
-            // if both components exist and both are pushing inputs, keep it on whatever had it last frame
-            var anyKeyDown = false;
             if (controller != null)
             {
                 anyKeyDown = keyboard.AnyKeyDown(Keyboard.GetState());
             }
 
-            var anyButtonDown = false;
             if (controller != null)
             {
                 anyButtonDown = controller.AnyButtonDown(GamePad.GetState(controller.PlayerIndex));

@@ -9,14 +9,9 @@ sub(Events.InteractAreaEnter, 'example_event', function ()
 end)
 
 sub(Events.InteractAreaExit, 'example_event', function ()
-    tick -= get_time()
+    tick = get_time() - tick
     lock()
-    say('debugger', 'it took {# Yellow}' + tick + ' ticks{/#} to walk through.')
-    move($('Player'), vec2.new(0, 0), 100)
+    say('debugger', 'it took {# Yellow}' .. tick .. ' ticks{/#} to walk through.')
+    move(player(), vec2(0, 0), 100)
     unlock()
 end)
-
-
-to implement:
-    move
-    vec2

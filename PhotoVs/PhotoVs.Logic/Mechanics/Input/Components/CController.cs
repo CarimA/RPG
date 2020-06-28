@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using PhotoVs.Engine.ECS.Components;
 
 namespace PhotoVs.Logic.Mechanics.Input.Components
 {
-    public class CController : IComponent
+    public class CController
     {
         public Dictionary<InputActions, List<Buttons>> ButtonMappings { get; }
         public PlayerIndex PlayerIndex { get; }
@@ -41,7 +40,5 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
         {
             return AnyButtonDown(state, Enum.GetValues(typeof(Buttons)).Cast<Buttons>());
         }
-
-        public bool Enabled { get; set; }
     }
 }

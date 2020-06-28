@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Events.Coroutines.Instructions;
-using PhotoVs.Engine.Scripting;
 
 namespace PhotoVs.Engine.Events.Coroutines
 {

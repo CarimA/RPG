@@ -100,11 +100,16 @@ namespace PhotoVs.Logic.Modules
 
         private void SetInputs(IGameObject gameObject, bool state)
         {
-            if (gameObject.Components.TryGet<CController>(out var controller))
-                controller.Enabled = state;
-
-            if (gameObject.Components.TryGet<CKeyboard>(out var keyboard))
-                keyboard.Enabled = state;
+            if (state)
+            {
+                gameObject.Components.Enable<CController>();
+                gameObject.Components.Enable<CKeyboard>();
+            }
+            else
+            {
+                gameObject.Components.Disable<CController>();
+                gameObject.Components.Disable<CKeyboard>();
+            }
         }
 
         /*private string Say(string gameObjectId, string dialogue)

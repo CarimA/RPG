@@ -1,5 +1,4 @@
-﻿using PhotoVs.Engine.ECS.Components;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PhotoVs.Engine.ECS.GameObjects
 {
@@ -7,7 +6,7 @@ namespace PhotoVs.Engine.ECS.GameObjects
     {
         string ID { get; set; }
         string Name { get; set; }
-        IComponentCollection Components { get; }
+        ComponentList Components { get; }
         List<string> Tags { get; }
     }
 }

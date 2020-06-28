@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.Components;
 using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Components
 {
-    public class CPosition : IComponent
+    public class CPosition
     {
         public Vector2 LastPosition { get; set; }
         private Vector2 _position;
@@ -21,11 +20,11 @@ namespace PhotoVs.Logic.Mechanics.Movement.Components
 
         public Vector2 DeltaPosition => Position - LastPosition;
 
-        public CPosition()
+        public CPosition(Vector2 position)
         {
+            _position = position;
+            LastPosition = position;
             VelocityIntent = new List<Vector2>();
         }
-
-        public bool Enabled { get; set; }
     }
 }

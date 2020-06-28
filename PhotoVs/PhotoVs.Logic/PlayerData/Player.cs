@@ -26,11 +26,11 @@ namespace PhotoVs.Logic.PlayerData
             CanMove = true;
 
             Components.Add(CCollisionBound.Circle(16, 8));
-            Components.Add(new CSize { Size = new Vector2(32, 32) });
+            Components.Add(new CSize(new Vector2(32, 32)));
             Components.Add(new CInputState());
             Components.Add(new CKeyboard(config.ControlsKeyboard));
             Components.Add(new CController(PlayerIndex.One, config.ControlsGamepad, ((float)config.Deadzone / 100f)));
-            Components.Add(new CInputPriority());
+            Components.Add(new CInputPriority(InputPriority.GamePad));
         }
 
         public float CurrentSpeed(bool runToggled)

@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.Components;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Components
 {
-    public class CSize : IComponent
+    public class CSize
     {
         public Vector2 Size;
-        public bool Enabled { get; set; }
+
+        public CSize(Vector2 size)
+        {
+            Size = size;
+        }
     }
 }

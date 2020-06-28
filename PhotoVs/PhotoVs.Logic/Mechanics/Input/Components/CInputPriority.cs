@@ -1,16 +1,12 @@
-﻿using PhotoVs.Engine.ECS.Components;
-
-namespace PhotoVs.Logic.Mechanics.Input.Components
+﻿namespace PhotoVs.Logic.Mechanics.Input.Components
 {
-    public class CInputPriority : IComponent
+    public class CInputPriority
     {
         public InputPriority InputPriority { get; set; }
 
-        public CInputPriority()
+        public CInputPriority(InputPriority priority)
         {
-            InputPriority = InputPriority.GamePad;
+            InputPriority = priority;
         }
-
-        public bool Enabled { get; set; }
     }
 }

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
-using PhotoVs.Engine.ECS.Components;
 
 namespace PhotoVs.Logic.Mechanics.Input.Components
 {
-    public class CKeyboard : IComponent
+    public class CKeyboard
     {
         public Dictionary<InputActions, List<Keys>> KeyMappings { get; }
 
@@ -35,7 +34,5 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
         {
             return AnyKeyDown(state, Enum.GetValues(typeof(Keys)).Cast<Keys>());
         }
-
-        public bool Enabled { get; set; }
     }
 }

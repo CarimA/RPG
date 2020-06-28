@@ -7,8 +7,6 @@ using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.ECS.GameObjects;
-using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Utils.Logging;
 using Coroutine = PhotoVs.Engine.Events.Coroutines.Coroutine;

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.Components;
 using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Components
 {
-    public class CCollisionBound : IComponent
+    public class CCollisionBound
     {
         private const int Inflate = 10;
 
@@ -140,7 +139,5 @@ namespace PhotoVs.Logic.Mechanics.Movement.Components
             };
             return new CCollisionBound(points);
         }
-
-        public bool Enabled { get; set; }
     }
 }
