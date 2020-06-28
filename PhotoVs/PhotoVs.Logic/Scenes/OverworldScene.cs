@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Events;
@@ -31,7 +31,7 @@ namespace PhotoVs.Logic.Scenes
             _world.SetMap("test2");
             //_scene.Services.Get<Player>().PlayerData.Position.Position = new Vector2(2750, 1400);
 
-            Entities = new GameObjectCollection();
+            Entities = new GameObjectList();
             Systems = new SystemCollection<ISystem>
             {
                 new SRenderOverworld(_world, spriteBatch, camera, scene.Services),
@@ -43,7 +43,7 @@ namespace PhotoVs.Logic.Scenes
         }
 
         public bool IsBlocking { get; set; }
-        public IGameObjectCollection Entities { get; }
+        public GameObjectList Entities { get; }
         public ISystemCollection<ISystem> Systems { get; }
 
         public void Enter(params object[] args)

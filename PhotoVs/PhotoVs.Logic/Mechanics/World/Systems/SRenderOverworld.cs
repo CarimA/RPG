@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using System;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.Filters;
 using PhotoVs.Logic.Mechanics.Movement.Components;
@@ -21,7 +21,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private readonly SpriteBatch _spriteBatch;
         private readonly SCamera _camera;
 
-        private IGameObjectCollection _gameObjects;
+        private GameObjectList _gameObjects;
 
         public int Priority { get; set; } = 0;
         public bool Active { get; set; } = true;
@@ -107,7 +107,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private Vector2 waterA;
         private Vector2 waterB;
 
-        public void Draw(GameTime gameTime, IGameObjectCollection gameObjects)
+        public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
             var cameraRect = _camera.VisibleArea();
             var tPos = (new Vector2(cameraRect.Left, cameraRect.Top));
@@ -308,7 +308,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         }
 
-        public void DrawUI(GameTime gameTime, IGameObjectCollection gameObjectCollection, Matrix uiOrigin)
+        public void DrawUI(GameTime gameTime, GameObjectList gameObjectCollection, Matrix uiOrigin)
         {
 
 

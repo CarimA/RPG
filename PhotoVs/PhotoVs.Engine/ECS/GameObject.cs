@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PhotoVs.Engine.ECS.GameObjects
+namespace PhotoVs.Engine.ECS
 {
     public class GameObject
     {

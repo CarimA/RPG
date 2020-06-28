@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
-using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.Input.Components;
 

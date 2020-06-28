@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Utils.Extensions;
@@ -33,7 +33,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
 
         }
 
-        public void Update(GameTime gameTime, IGameObjectCollection entities)
+        public void Update(GameTime gameTime, GameObjectList entities)
         {
             entities.ForEach(ProcessInput);
         }

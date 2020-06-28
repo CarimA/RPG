@@ -6,7 +6,6 @@ using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
-using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Debugger;
@@ -19,6 +18,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
@@ -134,7 +134,7 @@ namespace PhotoVs.Logic
                     new TimingModule(),
                     new DialogueModule(_services.Get<SceneMachine>()),
                     new PlayerModule(_services.Get<Player>()),
-                    new GameObjectModule(_services.Get<IGameObjectCollection>(), _services.Get<Player>())
+                    new GameObjectModule(_services.Get<GameObjectList>(), _services.Get<Player>())
                 });
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
@@ -185,9 +185,9 @@ namespace PhotoVs.Logic
             return renderer;
         }
 
-        private IGameObjectCollection CreateGlobalEntities()
+        private GameObjectList CreateGlobalEntities()
         {
-            var globalEntities = new GameObjectCollection
+            var globalEntities = new GameObjectList
             {
                 _player
             };

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
@@ -10,6 +9,7 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Logic.Mechanics.Input.Components;
 
@@ -38,7 +38,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
         }
 
-        public void Update(GameTime gameTime, IGameObjectCollection entities)
+        public void Update(GameTime gameTime, GameObjectList entities)
         {
             var scripts = _overworld.GetMap().GetScripts(_camera);
 

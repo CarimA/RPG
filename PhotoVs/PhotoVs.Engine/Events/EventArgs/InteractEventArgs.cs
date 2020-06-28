@@ -1,4 +1,4 @@
-﻿using PhotoVs.Engine.ECS.GameObjects;
+﻿using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Engine.Events.EventArgs
 {

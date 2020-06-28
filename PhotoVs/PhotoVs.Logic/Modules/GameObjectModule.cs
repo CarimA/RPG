@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
-using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
@@ -14,11 +14,11 @@ namespace PhotoVs.Logic.Modules
 {
     public class GameObjectModule : Module
     {
-        private readonly IGameObjectCollection _collection;
+        private readonly GameObjectList _collection;
         private readonly Player _player;
         private GameTime _latestGameTime;
 
-        public GameObjectModule(IGameObjectCollection collection, Player player)
+        public GameObjectModule(GameObjectList collection, Player player)
         {
             _collection = collection;
             _player = player;
@@ -64,7 +64,7 @@ namespace PhotoVs.Logic.Modules
 
         private IEnumerable<string> GetGameObjectsByTag(string tag)
         {
-            return _collection.FindByTag(tag).Select(gameObject => gameObject.ID);
+            return _collection.HasTag(tag).Select(gameObject => gameObject.ID);
         }
 
         private string GetGameObjectByName(string name)
@@ -74,7 +74,7 @@ namespace PhotoVs.Logic.Modules
 
         private bool Move(string gameObjectId, Vector2 target, float speed)
         {
-            var gameObject = _collection.FindById(gameObjectId);
+            var gameObject = _collection[gameObjectId];
             var position = gameObject.Components.Get<CPosition>();
             var input = gameObject.Components.Get<CInputState>();
             var amount = speed * _latestGameTime.GetElapsedSeconds();

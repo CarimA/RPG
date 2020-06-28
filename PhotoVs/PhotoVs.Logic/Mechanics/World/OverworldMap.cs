@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.ECS.GameObjects;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Engine.TiledMaps.Objects;
@@ -15,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
@@ -26,9 +26,9 @@ namespace PhotoVs.Logic.Mechanics.World
 
         private SpatialHash<Tile> _maskTiles;
         private SpatialHash<Tile> _fringeTiles;
-        private SpatialHash<GameObject, GameObjectCollection> _collisions;
-        private SpatialHash<GameObject, GameObjectCollection> _scripts;
-        private SpatialHash<GameObject, GameObjectCollection> _zones;
+        private SpatialHash<GameObject, GameObjectList> _collisions;
+        private SpatialHash<GameObject, GameObjectList> _scripts;
+        private SpatialHash<GameObject, GameObjectList> _zones;
 
         private readonly int _cellWidth;
         private readonly int _cellHeight;
@@ -44,9 +44,9 @@ namespace PhotoVs.Logic.Mechanics.World
             var chunkSize = 256;
             _maskTiles = new SpatialHash<Tile>(chunkSize);
             _fringeTiles = new SpatialHash<Tile>(chunkSize);
-            _collisions = new SpatialHash<GameObject, GameObjectCollection>(chunkSize);
-            _scripts = new SpatialHash<GameObject, GameObjectCollection>(chunkSize);
-            _zones = new SpatialHash<GameObject, GameObjectCollection>(chunkSize);
+            _collisions = new SpatialHash<GameObject, GameObjectList>(chunkSize);
+            _scripts = new SpatialHash<GameObject, GameObjectList>(chunkSize);
+            _zones = new SpatialHash<GameObject, GameObjectList>(chunkSize);
 
             ParseTiles(map);
             ParseObjects(map);
@@ -137,7 +137,7 @@ namespace PhotoVs.Logic.Mechanics.World
                 });
         }
 
-        private void ProcessObject(SpatialHash<GameObject, GameObjectCollection> hash, BaseObject obj,
+        private void ProcessObject(SpatialHash<GameObject, GameObjectList> hash, BaseObject obj,
             Action<GameObject, BaseObject> func)
         {
             switch (obj)
@@ -153,7 +153,7 @@ namespace PhotoVs.Logic.Mechanics.World
             }
         }
 
-        private void ProcessPolygonObject(SpatialHash<GameObject, GameObjectCollection> hash, PolygonObject obj,
+        private void ProcessPolygonObject(SpatialHash<GameObject, GameObjectList> hash, PolygonObject obj,
             Action<GameObject, BaseObject> func)
         {
             var entity = new GameObject();
@@ -172,7 +172,7 @@ namespace PhotoVs.Logic.Mechanics.World
             ));
         }
 
-        private void ProcessRectangleObject(SpatialHash<GameObject, GameObjectCollection> hash, RectangleObject obj,
+        private void ProcessRectangleObject(SpatialHash<GameObject, GameObjectList> hash, RectangleObject obj,
             Action<GameObject, BaseObject> func)
         {
             var entity = new GameObject();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
-using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Engine.FSM.States;
@@ -32,7 +32,7 @@ namespace PhotoVs.Logic.Scenes
 
             SceneManager = new SceneManager(this,
                 Services.Get<ISystemCollection<ISystem>>(),
-                Services.Get<IGameObjectCollection>());
+                Services.Get<GameObjectList>());
         }
 
         // todo: move to individual states to control scene flow and

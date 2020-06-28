@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.ECS.GameObjects;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input.Components;
@@ -32,7 +32,7 @@ namespace PhotoVs.Logic.Scenes
             _textDatabase = _scene.Services.Get<TextDatabase>();
             _assetLoader = _scene.Services.Get<IAssetLoader>();
             _spriteBatch = _scene.Services.Get<SpriteBatch>();
-            Entities = new GameObjectCollection();
+            Entities = new GameObjectList();
             Systems = new SystemCollection<ISystem>();
         }
 
@@ -53,7 +53,7 @@ namespace PhotoVs.Logic.Scenes
             _spriteBatch.End();
         }
 
-        public IGameObjectCollection Entities { get; }
+        public GameObjectList Entities { get; }
         public ISystemCollection<ISystem> Systems { get; }
         public bool IsBlocking { get; set; }
 
