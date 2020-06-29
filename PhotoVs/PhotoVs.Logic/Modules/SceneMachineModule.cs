@@ -1,6 +1,6 @@
-﻿using System;
-using PhotoVs.Engine.Scripting;
+﻿using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Scenes;
+using System;
 
 namespace PhotoVs.Logic.Modules
 {

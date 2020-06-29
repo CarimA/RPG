@@ -1,20 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
+using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Components;
+using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils;
+using PhotoVs.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.Events.EventArgs;
-using PhotoVs.Logic.Mechanics.Input;
-using PhotoVs.Logic.Mechanics.Input.Components;
-using PhotoVs.Logic.PlayerData;
-using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -51,7 +51,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                     extraStationaryList.Add(entity);
                 else
                     if (entity.Components.Has<CInputState>())
-                        movingList.Add(entity);
+                    movingList.Add(entity);
 
             extraStationaryList.AddRange(stationaryList);
 

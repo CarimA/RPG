@@ -1,6 +1,6 @@
-﻿using System;
-using PhotoVs.Engine.Scripting;
+﻿using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.PlayerData;
+using System;
 
 namespace PhotoVs.Logic.Modules
 {

@@ -1,13 +1,13 @@
 ﻿using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Engine.Assets.TypeLoaders;
+using PhotoVs.Engine.Events.Coroutines;
+using PhotoVs.Engine.Events.Coroutines.Instructions;
 using PhotoVs.Utils.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using PhotoVs.Engine.Events.Coroutines;
-using PhotoVs.Engine.Events.Coroutines.Instructions;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {

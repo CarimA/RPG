@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.Input.Systems
 {

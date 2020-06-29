@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Engine.TiledMaps.Objects;
@@ -14,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
@@ -259,19 +259,22 @@ namespace PhotoVs.Logic.Mechanics.World
 
         public IEnumerable<GameObject> GetCollisions(SCamera camera)
         {
-            if (camera == null) throw new ArgumentNullException(nameof(camera));
+            if (camera == null)
+                throw new ArgumentNullException(nameof(camera));
             return _collisions.Get(camera.VisibleArea());
         }
 
         public IEnumerable<GameObject> GetScripts(SCamera camera)
         {
-            if (camera == null) throw new ArgumentNullException(nameof(camera));
+            if (camera == null)
+                throw new ArgumentNullException(nameof(camera));
             return _scripts.Get(camera.VisibleArea());
         }
 
         public IEnumerable<GameObject> GetZones(SCamera camera)
         {
-            if (camera == null) throw new ArgumentNullException(nameof(camera));
+            if (camera == null)
+                throw new ArgumentNullException(nameof(camera));
             return _zones.Get(camera.VisibleArea());
         }
     }

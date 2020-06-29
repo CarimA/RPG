@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PhotoVs.Engine.Scripting;
+using System;
 using System.Collections;
-using PhotoVs.Engine.Scripting;
 
 namespace PhotoVs.Engine.Events.Coroutines
 {

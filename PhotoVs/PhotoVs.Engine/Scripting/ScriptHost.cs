@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Utils.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 using Coroutine = PhotoVs.Engine.Events.Coroutines.Coroutine;
 
 namespace PhotoVs.Engine.Scripting
@@ -24,7 +24,8 @@ namespace PhotoVs.Engine.Scripting
 
         public ScriptHost(Services services, IEnumerable<(DataLocation, string)> scriptDirectories, List<Module> modules)
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
             _scriptDirectories = scriptDirectories ?? throw new ArgumentNullException(nameof(scriptDirectories));
             _assetLoader = services.Get<IAssetLoader>();
             _interpreter = new MoonSharpInterpreter();
@@ -54,7 +55,8 @@ namespace PhotoVs.Engine.Scripting
 
         private void LoadScripts(IEnumerable<string> files)
         {
-            if (files == null) throw new ArgumentNullException(nameof(files));
+            if (files == null)
+                throw new ArgumentNullException(nameof(files));
 
             foreach (var s in files)
             {

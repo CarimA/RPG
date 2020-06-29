@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
@@ -47,7 +47,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
         private void ProcessInput(GameObject gameObject, GameTime gameTime)
         {
             var inputState = gameObject.Components.Get<CInputState>();
-            
+
             if (gameObject.Components.TryGet<CInputPriority>(out var priority))
                 if (priority.InputPriority != InputPriority.GamePad)
                     return;

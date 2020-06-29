@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace PhotoVs.Engine.Graphics
 {
@@ -22,7 +22,7 @@ namespace PhotoVs.Engine.Graphics
 
         private RenderTarget2D _mainRenderTarget;
         private RenderTarget2D _tempRenderTarget;
-        
+
         public Renderer(Services services, int virtualWidth, int virtualHeight, int virtualMaxWidth, int virtualMaxHeight)
         {
             GraphicsDevice = services.Get<GraphicsDevice>();
@@ -101,8 +101,8 @@ namespace PhotoVs.Engine.Graphics
             _graphics.PreferredBackBufferHeight = height;
             _graphics.ApplyChanges();
 
-            var widthScale = width / (double) VirtualWidth;
-            var heightScale = height / (double) VirtualHeight;
+            var widthScale = width / (double)VirtualWidth;
+            var heightScale = height / (double)VirtualHeight;
 
 
             if (widthScale < heightScale)

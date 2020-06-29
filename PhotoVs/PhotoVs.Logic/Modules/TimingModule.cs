@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Utils.Extensions;
+using System;
 
 namespace PhotoVs.Logic.Modules
 {
@@ -16,7 +16,8 @@ namespace PhotoVs.Logic.Modules
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
         {
-            if (interpreter == null) throw new ArgumentNullException(nameof(interpreter));
+            if (interpreter == null)
+                throw new ArgumentNullException(nameof(interpreter));
 
             interpreter.AddFunction("get_time", (Func<float>)GetTime);
 

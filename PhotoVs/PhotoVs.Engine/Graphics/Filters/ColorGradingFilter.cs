@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace PhotoVs.Engine.Graphics.Filters
 {
@@ -24,7 +24,7 @@ namespace PhotoVs.Engine.Graphics.Filters
             {
                 if (value == _lookupTable)
                     return;
-                
+
                 _lookupTable = value;
                 _lutTextureParam.SetValue(value);
                 _lutTextureWidthParam.SetValue((float)value.Width);
@@ -64,7 +64,8 @@ namespace PhotoVs.Engine.Graphics.Filters
 
         public void Dispose()
         {
-            _effect?.Dispose();;
+            _effect?.Dispose();
+            ;
         }
     }
 }

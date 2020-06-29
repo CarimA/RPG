@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using MoonSharp.Interpreter;
+﻿using MoonSharp.Interpreter;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.PlayerData;
+using System;
+using System.ComponentModel;
 
 namespace PhotoVs.Logic.Modules
 {
@@ -27,7 +27,8 @@ namespace PhotoVs.Logic.Modules
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
         {
-            if (interpreter == null) throw new ArgumentNullException(nameof(interpreter));
+            if (interpreter == null)
+                throw new ArgumentNullException(nameof(interpreter));
 
             interpreter.RunScript(@"
                 function flag(f, s)
@@ -57,7 +58,7 @@ namespace PhotoVs.Logic.Modules
         {
             var playerVar = _player.PlayerData.GetVariable(variable);
             return equality switch
-            {   
+            {
                 Equality.Equals => !(playerVar.Equals(variable)),
                 Equality.GreaterThan => !(playerVar.CompareTo(variable) > 0),
                 Equality.GreaterThanOrEquals => !((playerVar.CompareTo(variable) > 0) &&

@@ -1,6 +1,6 @@
-﻿using System;
-using PhotoVs.Engine.Scripting;
+﻿using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Scenes;
+using System;
 
 namespace PhotoVs.Logic.Modules
 {
@@ -15,7 +15,8 @@ namespace PhotoVs.Logic.Modules
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
         {
-            if (interpreter == null) throw new ArgumentNullException(nameof(interpreter));
+            if (interpreter == null)
+                throw new ArgumentNullException(nameof(interpreter));
 
             interpreter.AddFunction("_say", (Func<string, string, bool>)DialogueState);
             interpreter.RunScript($@"

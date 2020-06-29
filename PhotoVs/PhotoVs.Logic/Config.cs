@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace PhotoVs.Logic

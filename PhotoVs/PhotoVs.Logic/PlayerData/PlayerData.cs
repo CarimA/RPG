@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
+using PhotoVs.Logic.Mechanics.Movement.Components;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
-using PhotoVs.Logic.Mechanics.Movement.Components;
 
 namespace PhotoVs.Logic.PlayerData
 {

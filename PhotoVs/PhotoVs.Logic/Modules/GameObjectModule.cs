@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Scripting;
@@ -9,6 +6,9 @@ using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoVs.Logic.Modules
 {
@@ -26,7 +26,8 @@ namespace PhotoVs.Logic.Modules
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
         {
-            if (interpreter == null) throw new ArgumentNullException(nameof(interpreter));
+            if (interpreter == null)
+                throw new ArgumentNullException(nameof(interpreter));
 
             interpreter.AddFunction("player", (Func<string>)GetPlayer);
             interpreter.AddFunction("find_game_object", (Func<string, string>)GetGameObjectByName);

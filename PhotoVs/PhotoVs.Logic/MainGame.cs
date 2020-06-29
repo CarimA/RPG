@@ -1,31 +1,31 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine;
+using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
-using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.Graphics;
-using PhotoVs.Logic.Debugger;
-using PhotoVs.Logic.Events;
-using PhotoVs.Logic.Mechanics.Camera.Systems;
-using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Scenes;
-using PhotoVs.Logic.Text;
-using System.IO;
-using System.Text;
-using System.Xml;
-using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
+using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Engine.TiledMaps;
+using PhotoVs.Logic.Debugger;
+using PhotoVs.Logic.Events;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input.Systems;
 using PhotoVs.Logic.Modules;
+using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Scenes;
+using PhotoVs.Logic.Text;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
@@ -59,7 +59,7 @@ namespace PhotoVs.Logic
             _coroutineRunner = new CoroutineRunner();
             _services.Set(_events);
             _services.Set(_coroutineRunner);
-            
+
             _platform = platform;
             _services.Set(platform);
 
@@ -120,7 +120,7 @@ namespace PhotoVs.Logic
             if (_services.Get<Config>().Fullscreen)
                 EnableFullscreen();
 
-            _scriptHost = new ScriptHost(_services, 
+            _scriptHost = new ScriptHost(_services,
                 new List<(DataLocation, string)>()
                 {
                     (DataLocation.Content, "logic/"),

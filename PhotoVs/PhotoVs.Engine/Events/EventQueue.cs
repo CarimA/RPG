@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using PhotoVs.Engine.Events.EventArgs;
+﻿using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Utils.Logging;
+using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Engine.Events
 {
@@ -98,7 +98,7 @@ namespace PhotoVs.Engine.Events
 
                 var name = Enum.GetName(typeof(T), eventType.Item1);
                 var delimiter = eventType.Item2;
-                Logger.Write.Trace($"Subscribing to event \"{name}{(eventType.Item2.Equals(string.Empty) ? "" : ":" )}{delimiter}\" (ID: {id}).");
+                Logger.Write.Trace($"Subscribing to event \"{name}{(eventType.Item2.Equals(string.Empty) ? "" : ":")}{delimiter}\" (ID: {id}).");
             }
 
             _toSubscribe.Clear();

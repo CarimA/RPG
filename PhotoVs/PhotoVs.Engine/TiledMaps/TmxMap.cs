@@ -175,7 +175,7 @@ namespace PhotoVs.Engine.TiledMaps
                             {
                                 if (currentLayer.Data[i] != 0 && currentLayer.Data[i] != data && !completelyOpaque)
                                     continue;
-                                
+
                                 // found something that could be compressed
                                 currentLayer.Data[i] = data;
                                 foundLower = true;
@@ -244,7 +244,7 @@ namespace PhotoVs.Engine.TiledMaps
                             {
                                 if (currentLayer.Data[i] != 0 && currentLayer.Data[i] != data)
                                     continue;
-                                
+
                                 // found something that could be compressed
                                 currentLayer.Data[i] = data;
                                 foundLower = true;
@@ -253,7 +253,7 @@ namespace PhotoVs.Engine.TiledMaps
 
                             if (foundLower)
                                 continue;
-                            
+
                             // need to add a layer
                             var newLayer = new TileLayer
                             {

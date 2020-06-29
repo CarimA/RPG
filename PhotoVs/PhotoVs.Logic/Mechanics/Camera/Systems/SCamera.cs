@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Mechanics.Movement.Components;
@@ -6,7 +7,6 @@ using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PhotoVs.Engine.ECS;
 
 namespace PhotoVs.Logic.Mechanics.Camera.Systems
 {

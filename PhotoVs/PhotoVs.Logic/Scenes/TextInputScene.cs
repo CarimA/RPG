@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.PlayerData;
 using System.Collections.Generic;
-using PhotoVs.Logic.Mechanics.Input.Components;
 
 namespace PhotoVs.Logic.Scenes
 {

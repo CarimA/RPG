@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PhotoVs.Utils.Extensions;
+using System;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace PhotoVs.Logic.Mechanics.World
@@ -13,7 +13,7 @@ namespace PhotoVs.Logic.Mechanics.World
         private Vector2 _targetDirection;
         private float _targetForce;
 
-        private float _maxTimer; 
+        private float _maxTimer;
         private float _nextUpdate;
         private Random _random;
 
@@ -38,7 +38,7 @@ namespace PhotoVs.Logic.Mechanics.World
 
             if (_nextUpdate <= 0f)
             {
-                _nextUpdate = (float) ((_random.NextDouble() + 0.5f) * _random.Next(2, 6));
+                _nextUpdate = (float)((_random.NextDouble() + 0.5f) * _random.Next(2, 6));
                 _maxTimer = _nextUpdate;
                 _targetDirection = _random.NextVector2(_minRange, _maxRange);
                 _targetForce = (float)((_random.NextDouble() + 0.5f) * _random.Next(-4, 4));

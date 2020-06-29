@@ -1,6 +1,6 @@
-﻿using System;
-using MoonSharp.Interpreter;
+﻿using MoonSharp.Interpreter;
 using PhotoVs.Utils.Logging;
+using System;
 
 namespace PhotoVs.Engine.Scripting
 {

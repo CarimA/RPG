@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using MoonSharp.Interpreter;
+﻿using MoonSharp.Interpreter;
 using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Events;
+using System;
+using System.Linq;
 
 namespace PhotoVs.Logic.Modules
 {
@@ -46,7 +46,7 @@ namespace PhotoVs.Logic.Modules
         private void CreateEvent(object arg1, object arg2, object arg3, object arg4, object arg5)
         {
             if (arg1 is GameEvents gameEvents1 && arg2 is Closure closure1)
-                RegisterEvent(gameEvents1, string.Empty, null, closure1, (bool?) arg3 ?? false);
+                RegisterEvent(gameEvents1, string.Empty, null, closure1, (bool?)arg3 ?? false);
 
             else if (arg1 is GameEvents gameEvents2 && arg2 is string delimiter2 && arg3 is Closure closure2)
                 RegisterEvent(gameEvents2, delimiter2, null, closure2, (bool?)arg4 ?? false);

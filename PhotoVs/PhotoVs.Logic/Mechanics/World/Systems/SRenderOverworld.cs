@@ -1,17 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Logic.Mechanics.Camera.Systems;
-using System;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.Filters;
+using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
+using System;
 
 namespace PhotoVs.Logic.Mechanics.World.Systems
 {
@@ -65,7 +65,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _wind = new Wind();
 
-            _colorAverager= new ColorAverager(services.Get<Renderer>(),
+            _colorAverager = new ColorAverager(services.Get<Renderer>(),
                 assetLoader.Get<Effect>("shaders/average.fx"));
             _colorGrade = new ColorGradingFilter(services.Get<Renderer>(),
                 assetLoader.Get<Effect>("shaders/color.fx"));
