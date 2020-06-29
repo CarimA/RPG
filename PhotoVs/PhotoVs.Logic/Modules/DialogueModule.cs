@@ -19,13 +19,6 @@ namespace PhotoVs.Logic.Modules
                 throw new ArgumentNullException(nameof(interpreter));
 
             interpreter.AddFunction("_say", (Func<string, string, bool>)DialogueState);
-            interpreter.RunScript($@"
-                function say(n, d)
-                    while _say(n, d) do
-                        coroutine.yield()
-                    end
-                end");
-
             base.DefineApi(interpreter);
         }
 

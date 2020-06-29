@@ -19,19 +19,12 @@ namespace PhotoVs.Logic.Modules
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
         {
+            if (interpreter == null)
+                throw new ArgumentNullException(nameof(interpreter));
+
             interpreter.AddFunction("sub", (Action<object, object, object, object, object>)CreateEvent);
-
-            UserData.RegisterType<GameEvents>();
-            interpreter.RegisterGlobal("Events", UserData.CreateStatic<GameEvents>());
-
             interpreter.AddFunction("_trigger", (Func<GameEvents, string, (GameEvents, string)>)Trigger);
-            interpreter.RunScript($@"
-                function trigger(g, d)
-                    return function()
-                        return _trigger(g, d)
-                    end
-                end");
-            UserData.RegisterType<(GameEvents, string)>();
+            interpreter.AddType<GameEvents>("Events");
             interpreter.RegisterGlobal("run_once", true);
 
             base.DefineApi(interpreter);

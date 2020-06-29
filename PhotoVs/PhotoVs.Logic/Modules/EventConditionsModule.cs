@@ -30,26 +30,9 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.RunScript(@"
-                function flag(f, s)
-                    return function()
-                        return _flag(f, (s ~= false))
-                    end
-                end
-");
             interpreter.AddFunction("_flag", (Func<string, bool, bool>)CheckFlag);
-
-            interpreter.RunScript($@"
-                function var(v, e, o)
-                    return function()
-                        return _var(v, e, o)
-                    end
-                end
-");
             interpreter.AddFunction("_var", (Func<string, Equality, object, bool>)CheckVariable);
-
-            UserData.RegisterType<Equality>();
-            interpreter.RegisterGlobal("Equality", UserData.CreateStatic<Equality>());
+            interpreter.AddType<Equality>("Equality");
 
             base.DefineApi(interpreter);
         }

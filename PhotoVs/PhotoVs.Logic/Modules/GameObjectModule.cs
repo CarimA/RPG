@@ -32,16 +32,8 @@ namespace PhotoVs.Logic.Modules
             interpreter.AddFunction("player", (Func<string>)GetPlayer);
             interpreter.AddFunction("find_game_object", (Func<string, string>)GetGameObjectByName);
             interpreter.AddFunction("find_game_objects_with_tag", (Func<string, IEnumerable<string>>)GetGameObjectsByTag);
-
             interpreter.AddFunction("_move", (Func<string, Vector2, float, bool>)Move);
-            interpreter.RunScript($@"
-                function move(g, t, s)
-                    while _move(g, t, s) do
-                        coroutine.yield()
-                    end
-                end");
-
-            UserData.RegisterType<Vector2>();
+            interpreter.AddType<Vector2>("Vector2");
             interpreter.RegisterGlobal("vec2", (Func<float, float, Vector2>)CreateVector2);
 
             base.DefineApi(interpreter);

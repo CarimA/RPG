@@ -38,7 +38,7 @@ namespace PhotoVs.Logic.Debugger
             _retain = 15;
             SetLogLevel(LogLevel.Trace);
 
-            Logger.Write.AddLogger(this);
+            //Logger.Write.AddLogger(this);
 
             _game = game;
             _spriteBatch = spriteBatch;

@@ -15,6 +15,9 @@ namespace PhotoVs.Logic.Modules
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
         {
+            if (interpreter == null)
+                throw new ArgumentNullException(nameof(interpreter));
+
             interpreter.AddFunction("push_scene", (Action<string>)PushScene);
 
             base.DefineApi(interpreter);

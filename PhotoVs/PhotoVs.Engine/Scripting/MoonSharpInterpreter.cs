@@ -43,6 +43,12 @@ namespace PhotoVs.Engine.Scripting
             return false;
         }
 
+        public void AddType<T>(string name)
+        {
+            UserData.RegisterType<T>();
+            RegisterGlobal(name, UserData.CreateStatic<T>());
+        }
+
         public void RegisterGlobal(string name, object obj)
         {
             Script.Globals[name] = obj;
