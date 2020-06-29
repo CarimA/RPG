@@ -1,8 +1,8 @@
 #if OPENGL
 	#define SV_POSITION POSITION
-	#define PS_SHADERMODEL ps_2_0
+	#define PS_SHADERMODEL ps_3_0
 #else
-	#define PS_SHADERMODEL ps_4_0_level_9_1
+	#define PS_SHADERMODEL ps_5_0
 #endif
 
 Texture2D texA;

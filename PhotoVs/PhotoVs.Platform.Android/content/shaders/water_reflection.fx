@@ -9,6 +9,9 @@ Texture2D Texture : register(t0);
 sampler TextureSampler : register(s0)
 {
     Texture = (Texture);
+	  MipFilter = POINT;
+    MinFilter = POINT;
+    MagFilter = POINT;
     AddressU = CLAMP;
     AddressV = CLAMP;
 };
@@ -17,7 +20,9 @@ Texture2D texInput;
 sampler2D texInputMap
 {
     Texture = <texInput>;
-	  Filter = POINT;
+	  MipFilter = POINT;
+    MinFilter = POINT;
+    MagFilter = POINT;
     AddressU = CLAMP;
     AddressV = CLAMP;
 };

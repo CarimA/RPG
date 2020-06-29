@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
@@ -8,6 +9,7 @@ using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Systems;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Systems;
+using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.Scenes
 {
@@ -26,8 +28,8 @@ namespace PhotoVs.Logic.Scenes
 
             _world = new Overworld(spriteBatch, assetLoader);
             _world.LoadMaps("maps/");
-            _world.SetMap("test2");
-            //_scene.Services.Get<Player>().PlayerData.Position.Position = new Vector2(2750, 1400);
+            _world.SetMap("test");
+            _scene.Services.Get<Player>().PlayerData.Position.Position = new Vector2(2750, 1400);
 
             Entities = new GameObjectList();
             Systems = new SystemCollection<ISystem>

@@ -2,7 +2,7 @@
 	#define SV_POSITION POSITION
 	#define PS_SHADERMODEL ps_3_0
 #else
-	#define PS_SHADERMODEL ps_4_0_level_9_3
+	#define PS_SHADERMODEL ps_5_0
 #endif
 
 Texture2D Texture : register(t0);
@@ -20,6 +20,9 @@ Texture2D texNoiseA;
 sampler2D texSamplerNoiseA
 {
     Texture = <texNoiseA>;
+	MipFilter = POINT;
+    MinFilter = POINT;
+    MagFilter = POINT;
     AddressU = WRAP;
     AddressV = WRAP;
 };
@@ -28,6 +31,9 @@ Texture2D texNoiseB;
 sampler2D texSamplerNoiseB
 {
     Texture = <texNoiseB>;
+	MipFilter = POINT;
+    MinFilter = POINT;
+    MagFilter = POINT;
     AddressU = WRAP;
     AddressV = WRAP;
 };

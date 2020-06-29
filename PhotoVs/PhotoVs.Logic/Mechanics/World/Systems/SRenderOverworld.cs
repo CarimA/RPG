@@ -106,17 +106,18 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         private Vector2 waterA;
         private Vector2 waterB;
+        private float time;
+
+        private float throttleRender;
 
         public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
+
+
             var cameraRect = _camera.VisibleArea();
             var tPos = (new Vector2(cameraRect.Left, cameraRect.Top));
 
             _wind.Update(gameTime);
-            _windDir += _wind.Direction * _wind.Force * gameTime.GetElapsedSeconds();
-
-            waterA -= new Vector2(.53f, 2.40f) * gameTime.GetElapsedSeconds();
-            waterB -= new Vector2(.12f, -4.2f) * gameTime.GetElapsedSeconds();
 
             if (_target == null || _target.Width != _renderer.GameWidth ||
                 _target.Height != _renderer.GameHeight)
@@ -144,124 +145,149 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _gameObjects = gameObjects;
 
 
+            throttleRender -= gameTime.GetElapsedSeconds();
+            if (throttleRender <= 0f)
+            {
+                throttleRender = 0.06666666666f;
+
+                _windDir += _wind.Direction * _wind.Force * throttleRender;
+
+                waterA -= new Vector2(.53f, 2.40f) * throttleRender;
+                waterB -= new Vector2(.12f, -4.2f) * throttleRender;
+                time += throttleRender;
+            }
 
             _renderer.RequestSubRenderer(_material);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
-                transformMatrix: _camera.Transform);
+                _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
+                    transformMatrix: _camera.Transform);
 
-            _overworld.GetMap()
-                .DrawMaterial(_spriteBatch,
-                    gameTime,
-                    _camera,
-                    EntityDraw);
+                _overworld.GetMap()
+                    .DrawMaterial(_spriteBatch,
+                        gameTime,
+                        _camera,
+                        EntityDraw);
 
-            _spriteBatch.End();
+                _spriteBatch.End();
 
-            _renderer.RelinquishSubRenderer();
-
-
+                _renderer.RelinquishSubRenderer();
 
 
-            _renderer.RequestSubRenderer(_target);
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
-                transformMatrix: _camera.Transform);
-
-            _overworld.GetMap()
-                .Draw(_spriteBatch,
-                    gameTime,
-                    _camera,
-                    EntityDraw);
-
-            _spriteBatch.End();
-
-            _renderer.RelinquishSubRenderer();
 
 
+                _renderer.RequestSubRenderer(_target);
+
+                _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
+                    transformMatrix: _camera.Transform);
+
+                _overworld.GetMap()
+                    .Draw(_spriteBatch,
+                        gameTime,
+                        _camera,
+                        EntityDraw);
+
+                _spriteBatch.End();
+
+                _renderer.RelinquishSubRenderer();
 
 
 
 
 
-            _renderer.RequestSubRenderer(_waterReflection);
 
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
 
-            //_waterEffect.Parameters["texMap"].SetValue(_material);
-            _waterReflectionEffect.Parameters["Texture"].SetValue(_material);
-            _waterReflectionEffect.Parameters["texInput"].SetValue(_target);
-            _waterReflectionEffect.Parameters["pixHeight"].SetValue(1f / _waterReflection.Height);
+                _renderer.RequestSubRenderer(_waterReflection);
+
+                _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+
+                //_waterEffect.Parameters["texMap"].SetValue(_material);
+                _waterReflectionEffect.Parameters["Texture"].SetValue(_material);
+                _waterReflectionEffect.Parameters["texInput"].SetValue(_target);
+                _waterReflectionEffect.Parameters["pixHeight"].SetValue(1f / _waterReflection.Height);
+
+                _waterReflectionEffect.Parameters["water"].SetValue(new Vector4(0.03529411764f, 0.3725490196f, 0.47843137254f, 1.0f));
+
+                _waterReflectionEffect.Parameters["water"].SetValue(new Vector4(0.03529411764f, 0.3725490196f, 0.47843137254f, 1.0f));
 
             _waterReflectionEffect.CurrentTechnique.Passes[0].Apply();
-            _renderer.SpriteBatch.Draw(_material, Vector2.Zero, Color.White);
+                _renderer.SpriteBatch.Draw(_material, Vector2.Zero, Color.White);
 
-            _renderer.SpriteBatch.End();
+                _renderer.SpriteBatch.End();
 
-            _renderer.RelinquishSubRenderer();
-
-
+                _renderer.RelinquishSubRenderer();
 
 
-            _renderer.RequestSubRenderer(_water);
 
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, transformMatrix: _camera.Transform);
 
-            _waterEffect.Parameters["Texture"].SetValue(_material);
-            _waterEffect.Parameters["texNoiseA"].SetValue(_noiseA);
-            _waterEffect.Parameters["texNoiseB"].SetValue(_noiseB);
+                _renderer.RequestSubRenderer(_water);
+
+                _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
+                    transformMatrix: _camera.Transform);
+
+                _waterEffect.Parameters["Texture"].SetValue(_material);
+                _waterEffect.Parameters["texNoiseA"].SetValue(_noiseA);
+                _waterEffect.Parameters["texNoiseB"].SetValue(_noiseB);
+                _waterEffect.Parameters["contrast"].SetValue(1.1f);
+                _waterEffect.Parameters["step"].SetValue(6);
             _waterEffect.Parameters["pixWidth"].SetValue(1f / _water.Width);
-            _waterEffect.Parameters["pixHeight"].SetValue(1f / _water.Height);
+                _waterEffect.Parameters["pixHeight"].SetValue(1f / _water.Height);
 
-            _waterEffect.Parameters["offsetXA"].SetValue(((waterA.X + tPos.X) % _material.Width) / _material.Width);
-            _waterEffect.Parameters["offsetYA"].SetValue(((waterA.Y + tPos.Y) % _material.Height) / _material.Height);
-            _waterEffect.Parameters["offsetXB"].SetValue(((waterB.X + tPos.X) % _material.Width) / _material.Width);
-            _waterEffect.Parameters["offsetYB"].SetValue(((waterB.Y + tPos.Y) % _material.Height) / _material.Height);
-            _waterEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds / 60f);
+                _waterEffect.Parameters["water"].SetValue(new Vector4(0.03529411764f, 0.3725490196f, 0.47843137254f, 1.0f));
+                _waterEffect.Parameters["highlightWater"].SetValue(new Vector4(0.37647058823f, 0.70588235294f, 0.84705882352f, 1.0f));
 
-            _waterEffect.CurrentTechnique.Passes[0].Apply();
+                _waterEffect.Parameters["offsetXA"].SetValue(((waterA.X + tPos.X) % _material.Width) / _material.Width);
+                _waterEffect.Parameters["offsetYA"]
+                    .SetValue(((waterA.Y + tPos.Y) % _material.Height) / _material.Height);
+                _waterEffect.Parameters["offsetXB"].SetValue(((waterB.X + tPos.X) % _material.Width) / _material.Width);
+                _waterEffect.Parameters["offsetYB"]
+                    .SetValue(((waterB.Y + tPos.Y) % _material.Height) / _material.Height);
+                _waterEffect.Parameters["time"].SetValue(time / 60f);
 
-            _renderer.SpriteBatch.Draw(_material, cameraRect, Color.White);
+                _waterEffect.CurrentTechnique.Passes[0].Apply();
 
-            _renderer.SpriteBatch.End();
+                _renderer.SpriteBatch.Draw(_material, cameraRect, Color.White);
 
-            _renderer.RelinquishSubRenderer();
+                _renderer.SpriteBatch.End();
 
-
-
-
-
-
-            _renderer.RequestSubRenderer(_combinedWater);
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
-            _renderer.SpriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.76f);
-            _renderer.SpriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.45f);
-            _renderer.SpriteBatch.End();
-            _renderer.RelinquishSubRenderer();
+                _renderer.RelinquishSubRenderer();
 
 
 
 
 
 
-            _renderer.RequestSubRenderer(_waterDisplace);
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, transformMatrix: _camera.Transform);
-            _displaceEffect.Parameters["Texture"].SetValue(_combinedWater);
-            _displaceEffect.Parameters["texMask"].SetValue(_material);
-            _displaceEffect.Parameters["texDisplace"].SetValue(_displacementTexture);
-            _displaceEffect.Parameters["texDisplace2"].SetValue(_displacementTexture2);
-            _displaceEffect.Parameters["offsetX"].SetValue((((waterA.X * 15) + tPos.X) % _material.Width) / _material.Width);
-            _displaceEffect.Parameters["offsetY"].SetValue((((waterA.Y * 8) + tPos.Y) % _material.Height) / _material.Height);
-            //_displaceEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds * 1);
+                _renderer.RequestSubRenderer(_combinedWater);
+                _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
+                _renderer.SpriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.76f);
+                _renderer.SpriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.45f);
+                _renderer.SpriteBatch.End();
+                _renderer.RelinquishSubRenderer();
+
+
+
+
+
+
+                _renderer.RequestSubRenderer(_waterDisplace);
+                _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
+                    transformMatrix: _camera.Transform);
+                _displaceEffect.Parameters["Texture"].SetValue(_combinedWater);
+                _displaceEffect.Parameters["texMask"].SetValue(_material);
+                _displaceEffect.Parameters["texDisplace"].SetValue(_displacementTexture);
+                _displaceEffect.Parameters["texDisplace2"].SetValue(_displacementTexture2);
+                _displaceEffect.Parameters["offsetX"]
+                    .SetValue((((waterA.X * 15) + tPos.X) % _material.Width) / _material.Width);
+                _displaceEffect.Parameters["offsetY"]
+                    .SetValue((((waterA.Y * 8) + tPos.Y) % _material.Height) / _material.Height);
+            //_displaceEffect.Parameters["time"].SetValue(time * 1);
             _displaceEffect.Parameters["pixWidth"].SetValue(1f / _waterDisplace.Width);
-            _displaceEffect.Parameters["pixHeight"].SetValue(1f / _waterDisplace.Height);
+                _displaceEffect.Parameters["pixHeight"].SetValue(1f / _waterDisplace.Height);
+                _displaceEffect.Parameters["maxDisplace"].SetValue(4f);
+                _displaceEffect.Parameters["water"].SetValue(new Vector4(0.01568628F, 0.172549F, 0.2235294F, 1.0f));
             _displaceEffect.CurrentTechnique.Passes[0].Apply();
-            _renderer.SpriteBatch.Draw(_combinedWater, cameraRect, Color.White);
-            _renderer.SpriteBatch.End();
-            _renderer.RelinquishSubRenderer();
-
-
-
+                _renderer.SpriteBatch.Draw(_combinedWater, cameraRect, Color.White);
+                _renderer.SpriteBatch.End();
+                _renderer.RelinquishSubRenderer();
 
 
 

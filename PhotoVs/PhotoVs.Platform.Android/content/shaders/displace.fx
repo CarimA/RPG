@@ -2,7 +2,7 @@
 	#define SV_POSITION POSITION
 	#define PS_SHADERMODEL ps_3_0
 #else
-	#define PS_SHADERMODEL ps_4_0_level_9_3
+	#define PS_SHADERMODEL ps_5_0
 #endif
 
 Texture2D Texture : register(t0);
@@ -73,13 +73,13 @@ float4 highlightWater = float4(0.37647058823, 0.70588235294, 0.84705882352, 1.0)
 
 float4 main(VertexShaderOutput input) : COLOR
 {
+    float4 mask = tex2D(texSamplerMask, input.TextureCoordinates - float2(pixWidth / 2, pixHeight / 2));
     float4 displace = tex2D(texSamplerDisplace, input.TextureCoordinates + float2(offsetX, offsetY));
     float4 displace2 = tex2D(texSamplerDisplace2, input.TextureCoordinates + float2(offsetX, offsetY) + 0.5);
 	float4 avg = (displace + displace2) / 2;
 	float2 adjusted = input.TextureCoordinates + ((avg.rg - 0.5) * float2(pixWidth * maxDisplace, pixHeight * maxDisplace));
 	float4 output = tex2D(TextureSampler, adjusted - float2(pixWidth / 2, pixHeight / 2));
 
-    float4 mask = tex2D(texSamplerMask, input.TextureCoordinates - float2(pixWidth / 2, pixHeight / 2));
 
 	if (mask.b != 1)
 		return float4(0.0, 0.0, 0.0, 0.0);
