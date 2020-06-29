@@ -19,9 +19,15 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
+            interpreter.AddFunction("get_delta_time", (Func<float>)GetDeltaTime);
             interpreter.AddFunction("get_time", (Func<float>)GetTime);
 
             base.DefineApi(interpreter);
+        }
+
+        private float GetDeltaTime()
+        {
+            return _latestGameTime.GetElapsedSeconds();
         }
 
         private float GetTime()

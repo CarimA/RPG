@@ -73,7 +73,7 @@ namespace PhotoVs.Engine.Events.Coroutines
 
                         break;
                     case null:
-                        coroutine.MoveNext();
+                        //coroutine.MoveNext();
 
                         break;
 

@@ -27,3 +27,10 @@ function say(n, d)
     coroutine.yield()
   end
 end
+
+function wait(t)
+  while t > 0 do
+    coroutine.yield()
+    t = t - get_delta_time()
+  end
+end
