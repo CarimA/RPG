@@ -78,6 +78,13 @@ namespace PhotoVs.Engine.Assets.StreamProviders
             return File.Exists(path);
         }
 
+        public long LastModified(DataLocation location, string filepath)
+        {
+            var fpath = GetFilepath(location, filepath);
+            var length = File.GetLastWriteTime(fpath).ToFileTimeUtc();
+            return length;
+        }
+
         public void CreateDirectory(DataLocation location, string directory)
         {
             var path = FixDirectory(GetFilepath(location, directory));

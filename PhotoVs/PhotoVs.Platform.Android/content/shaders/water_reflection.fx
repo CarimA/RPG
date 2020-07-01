@@ -47,8 +47,7 @@ float when_neq(float x, float y) {
   return abs(sign(x - y));
 }
 
-float4 water = float4(0.03529411764, 0.3725490196, 0.47843137254, 1.0);
-int horizonPixels = 50;
+float4 water;
 
 float4 main(VertexShaderOutput input) : COLOR
 {
@@ -57,6 +56,7 @@ float4 main(VertexShaderOutput input) : COLOR
     float i = 0;
     float2 pos = float2(0, 0);
     float found = 0;
+    int horizonPixels = 50;
 
     [unroll(50)] while (inputColor.b == 1.0)
     {

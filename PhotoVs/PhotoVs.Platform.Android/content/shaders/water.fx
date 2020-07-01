@@ -2,7 +2,7 @@
 	#define SV_POSITION POSITION
 	#define PS_SHADERMODEL ps_3_0
 #else
-	#define PS_SHADERMODEL ps_5_0
+	#define PS_SHADERMODEL ps_4_0_level_9_3
 #endif
 
 Texture2D Texture : register(t0);
@@ -20,9 +20,6 @@ Texture2D texNoiseA;
 sampler2D texSamplerNoiseA
 {
     Texture = <texNoiseA>;
-	MipFilter = POINT;
-    MinFilter = POINT;
-    MagFilter = POINT;
     AddressU = WRAP;
     AddressV = WRAP;
 };
@@ -31,9 +28,6 @@ Texture2D texNoiseB;
 sampler2D texSamplerNoiseB
 {
     Texture = <texNoiseB>;
-	MipFilter = POINT;
-    MinFilter = POINT;
-    MagFilter = POINT;
     AddressU = WRAP;
     AddressV = WRAP;
 };
@@ -55,15 +49,12 @@ float offsetYA;
 float offsetXB;
 float offsetYB;
 float time;
-
-float contrast = 1.1;
-int step = 6;
-
+float contrast;
+int step;
 float pixWidth;
 float pixHeight;
-float4 water = float4(0.03529411764, 0.3725490196, 0.47843137254, 1.0);
-float4 water2 = float4((4.0 / 255.0), (44.0 / 255.0), (57.0 / 255.0), 1.0);
-float4 highlightWater = float4(0.37647058823, 0.70588235294, 0.84705882352, 1.0);
+float4 water;
+float4 highlightWater;
 
 float4 main(VertexShaderOutput input) : COLOR
 {

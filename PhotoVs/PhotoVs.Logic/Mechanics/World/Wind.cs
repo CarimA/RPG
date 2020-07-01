@@ -41,10 +41,13 @@ namespace PhotoVs.Logic.Mechanics.World
                 _nextUpdate = (float)((_random.NextDouble() + 0.5f) * _random.Next(2, 6));
                 _maxTimer = _nextUpdate;
                 _targetDirection = _random.NextVector2(_minRange, _maxRange);
-                _targetForce = (float)((_random.NextDouble() + 0.5f) * _random.Next(-4, 4));
+                _targetForce = (float)(_random.NextDouble()) * 0.5f;
             }
 
-            Direction = Vector2.SmoothStep(Direction, _targetDirection, (Progress()) / 10f);
+            var currentAngle = Direction.ToAngle();
+            var newAngle = _targetDirection.ToAngle();
+            var step = MathHelper.Lerp(currentAngle, newAngle, 0.15f * gameTime.GetElapsedSeconds());
+            Direction = step.ToDirection();
             Force = MathHelper.SmoothStep(Force, _targetForce, (Progress()) / 10f);
         }
 

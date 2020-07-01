@@ -40,10 +40,12 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private RenderTarget2D _water;
         private RenderTarget2D _combinedWater;
         private RenderTarget2D _waterDisplace;
+        private RenderTarget2D _windDisplace;
         private RenderTarget2D _final;
         private Effect _waterReflectionEffect;
         private Effect _waterEffect;
         private Effect _displaceEffect;
+        private Effect _windEffect;
         private Renderer _renderer;
         private Wind _wind;
         private Vector2 _windDir;
@@ -51,6 +53,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private Texture2D _noiseB;
         private Texture2D _displacementTexture;
         private Texture2D _displacementTexture2;
+
+        private Texture2D _windTrailTexture;
+        private Texture2D _checkerboardTexture;
         private CPosition _playerPosition;
 
         public SRenderOverworld(Overworld overworld, SpriteBatch spriteBatch, SCamera camera, Services services)
@@ -73,11 +78,14 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _waterReflectionEffect = assetLoader.Get<Effect>("shaders/water_reflection.fx");
             _waterEffect = assetLoader.Get<Effect>("shaders/water.fx");
             _displaceEffect = assetLoader.Get<Effect>("shaders/displace.fx");
+            _windEffect = assetLoader.Get<Effect>("shaders/wind.fx");
 
             _noiseA = assetLoader.Get<Texture2D>("ui/noise.png");
             _noiseB = assetLoader.Get<Texture2D>("ui/noise2.png");
             _displacementTexture = assetLoader.Get<Texture2D>("ui/displacement.png");
             _displacementTexture2 = assetLoader.Get<Texture2D>("ui/displacement2.png");
+            _checkerboardTexture = assetLoader.Get<Texture2D>("ui/checkerboard.png");
+            _windTrailTexture = assetLoader.Get<Texture2D>("ui/windtrail.png");
 
             _dayNight.AddPoint(0, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
             _dayNight.AddPoint(0.1875f, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
@@ -106,9 +114,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         private Vector2 waterA;
         private Vector2 waterB;
-        private float time;
 
         private float throttleRender;
+        private float time;
 
         public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
@@ -130,6 +138,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 _final = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
                 _combinedWater = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
                 _waterDisplace = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
+                _windDisplace = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
             }
 
             day += (gameTime.GetElapsedSeconds() / timeScale);
@@ -148,14 +157,18 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             throttleRender -= gameTime.GetElapsedSeconds();
             if (throttleRender <= 0f)
             {
-                throttleRender = 0.06666666666f;
+                var frametime = 1f / 14f;
+                throttleRender = frametime;
 
-                _windDir += _wind.Direction * _wind.Force * throttleRender;
+                _windDir = _wind.Direction * _wind.Progress();
+                //_windDir.Normalize();
 
-                waterA -= new Vector2(.53f, 2.40f) * throttleRender;
-                waterB -= new Vector2(.12f, -4.2f) * throttleRender;
-                time += throttleRender;
+                waterA -= new Vector2(.53f, 2.40f) * frametime;
+                waterB -= new Vector2(.12f, -4.2f) * frametime;
+                time += frametime;
             }
+
+
 
             _renderer.RequestSubRenderer(_material);
 
@@ -289,6 +302,27 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 _renderer.SpriteBatch.End();
                 _renderer.RelinquishSubRenderer();
 
+
+
+
+                /*_renderer.RequestSubRenderer(_windDisplace);
+                _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
+                _windEffect.Parameters["Texture"].SetValue(_checkerboardTexture);
+               // _windEffect.Parameters["texNoise"].SetValue(_noiseB);
+                _windEffect.Parameters["texMask"].SetValue(_material);
+            _windEffect.Parameters["time"].SetValue(time);
+                _windEffect.Parameters["waveSpeed"].SetValue(1f);
+                _windEffect.Parameters["waveFreq"].SetValue(0.1f);
+                _windEffect.Parameters["windDir"].SetValue(_windDir);
+            _windEffect.Parameters["waveAmp"].SetValue(1f / _windDisplace.Height * 2f);
+            _windEffect.Parameters["texelSize"].SetValue(new Vector2(1f / _windDisplace.Width, 1f / _windDisplace.Height));
+            _windEffect.Parameters["offset"]
+                    .SetValue(new Vector2(((tPos.X) % _material.Width) / _material.Width, ((tPos.Y) % _material.Height) / _material.Height));
+            _windEffect.Parameters["texelSize"].SetValue(new Vector2(1f / _windDisplace.Width, 1f / _windDisplace.Height));
+            _windEffect.CurrentTechnique.Passes[0].Apply();
+                _renderer.SpriteBatch.Draw(_target, Vector2.Zero, Color.White);
+                _renderer.SpriteBatch.End();
+                _renderer.RelinquishSubRenderer();*/
 
 
 

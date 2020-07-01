@@ -139,6 +139,8 @@ namespace PhotoVs.Logic
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
+            PostprocessMap("albion.tmx", "albion-out.tmx");
+
             base.Initialize();
         }
 

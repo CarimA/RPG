@@ -14,6 +14,7 @@ namespace PhotoVs.Engine.Assets.StreamProviders
         void Copy(DataLocation location, string oldFilepath, string newFilepath);
         void Move(DataLocation location, string oldFilepath, string newFilepath);
         bool Exists(DataLocation location, string filepath);
+        long LastModified(DataLocation location, string filepath);
 
         void CreateDirectory(DataLocation location, string directory);
 

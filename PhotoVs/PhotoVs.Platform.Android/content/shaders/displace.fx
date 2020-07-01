@@ -65,11 +65,8 @@ float offsetX;
 float offsetY;
 float pixWidth;
 float pixHeight;
-
-float maxDisplace = 4;
-
-float4 water = float4((4.0 / 255.0), (44.0 / 255.0), (57.0 / 255.0), 1.0);
-float4 highlightWater = float4(0.37647058823, 0.70588235294, 0.84705882352, 1.0);
+float maxDisplace;
+float4 water;
 
 float4 main(VertexShaderOutput input) : COLOR
 {
