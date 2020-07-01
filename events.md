@@ -301,6 +301,8 @@ Todo List:
       - Keep displacement as its own shader/filter, reuse with wind stuff.
     - Redesign the overworld renderer to accept a list of filters?
   - Wind trails
+  - Footstep dust (are we finally gonna make a player sprite? :ooo)
+  - Fish shadows in water
 - Plugin System:
   - Implement missing attributes (triggers/conditions), events and commands
   - Make every IEnumerator function return a wrapped Coroutine instead (and change docs to reflect that)
@@ -316,6 +318,18 @@ Todo List:
   - Remove all Service private fields
   - Figure out what's wrong with the shaders in GL (probably just needs a shader model version bump up)
   - Add a debug keybind for ScriptHost.Reset
+  - Rewrite this doc to reflect Lua Way(TM)
 
 
   -- sub({ trigger(Events.GameStart, "example_event"), trigger(Events.GameStart, "example_2"), Events.GameStart, tell_them_to_use_a_controller)
+
+Maybe have a list of filters that run in map properties?
+
+Overworld can take a list of properties which chain into each other
+
+Filter can have an inherited class MaterialFilter which also passes in the material map
+
+Rearrange tileset once and for all (max 256pix width, 1024 height)
+
+- get rid of the shadowed trees
+- sort by type, leave a 2 tile gap between each section
