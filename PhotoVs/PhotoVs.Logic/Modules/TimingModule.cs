@@ -19,8 +19,8 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.AddFunction("GetDeltaTime", (Func<float>)GetDeltaTime);
-            interpreter.AddFunction("GetTotalTime", (Func<float>)GetTime);
+            interpreter.AddFunction("DeltaTime", (Func<float>)GetDeltaTime);
+            interpreter.AddFunction("TotalTime", (Func<float>)GetTime);
 
             base.DefineApi(interpreter);
         }

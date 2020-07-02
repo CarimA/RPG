@@ -30,8 +30,8 @@ namespace PhotoVs.Logic.Modules
                 throw new ArgumentNullException(nameof(interpreter));
 
             interpreter.AddFunction("Player", (Func<string>)GetPlayer);
-            interpreter.AddFunction("GetGameObject", (Func<string, string>)GetGameObjectByName);
-            interpreter.AddFunction("GetGameObjectsByTag", (Func<string, IEnumerable<string>>)GetGameObjectsByTag);
+            interpreter.AddFunction("GameObject", (Func<string, string>)GetGameObjectByName);
+            interpreter.AddFunction("GameObjectsByTag", (Func<string, IEnumerable<string>>)GetGameObjectsByTag);
             interpreter.AddFunction("_Move", (Func<string, Vector2, float, bool>)Move);
             interpreter.AddType<Vector2>("Vector2");
             interpreter.RegisterGlobal("Vector2", (Func<float, float, Vector2>)CreateVector2);
