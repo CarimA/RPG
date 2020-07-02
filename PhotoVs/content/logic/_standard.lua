@@ -1,36 +1,42 @@
-function flag(f, s)
+-- event conditions
+
+function Flag(f, s)
   return function()
-    return _flag(f, (s ~= false))
+    return _Flag(f, (s ~= false))
   end
 end
 
-function var(v, e, o)
+function Var(v, e, o)
   return function()
-    return _var(v, e, o)
+    return _Var(v, e, o)
   end
 end
 
-function trigger(g, d)
+-- event trigger
+
+function Trigger(g, d)
   return function()
-    return _trigger(g, d)
+    return _Trigger(g, d)
   end
 end
 
-function move(g, t, s)
-  while _move(g, t, s) do
+-- general helpers for coroutine-centric functions (the _ variants are implemented in-engine)
+
+function Move(g, t, s)
+  while _Move(g, t, s) do
     coroutine.yield()
   end
 end
                 
-function say(n, d)
-  while _say(n, d) do
+function Say(n, d)
+  while _Say(n, d) do
     coroutine.yield()
   end
 end
 
-function wait(t)
+function Wait(t)
   while t > 0 do
     coroutine.yield()
-    t = t - get_delta_time()
+    t = t - GetDeltaTime()
   end
 end

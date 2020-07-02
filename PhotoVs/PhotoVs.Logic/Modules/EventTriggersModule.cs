@@ -22,10 +22,10 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.AddFunction("sub", (Action<object, object, object, object, object>)CreateEvent);
-            interpreter.AddFunction("_trigger", (Func<GameEvents, string, (GameEvents, string)>)Trigger);
+            interpreter.AddFunction("Subscribe", (Action<object, object, object, object, object>)CreateEvent);
+            interpreter.AddFunction("_Trigger", (Func<GameEvents, string, (GameEvents, string)>)Trigger);
             interpreter.AddType<GameEvents>("Events");
-            interpreter.RegisterGlobal("run_once", true);
+            interpreter.RegisterGlobal("RunOnce", true);
 
             base.DefineApi(interpreter);
         }

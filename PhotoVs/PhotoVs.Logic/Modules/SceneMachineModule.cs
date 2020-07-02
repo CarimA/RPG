@@ -18,7 +18,7 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.AddFunction("push_scene", (Action<string>)PushScene);
+            interpreter.AddFunction("PushScene", (Action<string>)PushScene);
 
             base.DefineApi(interpreter);
         }

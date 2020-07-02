@@ -301,6 +301,7 @@ Todo List:
       - Keep displacement as its own shader/filter, reuse with wind stuff.
     - Redesign the overworld renderer to accept a list of filters?
   - Wind trails
+  - Fog? Maybe use the depth buffer?
   - Footstep dust (are we finally gonna make a player sprite? :ooo)
   - Fish shadows in water
 - Plugin System:
@@ -316,7 +317,6 @@ Todo List:
   - Change every `(float)gameTime.ELapsedTime.TotalSeconds` to use the GetElapsedSeconds() extension method.
   - Go through all constructors and fix them to only require Service (when any of them request for something that Service provides) and create private fields which hold what they ask for (and handle that in the constructor)
   - Remove all Service private fields
-  - Figure out what's wrong with the shaders in GL (probably just needs a shader model version bump up)
   - Add a debug keybind for ScriptHost.Reset
   - Rewrite this doc to reflect Lua Way(TM)
 

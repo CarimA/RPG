@@ -18,7 +18,7 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.AddFunction("_say", (Func<string, string, bool>)DialogueState);
+            interpreter.AddFunction("_Say", (Func<string, string, bool>)DialogueState);
             base.DefineApi(interpreter);
         }
 

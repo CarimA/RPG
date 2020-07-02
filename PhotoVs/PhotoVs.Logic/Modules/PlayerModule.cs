@@ -18,8 +18,8 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.AddFunction("lock", (Action)LockMovement);
-            interpreter.AddFunction("unlock", (Action)UnlockMovement);
+            interpreter.AddFunction("Lock", (Action)LockMovement);
+            interpreter.AddFunction("Unlock", (Action)UnlockMovement);
 
             base.DefineApi(interpreter);
         }
