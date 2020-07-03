@@ -134,7 +134,8 @@ namespace PhotoVs.Logic
                     new TimingModule(),
                     new DialogueModule(_services.Get<SceneMachine>()),
                     new PlayerModule(_services.Get<Player>()),
-                    new GameObjectModule(_services.Get<GameObjectList>(), _services.Get<Player>())
+                    new GameObjectModule(_services.Get<GameObjectList>(), _services.Get<Player>()),
+                    new TextModule(_services.Get<TextDatabase>())
                 });
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
