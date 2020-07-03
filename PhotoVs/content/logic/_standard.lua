@@ -1,14 +1,14 @@
 -- event conditions
 
-function Flag(f, s)
+function FlagCondition(f, s)
   return function()
-    return _Flag(f, (s ~= false))
+    return _FlagCondition(f, (s ~= false))
   end
 end
 
-function Var(v, e, o)
+function VarCondition(v, e, o)
   return function()
-    return _Var(v, e, o)
+    return _VarCondition(v, e, o)
   end
 end
 
