@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using PhotoVs.Engine.Graphics.Filters;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
@@ -129,7 +130,7 @@ namespace PhotoVs.Logic
                 new List<Module>
                 {
                     new EventConditionsModule(_services.Get<Player>()),
-                    new EventTriggersModule(_services.Get<EventQueue<GameEvents>>()),
+                    new EventTriggersModule(_services.Get<EventQueue<GameEvents>>(), _services.Get<Player>()),
                     new SceneMachineModule(_services.Get<SceneMachine>()),
                     new TimingModule(),
                     new DialogueModule(_services.Get<SceneMachine>()),
@@ -185,6 +186,17 @@ namespace PhotoVs.Logic
         private Renderer CreateRenderer()
         {
             var renderer = new Renderer(_services, 640, 360, 840, 400);
+
+            renderer.AddFilter(
+                new FunkyFilter(
+                    renderer,
+                    _assetLoader.Get<Effect>("shaders/funky.fx"),
+                    _assetLoader.Get<Texture2D>("ui/noise3.png"),
+                    _assetLoader.Get<Texture2D>("ui/noise4.png"),
+                    new Color(251, 246, 63),
+                    new Color(222, 31, 152),
+                    new Color(1, 124, 213)));
+
             return renderer;
         }
 
@@ -254,7 +266,7 @@ namespace PhotoVs.Logic
             _renderer.BeforeDraw();
             _sceneMachine.Draw(gameTime);
             _sceneMachine.DrawUI(gameTime, _renderer.GetUIOrigin());
-            _renderer.Draw();
+            _renderer.Draw(gameTime);
 
             base.Draw(gameTime);
 

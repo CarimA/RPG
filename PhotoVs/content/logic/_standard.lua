@@ -1,13 +1,13 @@
 -- event conditions
 
 function FlagCondition(f, s)
-  return function()
+  return function ()
     return _FlagCondition(f, (s ~= false))
   end
 end
 
 function VarCondition(v, e, o)
-  return function()
+  return function ()
     return _VarCondition(v, e, o)
   end
 end
@@ -15,7 +15,7 @@ end
 -- event trigger
 
 function Trigger(g, d)
-  return function()
+  return function ()
     return _Trigger(g, d)
   end
 end

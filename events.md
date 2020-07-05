@@ -1,217 +1,215 @@
-# Game Events
+# Scripting & Game Events
 
-Photeus handles logic by loading external scripts from `content\logic`, `data\mods` and internal scripts from any class that inherits `Plugin` in the game assembly. It does this with reflection at runtime. Scripts that produce runtime errors will not be loaded.
+Photeus handles logic by loading external Lua scripts from `content\logic` and `data\mods`. Scripts that produce runtime errors will not be loaded.
 
-The base class `Plugin` provides access to all services and all assemblies loaded by the game (as a result, scripts are **not** sandboxed, caution should be taken when putting scripts from unknown sources into `data\mods`). It also provides a number of helper methods listed under the **Event Commands** section.
+While the API that is exposed to the scripts is sandboxed, the scripts still have access to the full Lua API and so, caution should be taken when using scripts taken from unknown sources.
 
-Plugin scripts are entirely event driven, with each method having *Conditions* and *Triggers* to determine when the events run. The engine has an underlying event queue in which all methods that implement *Triggers Attributes* will automatically be subscribed to the event they request. When an event is raised, if the conditions to run the method is met, determined by *Conditions Attributes*, the method will run. 
+Scripts are almost entirely event driven, with each method having *conditions* and *triggers* to determine where and when the events will run. The host engine has an underlying event queue in which all subscriptions are automatically forwarded to. When an event is raised, if the conditions to run the method is met, the method will run.
 
-Every event must have a `[GameEvent]` attribute, or it will not be handled when the game loads.
+# Writing & Distributing Your Own Mods
 
-## Attributes
+Scripts loaded from `data\mods` have access to exactly the same API as scripts loaded from `content\logic`, and can do exactly the same things (to the point that you *could* put your mods in `content\logic`, but please don't do that).
 
-### `[GameEvent]`
+All scripts/data you write must be packaged into a single zip file and can dropped directly into `data\mods` for ease-of-installation and distribution. 
 
-Mandatory, in order for the engine to pick up the method and subscribe it to the relevant events.
+All zips must contain a `metadata.json` file which implements the following schema:
 
-### `[RunOnce]`
-
-The RunOnce attribute makes it so that once the event runs once, any triggers associated with the event are unsubscribed. `[RunOnce]` has an optional parameter (used like `[RunOnce("Flag")]`) which persists the event having ran once already and will prevent it from running again after the player saves their game.
-
-`[RunOnce("Flag")]` could be seen as shorthand for:
-
-```csharp
-[RunOnce]
-[FlagCondition("Flag", false)]
-void SomeRandomEvent(IGameEventArgs args) 
+```json
 {
-    // (Actual event code)
-
-    SetFlag("Flag", true);
+  "name": "My Mod Name",
+  "version": 1
 }
 ```
 
-### `[Trigger("Event ID")]`
+Any zips that do not contain a `metadata.json` will not be loaded by the game.
 
-The Trigger attribute will cause the engine to subscribe to the event provided in "Event ID".
+At runtime, any non-script files inside the zip file will get extracted to `content\modfiles\{mod name}`, and when the assetloader loads data, it will check both the original location and all available mods, taking precedence with the file in `content\modfiles`.
 
-More than one trigger can be used for a method. 
+If any mods cause conflicts by trying to override the same data, neither mod will be loaded and the player will be alerted of the conflict.
 
-See the **Triggers** section for a list of constants for events that triggers can subscribe to.
+By default, all mods placed into `data\mods` are loaded, this is behaviour that I hope to change in the future through use of an in-game mod manager.
 
-### `[AutoRunOverworld]` (not implemented yet)
+# General Code Style Stuff
 
-A trigger that runs every frame when on the overworld.
+(TODO) 
 
-### `[AutoRunBattle]` (not implemented yet)
+All methods and classes exposed to the scipting system use Pascal Case. 
 
-A trigger that runs every frame when in a battle. Can be used for stuff like checking game over conditions.
+Use 2 spaces for indenting.
 
-### `[FlagCondition("Flag ID", Boolean Value)]`
+# The Subscribe Method
 
-The FlagCondition attribute will cause the engine to add a conditional to the event subscription that checks whether the player's save data has a flag named "Flag ID" and whether it matches the boolean value you specify.
+The `Subscribe` method is the primary means of defining functionality within Photeus. It accepts a single table as an argument, and looks something like this:
 
-More than one condition can be used for a method.
+```lua
+Subscribe {
+  Triggers = { 
+    GameEvents.GameStart,
+    Trigger(GameEvents.GameStart, 'hello')
+  },
+  Conditions = { 
+    FlagCondition('this_flag', true),
+    VarCondition('this_var', Equality.Equals, 100)
+  },
+  RunOnce = true,
+  Event = function ()
 
-### `[VariableCondition("Variable ID", Equality, Value)]`
-
-The VariableCondition attribute will cause the engine to add a conditional to the event subscription that checks whether the player's save data has a flag named "Variable ID" and whether it matches the (IComparable) object you specify in Value, using the equality parameter.
-
-Equality is an enumerable that can be one of six values:
-
-- **Equality.Equals**: checks if the value returned from the flag is equal to the value specified.
-- **Equality.GreaterThan**: checks if the value returned from the flag is greater  than the value specified.
-- **Equality.GreaterThanOrEquals**: checks if the value returned from the flag is greater than or equal to the value specified.
-- **Equality.LessThan**: checks if the value returned from the flag is less than the value specified.
-- **Equality.LessThanOrEquals**: checks if the value returned from the flag is less than or equal to the value specified.
-- **Equality.Not**: checks if the value is not equal to the value specified.
-
-More than one condition can be used for a method.
-
-### `[StateCondition("Screen Name")]` (not implemented yet)
-
-The StateCondition attribute will cause the engine to add a conditional to the event subscription that checks whether the game is on the specified state.
-
-More than one condition can be used for a method.
-
-[TimePhaseCondition(TimePhase)]
-
-- TimePhase.MidNight
-- TimePhase.LateNight
-- TimePhase.Sunrise
-- TimePhase.EarlyMorning
-- TimePhase.LateMorning
-- TimePhase.Noon
-- TimePhase.EarlyAfternoon
-- TimePhase.LateAfternoon
-- TimePhase.EarlyEvening
-- TimePhase.LateEvening
-- TimePhase.EarlyNight
-
-[DayCondtion(Day)]
-
-- Day.Monday
-- Day.Tuesday
-- Day.Wednesday
-- Day.Thursday
-- Day.Friday
-- Day.Saturday
-- Day.Sunday
+  end
+}
+```
 
 ## Triggers
 
-### ***About Dynamic Triggers***
+The `Triggers` key is a table treated as an array containing `GameEvents` enum values (see the **Game Events** section for a list of all enums) and/or any of the following method calls.
 
-Some triggers support the ability to amend the constant to specify a specific instance of the trigger to listen to, for example, *INTERACT_AREA_ENTER* can be modified to *INTERACT_AREA_ENTER:example_event* which will subscribe to an event that is only raised specifically when the player enters the *example_event* boundary.
+(todo)
 
-### `GAME_START`
+|Method|Parameters|Description|Implemented?|
+|-|-|-|:-:|
+|`Trigger(gameEvent, delimiter)`|||✅|
+|`AutoRunOverworld()`|||❌|
+|`AutoRunBattle()`|||❌|
 
-Raised when the game starts
+## Conditions
 
-### `SAVE_LOADED` (not implemented yet)
-
-Raised when the player loads a save file in the main menu. Provides the index of the save file that was loaded via SaveEventArgs.
-
-### `SAVE_CREATED` (not implemented yet)
-
-Raised when the player creates a new save file in the main menu. Provides the index of the save file that was created via SaveEventArgs.
-
-### `SAVE_CHANGED` (not implemented yet)
-
-Raised when the player saves their game. Provides the index of the save file that was changed via SaveEventArgs.
-
-### `STEP_TAKEN` (not implemented yet)
-
-Raised when a game object takes a step (corresponding to their animations). Provides the game object that took a step via GameObjectEventArgs.
-
-### `MOVEMENT_STATE_CHANGED` (not implemented yet)
-
-Raised when the player changes between walking, running and standing, with both the old and new states reported. Provides the player's game object and movement states via MovementEventArgs.
-
-### `ENTERED_ZONE` (not implemented yet)
-
-Raised when the player enters a new zone. It is a dynamic trigger that can listen to a specific zone being entered. Provides the zone the player has just entered via ZoneEventArgs.
-
-### `EXITED_ZONE` (not implemented yet)
-
-Raised when the player exits a zone. It is a dynamic trigger that can listen to a specific zone being exited. Provides the zone the player has just exited via ZoneEventArgs.
-
-### `ZONE_CHANGED` (not implemented yet)
-
-Raised when the player changes zone. Provides the old zone and new zone via ZoneChangesEventArgs.
-
-### `ENTERED_MAP` (not implemented yet)
-
-Raised when the player enters a new map. It is a dynamic trigger that can listen to a specific map being entered. Provides the map the player has just entered via MapEventArgs.
-
-### `EXITED_MAP` (not implemented yet)
-
-Raised when the player exits a map. It is a dynamic trigger that can listen to a specific map being exited. Provides the map the player has just exited via ZoneEventArgs.
-
-### `MAP_CHANGED` (not implemented yet)
-
-Raised when the player changes map. Provides the old map and new map via MapChangesEventArgs.
-
-### `INTERACT_ACTION` (dynamic)
-
-Raised when the player presses their interact key/button while standing on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
-
-### `INTERACT_AREA_ENTER` (dynamic)
-
-Raised when the player enters an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
-
-### `INTERACT_AREA_EXIT` (dynamic)
-
-Raised when the player exits an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
-
-### `INTERACT_AREA_STAND` (dynamic)
-
-Raised while the player is standing on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
-
-### `INTERACT_AREA_WALK` (dynamic)
-
-Raised while the player is walking on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
-
-### `INTERACT_AREA_RUN` (dynamic)
-
-Raised while the player is running on an interactable zone. Provides the player game object and interactable zone game object via InteractEventArgs.
-
-### `COLLISION`:
-
-### `INPUT_ACTION_PRESSED` (not implemented yet) (dynamic)
-
-### `INPUT_ACTION_RELEASED` (not implemented yet) (dynamic)
-
-### `ASSET_LOADED` (not implemented yet) (dynamic)
-
-### `ASSET_UNLOADED` (not implemented yet) (dynamic)
-
-### `AUDIO_BGM_PLAYED` (not implemented yet) (dynamic)
-
-### `AUDIO_BGM_STOPPED` (not implemented yet)
-
-### `AUDIO_SFX_PLAYED` (not implemented yet) (dynamic)
-
-### `DIALOGUE_PROGRESSED` (not implemented yet)
-
-Raised with each new character that is added when dialogue runs. Provides the character that was just inserted and the current speaker. Example use: voice sound effects for specific characters.
-
-### `STATE_CHANGED` (not implemented yet) (dynamic)
-
-### `STATE_PUSHED` (not implemented yet) (dynamic)
-
-### `STATE_POPPED` (not implemented yet) (dynamic)
-
-TIME_PHASE_CHANGED
-
-DAY_CHANGED
-
-## EventArg Classes (todo)
-
-### `GameEventArgs`
+More than one condition can be defined for an event. All conditions need to be met before an event is raised.
 
 
-## Event Commands (todo)
+|Method|Parameters|Description|Implemented?
+|-|-|-|:-:|
+|`FlagCondition(flag, value)`|**flag - string**: the name of the flag to check.<br><br>**value - string:** the value the flag must match with.|Adds a conditional check to the event subscription that checks whether the player's save data has a named flag and whether it matches the boolean value you specify.|✅|
+|`VarCondtion(variable, equality, value)`|**variable - string:** the name of the variable to check.<br><br>**equality - Equality:** the equality comparison check that should be used.<br><br>**value - object:** the value the variable must match with.|Adds a conditional check to the event subscription that checks whether the player's save data has a named flag and whether it matches the (IComparable implementing) object you specify using the equality check specified in the Equality parameter.|✅|
+|`StateCondition(state)`|**state - string:** the name of the state to check.|Adds a conditional check to the event subscription that checks whether the game is on the specified screen state.|❌|
+|`TimePhaseCondition(timePhase)`|**timePhase - TimePhase:** the time phase to compare against.|Adds a conditional check to the event subscription that checks whether the in-game time matches the specified time phase.|❌|
+|`DayCondition(day)`|**day - Day:** the day to compare against.|Adds a conditional check to the event subscription that checks whether the in-game day matches the specified day.|❌|
+
+### Equality Enum Values
+|Equality|Description|
+|-|-|
+|Equality.Equals|Flag value is equal to the value specified.|
+|Equality.GreaterThan|Flag value is greater than the value specified.|
+|Equality.GreaterThanOrEquals|Flag value is greater than or equal to the value specified.|
+|Equality.LessThan|Flag value is less than the value specified.|
+|Equality.LessThanOrEquals|Flag value is less than or equal to the value specified.|
+|Equality.Not|Flag value is not equal to the value specified.|
+
+### TimePhase Enum Values
+|TimePhase|Description|
+|-|-|
+|TimePhase.Midnight|Between 23:00 and 01:00|
+|TimePhase.EarlyMorning|Between 01:00 and 05:00|
+|TimePhase.LateMorning|Between 05:00 and 11:00|
+|TimePhase.Noon|Between 11:00 and 13:00|
+|TimePhase.Afternoon|Between 13:00 and 17:00|
+|TimePhase.EarlyEvening|Between 17:00 and 20:00|
+|TimePhase.LateEvening|Between 20:00 and 23:00|
+
+### Day Enum Values
+
+|Day|Description|
+|-|-|
+|Day.Monday|Monday (do I really need to specify this.)|
+|Day.Tuesday|Tuesday|
+|Day.Wednesday|Wednesday|
+|Day.Thursday|Thursday|
+|Day.Friday|Friday|
+|Day.Saturday|Saturday|
+|Day.Sunday|Sunday|
+
+## RunOnce
+
+This is an optional key set to `false` by default. It can be either a `boolean` or a `string`. By setting it to `true`, that makes it so that the event will run once and then any triggers associated with it are automatiaclly unsubscribed. By setting it to a `string`, it becomes true by default but will also cause the given string to be set as a boolean flag in the player data, which will prevent the event from ever running again after the player saves their game.
+
+```lua
+Subscribe {
+  Triggers = { GameEvents.GameStart },
+  RunOnce = 'NeverRunAgain',
+  Event = function ()
+    -- some code here
+  end
+}
+```
+
+could be seen as shorthand for:
+
+```lua
+Subscribe {
+  Triggers = { GameEvents.GameStart },
+  Conditions = { FlagCondition('NeverRunAgain', false) }
+  RunOnce = true,
+  Event = function ()
+    -- some code here
+    SetFlag('NeverRunAgain', true)
+  end
+}
+```
+
+## Event
+
+The function that actually runs when the event is raised. Can be provided with an optional variable that implements `GameEventArgs`.
+
+# Game Events
+
+## About Dynamic Triggers
+Some game events will also raise a more detailed event that uses other data as a key to subscribe to more specific events. 
+
+For example, `InteractAreaEnter` is an event that will raise for every instance of when the player enters a map interact zone boundary, but if you enter a map interact boundary named `example_event`, then the event `InteractAreaEnter:example_event` is also raised. 
+
+This allows you to be more specific about which particular actions you may want to listen to without overwhelming the event notification system.
+
+*(After all, it'd probably start slowing things down if *every* single map interact boundary entry event was raised and each of them checked against what they really wanted to listen for, right?)*
+
+## List of all Game Events
+
+|GameEvent|Type|Description of Event|GameEventArgs|Implemented?|
+|-|-|-|-|:-:|
+|GameEvent.GameStart|State|The game starts.|None|✅|
+|GameEvent.ScreenPushed *(dynamic)*|State|The game has pushed a new state to the screen stack.|StateEventArgs|❌|
+|GameEvent.ScreenPopped *(dynamic)*|State|The game has popped a state from the screen stack.|StateEventArgs|❌|
+|GameEvent.ScreenChanged|State|The game has changed the state in the screen stack.|StateChangedEventArgs|❌|
+|GameEvent.SaveLoaded|Save|Player loads a save file in the main menu.|SaveEventArgs|❌|
+|GameEvent.SaveCreated|Save|Player creates a new save file in the main menu.|SaveEventArgs|❌|
+|GameEvent.SaveChanged|Save|Player saves their game.|SaveEventArgs|❌|
+|GameEvent.StepTaken|Movement|A game object takes a step corresponding to their animation.|GameObjectEventArgs|❌|
+|GameEvent.MovementStateChanged|Movement|Player changes state between walking, running and standing.|MovementEventArgs|❌|
+|GameEvent.EnteredZone *(dynamic)*|Zone|Player enters a new zone.|ZoneEventArgs|❌|
+|GameEvent.ExitedZone *(dynamic)*|Zone|Player exits a zone.|ZoneEventArgs|❌|
+|GameEvent.ZoneChanged|Zone|Player changes zone.|ZoneChangedEventArgs|❌|
+|GameEvent.EnteredMap *(dynamic)*|Map|Player enters a new map.|MapEventArgs|❌|
+|GameEvent.ExitedMap *(dynamic)*|Map|Player exits a map.|MapEventArgs|❌|
+|GameEvents.MapChanged|Map|Player changes map.|MapChangedEventArgs|❌|
+|GameEvents.InteractAction *(dynamic)*|Interaction|Player presses the interact action while standing on an interactible zone.|InteractEventArgs|✅|
+|GameEvents.InteractAreaEnter *(dynamic)*|Interaction|Player has entered an interactible zone.|InteractEventArgs|✅|
+|GameEvents.InteractAreaExit *(dynamic)*|Interaction|Player has exited an interactible zone.|InteractEventArgs|✅|
+|GameEvents.InteractAreaStand *(dynamic)*|Interaction|Player is standing on an interactible zone.|InteractEventArgs|✅|
+|GameEvents.InteractAreaWalk *(dynamic)*|Interaction|Player is walking on an interactible zone.|InteractEventArgs|✅|
+|GameEvents.InteractAreaRun *(dynamic)*|Interaction|Player is running on an interactible zone.|InteractEventArgs|✅|
+|GameEvents.Collision|Interaction|Player has collided with a solid object.|GameObjectEventArgs|✅|
+|GameEvents.InputActionPressed|Input|Player has pressed an action.|InputEventArgs|❌|
+|GameEvents.InputActionReleased|Input|Player has released an action.|InputEventArgs|❌|
+|GameEvents.AssetLoaded *(dynamic)*|Assets|The game has loaded an asset into memory.|AssetEventArgs|❌|
+|GameEvents.AssetUnloaded *(dynamic)*|Assets|The game has released an asset from memory.|AssetEventArgs|❌|
+|GameEvents.AudioBgmPlayed *(dynamic)*|Audio|The game has started playing a new BGM track.|AudioEventArgs|❌|
+|GameEvents.AudioBgmStopped|Audio|The game has stopped playing a BGM track.|None|❌|
+|GameEvents.AudioSfxPlayed *(dynamic)*|Audio|The game has started playing a new sound effect.|AudioEventArgs|❌|
+|GameEvents.DialogueNextCharacter|Dialogue|The game has moved on to the next character in dialogue.|DialogueEventArgs|❌|
+|GameEvents.DialogueNextPage|Dialogue|The game has moved on to the next page in dialogue.|DialogueEventArgs|❌|
+|GameEvents.DialogueFinished|Dialogue|The game has finished the current dialogue.|DialogueEventArgs|❌|
+|GameEvents.TimePhaseChanged|DateTime|The time phase of the day has changed.|TimeEventArgs|❌|
+|GameEvents.DayChanged|DateTime|The day of the week has changed.|DayEventArgs|❌|
+
+
+## List of GameEventArg Classes 
+(todo)
+
+# Scripting API
+
+|Method|Parameters|Description|Implemented?|
+|-|-|-|:-:|
+|`Wait(time)`|**time - number:** the length of time to halt the script in seconds.|Halts the script for a specified amount of time.|✅|
+
+
+
 
 ### `Spawn(IEnumerator) : IEnumerator`
 
@@ -220,8 +218,6 @@ DAY_CHANGED
 ### `LockMovement(Func<IEnumerator>) : IEnumerator`
 
 ### `Move(IGameObject, Vector2, float) : IEnumerator`
-
-### `Wait(float) : Wait`
 
 ### `GetText(string) : string`
 
@@ -281,9 +277,13 @@ EnableDayCycle
 
 DisableDayCycle
 
-### 
 
-Todo List:
+
+---
+---
+--- 
+
+# general tasks todo list because i'm too lazy to put it elsewhere
 - Refactor the Day/Night system a class:
   - handle the timing, allow getting/setting the time (convert from 24 hour units to 0 to 1 scale and back), setting the time scale (rate at which time flows) getting the time phase, and allow enabling/disabling time flow (and tie to event commands + raise events per hour)
   - Implement day of the week!
@@ -321,7 +321,7 @@ Todo List:
   - Rewrite this doc to reflect Lua Way(TM)
 
 
-  -- sub({ trigger(Events.GameStart, "example_event"), trigger(Events.GameStart, "example_2"), Events.GameStart, tell_them_to_use_a_controller)
+  -- sub({ trigger(Events.GameStart, 'example_event'), trigger(Events.GameStart, 'example_2'), Events.GameStart, tell_them_to_use_a_controller)
 
 Maybe have a list of filters that run in map properties?
 

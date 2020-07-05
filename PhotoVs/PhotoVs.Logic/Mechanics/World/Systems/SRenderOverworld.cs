@@ -54,7 +54,6 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private Texture2D _displacementTexture;
         private Texture2D _displacementTexture2;
 
-        private Texture2D _windTrailTexture;
         private Texture2D _checkerboardTexture;
         private CPosition _playerPosition;
 
@@ -85,7 +84,6 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _displacementTexture = assetLoader.Get<Texture2D>("ui/displacement.png");
             _displacementTexture2 = assetLoader.Get<Texture2D>("ui/displacement2.png");
             _checkerboardTexture = assetLoader.Get<Texture2D>("ui/checkerboard.png");
-            _windTrailTexture = assetLoader.Get<Texture2D>("ui/windtrail.png");
 
             _dayNight.AddPoint(0, assetLoader.Get<Texture2D>("luts/daycycle1.png"));
             _dayNight.AddPoint(0.1875f, assetLoader.Get<Texture2D>("luts/daycycle1.png"));

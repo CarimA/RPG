@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using PhotoVs.Engine.Graphics.Filters;
 
 namespace PhotoVs.Engine.Graphics
 {
@@ -18,6 +20,8 @@ namespace PhotoVs.Engine.Graphics
         public int GameWidth { get; private set; }
         public int GameHeight { get; private set; }
 
+        private readonly List<IFilter> _filters;
+
         private Rectangle _display;
 
         private RenderTarget2D _mainRenderTarget;
@@ -33,27 +37,42 @@ namespace PhotoVs.Engine.Graphics
             VirtualHeight = virtualHeight;
             VirtualMaxWidth = virtualMaxWidth;
             VirtualMaxHeight = virtualMaxHeight;
+            _filters = new List<IFilter>();
 
             _display = new Rectangle();
             UpdateDisplay(null, null);
         }
 
-        public void Draw()
+        public void AddFilter(IFilter filter)
+        {
+            _filters.Add(filter);
+        }
+
+        public void Draw(GameTime gameTime)
         {
             var width = _graphics.PreferredBackBufferWidth;
             var height = _graphics.PreferredBackBufferHeight;
 
+            var copy = _mainRenderTarget;
+            foreach (var filter in _filters)
+            {
+                if (filter is IUpdateFilter updateFilter)
+                    updateFilter.Update(gameTime);
+
+                copy = filter.Filter(SpriteBatch, copy);
+            }
+
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
             SpriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
-            SpriteBatch.Draw(_mainRenderTarget, _display, Color.White);
+            SpriteBatch.Draw(copy, _display, Color.White);
             SpriteBatch.End();
         }
 
         public void BeforeDraw()
         {
             GraphicsDevice.SetRenderTarget(_mainRenderTarget);
-            GraphicsDevice.Clear(Color.Magenta);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
         }
 
         public void RequestSubRenderer(RenderTarget2D renderTarget)

@@ -5,16 +5,19 @@ using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Events;
 using System;
 using System.Linq;
+using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.Modules
 {
     public class EventTriggersModule : Module
     {
         private readonly EventQueue<GameEvents> _events;
+        private readonly Player _player;
 
-        public EventTriggersModule(EventQueue<GameEvents> events)
+        public EventTriggersModule(EventQueue<GameEvents> events, Player player)
         {
             _events = events;
+            _player = player;
         }
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
@@ -22,7 +25,7 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.AddFunction("Subscribe", (Action<object, object, object, object, object>)CreateEvent);
+            interpreter.AddFunction("Subscribe", (Action<object, object, object, object, object, object>)CreateEvent);
             interpreter.AddFunction("_Trigger", (Func<GameEvents, string, (GameEvents, string)>)Trigger);
             interpreter.AddType<GameEvents>("Events");
             interpreter.RegisterGlobal("RunOnce", true);
@@ -36,19 +39,19 @@ namespace PhotoVs.Logic.Modules
             return (arg1, arg2);
         }
 
-        private void CreateEvent(object arg1, object arg2, object arg3, object arg4, object arg5)
+        private void CreateEvent(object arg1, object arg2, object arg3, object arg4, object arg5, object arg6)
         {
             if (arg1 is GameEvents gameEvents1 && arg2 is Closure closure1)
-                RegisterEvent(gameEvents1, string.Empty, null, closure1, (bool?)arg3 ?? false);
+                RegisterEvent(gameEvents1, string.Empty, null, closure1, (bool?)arg3 ?? false, arg6.ToString() ?? string.Empty);
 
             else if (arg1 is GameEvents gameEvents2 && arg2 is string delimiter2 && arg3 is Closure closure2)
-                RegisterEvent(gameEvents2, delimiter2, null, closure2, (bool?)arg4 ?? false);
+                RegisterEvent(gameEvents2, delimiter2, null, closure2, (bool?)arg4 ?? false, arg6.ToString() ?? string.Empty);
 
             else if (arg1 is GameEvents gameEvents3 && arg2 is Table conditions3 && arg3 is Closure closure3)
-                RegisterEvent(gameEvents3, string.Empty, conditions3, closure3, (bool?)arg4 ?? false);
+                RegisterEvent(gameEvents3, string.Empty, conditions3, closure3, (bool?)arg4 ?? false, arg6.ToString() ?? string.Empty);
 
             else if (arg1 is GameEvents gameEvents4 && arg2 is string delimiter4 && arg3 is Table conditions4 && arg4 is Closure closure4)
-                RegisterEvent(gameEvents4, delimiter4, conditions4, closure4, (bool?)arg5 ?? false);
+                RegisterEvent(gameEvents4, delimiter4, conditions4, closure4, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
 
             else if (arg1 is Table gameEvents5 && arg2 is Closure closure5)
                 foreach (var event5 in gameEvents5.Values)
@@ -58,11 +61,11 @@ namespace PhotoVs.Logic.Modules
                         var trigger = event5.Function.Call();
                         var key = trigger.ToObject<(GameEvents, string)>().Item1;
                         var delimiter = trigger.ToObject<(GameEvents, string)>().Item2;
-                        RegisterEvent(key, delimiter, null, closure5, (bool?)arg5 ?? false);
+                        RegisterEvent(key, delimiter, null, closure5, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
                     }
                     else
                     {
-                        RegisterEvent((GameEvents)event5.Number, string.Empty, null, closure5, (bool?)arg5 ?? false);
+                        RegisterEvent((GameEvents)event5.Number, string.Empty, null, closure5, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
                     }
                 }
 
@@ -74,16 +77,17 @@ namespace PhotoVs.Logic.Modules
                         var trigger = event6.Function.Call();
                         var key = trigger.ToObject<(GameEvents, string)>().Item1;
                         var delimiter = trigger.ToObject<(GameEvents, string)>().Item2;
-                        RegisterEvent(key, delimiter, conditions6, closure6, (bool?)arg5 ?? false);
+                        RegisterEvent(key, delimiter, conditions6, closure6, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
                     }
                     else
                     {
-                        RegisterEvent((GameEvents)event6.Number, string.Empty, conditions6, closure6, (bool?)arg5 ?? false);
+                        RegisterEvent((GameEvents)event6.Number, string.Empty, conditions6, closure6, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
                     }
                 }
         }
 
-        private void RegisterEvent(GameEvents gameEvent, string delimiter, Table conditions, Closure closure, bool runOnce = false)
+        private void RegisterEvent(GameEvents gameEvent, string delimiter, Table conditions, Closure closure,
+            bool runOnce = false, string runOnceFlag = "")
         {
             var reservedId = _events.ReserveId();
 
@@ -91,13 +95,24 @@ namespace PhotoVs.Logic.Modules
             {
                 // condition checks first
                 if (conditions != null)
-                    if (conditions.Values.Select(condition => condition.Function).Any(cs => cs.Call() == DynValue.False))
+                    if (conditions.Values.Select(condition => condition.Function)
+                        .Any(cs => Equals(cs.Call(), DynValue.False)))
                         return;
 
-                ScriptHost.RunCoroutine($"event subscribed to ({Enum.GetName(typeof(GameEvents), gameEvent)}, {delimiter})", closure);
+                if (runOnce && !string.Equals(runOnceFlag, string.Empty))
+                    if (_player.PlayerData.GetFlag(runOnceFlag))
+                        return;
+
+                ScriptHost.RunCoroutine(
+                    $"event subscribed to ({Enum.GetName(typeof(GameEvents), gameEvent)}, {delimiter})", closure);
 
                 if (runOnce)
+                {
                     _events.Unsubscribe(reservedId);
+
+                    if (!string.Equals(runOnceFlag, string.Empty))
+                        _player.PlayerData.SetFlag(runOnceFlag, true);
+                }
             });
 
             _events.Subscribe(reservedId, gameEvent, delimiter, action);

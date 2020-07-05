@@ -9,10 +9,10 @@ namespace PhotoVs.Engine.Graphics.Filters
         private readonly Renderer _renderer;
 
         private readonly Effect _effect;
+        private readonly EffectPass _effectPass;
         private readonly EffectParameter _lutTextureParam;
         private readonly EffectParameter _lutTextureWidthParam;
         private readonly EffectParameter _lutTextureHeightParam;
-        private readonly EffectPass _effectPass;
         private RenderTarget2D _outputTexture;
 
         private Texture2D _lookupTable;
