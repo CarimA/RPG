@@ -21,7 +21,7 @@ Subscribe {
     tick = GetTotalTime() - tick
     Lock()
     Wait(3)
-    -- Say('debugger', 'it took {# Yellow}' .. tick .. ' ticks{/#} to walk through.')
+    Say('debugger', 'it took {# Yellow}' .. tick .. ' ticks{/#} to walk through.')
     Move(Player(), Vector2(0, 0), 100)
     Unlock()
   end

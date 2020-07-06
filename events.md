@@ -161,42 +161,42 @@ This allows you to be more specific about which particular actions you may want 
 
 ## List of all Game Events
 
-|GameEvent|Type|Description of Event|GameEventArgs|Implemented?|
+|Event|Type|Description of Event|EventArgs|Implemented?|
 |-|-|-|-|:-:|
-|GameEvent.GameStart|State|The game starts.|None|✅|
-|GameEvent.ScreenPushed *(dynamic)*|State|The game has pushed a new state to the screen stack.|StateEventArgs|❌|
-|GameEvent.ScreenPopped *(dynamic)*|State|The game has popped a state from the screen stack.|StateEventArgs|❌|
-|GameEvent.ScreenChanged|State|The game has changed the state in the screen stack.|StateChangedEventArgs|❌|
-|GameEvent.SaveLoaded|Save|Player loads a save file in the main menu.|SaveEventArgs|❌|
-|GameEvent.SaveCreated|Save|Player creates a new save file in the main menu.|SaveEventArgs|❌|
-|GameEvent.SaveChanged|Save|Player saves their game.|SaveEventArgs|❌|
-|GameEvent.StepTaken|Movement|A game object takes a step corresponding to their animation.|GameObjectEventArgs|❌|
-|GameEvent.MovementStateChanged|Movement|Player changes state between walking, running and standing.|MovementEventArgs|❌|
-|GameEvent.EnteredZone *(dynamic)*|Zone|Player enters a new zone.|ZoneEventArgs|❌|
-|GameEvent.ExitedZone *(dynamic)*|Zone|Player exits a zone.|ZoneEventArgs|❌|
-|GameEvent.ZoneChanged|Zone|Player changes zone.|ZoneChangedEventArgs|❌|
-|GameEvent.EnteredMap *(dynamic)*|Map|Player enters a new map.|MapEventArgs|❌|
-|GameEvent.ExitedMap *(dynamic)*|Map|Player exits a map.|MapEventArgs|❌|
-|GameEvents.MapChanged|Map|Player changes map.|MapChangedEventArgs|❌|
-|GameEvents.InteractAction *(dynamic)*|Interaction|Player presses the interact action while standing on an interactible zone.|InteractEventArgs|✅|
-|GameEvents.InteractAreaEnter *(dynamic)*|Interaction|Player has entered an interactible zone.|InteractEventArgs|✅|
-|GameEvents.InteractAreaExit *(dynamic)*|Interaction|Player has exited an interactible zone.|InteractEventArgs|✅|
-|GameEvents.InteractAreaStand *(dynamic)*|Interaction|Player is standing on an interactible zone.|InteractEventArgs|✅|
-|GameEvents.InteractAreaWalk *(dynamic)*|Interaction|Player is walking on an interactible zone.|InteractEventArgs|✅|
-|GameEvents.InteractAreaRun *(dynamic)*|Interaction|Player is running on an interactible zone.|InteractEventArgs|✅|
-|GameEvents.Collision|Interaction|Player has collided with a solid object.|GameObjectEventArgs|✅|
-|GameEvents.InputActionPressed|Input|Player has pressed an action.|InputEventArgs|❌|
-|GameEvents.InputActionReleased|Input|Player has released an action.|InputEventArgs|❌|
-|GameEvents.AssetLoaded *(dynamic)*|Assets|The game has loaded an asset into memory.|AssetEventArgs|❌|
-|GameEvents.AssetUnloaded *(dynamic)*|Assets|The game has released an asset from memory.|AssetEventArgs|❌|
-|GameEvents.AudioBgmPlayed *(dynamic)*|Audio|The game has started playing a new BGM track.|AudioEventArgs|❌|
-|GameEvents.AudioBgmStopped|Audio|The game has stopped playing a BGM track.|None|❌|
-|GameEvents.AudioSfxPlayed *(dynamic)*|Audio|The game has started playing a new sound effect.|AudioEventArgs|❌|
-|GameEvents.DialogueNextCharacter|Dialogue|The game has moved on to the next character in dialogue.|DialogueEventArgs|❌|
-|GameEvents.DialogueNextPage|Dialogue|The game has moved on to the next page in dialogue.|DialogueEventArgs|❌|
-|GameEvents.DialogueFinished|Dialogue|The game has finished the current dialogue.|DialogueEventArgs|❌|
-|GameEvents.TimePhaseChanged|DateTime|The time phase of the day has changed.|TimeEventArgs|❌|
-|GameEvents.DayChanged|DateTime|The day of the week has changed.|DayEventArgs|❌|
+|Event.GameStart|State|The game starts.|None|✅|
+|Event.ScreenPushed *(dynamic)*|State|The game has pushed a new state to the screen stack.|StateEventArgs|❌|
+|Event.ScreenPopped *(dynamic)*|State|The game has popped a state from the screen stack.|StateEventArgs|❌|
+|Event.ScreenChanged|State|The game has changed the state in the screen stack.|StateChangedEventArgs|❌|
+|Event.SaveLoaded|Save|Player loads a save file in the main menu.|SaveEventArgs|❌|
+|Event.SaveCreated|Save|Player creates a new save file in the main menu.|SaveEventArgs|❌|
+|Event.SaveChanged|Save|Player saves their game.|SaveEventArgs|❌|
+|Event.StepTaken|Movement|A game object takes a step corresponding to their animation.|GameObjectEventArgs|❌|
+|Event.MovementStateChanged|Movement|Player changes state between walking, running and standing.|MovementEventArgs|❌|
+|Event.EnteredZone *(dynamic)*|Zone|Player enters a new zone.|ZoneEventArgs|❌|
+|Event.ExitedZone *(dynamic)*|Zone|Player exits a zone.|ZoneEventArgs|❌|
+|Event.ZoneChanged|Zone|Player changes zone.|ZoneChangedEventArgs|❌|
+|Event.EnteredMap *(dynamic)*|Map|Player enters a new map.|MapEventArgs|❌|
+|Event.ExitedMap *(dynamic)*|Map|Player exits a map.|MapEventArgs|❌|
+|Events.MapChanged|Map|Player changes map.|MapChangedEventArgs|❌|
+|Events.InteractAction *(dynamic)*|Interaction|Player presses the interact action while standing on an interactible zone.|InteractEventArgs|✅|
+|Events.InteractAreaEnter *(dynamic)*|Interaction|Player has entered an interactible zone.|InteractEventArgs|✅|
+|Events.InteractAreaExit *(dynamic)*|Interaction|Player has exited an interactible zone.|InteractEventArgs|✅|
+|Events.InteractAreaStand *(dynamic)*|Interaction|Player is standing on an interactible zone.|InteractEventArgs|✅|
+|Events.InteractAreaWalk *(dynamic)*|Interaction|Player is walking on an interactible zone.|InteractEventArgs|✅|
+|Events.InteractAreaRun *(dynamic)*|Interaction|Player is running on an interactible zone.|InteractEventArgs|✅|
+|Events.Collision|Interaction|Player has collided with a solid object.|GameObjectEventArgs|✅|
+|Events.InputActionPressed|Input|Player has pressed an action.|InputEventArgs|❌|
+|Events.InputActionReleased|Input|Player has released an action.|InputEventArgs|❌|
+|Events.AssetLoaded *(dynamic)*|Assets|The game has loaded an asset into memory.|AssetEventArgs|❌|
+|Events.AssetUnloaded *(dynamic)*|Assets|The game has released an asset from memory.|AssetEventArgs|❌|
+|Events.AudioBgmPlayed *(dynamic)*|Audio|The game has started playing a new BGM track.|AudioEventArgs|❌|
+|Events.AudioBgmStopped|Audio|The game has stopped playing a BGM track.|None|❌|
+|Events.AudioSfxPlayed *(dynamic)*|Audio|The game has started playing a new sound effect.|AudioEventArgs|❌|
+|Events.DialogueNextCharacter|Dialogue|The game has moved on to the next character in dialogue.|DialogueEventArgs|❌|
+|Events.DialogueNextPage|Dialogue|The game has moved on to the next page in dialogue.|DialogueEventArgs|❌|
+|Events.DialogueFinished|Dialogue|The game has finished the current dialogue.|DialogueEventArgs|❌|
+|Events.TimePhaseChanged|DateTime|The time phase of the day has changed.|TimeEventArgs|❌|
+|Events.DayChanged|DateTime|The day of the week has changed.|DayEventArgs|❌|
 
 
 ## List of GameEventArg Classes 
@@ -337,3 +337,5 @@ Rearrange tileset once and for all (max 256pix width, 1024 height)
 
 - get rid of the shadowed trees
 - sort by type, leave a 2 tile gap between each section
+
+Finish this document
