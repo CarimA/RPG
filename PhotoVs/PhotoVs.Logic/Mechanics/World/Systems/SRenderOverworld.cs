@@ -30,7 +30,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         {
         };
 
-        private float day = 0f;
+        private GameDate _gameDate;
+
         private LinearTweener<Texture2D> _dayNight;
         private ColorGradingFilter _colorGrade;
         private ColorAverager _colorAverager;
@@ -56,6 +57,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         private Texture2D _checkerboardTexture;
         private CPosition _playerPosition;
+        private SpriteFont bold;
 
         public SRenderOverworld(Overworld overworld, SpriteBatch spriteBatch, SCamera camera, Services services)
         {
@@ -66,6 +68,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _camera = camera;
 
             _playerPosition = services.Get<Player>().PlayerData.Position;
+
+            _gameDate = new GameDate();
+            bold = assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt");
 
             _wind = new Wind();
 
@@ -139,11 +144,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 _windDisplace = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
             }
 
-            day += (gameTime.GetElapsedSeconds() / timeScale);
-            if (day >= 1f)
-                day %= 1f;
+            _gameDate.Update(gameTime);
 
-            var (phase, texA, texB) = _dayNight.GetPhase(day);
+            var (phase, texA, texB) = _dayNight.GetPhase(_gameDate.TimeScale);
             _colorAverager.Set(phase, texA, texB);
             lut = _colorAverager.Average(_spriteBatch);
 
@@ -335,14 +338,15 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _spriteBatch.End();
             _renderer.RelinquishSubRenderer();
 
-
-
-
+            var (hour, minute) = _gameDate.Time;
+            var t = $"{hour}:{minute}";
 
             var output = _colorGrade.Filter(_spriteBatch, _final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             //_spriteBatch.Draw(_material, Vector2.Zero, Color.White);
             _spriteBatch.Draw(_final, Vector2.Zero, Color.White);
+            _spriteBatch.DrawString(bold, Enum.GetName(typeof(TimePhase), _gameDate.TimePhase) + "\n" + t, Vector2.Zero, Color.Yellow);
+
             _spriteBatch.End();
 
 

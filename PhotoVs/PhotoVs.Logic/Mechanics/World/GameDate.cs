@@ -1,0 +1,141 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Events.Coroutines;
+using PhotoVs.Utils.Extensions;
+
+namespace PhotoVs.Logic.Mechanics.World
+{
+    public class GameDate
+    {
+        private float _time;
+        private TimeSpan _dayLength;
+        private Day _day;
+        private bool _timeIsFlowing;
+        private TimePhase _lastTimePhase;
+
+        public TimePhase TimePhase
+        {
+            get
+            {
+                if (_time >= Normalise(1, 0) && _time < Normalise(5, 0))
+                    return TimePhase.EarlyMorning;
+                else if (_time >= Normalise(5, 0) && _time < Normalise(11, 0))
+                    return TimePhase.LateMorning;
+                else if (_time >= Normalise(11, 0) && _time < Normalise(13, 0))
+                    return TimePhase.Noon;
+                else if (_time >= Normalise(13, 0) && _time < Normalise(17, 0))
+                    return TimePhase.Afternoon;
+                else if (_time >= Normalise(17, 0) && _time < Normalise(20, 0))
+                    return TimePhase.EarlyEvening;
+                else if (_time >= Normalise(20, 0) && _time < Normalise(23, 0))
+                    return TimePhase.LateEvening;
+                else
+                    return TimePhase.Midnight;
+            }
+        }
+
+        public float TimeScale => _time;
+
+        public (int, int) Time
+        {
+            get
+            {
+                var normalised = _time * 24f;
+                var fraction = normalised - Math.Floor(normalised);
+                var hour = (int) Math.Floor(normalised);
+                var minute = (int) (fraction * 60f);
+                return (hour, minute);
+            }
+        }
+
+        public Day Day => _day;
+
+        public GameDate()
+        {
+            _time = 0;
+            SetDayLength(TimeSpan.FromSeconds(24));
+            _timeIsFlowing = true;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (!_timeIsFlowing)
+                return;
+
+            var increment = 1f / (float)_dayLength.TotalSeconds;
+            _time += increment * gameTime.GetElapsedSeconds();
+
+            var newTimePhase = TimePhase;
+            if (TimePhase != newTimePhase)
+            {
+                // fire a phase changed event
+            }
+            _lastTimePhase = TimePhase;
+
+            if (_time > 1f)
+                NextDay();
+        }
+
+        private void NextDay()
+        {
+            _time -= 1f;
+            _day = _day switch
+            {
+                Day.Monday => Day.Tuesday,
+                Day.Tuesday => Day.Wednesday,
+                Day.Wednesday => Day.Thursday,
+                Day.Thursday => Day.Friday,
+                Day.Friday => Day.Saturday,
+                Day.Saturday => Day.Sunday,
+                Day.Sunday => Day.Monday,
+                _ => _day
+            };
+        }
+
+        private float Normalise(int hour, int minute)
+        {
+            return (hour + (minute / 60f)) / 24f;
+        }
+
+        public void EnableTimeFlow()
+        {
+            _timeIsFlowing = true;
+        }
+
+        public void DisableTimeFlow()
+        {
+            _timeIsFlowing = false;
+        }
+
+        public void SetDayLength(TimeSpan dayLength)
+        {
+            _dayLength = dayLength;
+        }
+    }
+
+    public enum TimePhase
+    {
+        Midnight,
+        EarlyMorning,
+        LateMorning,
+        Noon,
+        Afternoon,
+        EarlyEvening,
+        LateEvening
+    }
+
+    public enum Day
+    {
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday,
+        Sunday
+    }
+}
