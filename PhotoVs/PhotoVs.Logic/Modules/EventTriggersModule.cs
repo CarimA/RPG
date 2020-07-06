@@ -25,10 +25,12 @@ namespace PhotoVs.Logic.Modules
             if (interpreter == null)
                 throw new ArgumentNullException(nameof(interpreter));
 
-            interpreter.AddFunction("Subscribe", (Action<object, object, object, object, object, object>)CreateEvent);
-            interpreter.AddFunction("_Trigger", (Func<GameEvents, string, (GameEvents, string)>)Trigger);
+            interpreter.AddFunction("Subscribe", (Action<Table>)CreateEvent);
+
             interpreter.AddType<GameEvents>("Events");
-            interpreter.RegisterGlobal("RunOnce", true);
+
+            interpreter.AddType<(GameEvents, string)>("_triggerTuple");
+            interpreter.RegisterGlobal("Trigger", (Func<GameEvents, string, (GameEvents, string)>)Trigger);
 
             base.DefineApi(interpreter);
         }
@@ -39,51 +41,35 @@ namespace PhotoVs.Logic.Modules
             return (arg1, arg2);
         }
 
-        private void CreateEvent(object arg1, object arg2, object arg3, object arg4, object arg5, object arg6)
+        private void CreateEvent(Table table)
         {
-            if (arg1 is GameEvents gameEvents1 && arg2 is Closure closure1)
-                RegisterEvent(gameEvents1, string.Empty, null, closure1, (bool?)arg3 ?? false, arg6.ToString() ?? string.Empty);
+            var triggers = (Table) table["Triggers"];
+            var conditions = (Table) table["Conditions"];
+            var runOnce = table["RunOnce"];
+            var action = (Closure) table["Event"];
 
-            else if (arg1 is GameEvents gameEvents2 && arg2 is string delimiter2 && arg3 is Closure closure2)
-                RegisterEvent(gameEvents2, delimiter2, null, closure2, (bool?)arg4 ?? false, arg6.ToString() ?? string.Empty);
+            if (triggers == null || triggers.Length == 0)
+                throw new ArgumentException("Triggers cannot be empty");
 
-            else if (arg1 is GameEvents gameEvents3 && arg2 is Table conditions3 && arg3 is Closure closure3)
-                RegisterEvent(gameEvents3, string.Empty, conditions3, closure3, (bool?)arg4 ?? false, arg6.ToString() ?? string.Empty);
+            if (action == null)
+                throw new ArgumentException("Event cannot be empty");
 
-            else if (arg1 is GameEvents gameEvents4 && arg2 is string delimiter4 && arg3 is Table conditions4 && arg4 is Closure closure4)
-                RegisterEvent(gameEvents4, delimiter4, conditions4, closure4, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
+            var runOnceBool = runOnce as bool? ?? true;
+            var runOnceKey = runOnce != null ? (runOnce is bool ? string.Empty : ((DynValue)runOnce).String) : string.Empty;
 
-            else if (arg1 is Table gameEvents5 && arg2 is Closure closure5)
-                foreach (var event5 in gameEvents5.Values)
+            foreach (var trigger in triggers.Values)
+            {
+                if (trigger.UserData.Object.GetType() == typeof((GameEvents, string)))
                 {
-                    if (event5.Type == DataType.Function)
-                    {
-                        var trigger = event5.Function.Call();
-                        var key = trigger.ToObject<(GameEvents, string)>().Item1;
-                        var delimiter = trigger.ToObject<(GameEvents, string)>().Item2;
-                        RegisterEvent(key, delimiter, null, closure5, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
-                    }
-                    else
-                    {
-                        RegisterEvent((GameEvents)event5.Number, string.Empty, null, closure5, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
-                    }
+                    var (key, delimiter) = ((GameEvents, string))trigger.UserData.Object;
+                    RegisterEvent(key, delimiter, conditions, action, runOnceBool, runOnceKey);
                 }
-
-            else if (arg1 is Table gameEvents6 && arg2 is Table conditions6 && arg3 is Closure closure6)
-                foreach (var event6 in gameEvents6.Values)
+                else
                 {
-                    if (event6.Type == DataType.Function)
-                    {
-                        var trigger = event6.Function.Call();
-                        var key = trigger.ToObject<(GameEvents, string)>().Item1;
-                        var delimiter = trigger.ToObject<(GameEvents, string)>().Item2;
-                        RegisterEvent(key, delimiter, conditions6, closure6, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
-                    }
-                    else
-                    {
-                        RegisterEvent((GameEvents)event6.Number, string.Empty, conditions6, closure6, (bool?)arg5 ?? false, arg6.ToString() ?? string.Empty);
-                    }
+                    RegisterEvent((GameEvents) trigger.Number, string.Empty, conditions, action, runOnceBool,
+                        runOnceKey);
                 }
+            }
         }
 
         private void RegisterEvent(GameEvents gameEvent, string delimiter, Table conditions, Closure closure,

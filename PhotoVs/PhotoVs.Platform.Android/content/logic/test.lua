@@ -1,18 +1,28 @@
-sub(Events.GameStart, function ()
-    push_scene('controller')
-end, run_once)
+Subscribe {
+  Triggers = { Events.GameStart },
+  RunOnce = true,
+  Event = function ()
+    PushScene('controller')
+  end
+}
 
 tick = 0
 
-sub(Events.InteractAreaEnter, 'example_event', function ()
-    tick = get_time()
-end)
+Subscribe {
+  Triggers = { Trigger(Events.InteractAreaEnter, 'example_event') },
+  Event = function ()
+    tick = GetTotalTime()
+  end
+}
 
-sub(Events.InteractAreaExit, 'example_event', function ()
-    tick = get_time() - tick
-    lock()
-    wait(3)
-    say('debugger', 'it took {# Yellow}' .. tick .. ' ticks{/#} to walk through.')
-    move(player(), vec2(0, 0), 100)
-    unlock()
-end)
+Subscribe {
+  Triggers = { Trigger(Events.InteractAreaExit, 'example_event') },
+  Event = function ()
+    tick = GetTotalTime() - tick
+    Lock()
+    Wait(3)
+    Say('debugger', 'it took {# Yellow}' .. tick .. ' ticks{/#} to walk through.')
+    Move(Player(), Vector2(0, 0), 100)
+    Unlock()
+  end
+}

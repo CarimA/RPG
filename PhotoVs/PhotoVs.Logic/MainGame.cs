@@ -129,6 +129,8 @@ namespace PhotoVs.Logic
                 },
                 new List<Module>
                 {
+                    new StandardLibraryModule(), // <--- THIS MUST ALWAYS GO FIRST.
+
                     new EventConditionsModule(_services.Get<Player>()),
                     new EventTriggersModule(_services.Get<EventQueue<GameEvents>>(), _services.Get<Player>()),
                     new SceneMachineModule(_services.Get<SceneMachine>()),

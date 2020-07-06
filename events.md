@@ -278,6 +278,10 @@ EnableDayCycle
 DisableDayCycle
 
 
+enable letterbox
+disable letterbox
+
+
 
 ---
 ---
