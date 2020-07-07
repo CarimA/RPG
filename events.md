@@ -64,6 +64,8 @@ The `Triggers` key is a table treated as an array containing `GameEvents` enum v
 
 (todo)
 
+### List of Trigger Methods
+
 |Method|Parameters|Description|Implemented?|
 |-|-|-|:-:|
 |`Trigger(gameEvent, delimiter)`|||✅|
@@ -74,6 +76,9 @@ The `Triggers` key is a table treated as an array containing `GameEvents` enum v
 
 More than one condition can be defined for an event. All conditions need to be met before an event is raised.
 
+### About Player Flags & Variables
+
+### List of Condition Methods
 
 |Method|Parameters|Description|Implemented?
 |-|-|-|:-:|
