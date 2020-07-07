@@ -69,7 +69,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _playerPosition = services.Get<Player>().PlayerData.Position;
 
-            _gameDate = new GameDate();
+            _gameDate = new GameDate(services);
             bold = assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt");
 
             _wind = new Wind();
@@ -344,7 +344,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             var output = _colorGrade.Filter(_spriteBatch, _final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             //_spriteBatch.Draw(_material, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_final, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(output, Vector2.Zero, Color.White);
             _spriteBatch.DrawString(bold, Enum.GetName(typeof(TimePhase), _gameDate.TimePhase) + "\n" + t, Vector2.Zero, Color.Yellow);
 
             _spriteBatch.End();

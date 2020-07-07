@@ -126,11 +126,15 @@ namespace PhotoVs.Engine.Events
         {
             foreach (var (eventType, gameEvent) in _toNotify)
             {
+                Logger.Write.Trace($"Processing event \"{eventType}\".");
+
                 if (!_subscriptions.TryGetValue(eventType, out var subscriptions))
                     continue;
 
                 if (_subscriptions.Count == 0)
+                {
                     continue;
+                }
 
                 Logger.Write.Trace($"Notifying event \"{eventType}\" with type \"{gameEvent.GetType().Name}\" to {subscriptions.Count} listeners.");
 

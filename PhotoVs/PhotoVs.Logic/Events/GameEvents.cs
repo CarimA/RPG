@@ -9,6 +9,8 @@
         InteractAreaStand,
         InteractAreaWalk,
         InteractAreaRun,
-        Collision
+        Collision,
+        TimePhaseChanged,
+        DayChanged
     }
 }

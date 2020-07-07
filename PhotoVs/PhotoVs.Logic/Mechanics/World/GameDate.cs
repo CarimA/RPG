@@ -4,16 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
+using PhotoVs.Logic.Events;
+using PhotoVs.Logic.Events.EventArgs;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
     public class GameDate
     {
+        private EventQueue<GameEvents> _eventQueue;
+
         private float _time;
         private TimeSpan _dayLength;
-        private Day _day;
         private bool _timeIsFlowing;
         private TimePhase _lastTimePhase;
 
@@ -52,10 +57,11 @@ namespace PhotoVs.Logic.Mechanics.World
             }
         }
 
-        public Day Day => _day;
+        public Day Day { get; private set; }
 
-        public GameDate()
+        public GameDate(Services services)
         {
+            _eventQueue = services.Get<EventQueue<GameEvents>>();
             _time = 0;
             SetDayLength(TimeSpan.FromSeconds(24));
             _timeIsFlowing = true;
@@ -70,9 +76,9 @@ namespace PhotoVs.Logic.Mechanics.World
             _time += increment * gameTime.GetElapsedSeconds();
 
             var newTimePhase = TimePhase;
-            if (TimePhase != newTimePhase)
+            if (TimePhase != _lastTimePhase)
             {
-                // fire a phase changed event
+                _eventQueue.Notify(GameEvents.TimePhaseChanged, new TimeEventArgs(this, newTimePhase));
             }
             _lastTimePhase = TimePhase;
 
@@ -83,7 +89,7 @@ namespace PhotoVs.Logic.Mechanics.World
         private void NextDay()
         {
             _time -= 1f;
-            _day = _day switch
+            Day = Day switch
             {
                 Day.Monday => Day.Tuesday,
                 Day.Tuesday => Day.Wednesday,
@@ -92,8 +98,10 @@ namespace PhotoVs.Logic.Mechanics.World
                 Day.Friday => Day.Saturday,
                 Day.Saturday => Day.Sunday,
                 Day.Sunday => Day.Monday,
-                _ => _day
+                _ => Day
             };
+
+            _eventQueue.Notify(GameEvents.DayChanged, new DayEventArgs(this, Day));
         }
 
         private float Normalise(int hour, int minute)
@@ -114,6 +122,16 @@ namespace PhotoVs.Logic.Mechanics.World
         public void SetDayLength(TimeSpan dayLength)
         {
             _dayLength = dayLength;
+        }
+
+        public void SetTime(int hour, int minute)
+        {
+            _time = Normalise(hour, minute);
+        }
+
+        public void SetDay(Day day)
+        {
+            Day = day;
         }
     }
 

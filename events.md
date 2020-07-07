@@ -195,8 +195,8 @@ This allows you to be more specific about which particular actions you may want 
 |Events.DialogueNextCharacter|Dialogue|The game has moved on to the next character in dialogue.|DialogueEventArgs|❌|
 |Events.DialogueNextPage|Dialogue|The game has moved on to the next page in dialogue.|DialogueEventArgs|❌|
 |Events.DialogueFinished|Dialogue|The game has finished the current dialogue.|DialogueEventArgs|❌|
-|Events.TimePhaseChanged|DateTime|The time phase of the day has changed.|TimeEventArgs|❌|
-|Events.DayChanged|DateTime|The day of the week has changed.|DayEventArgs|❌|
+|Events.TimePhaseChanged|DateTime|The time phase of the day has changed.|TimeEventArgs|✅|
+|Events.DayChanged|DateTime|The day of the week has changed.|DayEventArgs|✅|
 
 
 ## List of GameEventArg Classes 
@@ -288,54 +288,40 @@ disable letterbox
 --- 
 
 # general tasks todo list because i'm too lazy to put it elsewhere
-- Refactor the Day/Night system a class:
-  - handle the timing, allow getting/setting the time (convert from 24 hour units to 0 to 1 scale and back), setting the time scale (rate at which time flows) getting the time phase, and allow enabling/disabling time flow (and tie to event commands + raise events per hour)
-  - Implement day of the week!
-  - handle loading the LUT textures for interpolating and provide a method to retrieve it
-  - Decide on how long a day should be in-game (don't forget that City is 60* faster) (1 hour in albion, 1 min in city?)
-- Graphics Pass continues:
-  - Lighting/Shadow, figure out an elegant solution, maybe copy what Graveyard Keeper does with its fake lighting/shadows?
-  - Add map-specific and zone-specific colour grading support (maybe support a Plugin Command which can change the global LUT?)
-  - Wind deforming shader (create a duplicated texture with a mask determining how strongly a texel is affected?)
-    - could perhaps create a _materials, _normals and _height texture with different colour channels used for different things
-  - Falling particle leaves
-  - Shader for water
-    - Refactor alllll of the code into a filter
-      - Combine the shaders into one with different passes
-      - Keep displacement as its own shader/filter, reuse with wind stuff.
-    - Redesign the overworld renderer to accept a list of filters?
+
+- Day/Night
+  - Add TimePhase/DayConditions
+  - Handle LUT stuff in the GameDate class (or something that's provided GameDate to do it's thing)
+  - Create GameDateModule
+- Script
+  - Missing triggers
+  - Missing conditions
+  - Remaining API
+- Graphics Pass
+  - Change SRenderOverworld to accept a list of filters from map properties like Renderer
+  - Create a MaterialFilter Filter variant which can handle the material map
+  - Lighting
+  - Shadow Mapping
+  - Improve Day/Night LUTs
+  - See what can be done with wind deforming
+  - Falling leaves particles
+  - Refactor water shaders into filter classes
   - Wind trails
-  - Fog? Maybe use the depth buffer?
-  - Footstep dust (are we finally gonna make a player sprite? :ooo)
+  - Light fog
+  - Footstep dust
+  - Player sprite
   - Fish shadows in water
-- Plugin System:
-  - Implement missing attributes (triggers/conditions), events and commands
-  - Make every IEnumerator function return a wrapped Coroutine instead (and change docs to reflect that)
-- Input System:
+- General
+  - Rearrange the tileset
+    - Get rid of the shadowed trees
+    - Leave a 4 tile gap between each section
   - Refactor STakeScreenshot into a plugin
   - Refactor SHandleFullscreen into a plugin
-- Generic:
-  - Update the triggers to reflect the enums rather than constants
   - Look at what existing logic can be refactored into a plugin
   - Redo how screens handle game objects and systems?
-  - Change every `(float)gameTime.ELapsedTime.TotalSeconds` to use the GetElapsedSeconds() extension method.
   - Go through all constructors and fix them to only require Service (when any of them request for something that Service provides) and create private fields which hold what they ask for (and handle that in the constructor)
   - Remove all Service private fields
   - Add a debug keybind for ScriptHost.Reset
   - Rewrite this doc to reflect Lua Way(TM)
 
-
-  -- sub({ trigger(Events.GameStart, 'example_event'), trigger(Events.GameStart, 'example_2'), Events.GameStart, tell_them_to_use_a_controller)
-
-Maybe have a list of filters that run in map properties?
-
-Overworld can take a list of properties which chain into each other
-
-Filter can have an inherited class MaterialFilter which also passes in the material map
-
-Rearrange tileset once and for all (max 256pix width, 1024 height)
-
-- get rid of the shadowed trees
-- sort by type, leave a 2 tile gap between each section
-
-Finish this document
+# FINISH THIS DOCUMENT.
