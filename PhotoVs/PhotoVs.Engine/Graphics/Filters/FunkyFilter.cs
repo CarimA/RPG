@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Utils.Extensions;
 
@@ -24,6 +19,7 @@ namespace PhotoVs.Engine.Graphics.Filters
         private readonly EffectParameter _colorCParam;
         private readonly EffectParameter _noiseSizeParam;
         private readonly EffectParameter _maskSizeParam;
+        private readonly EffectParameter _pulseParam;
 
         private RenderTarget2D _outputTexture;
 
@@ -46,6 +42,7 @@ namespace PhotoVs.Engine.Graphics.Filters
             _colorCParam = _effect.Parameters["colorC"];
             _noiseSizeParam = _effect.Parameters["noiseSize"];
             _maskSizeParam = _effect.Parameters["maskSize"];
+            _pulseParam = _effect.Parameters["pulses"];
 
             _noiseTextureAParam.SetValue(noiseA);
             _noiseTextureBParam.SetValue(noiseB);
@@ -54,6 +51,8 @@ namespace PhotoVs.Engine.Graphics.Filters
             _colorAParam.SetValue(colorA.ToVector4());
             _colorBParam.SetValue(colorB.ToVector4());
             _colorCParam.SetValue(colorC.ToVector4());
+
+            _pulseParam.SetValue(15f);
         }
 
         public RenderTarget2D Filter(SpriteBatch spriteBatch, Texture2D inputTexture)

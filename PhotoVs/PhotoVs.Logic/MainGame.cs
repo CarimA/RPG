@@ -20,13 +20,14 @@ using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input.Systems;
 using PhotoVs.Logic.Modules;
 using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
 using PhotoVs.Engine.Graphics.Filters;
+using PhotoVs.Logic.Mechanics.World;
+using PhotoVs.Logic.NewScenes;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
@@ -35,7 +36,7 @@ namespace PhotoVs.Logic
     {
         private readonly IPlatform _platform;
 
-        private readonly Engine.Events.EventQueue<GameEvents> _events;
+        private readonly EventQueue<GameEvents> _events;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly Services _services;
         private IAssetLoader _assetLoader;
@@ -46,6 +47,7 @@ namespace PhotoVs.Logic
         private SceneMachine _sceneMachine;
         private SpriteBatch _spriteBatch;
         private CoroutineRunner _coroutineRunner;
+        private Overworld _world;
 
         private ScriptHost _scriptHost;
 
@@ -62,7 +64,7 @@ namespace PhotoVs.Logic
             _services.Set(_coroutineRunner);
 
             _platform = platform;
-            _services.Set(platform);
+            //_services.Set(platform);
 
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
@@ -74,6 +76,11 @@ namespace PhotoVs.Logic
                 _graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
                 _graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
                 _graphicsDeviceManager.IsFullScreen = true;
+            }
+            else
+            {
+                _graphicsDeviceManager.PreferredBackBufferWidth = 640 * 2;
+                _graphicsDeviceManager.PreferredBackBufferHeight = 360 * 2;
             }
             _graphicsDeviceManager.ApplyChanges();
             _services.Set(_graphicsDeviceManager);
@@ -105,10 +112,6 @@ namespace PhotoVs.Logic
             _camera = CreateCamera();
             _services.Set(_camera);
 
-            _services.Set(CreateGlobalEntities());
-
-            _services.Set(CreateGlobalSystems());
-
             _services.Set(CreateTextDatabase());
 
             _sceneMachine = CreateSceneMachine();
@@ -133,17 +136,25 @@ namespace PhotoVs.Logic
 
                     new EventConditionsModule(_services.Get<Player>()),
                     new EventTriggersModule(_services.Get<EventQueue<GameEvents>>(), _services.Get<Player>()),
-                    new SceneMachineModule(_services.Get<SceneMachine>()),
+                    new SceneMachineModule(_services),
                     new TimingModule(),
                     new DialogueModule(_services.Get<SceneMachine>()),
                     new PlayerModule(_services.Get<Player>()),
-                    new GameObjectModule(_services.Get<GameObjectList>(), _services.Get<Player>()),
+                    new GameObjectModule(_services.Get<SceneMachine>(), _services.Get<Player>()),
                     new TextModule(_services.Get<TextDatabase>())
                 });
 
+            _world = new Overworld(_spriteBatch, _assetLoader);
+            _world.LoadMaps("maps/");
+            _world.SetMap("test");
+            _services.Set(_world);
+
+            _services.Get<Player>()
+                .PlayerData.Position.Position = new Vector2(2750, 1400);
+
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
-            PostprocessMap("albion.tmx", "albion-out.tmx");
+            //PostprocessMap("albion.tmx", "albion-out.tmx");
 
             base.Initialize();
         }
@@ -202,6 +213,12 @@ namespace PhotoVs.Logic
             return renderer;
         }
 
+        private SceneMachine CreateSceneMachine()
+        {
+            var sceneMachine = new SceneMachine(_player, _renderer, CreateGlobalSystems(), CreateGlobalEntities());
+            return sceneMachine;
+        }
+
         private GameObjectList CreateGlobalEntities()
         {
             var globalEntities = new GameObjectList
@@ -210,17 +227,9 @@ namespace PhotoVs.Logic
             };
             return globalEntities;
         }
-
-        private SCamera CreateCamera()
+        private SystemList CreateGlobalSystems()
         {
-            var camera = new SCamera(_renderer);
-            camera.Follow(_player);
-            return camera;
-        }
-
-        private ISystemCollection<ISystem> CreateGlobalSystems()
-        {
-            var globalSystems = new SystemCollection<ISystem>
+            var globalSystems = new SystemList
             {
                 _camera,
                 new SProcessInputState(),
@@ -234,10 +243,11 @@ namespace PhotoVs.Logic
             return globalSystems;
         }
 
-        private SceneMachine CreateSceneMachine()
+        private SCamera CreateCamera()
         {
-            var sceneMachine = new SceneMachine(_services);
-            return sceneMachine;
+            var camera = new SCamera(_renderer);
+            camera.Follow(_player);
+            return camera;
         }
 
         protected override void Update(GameTime gameTime)
@@ -267,7 +277,7 @@ namespace PhotoVs.Logic
 
             _renderer.BeforeDraw();
             _sceneMachine.Draw(gameTime);
-            _sceneMachine.DrawUI(gameTime, _renderer.GetUIOrigin());
+            //_sceneMachine.DrawUI(gameTime, _renderer.GetUIOrigin());
             _renderer.Draw(gameTime);
 
             base.Draw(gameTime);

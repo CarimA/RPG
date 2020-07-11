@@ -1,5 +1,4 @@
-﻿using MoonSharp.Interpreter;
-using PhotoVs.Engine.Scripting;
+﻿using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.PlayerData;
 using System;
 using System.ComponentModel;

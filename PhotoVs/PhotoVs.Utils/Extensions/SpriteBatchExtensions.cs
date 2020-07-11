@@ -4,13 +4,29 @@ using System;
 
 namespace PhotoVs.Utils.Extensions
 {
+    public enum HorizontalAlignment
+    {
+        Left,
+        Center,
+        Right
+    }
+
+    public enum VerticalAlignment
+    {
+        Top,
+        Center,
+        Bottom
+    }
+
     public static class SpriteBatchExtensions
     {
-        public static void DrawStringCenterTopAligned(this SpriteBatch spriteBatch,
+        public static void DrawString(this SpriteBatch spriteBatch,
             SpriteFont font,
             string text,
             Vector2 anchor,
-            Color color)
+            Color color,
+            HorizontalAlignment horizontalAlignment,
+            VerticalAlignment verticalAlignment)
         {
             if (spriteBatch == null)
                 throw new ArgumentNullException(nameof(spriteBatch));
@@ -21,13 +37,37 @@ namespace PhotoVs.Utils.Extensions
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
+            var splits = text.Split('\n');
             var pos = anchor;
-            foreach (var line in text.Split('\n'))
+
+            if (verticalAlignment == VerticalAlignment.Center)
             {
-                var width = font.MeasureString(line).X;
-                pos.X = (int)(anchor.X - width / 2);
+                pos.Y -= (int)((splits.Length * font.LineSpacing) / 2f);
+            }
+
+            foreach (var line in splits)
+            {
+                // -5 is a hack to fix some random padding issue
+                var width = font.MeasureString(line).X - 5;
+
+                pos.X = horizontalAlignment switch
+                {
+                    HorizontalAlignment.Left => anchor.X,
+                    HorizontalAlignment.Center => (int) (anchor.X - (width / 2)),
+                    HorizontalAlignment.Right => anchor.X - width,
+                    _ => pos.X
+                };
+
+
                 spriteBatch.DrawString(font, line, pos, color);
-                pos.Y += font.LineSpacing;
+
+                pos.Y = verticalAlignment switch
+                {
+                    VerticalAlignment.Top => pos.Y + font.LineSpacing,
+                    VerticalAlignment.Center => pos.Y + font.LineSpacing,
+                    VerticalAlignment.Bottom => pos.Y - font.LineSpacing,
+                    _ => pos.Y
+                };
             }
         }
 
@@ -96,6 +136,16 @@ namespace PhotoVs.Utils.Extensions
                     destination.Height - (sliceHeight * 2)),
                 new Rectangle(source.Left + sliceWidth, source.Top + sliceHeight, sliceWidth, sliceHeight),
                 Color.White);
+        }
+
+        public static Color ToColor(this object obj)
+        {
+            var hashcode = (uint)obj.GetHashCode();
+            var color = new Color(hashcode)
+            {
+                A = byte.MaxValue
+            };
+            return color;
         }
     }
 }

@@ -52,7 +52,7 @@ namespace PhotoVs.Logic.Scenes.Transitions
             var fadeTexture = _assetLoader.Get<Texture2D>("ui/pixel.png");
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(fadeTexture, new Rectangle(0, 0, _renderer.VirtualWidth, _renderer.VirtualHeight),
+            _spriteBatch.Draw(fadeTexture, new Rectangle(0, 0, _renderer.GameWidth, _renderer.GameHeight),
                 _hasSwitched
                     ? _fadeColor * (_fadeOutTime / _maxFadeOutTime)
                     : _fadeColor * (1f - _fadeInTime / _maxFadeInTime)

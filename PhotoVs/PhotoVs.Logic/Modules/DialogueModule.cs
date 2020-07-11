@@ -1,6 +1,7 @@
 ﻿using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Scenes;
 using System;
+using PhotoVs.Logic.NewScenes;
 
 namespace PhotoVs.Logic.Modules
 {
@@ -24,19 +25,16 @@ namespace PhotoVs.Logic.Modules
 
         private bool DialogueState(string name, string dialogue)
         {
-            if (_sceneMachine.Peek() is OverworldScene overworld)
-            {
-                overworld.PushDialogue(name, dialogue);
-                return true;
-            }
-
             if (_sceneMachine.Peek() is DialogueScene dialogueScene && dialogueScene.IsFinished)
             {
                 _sceneMachine.Pop();
                 return false;
             }
-
-            return true;
+            else
+            {
+                //overworld.PushDialogue(name, dialogue);
+                return true;
+            }
         }
     }
 }

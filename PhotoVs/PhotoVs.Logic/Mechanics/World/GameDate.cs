@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Events;
-using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Events.EventArgs;
 using PhotoVs.Utils.Extensions;

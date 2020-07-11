@@ -10,6 +10,7 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Utils.Extensions;
 using System;
 using System.Collections.Generic;
+using PhotoVs.Engine;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -20,13 +21,12 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         private readonly Overworld _overworld;
         private readonly SpriteBatch _spriteBatch;
 
-        public SCollisionDebugRender(SpriteBatch spriteBatch, IAssetLoader assetLoader,
-            Overworld overworld, SCamera camera)
+        public SCollisionDebugRender(Services services)
         {
-            _spriteBatch = spriteBatch;
-            _assetLoader = assetLoader;
-            _camera = camera;
-            _overworld = overworld;
+            _spriteBatch = services.Get<SpriteBatch>();
+            _assetLoader = services.Get<IAssetLoader>();
+            _camera = services.Get<SCamera>();
+            _overworld = services.Get<Overworld>();
         }
 
         public int Priority { get; set; } = 99;

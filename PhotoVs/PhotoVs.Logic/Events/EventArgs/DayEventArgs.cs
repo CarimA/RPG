@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PhotoVs.Engine.Events.EventArgs;
+﻿using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Events.EventArgs

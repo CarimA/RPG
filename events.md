@@ -317,7 +317,11 @@ disable letterbox
   - Player sprite
   - Fish shadows in water
 - General
+  - Design new scenemanager/scenemachine stuff (and please rename...)
+    - instead of having scene classes, have a stage accepting components with properties (created from lua)
   - Rearrange the tileset
+    - put objects in their own tilesets with a set grid
+      - create _mask/_fringe tileset variants
     - Get rid of the shadowed trees
     - Leave a 4 tile gap between each section
   - Refactor STakeScreenshot into a plugin
@@ -330,3 +334,29 @@ disable letterbox
   - Rewrite this doc to reflect Lua Way(TM)
 
 # FINISH THIS DOCUMENT.
+
+scenes:
+ - TitleScene: renders the title and has input simulating for WorldViewScene
+ - WorldViewScene: have a scene that just renders the overworld (which can block and then have either the title screen or game scene over it and then *they* do not block) and handles overworld-related logic
+ - UIViewScene: handles UI, player input and misc logic
+
+
+                 //
+
+                
+
+        public void PushDialogue(string name, string dialogue)
+        {
+            _scene.Push(new DialogueScene(_services, name, dialogue));
+        }
+
+        public void PushTextInputScene(string question, string defaultText = "", int limit = 15)
+        {
+            _scene.Push(new TextInputScene(_services, question, defaultText, limit));
+        }
+
+
+
+  trees_128
+  trees_128_mask
+  trees_128_fringe

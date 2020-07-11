@@ -101,6 +101,11 @@ namespace PhotoVs.Platform.Android
             throw new NotImplementedException();
         }
 
+        public long LastModified(DataLocation location, string filepath)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CreateDirectory(DataLocation location, string directory)
         {
             throw new NotImplementedException();

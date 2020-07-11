@@ -12,21 +12,23 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Logic.PlayerData;
 using System;
 using System.Collections.Generic;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Events;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     internal class SProcessInteractionEvents : IUpdateableSystem
     {
         private readonly HashSet<GameObject> _enteredScripts;
-        private readonly Engine.Events.EventQueue<GameEvents> _events;
+        private readonly EventQueue<GameEvents> _events;
         private readonly SCamera _camera;
         private readonly Overworld _overworld;
 
-        public SProcessInteractionEvents(Engine.Events.EventQueue<GameEvents> events, SCamera camera, Overworld overworld)
+        public SProcessInteractionEvents(Services services)
         {
-            _camera = camera;
-            _overworld = overworld;
-            _events = events;
+            _camera = services.Get<SCamera>();
+            _overworld = services.Get<Overworld>();
+            _events = services.Get<EventQueue<GameEvents>>();
             _enteredScripts = new HashSet<GameObject>();
         }
 

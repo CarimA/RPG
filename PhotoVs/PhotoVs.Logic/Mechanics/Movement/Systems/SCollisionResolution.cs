@@ -15,6 +15,8 @@ using PhotoVs.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Events;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -22,13 +24,13 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         private Overworld _overworld;
         private SCamera _camera;
-        private readonly Engine.Events.EventQueue<GameEvents> _gameEvents;
+        private readonly EventQueue<GameEvents> _gameEvents;
 
-        public SCollisionResolution(Overworld overworld, SCamera camera, Engine.Events.EventQueue<GameEvents> gameEvents)
+        public SCollisionResolution(Services services)
         {
-            _overworld = overworld;
-            _camera = camera;
-            _gameEvents = gameEvents;
+            _overworld = services.Get<Overworld>();
+            _camera = services.Get<SCamera>();
+            _gameEvents = services.Get<EventQueue<GameEvents>>();
         }
 
         public int Priority { get; set; } = -1;

@@ -1,16 +1,21 @@
 ﻿using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Scenes;
 using System;
+using PhotoVs.Engine;
+using PhotoVs.Logic.NewScenes;
+using PhotoVs.Logic.NewScenes.GameScenes;
 
 namespace PhotoVs.Logic.Modules
 {
     public class SceneMachineModule : Module
     {
+        private readonly Services _services;
         private readonly SceneMachine _sceneMachine;
 
-        public SceneMachineModule(SceneMachine sceneMachine)
+        public SceneMachineModule(Services services)
         {
-            _sceneMachine = sceneMachine;
+            _services = services;
+            _sceneMachine = services.Get<SceneMachine>();
         }
 
         public override void DefineApi(MoonSharpInterpreter interpreter)
@@ -28,7 +33,10 @@ namespace PhotoVs.Logic.Modules
             switch (sceneName)
             {
                 case "controller":
-                    _sceneMachine.Push(_sceneMachine.ControllerRecommendationScreen);
+                    //_sceneMachine.Push(new ControllerRecommendationScreen(_sceneMachine));
+                    _sceneMachine.Push(new WorldScene(_services));
+                    _sceneMachine.Push(new TitleScene(_services));
+                    //_sceneMachine.Push(new WorldLogicScene(_services));
                     break;
 
                 default:

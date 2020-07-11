@@ -1,15 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.PlayerData;
 using System.Collections.Generic;
+using PhotoVs.Engine;
+using PhotoVs.Logic.NewScenes;
 
 namespace PhotoVs.Logic.Scenes
 {
-    public class TextInputScene : IUpdateableScene, IDrawableScene
+    public class TextInputScene : Scene
     {
         private const int _keysPerRow = 12;
         private readonly IAssetLoader _assetLoader;
@@ -42,11 +43,21 @@ namespace PhotoVs.Logic.Scenes
         public string Text { get; private set; }
         public bool IsFinished { get; private set; }
 
-        public TextInputScene(SceneMachine scene)
+        public TextInputScene(Services services, string question, string defaultText = "", int limit = 15)
         {
-            _player = scene.Services.Get<Player>();
-            _assetLoader = scene.Services.Get<IAssetLoader>();
-            _spriteBatch = scene.Services.Get<SpriteBatch>();
+            _player = services.Get<Player>();
+            _assetLoader = services.Get<IAssetLoader>();
+            _spriteBatch = services.Get<SpriteBatch>();
+
+
+            _question = question;
+            _limit = limit;
+            Text = defaultText;
+
+            _shiftMode = true;
+            _currentKeyboard = 0;
+
+            IsFinished = false;
         }
 
         public void Draw(GameTime gameTime)
@@ -134,18 +145,6 @@ namespace PhotoVs.Logic.Scenes
 
         public void Enter(params object[] args)
         {
-            _question = args[0].ToString();
-            _limit = args.Length > 1
-                ? int.Parse(args[1].ToString())
-                : 15;
-            Text = args.Length > 2
-                ? args[2].ToString()
-                : string.Empty;
-
-            _shiftMode = true;
-            _currentKeyboard = 0;
-
-            IsFinished = false;
         }
 
         public void Exit()

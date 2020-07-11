@@ -59,13 +59,13 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private CPosition _playerPosition;
         private SpriteFont bold;
 
-        public SRenderOverworld(Overworld overworld, SpriteBatch spriteBatch, SCamera camera, Services services)
+        public SRenderOverworld(Services services)
         {
             var assetLoader = services.Get<IAssetLoader>();
             _renderer = services.Get<Renderer>();
-            _overworld = overworld;
-            _spriteBatch = spriteBatch;
-            _camera = camera;
+            _overworld = services.Get<Overworld>();
+            _spriteBatch = services.Get<SpriteBatch>();
+            _camera = services.Get<SCamera>();
 
             _playerPosition = services.Get<Player>().PlayerData.Position;
 

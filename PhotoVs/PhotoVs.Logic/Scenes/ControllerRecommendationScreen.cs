@@ -1,17 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
-using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input.Components;
+using PhotoVs.Logic.NewScenes;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes
 {
-    public class ControllerRecommendationScreen : IUpdateableScene, IDrawableScene, ISystemScene
+    public class ControllerRecommendationScreen : Scene
     {
         private readonly IAssetLoader _assetLoader;
         private readonly Player _player;
@@ -25,15 +26,15 @@ namespace PhotoVs.Logic.Scenes
         private bool _isChanging;
         private string _playWithAGamepad;
 
-        public ControllerRecommendationScreen(SceneMachine scene)
+        public ControllerRecommendationScreen(Services services)
         {
-            _scene = scene;
-            _player = _scene.Services.Get<Player>();
-            _textDatabase = _scene.Services.Get<TextDatabase>();
-            _assetLoader = _scene.Services.Get<IAssetLoader>();
-            _spriteBatch = _scene.Services.Get<SpriteBatch>();
+            _scene = services.Get<SceneMachine>();
+            _player = services.Get<Player>();
+            _textDatabase = services.Get<TextDatabase>();
+            _assetLoader = services.Get<IAssetLoader>();
+            _spriteBatch = services.Get<SpriteBatch>();
             Entities = new GameObjectList();
-            Systems = new SystemCollection<ISystem>();
+            Systems = new SystemList();
         }
 
         public void Draw(GameTime gameTime)
@@ -42,11 +43,13 @@ namespace PhotoVs.Logic.Scenes
 
         public void DrawUI(GameTime gameTime, Matrix uiOrigin)
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: uiOrigin);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                transformMatrix: uiOrigin);
 
-            _spriteBatch.DrawStringCenterTopAligned(_font, _playWithAGamepad, new Vector2(160, 10), Color.Magenta);
-            _spriteBatch.DrawStringCenterTopAligned(_font, _copyrightNotice, new Vector2(160, 146),
-                Color.White);
+            _spriteBatch.DrawString(_font, _playWithAGamepad, new Vector2(160, 10), Color.Magenta,
+                HorizontalAlignment.Center, VerticalAlignment.Top);
+            _spriteBatch.DrawString(_font, _copyrightNotice, new Vector2(160, 146),
+                Color.White, HorizontalAlignment.Center, VerticalAlignment.Top);
 
             _spriteBatch.Draw(_gamepadIcon, new Vector2(124, 68), new Rectangle(1, 1, 73, 45), Color.White);
 
@@ -54,12 +57,12 @@ namespace PhotoVs.Logic.Scenes
         }
 
         public GameObjectList Entities { get; }
-        public ISystemCollection<ISystem> Systems { get; }
+        public SystemList Systems { get; }
         public bool IsBlocking { get; set; }
 
         public void Enter(params object[] args)
         {
-            _continueTime = 5f;
+            _continueTime = 8f;
             _isChanging = false;
 
             var font = _textDatabase.GetFont();
@@ -73,6 +76,7 @@ namespace PhotoVs.Logic.Scenes
 
         public void Exit()
         {
+
         }
 
         public void Resume()
@@ -91,7 +95,7 @@ namespace PhotoVs.Logic.Scenes
             _continueTime -= gameTime.GetElapsedSeconds();
             if (_continueTime <= 0f || _player.Components.Get<CInputState>().AnyActionDown())
             {
-                _scene.ChangeToOverworldScene();
+                _scene.Pop();
                 _isChanging = true;
             }
         }

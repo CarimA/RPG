@@ -1,17 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Dialogue;
-using PhotoVs.Engine.FSM.Scenes;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
+using PhotoVs.Logic.NewScenes;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Scenes
 {
     // horrible port of horrible code but it works
-    public class DialogueScene : IUpdateableScene, IDrawableScene
+    public class DialogueScene : Scene
     {
         private readonly IAssetLoader _assetLoader;
 
@@ -26,12 +27,22 @@ namespace PhotoVs.Logic.Scenes
 
         public bool IsFinished { get; private set; }
 
-        public DialogueScene(SceneMachine scene)
+        public DialogueScene(Services services, string name, string dialogue)
         {
-            _scene = scene;
-            _player = _scene.Services.Get<Player>();
-            _assetLoader = _scene.Services.Get<IAssetLoader>();
-            _spriteBatch = _scene.Services.Get<SpriteBatch>();
+            _scene = services.Get<SceneMachine>();
+            _player = services.Get<Player>();
+            _assetLoader = services.Get<IAssetLoader>();
+            _spriteBatch = services.Get<SpriteBatch>();
+
+            _name = name;
+            _dialogue = new DialogueMarkup(_assetLoader.Get<SpriteFont>("ui/fonts/outline_12.fnt"),
+                _assetLoader.Get<SpriteFont>("ui/fonts/border_12.fnt"),
+                new Vector2(180 + 79, 170 + 109 + 18), //320 - TextWidth - 20, 133),
+                dialogue,
+                3,
+                228);
+
+            IsFinished = false;
         }
 
         public void Draw(GameTime gameTime)
@@ -95,17 +106,6 @@ namespace PhotoVs.Logic.Scenes
 
         public void Enter(params object[] args)
         {
-            _name = args[0].ToString();
-            var dialogue = args[1].ToString();
-
-            _dialogue = new DialogueMarkup(_assetLoader.Get<SpriteFont>("ui/fonts/outline_12.fnt"),
-                _assetLoader.Get<SpriteFont>("ui/fonts/border_12.fnt"),
-                new Vector2(180 + 79, 170 + 109 + 18), //320 - TextWidth - 20, 133),
-                dialogue,
-                3,
-                228);
-
-            IsFinished = false;
         }
 
         public void Exit()
