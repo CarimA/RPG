@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine;
@@ -23,9 +25,11 @@ using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using PhotoVs.Engine.Graphics.Filters;
+using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.NewScenes;
 using Color = Microsoft.Xna.Framework.Color;
@@ -64,7 +68,7 @@ namespace PhotoVs.Logic
             _services.Set(_coroutineRunner);
 
             _platform = platform;
-            //_services.Set(platform);
+            _services.Set(platform);
 
             _graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
@@ -155,6 +159,8 @@ namespace PhotoVs.Logic
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
             //PostprocessMap("albion.tmx", "albion-out.tmx");
+            var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
+            mapBaker.BakeMap("albion-out.tmx", "outmap.png", "outtiles.png");
 
             base.Initialize();
         }
@@ -169,6 +175,7 @@ namespace PhotoVs.Logic
             using var writer = new XmlTextWriter(filestream, Encoding.UTF8);
             writer.WriteWholeMap(convertMap);
         }
+
 
         private IAssetLoader CreateAssetLoader()
         {

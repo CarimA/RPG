@@ -333,6 +333,29 @@ disable letterbox
   - Add a debug keybind for ScriptHost.Reset
   - Rewrite this doc to reflect Lua Way(TM)
 
+
+Have a map processor that takes the tmx maps and tilesets and converts them all into a megatileset, map indices and lua scripts which create the objects specified
+
+eg.lua
+
+Map {
+  Name = '',
+  CollisionRects = {
+
+  },
+  CollisionPolys = {
+
+  },
+  Warps = {
+
+  },
+  etc
+}
+
+
+end result: game shouldn't deploy with any master tilesets or *.tmx files
+
+
 # FINISH THIS DOCUMENT.
 
 scenes:
@@ -360,3 +383,21 @@ scenes:
   trees_128
   trees_128_mask
   trees_128_fringe
+
+
+instead of using visual studio to copy from content, have a build script run which post-processes everything
+
+  when drawing the map:
+    - draw the actual mapindex texture, scaled up *16
+    - pass in the viewport render texture
+    - guess it's same as normal still?
+
+
+Screen {
+
+}
+
+GameObject {
+
+}
+

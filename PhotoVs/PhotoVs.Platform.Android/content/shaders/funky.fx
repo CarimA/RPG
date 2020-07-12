@@ -20,9 +20,9 @@ Texture2D texNoiseA;
 sampler2D texSamplerNoiseA
 {
     Texture = <texNoiseA>;
-	MipFilter = POINT;
-    MinFilter = POINT;
-    MagFilter = POINT;
+	MipFilter = LINEAR;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
     AddressU = WRAP;
     AddressV = WRAP;
 };
@@ -31,13 +31,12 @@ Texture2D texNoiseB;
 sampler2D texSamplerNoiseB
 {
     Texture = <texNoiseB>;
-	MipFilter = POINT;
-    MinFilter = POINT;
-    MagFilter = POINT;
+	MipFilter = LINEAR;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
     AddressU = WRAP;
     AddressV = WRAP;
 };
-
 
 struct VertexShaderOutput
 {
@@ -60,6 +59,8 @@ float4 colorC;
 float2 maskSize;
 float2 noiseSize;
 
+float pulses;
+
 float4 main(VertexShaderOutput input) : COLOR
 {
     // first, check if we want to do anything here
@@ -72,13 +73,13 @@ float4 main(VertexShaderOutput input) : COLOR
     float4 noiseA = tex2D(texSamplerNoiseA, (input.TextureCoordinates * (maskSize / noiseSize) * 3.0) + offsetA);
     float4 noiseB = tex2D(texSamplerNoiseB, (input.TextureCoordinates * (maskSize / noiseSize) * 3.0) + offsetB);
     float avg = noiseA.r + noiseB.r;
-    avg = fmod(round(avg * 12), 3.0);
+    avg = fmod(round(avg * pulses), 3.0);
 
-    if (avg < 0.05)
+    if (avg < 1)
         return colorA;
-    else if (avg - 1.0 < 0.05)
+    else if (avg - 1.0 < 1)
         return colorB;
-    else if (avg - 2.0 < 0.05)
+    else if (avg - 2.0 < 1)
         return colorC;
 
     return float4(0, 0, 0, 0);

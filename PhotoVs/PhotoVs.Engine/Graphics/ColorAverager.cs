@@ -15,10 +15,8 @@ namespace PhotoVs.Engine.Graphics
         private RenderTarget2D _outputTex;
         private float _phase;
 
-        public void Set(float phase, Texture2D texA, Texture2D texB)
+        public void SetTextures(Texture2D texA, Texture2D texB)
         {
-            _phase = phase;
-
             if (_texA != texA)
             {
                 _texA = texA;
@@ -36,6 +34,11 @@ namespace PhotoVs.Engine.Graphics
             {
                 _outputTex = new RenderTarget2D(_graphicsDevice, texA.Width, texA.Height);
             }
+        }
+
+        public void SetPhase(float phase)
+        {
+            _phase = phase;
         }
 
         public ColorAverager(Renderer renderer, Effect effect)

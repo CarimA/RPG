@@ -35,8 +35,8 @@ namespace PhotoVs.Logic.Modules
                 case "controller":
                     //_sceneMachine.Push(new ControllerRecommendationScreen(_sceneMachine));
                     _sceneMachine.Push(new WorldScene(_services));
-                    _sceneMachine.Push(new TitleScene(_services));
-                    //_sceneMachine.Push(new WorldLogicScene(_services));
+                    //_sceneMachine.Push(new TitleScene(_services));
+                    _sceneMachine.Push(new WorldLogicScene(_services));
                     break;
 
                 default:

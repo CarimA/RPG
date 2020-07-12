@@ -201,7 +201,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
             var max = 4f;
             var min = 0.5f;
-            _zoom = Math.Min(max, Math.Max(min, zoom));
+            _zoom = zoom; //Math.Min(max, Math.Max(min, zoom));
             _isDirty = true;
         }
 
