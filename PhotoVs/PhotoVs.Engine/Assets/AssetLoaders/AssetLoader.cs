@@ -56,9 +56,8 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         public void Load<T>(string filepath) where T : class
         {
             filepath = SanitiseFilename(filepath);
-            var loader = _typeLoaders[typeof(T)];
             using var stream = StreamProvider.Read(DataLocation.Content, filepath);
-            var asset = (loader as ITypeLoader<T>)?.Load(stream);
+            var asset = Process<T>(stream);
             if (asset != null)
             {
                 Logger.Write.Info("Loaded asset \"{0}\"", filepath);
@@ -69,6 +68,13 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
                 Logger.Write.Fatal("Could not find asset \"{0}\"", filepath);
                 throw new InvalidOperationException();
             }
+        }
+
+        public T Process<T>(Stream stream) where T : class
+        {
+            var loader = _typeLoaders[typeof(T)];
+            var asset = (loader as ITypeLoader<T>)?.Load(stream);
+            return asset;
         }
 
         public bool Unload(string filepath)

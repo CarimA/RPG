@@ -55,7 +55,6 @@ namespace PhotoVs.Logic
 
         private ScriptHost _scriptHost;
 
-
         public MainGame(IPlatform platform)
         {
             IsMouseVisible = true;
@@ -158,24 +157,12 @@ namespace PhotoVs.Logic
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
-            //PostprocessMap("albion.tmx", "albion-out.tmx");
-            var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
-            mapBaker.BakeMap("albion-out.tmx", "outmap.png", "outtiles.png");
+            //var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
+            //mapBaker.Bake("content/maps/", "content/debug/");
+
 
             base.Initialize();
         }
-
-        private void PostprocessMap(string inputFile, string outputFile)
-        {
-            // todo: turn this postprocess step into a command line tool
-            var convertMap = _assetLoader.Get<Map>(inputFile);
-            TmxMap.CompressLayers(convertMap, _assetLoader);
-
-            using var filestream = new FileStream(outputFile, FileMode.Create);
-            using var writer = new XmlTextWriter(filestream, Encoding.UTF8);
-            writer.WriteWholeMap(convertMap);
-        }
-
 
         private IAssetLoader CreateAssetLoader()
         {

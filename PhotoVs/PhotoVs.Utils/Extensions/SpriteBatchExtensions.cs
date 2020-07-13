@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 
 namespace PhotoVs.Utils.Extensions
 {
@@ -146,6 +147,15 @@ namespace PhotoVs.Utils.Extensions
                 A = byte.MaxValue
             };
             return color;
+        }
+
+        public static void SaveAsPng(this Texture2D texture, string filename)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+            using var stream = File.Create(filename);
+            {
+                texture.SaveAsPng(stream, texture.Width, texture.Height);
+            }
         }
     }
 }

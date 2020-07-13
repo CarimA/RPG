@@ -213,8 +213,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             //_tilemapEffect.Parameters["MatrixTransform"].SetValue(_camera.Transform);
             _tilemapEffect.Parameters["Texture"].SetValue(_tilemapTexture);
             _tilemapEffect.Parameters["texIndex"].SetValue(_indexTexture);
-            _tilemapEffect.Parameters["viewSize"].SetValue(new Vector2(_renderer.GameWidth, _renderer.GameHeight));
-            _tilemapEffect.Parameters["viewOffset"].SetValue(new Vector2(cameraRect.Left, cameraRect.Top));
+            //_tilemapEffect.Parameters["viewSize"].SetValue(new Vector2(_renderer.GameWidth, _renderer.GameHeight));
+            //_tilemapEffect.Parameters["viewOffset"].SetValue(new Vector2(cameraRect.Left, cameraRect.Top));
             _tilemapEffect.Parameters["tileSize"].SetValue(new Vector2(tileSize, tileSize));
             _tilemapEffect.Parameters["inverseIndexTexSize"].SetValue(new Vector2(1f / _indexTexture.Width, 1f / _indexTexture.Height));
             _tilemapEffect.Parameters["mapSize"].SetValue(new Vector2((_tilemapTexture.Width) * tileSize,  _tilemapTexture.Height * tileSize));
@@ -385,7 +385,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             var output = _colorGrade.Filter(_spriteBatch, _final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             //_spriteBatch.Draw(_material, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_final, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(output, Vector2.Zero, Color.White);
             _spriteBatch.DrawString(bold, Enum.GetName(typeof(TimePhase), _gameDate.TimePhase) + "\n" + t, Vector2.Zero,
                 Color.Yellow);
 

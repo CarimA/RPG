@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
+using PhotoVs.Utils.Extensions;
+using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
 
 namespace PhotoVs.Logic
 {
@@ -86,12 +87,40 @@ namespace PhotoVs.Logic
         private IAssetLoader _assetLoader;
         private SpriteBatch _spriteBatch;
         private Renderer _renderer;
+        private Texture2D _pixelTexture;
+
+        private const int _maxOutputWidth = 4096;
+        private const int _maxOutputHeight = 4096;
+        private const int _tileSize = 16;
+
+        private int _tilePerRow;
+        private Dictionary<string, int> _maxX;
+        private Dictionary<string, int> _maxY;
+        private Dictionary<string, Texture2D> _textureCache;
+        private Dictionary<string, Texture2D> _materialCache;
+        private Dictionary<string, string> _replaceCache;
+        private Dictionary<(int, int, bool, string), KeyList<(int, int, string, Texture2D, Texture2D)>> _mapCache;
+        private Dictionary<(int, int, bool, string), int> _mapIndexes;
+        private List<KeyList<(int, int, string, Texture2D, Texture2D)>> _keyCache;
+
+        private string _outputDir;
 
         public MapBaker(IAssetLoader assetLoader, SpriteBatch spriteBatch, Renderer renderer)
         {
             _assetLoader = assetLoader;
             _spriteBatch = spriteBatch;
             _renderer = renderer;
+
+            _pixelTexture = _assetLoader.Get<Texture2D>("ui/pixel.png");
+
+            _maxX = new Dictionary<string, int>();
+            _maxY = new Dictionary<string, int>();
+            _textureCache = new Dictionary<string, Texture2D>();
+            _materialCache = new Dictionary<string, Texture2D>();
+            _replaceCache = new Dictionary<string, string>();
+            _mapCache = new Dictionary<(int, int, bool, string), KeyList<(int, int, string, Texture2D, Texture2D)>>();
+            _mapIndexes = new Dictionary<(int, int, bool, string), int>();
+            _keyCache = new List<KeyList<(int, int, string, Texture2D, Texture2D)>>();
         }
 
         private int FindNextPoT(int input)
@@ -102,127 +131,178 @@ namespace PhotoVs.Logic
             return power;
         }
 
-        // todo: take a list of tmx maps
-        // todo: cache every tileset texture and use accordingly
-        // todo: refactor this into separate functions as an actual class
-        public void BakeMap(string inputFile, string outputMapTexture, string outputTilesetTexture)
+
+        public void Bake(string inputDir, string outputDir)
         {
-            var maxOutputWidth = 4096;
-            var maxOutputHeight = 4096;
-            var tileSize = 16;
+            _outputDir = outputDir;
 
-            var map = _assetLoader.Get<Map>(inputFile);
-            var tilesetCache = new Dictionary<int, ITileset>();
-            var mapCache = new Dictionary<(int, int, bool), KeyList<(int, int)>>();
+            var maps = LoadMaps(inputDir);
+            var compressedMaps = CompressMaps(maps);
+            ProcessTileIndexes(compressedMaps);
+            DeduplicateIndexes();
+            CreateSupertileset(false);
+            CreateSupertileset(true);
+            CreateTilemaps();
+        }
 
-            var pixelTexture = _assetLoader.Get<Texture2D>("ui/pixel.png");
-            var tilesetTexture = _assetLoader.Get<Texture2D>("tilesets/tileset_nature.png");
-
-            var maskLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("M")); // .TakeWhile(layer => !layer.Name.Equals("FringeStart"));
-            var fringeLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("F")); //.SkipWhile(layer => !layer.Name.Equals("FringeStart"));
-
-            var maxX = 0;
-            var maxY = 0;
-
-            // first process the entire map and assign a list of tiles
-            // to each position
-            foreach (var tileLayer in maskLayers)
+        private IEnumerable<Map> LoadMaps(string inputDir)
+        {
+            var streamProvider = _assetLoader.StreamProvider;
+            var maps = streamProvider.EnumerateFiles(DataLocation.Raw, inputDir);
+            foreach (var map in maps)
             {
-                for (int y = 0, i = 0; y < tileLayer.Height; y++)
+                using var obj = streamProvider.Read(DataLocation.Raw, map);
+                var data = _assetLoader.Process<Map>(obj);
+                yield return data;
+            }
+        }
+
+        private IEnumerable<Map> CompressMaps(IEnumerable<Map> maps)
+        {
+            foreach (var map in maps)
+            {
+                if (map.Layers.OfType<TileLayer>()
+                    .All(layer => layer.Name.StartsWith("M") || layer.Name.StartsWith("F")))
                 {
-                    for (int x = 0; x < tileLayer.Width; x++, i++)
+                    yield return map;
+                    continue;
+                }
+
+                TmxMap.CompressLayers(map, _assetLoader);
+                yield return map;
+            }
+        }
+
+        private void ProcessTileIndexes(IEnumerable<Map> maps)
+        {
+            foreach (var map in maps)
+            {
+                ProcessTileIndex(map);
+            }
+        }
+
+        private void ProcessTileIndex(Map map)
+        {
+            var maskLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("M"));
+            var fringeLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("F"));
+
+            ProcessLayers(map, maskLayers, true);
+            ProcessLayers(map, fringeLayers, false);
+        }
+
+        private void ProcessLayers(Map map, IEnumerable<TileLayer> layers, bool isMask)
+        {
+            foreach (var layer in layers)
+            {
+                ProcessLayer(map, layer, isMask);
+            }
+        }
+
+        private void ProcessLayer(Map map, TileLayer layer, bool isMask)
+        {
+            for (int y = 0, i = 0; y < layer.Height; y++)
+            {
+                for (int x = 0; x < layer.Width; x++, i++)
+                {
+                    var gid = layer.Data[i];
+                    if (gid == 0)
+                        continue;
+
+                    var tileset = map.Tilesets.Single(ts =>
+                            gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
+                    var tile = tileset[gid];
+
+                    if (!_replaceCache.TryGetValue(tileset.ImagePath, out var tilesetPath))
                     {
-                        var gid = tileLayer.Data[i];
-                        if (gid == 0)
-                            continue;
-
-                        if (!tilesetCache.TryGetValue(gid, out var tileset))
-                        {
-                            tileset = map.Tilesets.Single(ts =>
-                                gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
-                            tilesetCache.Add(gid, tileset);
-                        }
-
-                        var tile = tileset[gid];
-
-                        if (!mapCache.ContainsKey((x, y, false)))
-                            mapCache.Add((x, y, false), new KeyList<(int, int)>());
-
-                        mapCache[(x, y, false)].Add((tile.Left, tile.Top));
-
-                        if (x > maxX)
-                            maxX = x;
-
-                        if (y > maxY)
-                            maxY = y;
+                        tilesetPath = tileset.ImagePath.Replace("../", "");
+                        tilesetPath = "tilesets/" + Path.GetFileName(tilesetPath);
+                        _replaceCache.Add(tileset.ImagePath, tilesetPath);
                     }
+
+                    if (!_textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
+                    {
+                        tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
+                        _textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
+                    }
+
+                    var materialPath = tilesetPath.Substring(0, tilesetPath.Length - ".png".Length) +
+                                       "_mat.png";
+                    if (!_materialCache.TryGetValue(materialPath, out var materialTexture))
+                    {
+                        materialTexture = _assetLoader.Get<Texture2D>(materialPath);
+                        _materialCache.Add(materialPath, _assetLoader.Get<Texture2D>(materialPath));
+                    }
+
+                    var mapName = map.Properties["name"];
+
+                    if (!_mapCache.ContainsKey((x, y, isMask, mapName)))
+                        _mapCache.Add((x, y, isMask, mapName), new KeyList<(int, int, string, Texture2D, Texture2D)>());
+
+                    _mapCache[(x, y, isMask, mapName)].Add((tile.Left, tile.Top, mapName, tilesetTexture, materialTexture));
+
+                    if (!_maxX.ContainsKey(mapName))
+                        _maxX.Add(mapName, 0);
+
+                    if (!_maxY.ContainsKey(mapName))
+                        _maxY.Add(mapName, 0);
+
+                    if (x > _maxX[mapName])
+                        _maxX[mapName] = x;
+
+                    if (y > _maxY[mapName])
+                        _maxY[mapName] = y;
                 }
             }
+        }
 
-            foreach (var tileLayer in fringeLayers)
+        private void DeduplicateIndexes()
+        {
+            foreach (var kvp in _mapCache)
             {
-                for (int y = 0, i = 0; y < tileLayer.Height; y++)
+                var index = _keyCache.FindIndex(key =>
                 {
-                    for (int x = 0; x < tileLayer.Width; x++, i++)
+                    var count = 0;
+                    foreach (var a in key)
                     {
-                        var gid = tileLayer.Data[i];
-                        if (gid == 0)
-                            continue;
-
-                        if (!tilesetCache.TryGetValue(gid, out var tileset))
+                        foreach (var b in kvp.Value)
                         {
-                            tileset = map.Tilesets.Single(ts =>
-                                gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
-                            tilesetCache.Add(gid, tileset);
+                            if (a.Item1 == b.Item1 && a.Item2 == b.Item2 && a.Item4 == b.Item4)
+                                count++;
                         }
-
-                        var tile = tileset[gid];
-
-                        if (!mapCache.ContainsKey((x, y, true)))
-                            mapCache.Add((x, y, true), new KeyList<(int, int)>());
-
-                        mapCache[(x, y, true)].Add((tile.Left, tile.Top));
-
-                        if (x > maxX)
-                            maxX = x;
-
-                        if (y > maxY)
-                            maxY = y;
                     }
-                }
-            }
 
-            // next de-duplicate the keylists into indexes that can point to
-            // the same tile
-            var keyCache = new List<KeyList<(int, int)>>();
-            var mapIndexes = new Dictionary<(int, int, bool), int>();
-            foreach (var kvp in mapCache)
-            {
-                var index = keyCache.FindIndex(key => key.Equals(kvp.Value));
+                    if (count == key.Count && count == kvp.Value.Count)
+                        return true;
+                    else
+                        return false;
+                });
+
                 if (index >= 0)
                 {
-                    mapIndexes.Add(kvp.Key, index);
+                    _mapIndexes.Add(kvp.Key, index);
                 }
                 else
                 {
-                    keyCache.Add(kvp.Value);
-                    mapIndexes.Add(kvp.Key, keyCache.Count - 1);
+                    _keyCache.Add(kvp.Value);
+                    _mapIndexes.Add(kvp.Key, _keyCache.Count - 1);
                 }
             }
+        }
 
-            var rows = keyCache.Count();
-
+        private void CreateSupertileset(bool isMaterial)
+        {
             // create a supertileset in the size we need
-            var outputHeight = Math.Min(FindNextPoT(rows / tileSize), maxOutputHeight / tileSize);
+            var rows = _keyCache.Count();
+            var outputHeight = Math.Min(FindNextPoT(rows / _tileSize), _maxOutputHeight / _tileSize);
             var outputWidth = FindNextPoT((rows / outputHeight));
 
-            if (outputWidth > maxOutputWidth)
+            if (outputWidth > _maxOutputWidth)
                 throw new Exception("Too many tiles! How tf did you manage to do that?");
 
-            outputHeight *= tileSize;
-            outputWidth *= tileSize;
+            outputHeight *= _tileSize;
+            outputWidth *= _tileSize;
 
-            var tilePerRow = outputWidth / tileSize;
+            _tilePerRow = outputWidth / _tileSize;
 
             // now render the big tileset
             var ts = _renderer.CreateRenderTarget(outputWidth, outputHeight);
@@ -230,17 +310,17 @@ namespace PhotoVs.Logic
             _spriteBatch.GraphicsDevice.Clear(Color.Transparent);
 
             _spriteBatch.Begin();
-            for (var i = 0; i < keyCache.Count; i++)
+            for (var i = 0; i < _keyCache.Count; i++)
             {
-                var x = tileSize * (i % tilePerRow);
-                var y = tileSize * (i / tilePerRow);
-                var t = keyCache[i];
+                var x = _tileSize * (i % _tilePerRow);
+                var y = _tileSize * (i / _tilePerRow);
+                var t = _keyCache[i];
 
-                foreach (var ti in t)
+                foreach (var (xpos, ypos, mapName, texture, material) in t)
                 {
-                    _spriteBatch.Draw(tilesetTexture,
-                        new Rectangle(x, y, tileSize, tileSize),
-                        new Rectangle(ti.Item1, ti.Item2, tileSize, tileSize),
+                    _spriteBatch.Draw(isMaterial ? material : texture,
+                        new Rectangle(x, y, _tileSize, _tileSize),
+                        new Rectangle(xpos, ypos, _tileSize, _tileSize),
                         Color.White);
                 }
             }
@@ -249,12 +329,27 @@ namespace PhotoVs.Logic
 
             _spriteBatch.GraphicsDevice.SetRenderTarget(null);
 
-            using var stream = File.Create(outputTilesetTexture);
-            {
-                ts.SaveAsPng(stream, ts.Width, ts.Height);
-            }
+            var outName = isMaterial ? "supertileset_mat.png" : "supertileset.png";
+            ts.SaveAsPng(Path.Combine(_outputDir, outName));
+        }
 
-            // now render the tilemap thing
+        private void CreateTilemaps()
+        {
+            // figure out all of the maps from the keycache
+            var mapNames = GetMapNames();
+            mapNames = mapNames.Distinct();
+
+            foreach (var map in mapNames)
+            {
+                CreateTilemap(map);
+            }
+        }
+
+        private void CreateTilemap(string mapName)
+        {
+            var maxX = _maxX[mapName];
+            var maxY = _maxY[mapName];
+
             maxX = FindNextPoT(maxX);
             maxY = FindNextPoT(maxY);
 
@@ -263,16 +358,20 @@ namespace PhotoVs.Logic
             _spriteBatch.GraphicsDevice.Clear(Color.Transparent);
             _spriteBatch.Begin();
 
-            foreach (var kvp in mapIndexes)
+            foreach (var kvp in _mapIndexes)
             {
+                var mN = kvp.Key.Item4;
+                if (!mapName.Equals(mN))
+                    continue;
+
                 var x = kvp.Key.Item1;
                 var y = kvp.Key.Item2;
                 var isMask = kvp.Key.Item3;
-                var sX = kvp.Value % tilePerRow;
-                var sY = kvp.Value / tilePerRow;
+                var sX = kvp.Value % _tilePerRow;
+                var sY = kvp.Value / _tilePerRow;
 
-                _spriteBatch.Draw(pixelTexture,
-                    new Vector2(x + (!isMask ? 0 : maxX), y), 
+                _spriteBatch.Draw(_pixelTexture,
+                    new Vector2(x + (isMask ? 0 : maxX), y),
                     new Color(sX, sY, 0));
             }
 
@@ -280,11 +379,20 @@ namespace PhotoVs.Logic
 
             _spriteBatch.GraphicsDevice.SetRenderTarget(null);
 
-            using var stream2 = File.Create(outputMapTexture);
-            {
-                tm.SaveAsPng(stream2, tm.Width, tm.Height);
-            }
+            var outName = $"maps/{mapName}.png";
+            tm.SaveAsPng(Path.Combine(_outputDir, outName));
+            tm.Dispose();
         }
 
+        private IEnumerable<string> GetMapNames()
+        {
+            foreach (var key in _keyCache)
+            {
+                foreach (var item in key)
+                {
+                    yield return item.Item3;
+                }
+            }
+        }
     }
 }
