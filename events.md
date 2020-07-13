@@ -58,6 +58,8 @@ Subscribe {
 }
 ```
 
+This particular call will create an event that subscribes to the event ID `GameEvents.GameStart` and `GameEvents.GameStart:hello` and will run the function when the player has a flag in their save data named `this_flag` and the value is true and when the player has a variable in their save data named `this_var` and the value is 100. When the function runs for the first time, it will unsubscribe preventing it from being ran again thanks to `RunOnce = true`. 
+
 ## Triggers
 
 The `Triggers` key is a table treated as an array containing `GameEvents` enum values (see the **Game Events** section for a list of all enums) and/or any of the following method calls.

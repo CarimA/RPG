@@ -157,8 +157,8 @@ namespace PhotoVs.Logic
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
-            //var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
-            //mapBaker.Bake("content/maps/", "content/debug/");
+            var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
+            mapBaker.Bake("content/maps/", "content/debug/");
 
 
             base.Initialize();
