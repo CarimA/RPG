@@ -9,11 +9,11 @@ namespace PhotoVs.Engine.Graphics
         private readonly Effect _effect;
         private readonly EffectParameter _texAParameter;
         private readonly EffectParameter _texBParameter;
+        private readonly EffectParameter _phaseParameter;
         private readonly GraphicsDevice _graphicsDevice;
         private Texture2D _texA;
         private Texture2D _texB;
         private RenderTarget2D _outputTex;
-        private float _phase;
 
         public void SetTextures(Texture2D texA, Texture2D texB)
         {
@@ -38,7 +38,7 @@ namespace PhotoVs.Engine.Graphics
 
         public void SetPhase(float phase)
         {
-            _phase = phase;
+            _phaseParameter.SetValue(phase);
         }
 
         public ColorAverager(Renderer renderer, Effect effect)
@@ -49,6 +49,7 @@ namespace PhotoVs.Engine.Graphics
 
             _texAParameter = _effect.Parameters["texA"];
             _texBParameter = _effect.Parameters["texB"];
+            _phaseParameter = _effect.Parameters["phase"];
         }
 
         public RenderTarget2D Average(SpriteBatch spriteBatch)
@@ -58,7 +59,6 @@ namespace PhotoVs.Engine.Graphics
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
 
             _effect.CurrentTechnique.Passes[0].Apply();
-            _effect.Parameters["phase"].SetValue(_phase);
 
             spriteBatch.Draw(_texA, Vector2.Zero, Color.White);
 

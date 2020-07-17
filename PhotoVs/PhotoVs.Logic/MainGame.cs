@@ -150,9 +150,10 @@ namespace PhotoVs.Logic
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
-            var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
-            mapBaker.Bake("content/maps/", "content/debug/");
+            //var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
+            //mapBaker.Bake("content/maps/", "content/debug/");
 
+            _services.Get<IAudio>().PlayBgm("key");
 
             base.Initialize();
         }
@@ -270,6 +271,15 @@ namespace PhotoVs.Logic
 
             _info.AfterDraw();
             _info.Draw(gameTime);
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            var audio = _services.Get<IAudio>();
+            if (audio is IDisposable disposableAudio)
+                disposableAudio.Dispose();
+
+            base.OnExiting(sender, args);
         }
 
         private void EnableFullscreen()

@@ -122,7 +122,7 @@ namespace PhotoVs.Engine.Audio
             CleanupPlayback();
 
             _waveSource =
-                CodecFactory.Instance.GetCodec($"assets/audio/bgm/{filename}")
+                CodecFactory.Instance.GetCodec($"content/audio/bgm/{filename}.ogg")
                     .Loop()
                     .ToSampleSource()
                     .ToWaveSource();
