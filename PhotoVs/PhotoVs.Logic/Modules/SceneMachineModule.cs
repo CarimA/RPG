@@ -1,5 +1,4 @@
 ﻿using PhotoVs.Engine.Scripting;
-using PhotoVs.Logic.Scenes;
 using System;
 using PhotoVs.Engine;
 using PhotoVs.Logic.NewScenes;

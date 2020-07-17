@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Logic.NewScenes;
 using PhotoVs.Logic.PlayerData;

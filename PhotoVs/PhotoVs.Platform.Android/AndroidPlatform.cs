@@ -2,6 +2,7 @@
 using Android.Content.Res;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.StreamProviders;
+using PhotoVs.Engine.Audio;
 
 namespace PhotoVs.Platform.Android
 {
@@ -9,6 +10,7 @@ namespace PhotoVs.Platform.Android
     {
         public bool OverrideFullscreen => true;
         public Dictionary<string, string> FileExtensionReplacement { get; }
+        public IAudio Audio { get; }
         public IStreamProvider StreamProvider { get; set; }
 
         public AndroidPlatform(AssetManager assetManager)
@@ -18,6 +20,7 @@ namespace PhotoVs.Platform.Android
             {
                 {".fx", ".ogl"}
             };
+            Audio = new DummyAudio();
         }
     }
 }

@@ -12,7 +12,6 @@ using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
 using System;
-using System.CodeDom;
 
 namespace PhotoVs.Logic.Mechanics.World.Systems
 {

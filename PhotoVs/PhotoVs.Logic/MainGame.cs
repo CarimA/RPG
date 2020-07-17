@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,13 +8,11 @@ using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
-using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
@@ -24,12 +21,7 @@ using PhotoVs.Logic.Modules;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Logic.Text;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
 using PhotoVs.Engine.Graphics.Filters;
-using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.NewScenes;
 using Color = Microsoft.Xna.Framework.Color;
@@ -181,8 +173,7 @@ namespace PhotoVs.Logic
 
         private IAudio CreateAudio()
         {
-            var audio = new DummyAudio();
-            return audio;
+            return _platform.Audio;
         }
 
         private TextDatabase CreateTextDatabase()

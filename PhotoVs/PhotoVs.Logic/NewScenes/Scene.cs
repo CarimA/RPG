@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.StateMachine;
 using PhotoVs.Logic.Mechanics.Input.Components;
 

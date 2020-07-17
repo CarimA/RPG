@@ -3,6 +3,7 @@ using PhotoVs.Engine.Assets.StreamProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using PhotoVs.Engine.Audio;
 
 namespace PhotoVs.Platform.WindowsDX
 {
@@ -10,6 +11,7 @@ namespace PhotoVs.Platform.WindowsDX
     {
         public bool OverrideFullscreen => false;
         public Dictionary<string, string> FileExtensionReplacement { get; }
+        public IAudio Audio { get; }
         public IStreamProvider StreamProvider { get; set; }
 
         public WindowsDXPlatform()
@@ -21,6 +23,7 @@ namespace PhotoVs.Platform.WindowsDX
             {
                 {".fx", ".dx11"}
             };
+            Audio = new CscoreAudio();
         }
     }
 }
