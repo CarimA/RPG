@@ -91,6 +91,7 @@ namespace PhotoVs.Logic
 
             // use screen refresh rate
             _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            InactiveSleepTime = TimeSpan.Zero;
             IsFixedTimeStep = false;
         }
 

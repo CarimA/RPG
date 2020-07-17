@@ -111,18 +111,12 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.7708333f, assetLoader.Get<Texture2D>("luts/daycycle8.png"));
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
-
-            var ts = TimeSpan.FromSeconds(20);
-            timeScale = (float) ts.TotalSeconds;
         }
 
         public void BeforeDraw(GameTime gameTime)
         {
 
         }
-
-        private Texture2D lut;
-        private float timeScale;
 
         private Vector2 waterA;
         private Vector2 waterB;
@@ -161,9 +155,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _colorAverager.SetTextures(texA, texB);
             _colorAverager.SetPhase(phase);
 
-            lut = _colorAverager.Average(_spriteBatch);
-
-            _colorGrade.LookupTable = lut;
+            _colorGrade.LookupTable = _colorAverager.Average(_spriteBatch);
 
             _gameObjects = gameObjects;
 

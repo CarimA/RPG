@@ -33,8 +33,11 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
         public T Get<T>(string filepath) where T : class
         {
-            if (filepath.EndsWith(".fx"))
-                filepath = filepath.Replace(".fx", _platform.ShaderFileExtension);
+            var ext = Path.GetExtension(filepath);
+            if (_platform.FileExtensionReplacement.TryGetValue(ext, out var value))
+            {
+                filepath = filepath.Replace(ext, value);
+            }
 
             filepath = SanitiseFilename(filepath);
             if (_assetCache.TryGetValue(filepath, out var asset))

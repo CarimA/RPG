@@ -1,11 +1,14 @@
-﻿using PhotoVs.Engine.Assets.StreamProviders;
+﻿using System.Collections.Generic;
+using PhotoVs.Engine.Assets.StreamProviders;
 
 namespace PhotoVs.Engine
 {
     public interface IPlatform
     {
         bool OverrideFullscreen { get; }
-        string ShaderFileExtension { get; }
+        Dictionary<string, string> FileExtensionReplacement { get; }
+
         IStreamProvider StreamProvider { get; set; }
+
     }
 }

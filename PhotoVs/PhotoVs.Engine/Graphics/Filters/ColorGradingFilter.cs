@@ -65,7 +65,6 @@ namespace PhotoVs.Engine.Graphics.Filters
         public void Dispose()
         {
             _effect?.Dispose();
-            ;
         }
     }
 }

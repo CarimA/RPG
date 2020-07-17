@@ -33,10 +33,10 @@ struct VertexShaderOutput
 float4 main(VertexShaderOutput input) : COLOR
 {
 	// check colour against lookup table
-	float4 colorA = tex2D(texSamplerA, input.TextureCoordinates) * (phase);
-    float4 colorB = tex2D(texSamplerB, input.TextureCoordinates) * (1 - phase);
+	float4 colorA = tex2D(texSamplerA, input.TextureCoordinates);
+    float4 colorB = tex2D(texSamplerB, input.TextureCoordinates);
 
-	float4 new_color = colorA + colorB;
+	float4 new_color = lerp(colorA, colorB, 1.0 - phase);
 
 	return new_color;
 }
