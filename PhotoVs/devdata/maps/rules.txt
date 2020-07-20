@@ -1,0 +1,5 @@
+rules/random1.tmx
+rules/random2.tmx
+rules/random3.tmx
+rules/random5.tmx
+rules/random4.tmx

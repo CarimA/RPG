@@ -146,12 +146,15 @@ namespace PhotoVs.Logic
             _services.Set(_world);
 
             _services.Get<Player>()
-                .PlayerData.Position.Position = new Vector2(2750, 1400);
+                .PlayerData.Position.Position = new Vector2(8400, 6000);
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
             //var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
             //mapBaker.Bake("content/maps/", "content/debug/");
+
+            var mapBaker2 = new MapBaker2(_services, "content/maps/", "content/debug/", 16);
+            mapBaker2.Bake();
 
             _services.Get<IAudio>().PlayBgm("key");
 

@@ -1,7 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using StbSharp;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
 namespace PhotoVs.Utils.Extensions
 {
@@ -152,9 +158,30 @@ namespace PhotoVs.Utils.Extensions
         public static void SaveAsPng(this Texture2D texture, string filename)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
-            using var stream = File.Create(filename);
+            /*using var stream = File.Create(filename);
             {
                 texture.SaveAsPng(stream, texture.Width, texture.Height);
+            }*/
+
+            var textureData = new uint[texture.Width * texture.Height];
+            texture.GetData<uint>(textureData);
+
+            var bmp = new Bitmap(texture.Width, texture.Height, PixelFormat.Format32bppArgb);
+
+            unsafe
+            {
+                var origdata = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
+                var byteData = (uint*)origdata.Scan0;
+                for (var i = 0; i < textureData.Length; i++)
+                {
+                    byteData[i] = (textureData[i] & 0x000000ff) << 16 | (textureData[i] & 0x0000FF00) | (textureData[i] & 0x00FF0000) >> 16 | (textureData[i] & 0xFF000000);
+                }
+                bmp.UnlockBits(origdata);
+            }
+
+            using var stream = File.Create(filename);
+            {
+                bmp.Save(stream, ImageFormat.Png);
             }
         }
     }

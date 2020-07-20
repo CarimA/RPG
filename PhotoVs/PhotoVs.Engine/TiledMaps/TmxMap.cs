@@ -163,7 +163,7 @@ namespace PhotoVs.Engine.TiledMaps
                             else
                             {
                                 maskLayers[0].Data[i] = data;
-                                for (int e = 1; e < maskLayers.Count; e++)
+                                for (var e = 1; e < maskLayers.Count; e++)
                                 {
                                     maskLayers[e].Data[i] = 0;
                                 }
@@ -285,7 +285,7 @@ namespace PhotoVs.Engine.TiledMaps
 
         private static Color[] GetTextureData(Texture2D texture, Rectangle rect)
         {
-            Color[] imageData = new Color[texture.Width * texture.Height];
+            var imageData = new Color[texture.Width * texture.Height];
             texture.GetData<Color>(imageData);
 
             return GetImageData(imageData, texture.Width, rect);
@@ -293,9 +293,9 @@ namespace PhotoVs.Engine.TiledMaps
 
         private static Color[] GetImageData(Color[] colorData, int width, Rectangle rectangle)
         {
-            Color[] color = new Color[rectangle.Width * rectangle.Height];
-            for (int x = 0; x < rectangle.Width; x++)
-                for (int y = 0; y < rectangle.Height; y++)
+            var color = new Color[rectangle.Width * rectangle.Height];
+            for (var x = 0; x < rectangle.Width; x++)
+                for (var y = 0; y < rectangle.Height; y++)
                     color[x + y * rectangle.Width] = colorData[x + rectangle.X + (y + rectangle.Y) * width];
             return color;
         }

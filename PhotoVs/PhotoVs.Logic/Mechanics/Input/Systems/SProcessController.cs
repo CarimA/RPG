@@ -55,7 +55,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             var controller = gameObject.Components.Get<CController>();
             var gamePad = GamePad.GetState(controller.PlayerIndex);
 
-            foreach (InputActions action in AllInputActions)
+            foreach (var action in AllInputActions)
             {
                 if (controller.AnyButtonDown(gamePad, controller.ButtonMappings[action]))
                 {

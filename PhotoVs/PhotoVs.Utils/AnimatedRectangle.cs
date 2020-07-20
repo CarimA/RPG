@@ -55,7 +55,7 @@ namespace PhotoVs.Utils
             float tRight = _targetRectangle.Right;
             float tTop = _targetRectangle.Top;
             float tBottom = _targetRectangle.Bottom;
-            float ease = Easings.Interpolate(_progression, _easingFunction);
+            var ease = Easings.Interpolate(_progression, _easingFunction);
 
             var left = (int) ease.Map(0f, 1f, cLeft, tLeft);
             var top = (int) ease.Map(0f, 1f, cTop, tTop);

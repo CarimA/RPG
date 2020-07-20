@@ -53,7 +53,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             var keyboard = gameObject.Components.Get<CKeyboard>();
             var keyInput = Keyboard.GetState();
 
-            foreach (InputActions action in AllInputActions)
+            foreach (var action in AllInputActions)
             {
                 if (keyboard != null && keyboard.AnyKeyDown(keyInput, keyboard.KeyMappings[action]))
                 {

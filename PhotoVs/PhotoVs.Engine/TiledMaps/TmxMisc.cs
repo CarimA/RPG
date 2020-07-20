@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Engine.TiledMaps
 {
@@ -133,8 +134,13 @@ namespace PhotoVs.Engine.TiledMaps
 
         private static int[] ReadCSV(this XmlReader reader, int size)
         {
-            var data = reader.ReadElementContentAsString()
-                .Split(new[] { '\r', '\n', ',' }, StringSplitOptions.RemoveEmptyEntries)
+            var d = reader.ReadElementContentAsString()
+                .Split(new[] {'\r', '\n', ','}, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var e in d.Select(long.Parse).Where(t => t > int.MaxValue || t < int.MinValue))
+                Console.WriteLine(e);
+
+            var data = d
                 .Select(int.Parse)
                 .ToArray();
 

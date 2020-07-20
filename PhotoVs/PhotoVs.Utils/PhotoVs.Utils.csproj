@@ -23,4 +23,13 @@
     <ItemGroup Label="Android reference" Condition="'$(TargetFramework)'=='monoandroid8'">
         <PackageReference Include="MonoGame.Framework.Android" Version="3.7.1.189" />
     </ItemGroup>
+
+    <PropertyGroup>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="StbSharp" Version="0.7.2.38" />
+      <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    </ItemGroup>
 </Project>

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets;
@@ -61,12 +63,6 @@ namespace PhotoVs.Logic
 
         public bool Equals(KeyList<T> rhs)
         {
-            if (ReferenceEquals(this, rhs))
-                return true;
-            if (ReferenceEquals(rhs, null))
-                return false;
-            if (rhs._hashCode != _hashCode)
-                return false;
             var ic = _items.Count;
             if (ic != rhs._items.Count)
                 return false;
@@ -102,6 +98,8 @@ namespace PhotoVs.Logic
         private Dictionary<(int, int, bool, string), KeyList<(int, int, string, Texture2D, Texture2D)>> _mapCache;
         private Dictionary<(int, int, bool, string), int> _mapIndexes;
         private List<KeyList<(int, int, string, Texture2D, Texture2D)>> _keyCache;
+        private Dictionary<(int, int, string), bool> _transparencyCache;
+        private Dictionary<(int, int, string), bool> _opaqueCache;
 
         private string _outputDir;
 
@@ -121,6 +119,8 @@ namespace PhotoVs.Logic
             _mapCache = new Dictionary<(int, int, bool, string), KeyList<(int, int, string, Texture2D, Texture2D)>>();
             _mapIndexes = new Dictionary<(int, int, bool, string), int>();
             _keyCache = new List<KeyList<(int, int, string, Texture2D, Texture2D)>>();
+            _transparencyCache = new Dictionary<(int, int, string), bool>();
+            _opaqueCache = new Dictionary<(int, int, string), bool>();
         }
 
         private int FindNextPoT(int input)
@@ -159,6 +159,7 @@ namespace PhotoVs.Logic
 
         private IEnumerable<Map> CompressMaps(IEnumerable<Map> maps)
         {
+            var i = 0;
             foreach (var map in maps)
             {
                 if (map.Layers.OfType<TileLayer>()
@@ -169,6 +170,12 @@ namespace PhotoVs.Logic
                 }
 
                 TmxMap.CompressLayers(map, _assetLoader);
+
+                i++;
+                using var filestream = new FileStream(Path.Combine(_outputDir, $"temp-{i}.tmx"), FileMode.Create);
+                using var writer = new XmlTextWriter(filestream, Encoding.UTF8);
+                writer.WriteWholeMap(map);
+
                 yield return map;
             }
         }
@@ -202,7 +209,7 @@ namespace PhotoVs.Logic
         {
             for (int y = 0, i = 0; y < layer.Height; y++)
             {
-                for (int x = 0; x < layer.Width; x++, i++)
+                for (var x = 0; x < layer.Width; x++, i++)
                 {
                     var gid = layer.Data[i];
                     if (gid == 0)
@@ -235,33 +242,116 @@ namespace PhotoVs.Logic
 
                     var mapName = map.Properties["name"];
 
-                    if (!_mapCache.ContainsKey((x, y, isMask, mapName)))
-                        _mapCache.Add((x, y, isMask, mapName), new KeyList<(int, int, string, Texture2D, Texture2D)>());
+                    if (tileset.TileWidth > _tileSize || tileset.TileHeight > _tileSize)
+                    {
+                        var xCarry = 0;
+                        for (var xx = tile.Left; xx < tile.Left + tileset.TileWidth; xx += _tileSize)
+                        {
+                            var yCarry = 0;
+                            for (var yy = tile.Top + tileset.TileHeight - _tileSize; yy > tile.Top; yy -= _tileSize)
+                            {
+                                if (_transparencyCache.TryGetValue((xx, yy, tilesetPath), out var value))
+                                {
+                                    if (value)
+                                        continue;
+                                }
+                                else
+                                {
+                                    var colorData = GetTextureData(tilesetTexture,
+                                        new Rectangle(xx, yy, _tileSize, _tileSize));
+                                    var result = colorData.All(color => color == Color.Transparent);
+                                    _transparencyCache.Add((xx, yy, tilesetPath), result);
+                                    if (result)
+                                        continue;
+                                }
 
-                    _mapCache[(x, y, isMask, mapName)].Add((tile.Left, tile.Top, mapName, tilesetTexture, materialTexture));
+                                if (!_opaqueCache.TryGetValue((xx, yy, tilesetPath), out var opaque))
+                                {
+                                    var colorData = GetTextureData(tilesetTexture,
+                                        new Rectangle(xx, yy, _tileSize, _tileSize));
+                                    opaque = colorData.All(color => color != Color.Transparent);
+                                    _opaqueCache.Add((xx, yy, tilesetPath), opaque);
+                                }
 
-                    if (!_maxX.ContainsKey(mapName))
-                        _maxX.Add(mapName, 0);
+                                if (!_mapCache.ContainsKey((x + xCarry, y - yCarry, isMask, mapName)))
+                                    _mapCache.Add((x + xCarry, y - yCarry, isMask, mapName), new KeyList<(int, int, string, Texture2D, Texture2D)>());
 
-                    if (!_maxY.ContainsKey(mapName))
-                        _maxY.Add(mapName, 0);
+                                if (opaque)
+                                {
+                                    _mapCache[(x + xCarry, y - yCarry, isMask, mapName)].Clear();
+                                }
 
-                    if (x > _maxX[mapName])
-                        _maxX[mapName] = x;
+                                _mapCache[(x + xCarry, y - yCarry, isMask, mapName)].Add((xx, yy, mapName, tilesetTexture, materialTexture));
+                                yCarry++;
+                            }
+                            xCarry++;
+                        }
 
-                    if (y > _maxY[mapName])
-                        _maxY[mapName] = y;
+                        if (!_maxX.ContainsKey(mapName))
+                            _maxX.Add(mapName, 0);
+
+                        if (!_maxY.ContainsKey(mapName))
+                            _maxY.Add(mapName, 0);
+
+                        if ((x + xCarry) > _maxX[mapName])
+                            _maxX[mapName] = x + xCarry;
+
+                        if ((y) > _maxY[mapName])
+                            _maxY[mapName] = y;
+                    }
+                    else
+                    {
+                        var colorData = GetTextureData(tilesetTexture,
+                            new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height));
+                        if (colorData.All(color => color == Color.Transparent))
+                        {
+                            continue;
+                        }
+
+                        if (!_opaqueCache.TryGetValue((tile.Left, tile.Top, tilesetPath), out var opaque))
+                        {
+                            var colorDat2a = GetTextureData(tilesetTexture,
+                                new Rectangle(tile.Left, tile.Top, _tileSize, _tileSize));
+                            opaque = colorDat2a.All(color => color != Color.Transparent);
+                            _opaqueCache.Add((tile.Left, tile.Top, tilesetPath), opaque);
+                        }
+
+                        if (!_mapCache.ContainsKey((x, y, isMask, mapName)))
+                            _mapCache.Add((x, y, isMask, mapName), new KeyList<(int, int, string, Texture2D, Texture2D)>());
+
+
+                        if (opaque)
+                        {
+                            _mapCache[(x, y, isMask, mapName)].Clear();
+                        }
+
+                        _mapCache[(x, y, isMask, mapName)].Add((tile.Left, tile.Top, mapName, tilesetTexture, materialTexture));
+
+                        if (!_maxX.ContainsKey(mapName))
+                            _maxX.Add(mapName, 0);
+
+                        if (!_maxY.ContainsKey(mapName))
+                            _maxY.Add(mapName, 0);
+
+                        if (x > _maxX[mapName])
+                            _maxX[mapName] = x;
+
+                        if (y > _maxY[mapName])
+                            _maxY[mapName] = y;
+                    }
                 }
             }
         }
 
         private void DeduplicateIndexes()
         {
-            foreach (var kvp in _mapCache)
+            var copy = _mapCache.Where(k => k.Value.Count > 0);
+            foreach (var kvp in copy)
             {
                 var index = _keyCache.FindIndex(key =>
                 {
                     var count = 0;
+
                     foreach (var a in key)
                     {
                         foreach (var b in kvp.Value)
@@ -286,6 +376,8 @@ namespace PhotoVs.Logic
                     _keyCache.Add(kvp.Value);
                     _mapIndexes.Add(kvp.Key, _keyCache.Count - 1);
                 }
+
+
             }
         }
 
@@ -393,6 +485,24 @@ namespace PhotoVs.Logic
                     yield return item.Item3;
                 }
             }
+        }
+
+
+        private static Color[] GetTextureData(Texture2D texture, Rectangle rect)
+        {
+            var imageData = new Color[texture.Width * texture.Height];
+            texture.GetData<Color>(imageData);
+
+            return GetImageData(imageData, texture.Width, rect);
+        }
+
+        private static Color[] GetImageData(Color[] colorData, int width, Rectangle rectangle)
+        {
+            var color = new Color[rectangle.Width * rectangle.Height];
+            for (var x = 0; x < rectangle.Width; x++)
+            for (var y = 0; y < rectangle.Height; y++)
+                color[x + y * rectangle.Width] = colorData[x + rectangle.X + (y + rectangle.Y) * width];
+            return color;
         }
     }
 }
