@@ -30,6 +30,8 @@ namespace PhotoVs.Logic
         private readonly SpriteBatch _spriteBatch;
         private readonly Renderer _renderer;
 
+        private readonly Texture2D _pixelTexture;
+
         private readonly IEnumerable<Map> _mapData;
         private readonly Dictionary<string, Texture2D> _textureCache;
         private readonly Dictionary<string, Texture2D> _materialCache;
@@ -43,8 +45,12 @@ namespace PhotoVs.Logic
 
         private readonly Dictionary<Texture2D, Color[]> _textureDataCache;
 
+        private readonly Dictionary<KeyList<int>, (int, int)> _instructions;
+
         private Dictionary<string, int> _maxX;
         private Dictionary<string, int> _maxY;
+
+        private int _tilePerRow;
 
         public MapBaker2(Services services, string inputDir, string outputDir, int tileSize)
         {
@@ -52,13 +58,15 @@ namespace PhotoVs.Logic
             _spriteBatch = services.Get<SpriteBatch>();
             _renderer = services.Get<Renderer>();
 
+            _pixelTexture = _assetLoader.Get<Texture2D>("ui/pixel.png");
+
             _inputDir = inputDir;
             _outputDir = outputDir;
             _tileSize = tileSize;
 
             var mapData = LoadMaps(inputDir);
-            var compressedMapData = CompressMaps(mapData);
-            _mapData = compressedMapData;
+            //var compressedMapData = CompressMaps(mapData);
+            _mapData = mapData; //compressedMapData;
 
             _maps = new Dictionary<Map, Dictionary<(int, int, bool), KeyList<int>>>();
             _dedupe = new Dictionary<KeyList<int>, List<(Map, int, int, bool)>>();
@@ -71,6 +79,7 @@ namespace PhotoVs.Logic
             _maxX = new Dictionary<string, int>();
             _maxY = new Dictionary<string, int>();
             _textureDataCache = new Dictionary<Texture2D, Color[]>();
+            _instructions = new Dictionary<KeyList<int>, (int, int)>();
         }
 
         public void Bake()
@@ -78,6 +87,8 @@ namespace PhotoVs.Logic
             ProcessMaps();
             Deduplicate();
             CreateSupertileset(false);
+            CreateSupertileset(true);
+            CreateTilemaps();
         }
 
         private void ProcessMaps()
@@ -88,8 +99,13 @@ namespace PhotoVs.Logic
 
         private void ProcessMap(Map map)
         {
-            var maskLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("M"));
-            var fringeLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("F"));
+            var layers = map.Layers.OfType<TileLayer>();
+            var maskLayers = layers.TakeWhile(layer => !layer.Name.Equals("FringeStart"));
+            var fringeLayers = layers.SkipWhile(layer => !layer.Name.Equals("FringeStart"));
+
+
+            //var maskLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("M"));
+            //var fringeLayers = map.Layers.OfType<TileLayer>().Where(layer => layer.Name.StartsWith("F"));
 
             ProcessLayers(map, maskLayers, true);
             ProcessLayers(map, fringeLayers, false);
@@ -180,7 +196,7 @@ namespace PhotoVs.Logic
                         x,
                         y,
                             mapX + xi,
-                        mapY + yi,
+                        mapY + yi + 1,
                         isMask);
                     yi++;
                 }
@@ -207,6 +223,11 @@ namespace PhotoVs.Logic
             if (CheckIfOpaque((tileset, sourceX, sourceY)))
             {
                 m[(mapX, mapY, isMask)] = new KeyList<int>();
+
+                if (!isMask)
+                {
+                    m.Remove((mapX, mapY, true));
+                }
             }
 
             var key = (tileset, material, sourceX, sourceY);
@@ -291,7 +312,7 @@ namespace PhotoVs.Logic
             outputHeight *= _tileSize;
             outputWidth *= _tileSize;
 
-            var _tilePerRow = outputWidth / _tileSize;
+            _tilePerRow = outputWidth / _tileSize;
 
             // now render the big tileset
             var ts = _renderer.CreateRenderTarget(outputWidth, outputHeight);
@@ -314,6 +335,9 @@ namespace PhotoVs.Logic
                     new Rectangle(pos.Item3, pos.Item4, _tileSize, _tileSize),
                     Color.White);
                 }
+                if (!_instructions.ContainsKey(kvp.Key))
+                    _instructions.Add(kvp.Key, (x, y));
+
                 i++;
             }
 
@@ -323,6 +347,47 @@ namespace PhotoVs.Logic
 
             var outName = isMaterial ? "supertileset_mat.png" : "supertileset.png";
             ts.SaveAsPng(Path.Combine(_outputDir, outName));
+        }
+
+        private void CreateTilemaps()
+        {
+            foreach (var kvp in _maps)
+            {
+                CreateTilemap(kvp.Key, kvp.Value);
+            }
+        }
+
+        private void CreateTilemap(Map map, Dictionary<(int, int, bool), KeyList<int>> tiles)
+        {
+            var mapName = map.Properties["name"];
+            var maxX = _maxX[mapName];
+            var maxY = _maxY[mapName];
+
+            maxX = FindNextPoT(maxX);
+            maxY = FindNextPoT(maxY);
+
+            var tm = _renderer.CreateRenderTarget(maxX * 2, maxY);
+            _spriteBatch.GraphicsDevice.SetRenderTarget(tm);
+            _spriteBatch.GraphicsDevice.Clear(Color.Transparent);
+            _spriteBatch.Begin();
+
+            foreach (var t in tiles)
+            {
+                var (x, y, isMask) = t.Key;
+                var sources = t.Value;
+                var (sX , sY) = _instructions[sources];
+
+                _spriteBatch.Draw(_pixelTexture,
+                    new Vector2(x + (isMask ? 0 : maxX), y),
+                    new Color(sX / _tileSize, sY / _tileSize, 0));
+            }
+
+            _spriteBatch.End();
+            _spriteBatch.GraphicsDevice.SetRenderTarget(null);
+
+            var outName = $"maps/{mapName}.png";
+            tm.SaveAsPng(Path.Combine(_outputDir, outName));
+            tm.Dispose();
         }
 
         private IEnumerable<Map> LoadMaps(string inputDir)

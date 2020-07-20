@@ -194,7 +194,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _renderer.RequestSubRenderer(_target);
 
-            _camera.SetZoom(1f);
+            _camera.SetZoom(6f);
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
@@ -376,7 +376,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             var output = _colorGrade.Filter(_spriteBatch, _final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             //_spriteBatch.Draw(_material, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(output, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(_final, Vector2.Zero, Color.White);
             _spriteBatch.DrawString(bold, Enum.GetName(typeof(TimePhase), _gameDate.TimePhase) + "\n" + t, Vector2.Zero,
                 Color.Yellow);
 

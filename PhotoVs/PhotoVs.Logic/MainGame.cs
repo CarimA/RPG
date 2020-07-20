@@ -156,7 +156,7 @@ namespace PhotoVs.Logic
             var mapBaker2 = new MapBaker2(_services, "content/maps/", "content/debug/", 16);
             mapBaker2.Bake();
 
-            _services.Get<IAudio>().PlayBgm("key");
+            //_services.Get<IAudio>().PlayBgm("key");
 
             base.Initialize();
         }
@@ -188,7 +188,7 @@ namespace PhotoVs.Logic
 
         private Renderer CreateRenderer()
         {
-            var renderer = new Renderer(_services, 640, 360, 840, 400);
+            var renderer = new Renderer(_services, 3840, 2160, 5040, 2400); 
 
             renderer.AddFilter(
                 new FunkyFilter(
