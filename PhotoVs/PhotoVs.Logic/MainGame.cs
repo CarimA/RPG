@@ -32,7 +32,7 @@ namespace PhotoVs.Logic
     {
         private readonly IPlatform _platform;
 
-        private readonly EventQueue<GameEvents> _events;
+        private readonly GameEventQueue _events;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly Services _services;
         private IAssetLoader _assetLoader;
@@ -53,7 +53,7 @@ namespace PhotoVs.Logic
             Window.AllowUserResizing = true;
 
             _services = new Services();
-            _events = new EventQueue<GameEvents>();
+            _events = new GameEventQueue();
             _coroutineRunner = new CoroutineRunner();
             _services.Set(_events);
             _services.Set(_coroutineRunner);
@@ -130,8 +130,9 @@ namespace PhotoVs.Logic
                 {
                     new StandardLibraryModule(), // <--- THIS MUST ALWAYS GO FIRST.
 
+                    new GraphicsModule(_services),
                     new EventConditionsModule(_services.Get<Player>()),
-                    new EventTriggersModule(_services.Get<EventQueue<GameEvents>>(), _services.Get<Player>()),
+                    new EventTriggersModule(_services.Get<GameEventQueue>(), _services.Get<Player>()),
                     new SceneMachineModule(_services),
                     new TimingModule(),
                     new DialogueModule(_services.Get<SceneMachine>()),
@@ -227,6 +228,7 @@ namespace PhotoVs.Logic
                 new SProcessInputState(),
                 new SProcessController(),
                 new SProcessKeyboard(),
+                new SRaiseInputEvents(_services)
                 /*new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
                 new STakeScreenshot(GraphicsDevice, _renderer, _spriteBatch,
                     _assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt"),

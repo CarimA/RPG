@@ -7,8 +7,9 @@ using CSCore.Codecs.OGG;
 using CSCore.CoreAudioAPI;
 using CSCore.SoundOut;
 using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Audio;
 
-namespace PhotoVs.Engine.Audio
+namespace PhotoVs.Platform.WindowsDX
 {
     public class CscoreAudio : IAudio, IDisposable
     {

@@ -32,11 +32,23 @@ namespace PhotoVs.Logic.Modules
             interpreter.AddFunction("Player", (Func<string>)GetPlayer);
             interpreter.AddFunction("GameObject", (Func<string, string>)GetGameObjectByName);
             interpreter.AddFunction("GameObjectsByTag", (Func<string, IEnumerable<string>>)GetGameObjectsByTag);
+
             interpreter.AddFunction("_Move", (Func<string, Vector2, float, bool>)Move);
+
             interpreter.AddType<Vector2>("Vector2");
             interpreter.RegisterGlobal("Vector2", (Func<float, float, Vector2>)CreateVector2);
 
+            interpreter.AddFunction("Warp", (Action<string, Vector2>)Warp);
+
             base.DefineApi(interpreter);
+        }
+
+        private void Warp(string gameObjectId, Vector2 position)
+        {
+            var gameObject = _sceneMachine.GameObjects[gameObjectId];
+            var cPosition = gameObject.Components.Get<CPosition>();
+            cPosition.Position = position;
+            cPosition.LastPosition = position;
         }
 
         private Vector2 CreateVector2(float arg1, float arg2)

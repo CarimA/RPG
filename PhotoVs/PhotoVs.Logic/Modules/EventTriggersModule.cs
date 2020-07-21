@@ -11,10 +11,10 @@ namespace PhotoVs.Logic.Modules
 {
     public class EventTriggersModule : Module
     {
-        private readonly EventQueue<GameEvents> _events;
+        private readonly GameEventQueue _events;
         private readonly Player _player;
 
-        public EventTriggersModule(EventQueue<GameEvents> events, Player player)
+        public EventTriggersModule(GameEventQueue events, Player player)
         {
             _events = events;
             _player = player;
@@ -26,6 +26,7 @@ namespace PhotoVs.Logic.Modules
                 throw new ArgumentNullException(nameof(interpreter));
 
             interpreter.AddFunction("Subscribe", (Action<Table>)CreateEvent);
+            interpreter.AddFunction("Notify", (Action<GameEvents, string>)Notify);
 
             interpreter.AddType<GameEvents>("Events");
 
@@ -54,7 +55,7 @@ namespace PhotoVs.Logic.Modules
             if (action == null)
                 throw new ArgumentException("Event cannot be empty");
 
-            var runOnceBool = runOnce as bool? ?? true;
+            var runOnceBool = runOnce as bool? ?? false;
             var runOnceKey = runOnce != null ? (runOnce is bool ? string.Empty : ((DynValue)runOnce).String) : string.Empty;
 
             foreach (var trigger in triggers.Values)
@@ -102,6 +103,11 @@ namespace PhotoVs.Logic.Modules
             });
 
             _events.Subscribe(reservedId, gameEvent, delimiter, action);
+        }
+
+        public void Notify(GameEvents eventKey, string delimiter)
+        {
+            _events.Notify(eventKey, delimiter, null);
         }
     }
 }

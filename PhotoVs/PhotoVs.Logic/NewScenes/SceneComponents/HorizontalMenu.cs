@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Utils.Extensions;
 
-namespace PhotoVs.Logic.Scenes.SceneComponents
+namespace PhotoVs.Logic.NewScenes.SceneComponents
 {
     public class HorizontalMenu : List<MenuItem>
     {

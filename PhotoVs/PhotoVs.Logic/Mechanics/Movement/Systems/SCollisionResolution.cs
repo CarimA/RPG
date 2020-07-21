@@ -24,13 +24,13 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         private Overworld _overworld;
         private SCamera _camera;
-        private readonly EventQueue<GameEvents> _gameEvents;
+        private readonly GameEventQueue _gameEvents;
 
         public SCollisionResolution(Services services)
         {
             _overworld = services.Get<Overworld>();
             _camera = services.Get<SCamera>();
-            _gameEvents = services.Get<EventQueue<GameEvents>>();
+            _gameEvents = services.Get<GameEventQueue>();
         }
 
         public int Priority { get; set; } = -1;

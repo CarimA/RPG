@@ -403,3 +403,41 @@ GameObject {
 
 }
 
+
+
+
+1) Block out dirt + rivers
+2) Place terrain:
+    1) Dark Grass
+    2) Mid Grass
+    3) Light Grass
+    4) Dark Dirt
+3) Place Details
+    1) Dark Grass
+    2) Mid Grass
+    3) Small Flowers
+
+
+
+
+Todo:
+    Automate:
+        - randomising the middle of tall grass
+
+
+        design: lock levels to conditions in groups of 10 and make the previous 10 levels gain boosted exp
+
+experiment with outputting lua tmx maps
+
+
+
+TitleScene = Scene {
+    {
+        Type = 'label',
+        Text = ''
+    },
+    {
+        Type = 'menu',
+        Alignment = 'column'
+    }
+}

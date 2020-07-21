@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PhotoVs.Logic.Scenes.SceneComponents
+namespace PhotoVs.Logic.NewScenes.SceneComponents
 {
     public class MenuItem
     {

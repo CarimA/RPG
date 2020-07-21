@@ -11,6 +11,8 @@
         InteractAreaRun,
         Collision,
         TimePhaseChanged,
-        DayChanged
+        DayChanged,
+        InputActionPressed,
+        InputActionReleased
     }
 }

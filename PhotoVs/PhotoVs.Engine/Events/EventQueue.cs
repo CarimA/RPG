@@ -136,7 +136,7 @@ namespace PhotoVs.Engine.Events
                     continue;
                 }
 
-                Logger.Write.Trace($"Notifying event \"{eventType}\" with type \"{gameEvent.GetType().Name}\" to {subscriptions.Count} listeners.");
+                Logger.Write.Trace($"Notifying event \"{eventType}\" to {subscriptions.Count} listeners.");
 
                 foreach (var sub in subscriptions)
                 {

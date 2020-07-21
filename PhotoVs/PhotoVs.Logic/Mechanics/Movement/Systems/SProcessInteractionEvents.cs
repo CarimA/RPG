@@ -20,7 +20,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     internal class SProcessInteractionEvents : IUpdateableSystem
     {
         private readonly HashSet<GameObject> _enteredScripts;
-        private readonly EventQueue<GameEvents> _events;
+        private readonly GameEventQueue _events;
         private readonly SCamera _camera;
         private readonly Overworld _overworld;
 
@@ -28,7 +28,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         {
             _camera = services.Get<SCamera>();
             _overworld = services.Get<Overworld>();
-            _events = services.Get<EventQueue<GameEvents>>();
+            _events = services.Get<GameEventQueue>();
             _enteredScripts = new HashSet<GameObject>();
         }
 

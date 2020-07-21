@@ -20,8 +20,16 @@ namespace PhotoVs.Logic.Modules
 
             interpreter.AddFunction("Lock", (Action)LockMovement);
             interpreter.AddFunction("Unlock", (Action)UnlockMovement);
+            interpreter.AddFunction("Flag", (Func<string, bool?, bool>)Flag);
+            interpreter.AddFunction("Var", (Func<string, IComparable, object>)Var);
+            interpreter.AddFunction("Save", (Action)Save);
 
             base.DefineApi(interpreter);
+        }
+
+        private void Save()
+        {
+            _player.PlayerData.Save();
         }
 
         private void UnlockMovement()
@@ -32,6 +40,28 @@ namespace PhotoVs.Logic.Modules
         private void LockMovement()
         {
             _player.LockMovement();
+        }
+
+        private bool Flag(string flag, bool? value = null)
+        {
+            if (value.HasValue)
+            {
+                _player.PlayerData.SetFlag(flag, value.Value);
+                return value.Value;
+            }
+            else
+                return _player.PlayerData.GetFlag(flag);
+        }
+
+        private object Var(string flag, IComparable value = null)
+        {
+            if (value != null)
+            {
+                _player.PlayerData.SetVariable(flag, value);
+                return value;
+            }
+            else
+                return _player.PlayerData.GetVariable(flag);
         }
     }
 }

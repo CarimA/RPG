@@ -10,7 +10,7 @@ namespace PhotoVs.Logic.Mechanics.World
 {
     public class GameDate
     {
-        private EventQueue<GameEvents> _eventQueue;
+        private GameEventQueue _eventQueue;
 
         private float _time;
         private TimeSpan _dayLength;
@@ -56,7 +56,7 @@ namespace PhotoVs.Logic.Mechanics.World
 
         public GameDate(Services services)
         {
-            _eventQueue = services.Get<EventQueue<GameEvents>>();
+            _eventQueue = services.Get<GameEventQueue>();
             _time = 0;
             SetDayLength(TimeSpan.FromSeconds(24));
             _timeIsFlowing = true;

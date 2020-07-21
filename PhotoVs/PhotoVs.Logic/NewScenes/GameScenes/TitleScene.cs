@@ -7,7 +7,7 @@ using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
-using PhotoVs.Logic.Scenes.SceneComponents;
+using PhotoVs.Logic.NewScenes.SceneComponents;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Extensions;
 
