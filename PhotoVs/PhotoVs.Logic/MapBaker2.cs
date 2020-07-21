@@ -229,6 +229,44 @@ namespace PhotoVs.Logic
                     m.Remove((mapX, mapY, true));
                 }
             }
+            else
+            {
+                // check if it occludes everything underneath it
+                var tileData = GetTextureData(tileset, new Rectangle(sourceX, sourceY, _tileSize, _tileSize));
+                var isOccluded = true;
+
+                // we look at only the transparent segments and see if anything underneath has a pixel there.
+                // if it's also 100% transparent in the same spots
+                foreach (var i in m[(mapX, mapY, isMask)])
+                {
+                    var source = _sourceCache[i];
+                    var testData = GetTextureData(source.Item1,
+                        new Rectangle(source.Item3, source.Item4, _tileSize, _tileSize));
+
+                    for (var c = 0; c < tileData.Length; c++)
+                    {
+                        var main = tileData[c];
+                        var test = testData[c];
+
+                        if (main.A == byte.MaxValue)
+                            continue;
+
+                        if (test.A == byte.MinValue)
+                            continue;
+
+                        isOccluded = false;
+                        break;
+                    }
+
+                    if (!isOccluded)
+                        break;
+                }
+
+                if (isOccluded)
+                {
+                    m[(mapX, mapY, isMask)] = new KeyList<int>();
+                }
+            }
 
             var key = (tileset, material, sourceX, sourceY);
             var index = _sourceCache.FindIndex(s => s.Equals(key));
@@ -279,7 +317,7 @@ namespace PhotoVs.Logic
 
         private void Deduplicate()
         {
-            //Dictionary<(int, int, bool), List<int>>>
+            var toUpdate = new List<(Map, (int, int, bool), KeyList<int>)>();
 
             // run through maps and convert into a usable format
             foreach (var kvp in _maps)
@@ -298,19 +336,121 @@ namespace PhotoVs.Logic
                     _dedupe[list].Add((map, tileInfo.Item1, tileInfo.Item2, tileInfo.Item3));
                 }
             }
+
+            // get combination of dedupe list
+            /*var combinations = new Dictionary<int, (KeyValuePair<KeyList<int>, List<(Map, int, int, bool)>>,
+                KeyValuePair<KeyList<int>, List<(Map, int, int, bool)>>)>();
+            var removedCount = 0;
+
+            foreach (var a in _dedupe)
+            {
+                foreach (var b in _dedupe)
+                {
+                    if (a.Equals(b))
+                        continue;
+
+                    var key = (a, b);
+
+                    if (combinations.ContainsKey(key.GetHashCode()))
+                        continue;
+
+                    if (combinations.ContainsKey((b, a).GetHashCode()))
+                        continue;
+
+                    combinations.Add(key.GetHashCode(), key);
+                }
+            }
+
+            // run through the combinations and compare stuff
+            foreach (var kvp in combinations)
+            {
+                var a = kvp.Value.Item1;
+                var b = kvp.Value.Item2;
+
+                // check that both are still actually present in dedupe
+                if (!_dedupe.ContainsKey(a.Key) || !_dedupe.ContainsKey(b.Key))
+                    continue;
+                
+                var tileA = Enumerable.Repeat(Color.Transparent, _tileSize * _tileSize).ToArray();
+                var tileB = Enumerable.Repeat(Color.Transparent, _tileSize * _tileSize).ToArray();
+
+                foreach (var i in a.Key)
+                {
+                    var ai = _sourceCache[i];
+                    var ac = GetTextureData(ai.Item1,
+                        new Rectangle(ai.Item3, ai.Item4, _tileSize, _tileSize));
+
+                    for (var p = 0; p < tileA.Length; p++)
+                    {
+                        if (ac[p] != Color.Transparent)
+                            tileA[p] = ac[p];
+                    }
+                }
+
+                foreach (var i in b.Key)
+                {
+                    var bi = _sourceCache[i];
+                    var bc = GetTextureData(bi.Item1,
+                        new Rectangle(bi.Item3, bi.Item4, _tileSize, _tileSize));
+
+                    for (var q = 0; q < tileB.Length; q++)
+                    {
+                        if (bc[q] != Color.Transparent)
+                            tileB[q] = bc[q];
+                    }
+                }
+
+                if (tileA.SequenceEqual(tileB) || a.Equals(b))
+                {
+                    // it's a duplicate! remove b from both _dedupe and _instructions and update _maps
+
+                    foreach (var kvp2 in _maps)
+                    {
+                        foreach (var kvp3 in kvp2.Value)
+                        {
+                            if (kvp3.Value.SequenceEqual(b.Key))
+                                toUpdate.Add((kvp2.Key, kvp3.Key, a.Key));
+                        }
+                    }
+
+                    _dedupe[a.Key].AddRange(_dedupe[b.Key]);
+                    _dedupe.Remove(b.Key);
+                    removedCount++;
+                }
+
+            }
+
+            foreach (var u in toUpdate)
+            {
+                if (_dedupe.ContainsKey(u.Item3))
+                    _maps[u.Item1][u.Item2] = u.Item3;
+            }
+
+            Console.WriteLine($"Removed {removedCount} duplicates.");*/
         }
 
         private void CreateSupertileset(bool isMaterial)
         {
-            var rows = _dedupe.Count();
-            var outputHeight = Math.Min(FindNextPoT(rows / _tileSize), _maxOutputHeight / _tileSize);
-            var outputWidth = FindNextPoT((rows / outputHeight));
+            var tiles = _dedupe.Count;
+            var outputWidth = 1;
+            var outputHeight = 1;
+            var alternator = false;
 
-            if (outputWidth > _maxOutputWidth)
-                throw new Exception("Too many tiles! How tf did you manage to do that?");
+            while ((outputWidth * outputHeight) < tiles)
+            {
+                if (alternator)
+                    outputWidth *= 2;
+                else
+                    outputHeight *= 2;
 
-            outputHeight *= _tileSize;
+                alternator = !alternator;
+            }
+
             outputWidth *= _tileSize;
+            outputHeight *= _tileSize;
+
+            if (outputWidth > _maxOutputWidth || outputHeight > _maxOutputHeight)
+                throw new Exception("Too many tiles! How tf did you manage to do that?");
 
             _tilePerRow = outputWidth / _tileSize;
 
@@ -321,13 +461,16 @@ namespace PhotoVs.Logic
 
             _spriteBatch.Begin();
 
+            var copy = _dedupe.Keys.ToList();
+            copy = copy.Distinct().ToList();
+
             var i = 0;
-            foreach (var kvp in _dedupe)
+            foreach (var key in copy)
             {
                 var x = _tileSize * (i % _tilePerRow);
                 var y = _tileSize * (i / _tilePerRow);
 
-                foreach (var index in kvp.Key)
+                foreach (var index in key)
                 {
                     var pos = _sourceCache[index];
                     _spriteBatch.Draw(isMaterial ? pos.Item2 : pos.Item1,
@@ -335,8 +478,8 @@ namespace PhotoVs.Logic
                     new Rectangle(pos.Item3, pos.Item4, _tileSize, _tileSize),
                     Color.White);
                 }
-                if (!_instructions.ContainsKey(kvp.Key))
-                    _instructions.Add(kvp.Key, (x, y));
+                if (!_instructions.ContainsKey(key))
+                    _instructions.Add(key, (x, y));
 
                 i++;
             }
@@ -375,7 +518,8 @@ namespace PhotoVs.Logic
             {
                 var (x, y, isMask) = t.Key;
                 var sources = t.Value;
-                var (sX , sY) = _instructions[sources];
+
+                var (sX, sY) = _instructions[sources];
 
                 _spriteBatch.Draw(_pixelTexture,
                     new Vector2(x + (isMask ? 0 : maxX), y),

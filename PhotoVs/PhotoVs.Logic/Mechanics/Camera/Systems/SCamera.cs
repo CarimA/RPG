@@ -7,6 +7,7 @@ using PhotoVs.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.Camera.Systems
 {
@@ -14,15 +15,12 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
     {
         private readonly Random _random;
         private readonly Renderer _renderer;
-        private readonly List<ScreenShake> _shakes;
 
         private bool _isDirty;
         private Vector2 _lastPosition;
 
         private Vector2 _lerpPosition;
         private float _lerpZoom;
-        private Vector2 _lookDirection;
-        private float _permanentShake;
         private Vector2 _position;
         private float _rotate;
         private GameObject _target;
@@ -37,7 +35,6 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             _isDirty = false;
             _zoom = 1f;
             _rotate = 0f;
-            _shakes = new List<ScreenShake>();
             _random = new Random();
         }
 
@@ -47,12 +44,10 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
         public void BeforeUpdate(GameTime gameTime)
         {
-            UpdateShakes(gameTime);
             CheckPositionChanged();
             UpdateLerp(gameTime);
-            UpdateLookDirection();
 
-            if (_isDirty || _shakes.Count > 0)
+            if (_isDirty)
                 UpdateCamera();
         }
 
@@ -62,34 +57,6 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
         public void AfterUpdate(GameTime gameTime)
         {
-        }
-
-        private void UpdateShakes(GameTime gameTime)
-        {
-            _shakes.ForEach(UpdateShake(gameTime));
-            _shakes.RemoveAll(RemoveDeadShake);
-        }
-
-        private Action<ScreenShake> UpdateShake(GameTime gameTime)
-        {
-            var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            return tuple => tuple.Duration -= dt;
-        }
-
-
-        private bool RemoveDeadShake(ScreenShake shake)
-        {
-            return shake.Duration <= 0f;
-        }
-
-        private float ShakeIntensity()
-        {
-            return _shakes.Sum(ShakeSum) + _permanentShake;
-        }
-
-        private float ShakeSum(ScreenShake tuple)
-        {
-            return tuple.GetIntensity();
         }
 
         private void CheckPositionChanged()
@@ -118,26 +85,16 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
         {
             if (Math.Abs(_zoom - _lerpZoom) > 0f)
             {
-                _lerpZoom = MathHelper.Lerp(_lerpZoom, _zoom, 0.25f);
+                _lerpZoom = MathHelper.Lerp(_lerpZoom, _zoom, 1f * gameTime.GetElapsedSeconds());
                 _isDirty = true;
             }
 
-            if (Vector2.Distance(_position + _lookDirection, _lerpPosition) > 0.5)
+            //int lookDistance = 120;
+            if (Vector2.Distance(_position, _lerpPosition) > 0.5)
             {
-                _lerpPosition = Vector2.Lerp(_lerpPosition, _position, 0.25f);
+                _lerpPosition = Vector2.Lerp(_lerpPosition, _position, 5f * gameTime.GetElapsedSeconds());
                 _isDirty = true;
             }
-        }
-
-        private void UpdateLookDirection()
-        {
-            var lastLook = _lookDirection;
-            _lookDirection = (_position - _lastPosition) * 8;
-
-            if (Vector2.Distance(lastLook, _lookDirection) < 1)
-                return;
-
-            _isDirty = true;
         }
 
         public void Set(List<Vector2> points)
@@ -181,11 +138,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
         private void UpdateCamera()
         {
-            var intensity = ShakeIntensity();
             _transform = Matrix.CreateTranslation(new Vector3(-_lerpPosition.X, -_lerpPosition.Y, 0)) *
-                         Matrix.CreateTranslation(new Vector3(
-                             -((float)(_random.NextDouble() * intensity * 2) - intensity),
-                             -((float)(_random.NextDouble() * intensity * 2) - intensity), 0)) *
                          Matrix.CreateScale(new Vector3(_lerpZoom, _lerpZoom, 1)) *
                          Matrix.CreateTranslation(new Vector3(_renderer.GameWidth / 2,
                              _renderer.GameHeight / 2,
@@ -212,16 +165,6 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
             _rotate = rotate % (MathHelper.Pi * 2);
             _isDirty = true;
-        }
-
-        public void Shake(float intensity, float duration)
-        {
-            _shakes.Add(new ScreenShake(intensity, duration));
-        }
-
-        public void Shake(float intensity)
-        {
-            _permanentShake = intensity;
         }
 
         public void Follow(GameObject target)

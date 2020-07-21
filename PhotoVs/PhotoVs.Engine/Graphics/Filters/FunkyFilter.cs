@@ -52,7 +52,7 @@ namespace PhotoVs.Engine.Graphics.Filters
             _colorBParam.SetValue(colorB.ToVector4());
             _colorCParam.SetValue(colorC.ToVector4());
 
-            _pulseParam.SetValue(15f);
+            _pulseParam.SetValue(6f);
         }
 
         public RenderTarget2D Filter(SpriteBatch spriteBatch, Texture2D inputTexture)

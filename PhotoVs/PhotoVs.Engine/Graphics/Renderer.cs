@@ -50,9 +50,6 @@ namespace PhotoVs.Engine.Graphics
 
         public void Draw(GameTime gameTime)
         {
-            var width = _graphics.PreferredBackBufferWidth;
-            var height = _graphics.PreferredBackBufferHeight;
-
             var copy = _mainRenderTarget;
             foreach (var filter in _filters)
             {

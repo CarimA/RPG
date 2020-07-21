@@ -142,7 +142,7 @@ namespace PhotoVs.Logic
 
             _world = new Overworld(_spriteBatch, _assetLoader);
             _world.LoadMaps("maps/");
-            _world.SetMap("test");
+            _world.SetMap("novalondinium");
             _services.Set(_world);
 
             _services.Get<Player>()
@@ -153,8 +153,8 @@ namespace PhotoVs.Logic
             //var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
             //mapBaker.Bake("content/maps/", "content/debug/");
 
-            var mapBaker2 = new MapBaker2(_services, "content/maps/", "content/debug/", 16);
-            mapBaker2.Bake();
+            //var mapBaker2 = new MapBaker2(_services, "content/maps/", "content/debug/", 16);
+            //mapBaker2.Bake();
 
             //_services.Get<IAudio>().PlayBgm("key");
 
