@@ -28,6 +28,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
         private Matrix _transform = Matrix.Identity;
         public Matrix Transform => _transform;
         private float _zoom;
+        public float Zoom => _zoom;
 
         public SCamera(Renderer renderer)
         {
@@ -152,9 +153,9 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             if (_zoom == zoom)
                 return;
 
-            var max = 4f;
-            var min = 0.5f;
-            _zoom = zoom; //Math.Min(max, Math.Max(min, zoom));
+            var max = 10f;
+            var min = 0.1f;
+            _zoom = Math.Min(max, Math.Max(min, zoom));
             _isDirty = true;
         }
 

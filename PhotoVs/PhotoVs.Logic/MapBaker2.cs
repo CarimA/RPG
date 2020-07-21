@@ -47,6 +47,8 @@ namespace PhotoVs.Logic
 
         private readonly Dictionary<KeyList<int>, (int, int)> _instructions;
 
+        private Dictionary<string, int> _minX;
+        private Dictionary<string, int> _minY;
         private Dictionary<string, int> _maxX;
         private Dictionary<string, int> _maxY;
 
@@ -78,6 +80,8 @@ namespace PhotoVs.Logic
             _opaqueCache = new Dictionary<(Texture2D, int, int), bool>();
             _maxX = new Dictionary<string, int>();
             _maxY = new Dictionary<string, int>();
+            _minX = new Dictionary<string, int>();
+            _minY = new Dictionary<string, int>();
             _textureDataCache = new Dictionary<Texture2D, Color[]>();
             _instructions = new Dictionary<KeyList<int>, (int, int)>();
         }
@@ -279,16 +283,29 @@ namespace PhotoVs.Logic
             m[(mapX, mapY, isMask)].Add(index);
 
             if (!_maxX.ContainsKey(mapName))
-                _maxX.Add(mapName, 0);
+                _maxX.Add(mapName, int.MinValue);
 
             if (!_maxY.ContainsKey(mapName))
-                _maxY.Add(mapName, 0);
+                _maxY.Add(mapName, int.MinValue);
 
             if (mapX > _maxX[mapName])
                 _maxX[mapName] = mapX;
 
             if (mapY > _maxY[mapName])
                 _maxY[mapName] = mapY;
+
+
+            if (!_minX.ContainsKey(mapName))
+                _minX.Add(mapName, int.MaxValue);
+
+            if (!_minY.ContainsKey(mapName))
+                _minY.Add(mapName, int.MaxValue);
+
+            if (mapX < _minX[mapName])
+                _minX[mapName] = mapX;
+
+            if (mapY < _minY[mapName])
+                _minY[mapName] = mapY;
         }
 
         private bool CheckIfTransparent((Texture2D, int, int) index)
@@ -503,13 +520,15 @@ namespace PhotoVs.Logic
         private void CreateTilemap(Map map, Dictionary<(int, int, bool), KeyList<int>> tiles)
         {
             var mapName = map.Properties["name"];
+            var minX = _minX[mapName];
+            var minY = _minY[mapName];
             var maxX = _maxX[mapName];
             var maxY = _maxY[mapName];
 
-            maxX = FindNextPoT(maxX);
-            maxY = FindNextPoT(maxY);
+            var sizeX = FindNextPoT(maxX - minX);
+            var sizeY = FindNextPoT(maxY - minY);
 
-            var tm = _renderer.CreateRenderTarget(maxX * 2, maxY);
+            var tm = _renderer.CreateRenderTarget(sizeX * 2, sizeY);
             _spriteBatch.GraphicsDevice.SetRenderTarget(tm);
             _spriteBatch.GraphicsDevice.Clear(Color.Transparent);
             _spriteBatch.Begin();
@@ -522,7 +541,7 @@ namespace PhotoVs.Logic
                 var (sX, sY) = _instructions[sources];
 
                 _spriteBatch.Draw(_pixelTexture,
-                    new Vector2(x + (isMask ? 0 : maxX), y),
+                    new Vector2(x + (isMask ? 0 : sizeX) - minX, y - minY),
                     new Color(sX / _tileSize, sY / _tileSize, 0));
             }
 

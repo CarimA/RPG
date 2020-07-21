@@ -144,6 +144,7 @@ namespace PhotoVs.Logic
             _world.LoadMaps("maps/");
             _world.SetMap("novalondinium");
             _services.Set(_world);
+            _camera.SetZoom(2560f / 640f);
 
             _services.Get<Player>()
                 .PlayerData.Position.Position = new Vector2(8400, 6000);
@@ -169,7 +170,7 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new TextTypeLoader())
                 .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new SpriteFontTypeLoader(GraphicsDevice, assetLoader))
-                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(32))
+                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(120))
                 .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;
@@ -188,7 +189,8 @@ namespace PhotoVs.Logic
 
         private Renderer CreateRenderer()
         {
-            var renderer = new Renderer(_services, 3840, 2160, 5040, 2400); 
+            var renderer = new Renderer(_services, 2560, 1440, 3360, 1600);
+                //3840, 2160, 5040, 2400); 
 
             renderer.AddFilter(
                 new FunkyFilter(

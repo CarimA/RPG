@@ -12,6 +12,7 @@ using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
 using System;
+using SpriteFontPlus;
 
 namespace PhotoVs.Logic.Mechanics.World.Systems
 {
@@ -41,26 +42,23 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private RenderTarget2D _water;
         private RenderTarget2D _combinedWater;
         private RenderTarget2D _waterDisplace;
-        private RenderTarget2D _windDisplace;
         private RenderTarget2D _final;
         private Effect _waterReflectionEffect;
         private Effect _waterEffect;
         private Effect _displaceEffect;
-        private Effect _windEffect;
         private Effect _tilemapEffect;
         private Renderer _renderer;
-        private Wind _wind;
-        private Vector2 _windDir;
         private Texture2D _noiseA;
         private Texture2D _noiseB;
         private Texture2D _displacementTexture;
         private Texture2D _displacementTexture2;
         private Texture2D _tilemapTexture;
         private Texture2D _indexTexture;
+        private Texture2D _indexMaterialTexture;
 
         private Texture2D _checkerboardTexture;
         private CPosition _playerPosition;
-        private SpriteFont bold;
+        private DynamicSpriteFont bold;
 
         public SRenderOverworld(Services services)
         {
@@ -73,9 +71,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _playerPosition = services.Get<Player>().PlayerData.Position;
 
             _gameDate = new GameDate(services);
-            bold = assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt");
-
-            _wind = new Wind();
+            bold = assetLoader.Get<DynamicSpriteFont>("ui/fonts/bahnschrift.ttf");
 
             _colorAverager = new ColorAverager(services.Get<Renderer>(),
                 assetLoader.Get<Effect>("shaders/average.fx"));
@@ -85,11 +81,10 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _waterReflectionEffect = assetLoader.Get<Effect>("shaders/water_reflection.fx");
             _waterEffect = assetLoader.Get<Effect>("shaders/water.fx");
             _displaceEffect = assetLoader.Get<Effect>("shaders/displace.fx");
-            _windEffect = assetLoader.Get<Effect>("shaders/wind.fx");
-
 
             _tilemapTexture = assetLoader.Get<Texture2D>("debug/outmap.png");
             _indexTexture = assetLoader.Get<Texture2D>("debug/outts.png");
+            _indexMaterialTexture = assetLoader.Get<Texture2D>("debug/outts_mat.png");
             _tilemapEffect = assetLoader.Get<Effect>("shaders/tilemap.fx");
 
             _noiseA = assetLoader.Get<Texture2D>("ui/noise.png");
@@ -125,12 +120,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
-
-
             var cameraRect = _camera.VisibleArea();
             var tPos = (new Vector2(cameraRect.Left, cameraRect.Top));
-
-            _wind.Update(gameTime);
 
             if (_target == null || _target.Width != _renderer.GameWidth ||
                 _target.Height != _renderer.GameHeight)
@@ -145,7 +136,6 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                     new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
                 _waterDisplace =
                     new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-                _windDisplace = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
             }
 
             _gameDate.Update(gameTime);
@@ -162,10 +152,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             throttleRender -= gameTime.GetElapsedSeconds();
             if (throttleRender <= 0f)
             {
-                var frametime = 1f / 14f;
+                var frametime = gameTime.GetElapsedSeconds(); // 1f / 14f;
                 throttleRender = frametime;
-
-                _windDir = _wind.Direction * _wind.Progress();
 
                 waterA -= new Vector2(.53f, 2.40f) * frametime;
                 waterB -= new Vector2(.12f, -4.2f) * frametime;
@@ -174,27 +162,11 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
 
 
-            /*_renderer.RequestSubRenderer(_material);
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
-                transformMatrix: _camera.Transform);
-
-            _overworld.GetMap()
-                .DrawMaterial(_spriteBatch,
-                    gameTime,
-                    _camera,
-                    EntityDraw);
-
-            _spriteBatch.End();
-
-            _renderer.RelinquishSubRenderer();*/
-
-
 
 
             _renderer.RequestSubRenderer(_target);
 
-            _camera.SetZoom(6f);
+            
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
@@ -223,6 +195,48 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 new Rectangle(_tilemapTexture.Width / 2, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
                 Color.White);
             
+            /*_overworld.GetMap()
+                .Draw(_spriteBatch,
+                    gameTime,
+                    _camera,
+                    EntityDraw);*/
+
+            _spriteBatch.End();
+
+            _renderer.RelinquishSubRenderer();
+
+
+
+
+
+            _renderer.RequestSubRenderer(_material);
+
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp,
+                transformMatrix: _camera.Transform);
+
+
+            //_tilemapEffect.Parameters["MatrixTransform"].SetValue(_camera.Transform);
+            _tilemapEffect.Parameters["Texture"].SetValue(_tilemapTexture);
+            _tilemapEffect.Parameters["texIndex"].SetValue(_indexMaterialTexture);
+            //_tilemapEffect.Parameters["viewSize"].SetValue(new Vector2(_renderer.GameWidth, _renderer.GameHeight));
+            //_tilemapEffect.Parameters["viewOffset"].SetValue(new Vector2(cameraRect.Left, cameraRect.Top));
+            _tilemapEffect.Parameters["tileSize"].SetValue(new Vector2(tileSize, tileSize));
+            _tilemapEffect.Parameters["inverseIndexTexSize"].SetValue(new Vector2(1f / _indexTexture.Width, 1f / _indexTexture.Height));
+            _tilemapEffect.Parameters["mapSize"].SetValue(new Vector2((_tilemapTexture.Width) * tileSize, _tilemapTexture.Height * tileSize));
+
+            _tilemapEffect.CurrentTechnique.Passes[0].Apply();
+
+            _spriteBatch.Draw(_tilemapTexture,
+                new Rectangle(0, 0, (int)((_tilemapTexture.Width / 2) * tileSize), (int)(_tilemapTexture.Height * tileSize)),
+                new Rectangle(0, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
+                Color.White);
+
+
+            _spriteBatch.Draw(_tilemapTexture,
+                new Rectangle(0, 0, (_tilemapTexture.Width / 2) * tileSize, _tilemapTexture.Height * tileSize),
+                new Rectangle(_tilemapTexture.Width / 2, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
+                Color.White);
+
             /*_overworld.GetMap()
                 .Draw(_spriteBatch,
                     gameTime,
@@ -338,31 +352,10 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
 
 
-            /*_renderer.RequestSubRenderer(_windDisplace);
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
-            _windEffect.Parameters["Texture"].SetValue(_checkerboardTexture);
-           // _windEffect.Parameters["texNoise"].SetValue(_noiseB);
-            _windEffect.Parameters["texMask"].SetValue(_material);
-        _windEffect.Parameters["time"].SetValue(time);
-            _windEffect.Parameters["waveSpeed"].SetValue(1f);
-            _windEffect.Parameters["waveFreq"].SetValue(0.1f);
-            _windEffect.Parameters["windDir"].SetValue(_windDir);
-        _windEffect.Parameters["waveAmp"].SetValue(1f / _windDisplace.Height * 2f);
-        _windEffect.Parameters["texelSize"].SetValue(new Vector2(1f / _windDisplace.Width, 1f / _windDisplace.Height));
-        _windEffect.Parameters["offset"]
-                .SetValue(new Vector2(((tPos.X) % _material.Width) / _material.Width, ((tPos.Y) % _material.Height) / _material.Height));
-        _windEffect.Parameters["texelSize"].SetValue(new Vector2(1f / _windDisplace.Width, 1f / _windDisplace.Height));
-        _windEffect.CurrentTechnique.Passes[0].Apply();
-            _renderer.SpriteBatch.Draw(_target, Vector2.Zero, Color.White);
-            _renderer.SpriteBatch.End();
-            _renderer.RelinquishSubRenderer();*/
-
-
 
             _renderer.RequestSubRenderer(_final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             _spriteBatch.Draw(_target, Vector2.Zero, Color.White);
-            //_spriteBatch.Draw(_water, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.5f);
             _spriteBatch.Draw(_waterDisplace, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(_combinedWater, Vector2.Zero, Color.White);
