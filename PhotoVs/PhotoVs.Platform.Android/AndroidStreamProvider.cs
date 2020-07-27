@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace PhotoVs.Platform.Android
 {
@@ -12,73 +13,60 @@ namespace PhotoVs.Platform.Android
     {
         private readonly AssetManager _assetManager;
 
+        public string ContentDirectory { get; }
+        public string StorageDirectory { get; }
+
         public AndroidStreamProvider(AssetManager assetManager)
         {
             _assetManager = assetManager;
             StorageDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            CreateDirectory(DataLocation.Storage, "");
+            CreateDirectory(DataLocation.Storage, "\\Saves\\");
+            CreateDirectory(DataLocation.Storage, "\\Saves\\Save1\\");
+            CreateDirectory(DataLocation.Storage, "\\Saves\\Save2\\");
+            CreateDirectory(DataLocation.Storage, "\\Saves\\Save3\\");
+            CreateDirectory(DataLocation.Storage, "\\Mods\\");
+            CreateDirectory(DataLocation.Storage, "\\Screenshots\\");
+            CreateDirectory(DataLocation.Storage, "\\Logs\\");
         }
 
-
-        public IEnumerable<string> GetFiles(string directory)
-        {
-            directory = Sanitise(directory);
-            directory = RemoveTrailingSlash(RootDirectory + directory);
-            var results = _assetManager.List(directory);
-            return results
-                .ToList()
-                .Select(asset => directory + "/" + asset)
-                .Where(IsFile);
-        }
-
-        public IEnumerable<string> GetDirectories(string directory)
-        {
-            directory = Sanitise(directory);
-            directory = RemoveTrailingSlash(RootDirectory + directory);
-            var list = _assetManager.List(RootDirectory + directory).ToList();
-            var results = list
-                .Select(asset => directory + "/" + asset)
-                .Where(IsDirectory);
-            return results;
-        }
-
-        private bool IsFile(string filepath)
-        {
-            var result = !IsDirectory(filepath);
-            return result;
-        }
-
-        private bool IsDirectory(string filepath)
-        {
-            var result = _assetManager.List(filepath);
-            return result.Length > 0;
-        }
-
-        private string Sanitise(string input)
-        {
-            return input.Replace('\\', '/');
-        }
-
-        private string RemoveTrailingSlash(string input)
-        {
-            if (input.Last() == '/')
-            {
-                return input.Substring(0, input.LastIndexOf('/'));
-            }
-
-            return input;
-        }
-
-        public string RootDirectory { get; }
-        public string ContentDirectory { get; }
-        public string StorageDirectory { get; }
         public void Write(DataLocation location, string filepath, Stream stream)
         {
-            throw new NotImplementedException();
+            if (location == DataLocation.Storage)
+            {
+                using var ms = new MemoryStream();
+                stream.CopyTo(ms);
+                File.WriteAllBytes(StorageDirectory + location, ms.ToArray());
+            }
         }
 
         public Stream Read(DataLocation location, string filepath)
         {
-            throw new NotImplementedException();
+            if (location == DataLocation.Storage)
+            {
+                var bytes = File.ReadAllBytes(StorageDirectory + location);
+                var ms = new MemoryStream(bytes);
+                return ms;
+            }
+            else if (location == DataLocation.Content)
+            {
+                //var test = debugasset(_assetManager, "content").ToList(); //.List("/assets");
+                return _assetManager.Open("content/" + filepath);
+            }
+
+            throw new NotSupportedException();
+        }
+
+        private IEnumerable<string> debugasset(AssetManager asset, string folder)
+        {
+            var a = asset.List(folder);
+
+            foreach (var s in a)
+            {
+                yield return s;
+                debugasset(asset, s);
+            }
         }
 
         public void Delete(DataLocation location, string filepath)
@@ -108,12 +96,35 @@ namespace PhotoVs.Platform.Android
 
         public void CreateDirectory(DataLocation location, string directory)
         {
-            throw new NotImplementedException();
+            if (location == DataLocation.Storage)
+            {
+                Directory.CreateDirectory(StorageDirectory + "/" + directory);
+            }
         }
 
         public IEnumerable<string> EnumerateFiles(DataLocation location, string directory)
         {
-            throw new NotImplementedException();
+            if (location == DataLocation.Content)
+            {
+                directory = Sanitise(directory);
+                directory = RemoveTrailingSlash(directory);
+                var results = _assetManager.List("content/" + directory);
+                return results
+                    .ToList()
+                    .Select(asset => directory + "/" + asset)
+                    .Where(IsFile);
+            }
+            else if (location == DataLocation.Storage)
+            {
+                if (!Directory.Exists(StorageDirectory + "/" + directory))
+                {
+                    Directory.CreateDirectory(StorageDirectory + "/" + directory);
+                }
+
+                return Directory.EnumerateFiles(StorageDirectory + "/" + directory);
+            }
+
+            throw new NotSupportedException();
         }
 
         public IEnumerable<string> EnumerateDirectories(DataLocation location, string directory)
@@ -124,6 +135,33 @@ namespace PhotoVs.Platform.Android
         public string GetFilepath(DataLocation location, string filepath)
         {
             throw new NotImplementedException();
+        }
+
+        private bool IsFile(string filepath)
+        {
+            var result = !IsDirectory(filepath);
+            return result;
+        }
+
+        private bool IsDirectory(string filepath)
+        {
+            var result = _assetManager.List(filepath);
+            return result.Length > 0;
+        }
+
+        private string Sanitise(string input)
+        {
+            return input.Replace('\\', '/');
+        }
+
+        private string RemoveTrailingSlash(string input)
+        {
+            if (input.Last() == '/')
+            {
+                return input.Substring(0, input.LastIndexOf('/'));
+            }
+
+            return input;
         }
     }
 }

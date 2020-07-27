@@ -33,6 +33,9 @@ namespace PhotoVs.Logic.Mechanics.World
 
         private void LoadMap(string filepath)
         {
+            if (!filepath.EndsWith("tmx"))
+                return;
+
             var name = filepath.Replace('\\', '/');
             if (name.Contains("/"))
             {

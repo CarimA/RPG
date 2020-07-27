@@ -3,6 +3,7 @@ Subscribe {
   RunOnce = true,
   Event = function ()
     PushScene('controller')
+    --Notify(Events.InteractAreaExit, 'example_event')
   end
 }
 
@@ -24,5 +25,12 @@ Subscribe {
     Say('debugger', 'it took {# Yellow}' .. tick .. ' ticks{/#} to walk through.')
     Move(Player(), Vector2(0, 0), 100)
     Unlock()
+  end
+}
+
+Subscribe {
+  Triggers = { Trigger(Events.InputActionPressed, 'Fullscreen') },
+  Event = function ()
+    ToggleFullscreen()
   end
 }

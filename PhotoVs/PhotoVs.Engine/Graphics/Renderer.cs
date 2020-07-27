@@ -23,6 +23,8 @@ namespace PhotoVs.Engine.Graphics
         private readonly List<IFilter> _filters;
 
         private Rectangle _display;
+        private int _windowHeight;
+        private int _windowWidth;
 
         private RenderTarget2D _mainRenderTarget;
         private RenderTarget2D _tempRenderTarget;
@@ -98,6 +100,28 @@ namespace PhotoVs.Engine.Graphics
             SpriteBatch.Begin();
             SpriteBatch.Draw(_tempRenderTarget, Vector2.Zero, Color.White);
             SpriteBatch.End();
+        }
+
+        public void ToggleFullscreen()
+        {
+            _window.ClientSizeChanged -= UpdateDisplay;
+
+            if (_graphics.IsFullScreen)
+            {
+                _graphics.PreferredBackBufferWidth = _windowWidth;
+                _graphics.PreferredBackBufferHeight = _windowHeight;
+            }
+            else
+            {
+                _windowWidth = GraphicsDevice.PresentationParameters.Bounds.Width;
+                _windowHeight = GraphicsDevice.PresentationParameters.Bounds.Height;
+                _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+                _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            }
+
+            _graphics.IsFullScreen = !_graphics.IsFullScreen;
+            _graphics.ApplyChanges();
+            UpdateDisplay(null, null);
         }
 
         private void UpdateDisplay(object sender, EventArgs e)

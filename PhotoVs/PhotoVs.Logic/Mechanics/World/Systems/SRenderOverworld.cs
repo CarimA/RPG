@@ -71,7 +71,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _playerPosition = services.Get<Player>().PlayerData.Position;
 
             _gameDate = new GameDate(services);
-            bold = assetLoader.Get<DynamicSpriteFont>("ui/fonts/bahnschrift.ttf");
+            bold = assetLoader.Get<DynamicSpriteFont>("ui/fonts/ubuntu.ttf");
 
             _colorAverager = new ColorAverager(services.Get<Renderer>(),
                 assetLoader.Get<Effect>("shaders/average.fx"));

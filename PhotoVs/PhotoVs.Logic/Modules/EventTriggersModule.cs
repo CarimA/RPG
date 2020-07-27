@@ -1,5 +1,4 @@
 ﻿using MoonSharp.Interpreter;
-using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Events;

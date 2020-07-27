@@ -8,7 +8,6 @@ using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.Events;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.Graphics;
@@ -24,6 +23,7 @@ using System.Collections.Generic;
 using PhotoVs.Engine.Graphics.Filters;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.NewScenes;
+using PhotoVs.Logic.NewScenes.GameScenes;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PhotoVs.Logic
@@ -94,10 +94,10 @@ namespace PhotoVs.Logic
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _services.Set(_spriteBatch);
 
-            _services.Set(Config.Load());
-
             _assetLoader = CreateAssetLoader();
             _services.Set(_assetLoader);
+
+            _services.Set(Config.Load(_assetLoader));
 
             _renderer = CreateRenderer();
             _services.Set(_renderer);
@@ -141,14 +141,18 @@ namespace PhotoVs.Logic
                     new TextModule(_services.Get<TextDatabase>())
                 });
 
+            _camera.SetZoom(_renderer.VirtualWidth / 640f);
             _world = new Overworld(_spriteBatch, _assetLoader);
             _world.LoadMaps("maps/");
             _world.SetMap("novalondinium");
             _services.Set(_world);
-            _camera.SetZoom(2560f / 640f);
 
             _services.Get<Player>()
                 .PlayerData.Position.Position = new Vector2(8400, 6000);
+
+            _sceneMachine.Push(new WorldScene(_services));
+            //_sceneMachine.Push(new TitleScene(_services));
+            _sceneMachine.Push(new WorldLogicScene(_services));
 
             _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
 
@@ -171,7 +175,7 @@ namespace PhotoVs.Logic
                 .RegisterTypeLoader(new TextTypeLoader())
                 .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
                 .RegisterTypeLoader(new SpriteFontTypeLoader(GraphicsDevice, assetLoader))
-                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(120))
+                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(80))
                 .RegisterTypeLoader(new MapTypeLoader());
 
             return assetLoader;
@@ -190,8 +194,21 @@ namespace PhotoVs.Logic
 
         private Renderer CreateRenderer()
         {
-            var renderer = new Renderer(_services, 2560, 1440, 3360, 1600);
-                //3840, 2160, 5040, 2400); 
+            // base = 360
+            // 720, 1080, 1440 (2K), 2160 (4K), 4320 (8K)
+
+            var assumedScreenHeight = 1080;
+            var assumedScreenWidth = (assumedScreenHeight / 9) * 16;
+            // turns out that ultrawide is not actually 21:9, it's 64:27. Who could've guessed that?
+            var ultrawideWidth = (assumedScreenHeight / 27) * 64;
+            // extra space for 16:10 screens
+            var goldenHeight = (assumedScreenWidth / 16) * 10;
+
+            var renderer = new Renderer(_services, 
+                assumedScreenWidth, 
+                assumedScreenHeight,
+                ultrawideWidth,
+                goldenHeight);
 
             renderer.AddFilter(
                 new FunkyFilter(

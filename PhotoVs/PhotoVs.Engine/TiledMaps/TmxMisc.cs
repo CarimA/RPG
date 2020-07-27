@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Engine.TiledMaps
 {

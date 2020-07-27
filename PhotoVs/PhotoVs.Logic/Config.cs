@@ -2,16 +2,20 @@
 using Newtonsoft.Json;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.PlayerData;
-using System;
 using System.Collections.Generic;
 using System.IO;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Assets.AssetLoaders;
 using YamlDotNet.Serialization;
+using Encoding = System.Text.Encoding;
 
 namespace PhotoVs.Logic
 {
     [JsonObject(MemberSerialization.OptOut)]
     public class Config
     {
+        [JsonIgnore] private IAssetLoader _assetloader;
+
         // General
         public Languages Language { get; set; }
 
@@ -34,26 +38,32 @@ namespace PhotoVs.Logic
 
         public int Deadzone { get; set; }
 
-        public static Config Load()
+        public static Config Load(IAssetLoader assetLoader)
         {
             try
             {
-                var text = File.ReadAllText(GetFileLocation());
+                var streamProvider = assetLoader.StreamProvider;
+                using var stream = streamProvider.Read(DataLocation.Storage, "config.yml");
+                using var reader = new StreamReader(stream);
+
+                var text = reader.ReadToEnd();
                 var deserializer = new Deserializer();
                 var obj = deserializer.Deserialize<Config>(text);
 
                 if (obj == null)
                 {
-                    var config = New();
+                    var config = New(assetLoader);
                     config.Save();
                     return config;
                 }
+
+                obj._assetloader = assetLoader;
 
                 return obj;
             }
             catch (FileNotFoundException)
             {
-                var config = New();
+                var config = New(assetLoader);
                 config.Save();
                 return config;
             }
@@ -61,15 +71,22 @@ namespace PhotoVs.Logic
 
         private void Save()
         {
+            var streamProvider = _assetloader.StreamProvider;
             var serializer = new Serializer();
             var data = serializer.Serialize(this);
-            File.WriteAllText(GetFileLocation(), data);
+            var stream = new MemoryStream();
+            var streamWriter = new StreamWriter(stream, Encoding.UTF8);
+            streamWriter.Write(data);
+            streamWriter.Flush();
+            stream.Seek(0, SeekOrigin.Begin);
+            streamProvider.Write(DataLocation.Storage, "config.yml", stream);
         }
 
-        private static Config New()
+        private static Config New(IAssetLoader assetLoader)
         {
             var config = new Config
             {
+                _assetloader = assetLoader,
                 Language = Languages.EnglishUK,
 
                 Fullscreen = false,
@@ -113,13 +130,6 @@ namespace PhotoVs.Logic
             };
 
             return config;
-        }
-
-        private static string GetFileLocation()
-        {
-            var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var result = Path.Combine(myDocs, "PhotoVs", "config.yml");
-            return result;
         }
     }
 }

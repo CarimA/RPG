@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine;
-using PhotoVs.Engine.Events;
 using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Events.EventArgs;
 using PhotoVs.Utils.Extensions;

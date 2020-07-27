@@ -192,8 +192,8 @@ This allows you to be more specific about which particular actions you may want 
 |Events.InteractAreaWalk *(dynamic)*|Interaction|Player is walking on an interactible zone.|InteractEventArgs|✅|
 |Events.InteractAreaRun *(dynamic)*|Interaction|Player is running on an interactible zone.|InteractEventArgs|✅|
 |Events.Collision|Interaction|Player has collided with a solid object.|GameObjectEventArgs|✅|
-|Events.InputActionPressed|Input|Player has pressed an action.|InputEventArgs|❌|
-|Events.InputActionReleased|Input|Player has released an action.|InputEventArgs|❌|
+|Events.InputActionPressed|Input|GameObject has pressed an action.|GameObjectEventArgs|✅|
+|Events.InputActionReleased|Input|GameObject has released an action.|GameObjectEventArgs|✅|
 |Events.AssetLoaded *(dynamic)*|Assets|The game has loaded an asset into memory.|AssetEventArgs|❌|
 |Events.AssetUnloaded *(dynamic)*|Assets|The game has released an asset from memory.|AssetEventArgs|❌|
 |Events.AudioBgmPlayed *(dynamic)*|Audio|The game has started playing a new BGM track.|AudioEventArgs|❌|
@@ -441,3 +441,63 @@ TitleScene = Scene {
         Alignment = 'column'
     }
 }
+
+
+
+Editor:
+  - Game Properties
+    - New Game Event
+  - Text Database
+  - Event Database
+    - Flag Editor
+    - Variable Editor
+
+
+    
+        // todo: new game event
+        // todo: generic sfx
+
+
+
+Name
+Languages
+Default Sound Effects
+
+
+have a socket server on the game which can accept a byte array to deserialize into the game objects
+have a socket client on the editor which can send the entire game data when saving
+
+
+ - autosave every 30 seconds
+
+the project file is just a json of Dictionary<string, object>
+object can be anything (including a Dictionary<string, object> which indicates it's a directory)
+
+The top level contains a few mandatory things
+
+
+ File
+    New Project
+    Load Project
+
+    Save
+    Save All
+
+    Exit
+
+Edit
+    Undo
+    Redo
+
+    Cut
+    Copy
+    Paste
+
+Project
+    Explorer
+    Debug Console
+
+Test
+    Connect to Game
+
+Build

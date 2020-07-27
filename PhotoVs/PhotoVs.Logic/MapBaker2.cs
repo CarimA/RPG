@@ -6,7 +6,6 @@ using System.Text;
 using System.Xml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;

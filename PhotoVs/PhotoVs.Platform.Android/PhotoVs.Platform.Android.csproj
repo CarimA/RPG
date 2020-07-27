@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
     <AndroidLinkMode>None</AndroidLinkMode>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -67,6 +71,29 @@
     <Compile Include="AndroidPlatform.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\content\text.yml" />
+    <AndroidAsset Include="Assets\content\logic\test.lua" />
+    <AndroidAsset Include="Assets\content\maps\novalondinium.tmx" />
+    <AndroidAsset Include="Assets\content\shaders\average.dx11" />
+    <AndroidAsset Include="Assets\content\shaders\average.ogl" />
+    <AndroidAsset Include="Assets\content\shaders\color.dx11" />
+    <AndroidAsset Include="Assets\content\shaders\color.ogl" />
+    <AndroidAsset Include="Assets\content\shaders\displace.dx11" />
+    <AndroidAsset Include="Assets\content\shaders\displace.ogl" />
+    <AndroidAsset Include="Assets\content\shaders\funky.dx11" />
+    <AndroidAsset Include="Assets\content\shaders\funky.ogl" />
+    <AndroidAsset Include="Assets\content\shaders\tilemap.dx11" />
+    <AndroidAsset Include="Assets\content\shaders\tilemap.ogl" />
+    <AndroidAsset Include="Assets\content\shaders\water.dx11" />
+    <AndroidAsset Include="Assets\content\shaders\water.ogl" />
+    <AndroidAsset Include="Assets\content\shaders\water_reflection.dx11" />
+    <AndroidAsset Include="Assets\content\shaders\water_reflection.ogl" />
+    <AndroidAsset Include="Assets\content\ui\fonts\bold_12.fnt" />
+    <AndroidAsset Include="Assets\content\ui\fonts\bold_outline_12.fnt" />
+    <AndroidAsset Include="Assets\content\ui\fonts\border_12.fnt" />
+    <AndroidAsset Include="Assets\content\ui\fonts\outline_12.fnt" />
+    <AndroidAsset Include="Assets\content\ui\fonts\plain_12.fnt" />
+    <AndroidAsset Include="Assets\content\ui\fonts\ubuntu.ttf" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +123,228 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\audio\bgm\key.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\audio\bgm\main1.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\audio\sfx\accept.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\audio\sfx\button.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\audio\sfx\click.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\audio\sfx\click_high.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\audio\sfx\deny.ogg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\debug\outmap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\debug\outts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\debug\outts_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\luts\daycycle9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\cliffs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\cliffs_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\objects1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\objects1_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\terrain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\terrain_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\terraindetail1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\terraindetail1_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\trees_fringe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\trees_fringe_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\trees_mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\trees_mask_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\water.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\maps\tilesets\water_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\portraits\test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\shaders\average.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\shaders\color.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\shaders\displace.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\shaders\funky.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\shaders\tilemap.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\shaders\water.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\shaders\water_reflection.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\cliffs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\cliffs_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\objects1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\objects1_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\terrain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\terrain_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\terraindetail1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\terraindetail1_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\trees_fringe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\trees_fringe_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\trees_mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\trees_mask_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\water.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\tilesets\water_mat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\checkerboard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\displacement.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\displacement2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\filmdust.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\gamepad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\noise.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\noise2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\noise3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\noise4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\pixel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\title.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\title2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\fonts\bold_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\fonts\bold_outline_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\fonts\border_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\fonts\outline_12_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\content\ui\fonts\plain_12_0.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
