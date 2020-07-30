@@ -128,26 +128,4 @@ namespace PhotoVs.Logic.Mechanics.World
             Day = day;
         }
     }
-
-    public enum TimePhase
-    {
-        Midnight,
-        EarlyMorning,
-        LateMorning,
-        Noon,
-        Afternoon,
-        EarlyEvening,
-        LateEvening
-    }
-
-    public enum Day
-    {
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday,
-        Sunday
-    }
 }

@@ -26,5 +26,18 @@ namespace PhotoVs.Engine
             _cache.Add(typeof(T), service);
             Logger.Write.Trace($"Registered Type \"{typeof(T).Name}\" as service.");
         }
+
+        public Services Bind<TInterface, TBase>() where TBase : class, new()
+        {
+            return Bind<TInterface, TBase>(new TBase());
+        }
+
+        public Services Bind<TInterface, TBase>(TBase instance) where TBase : class
+        {
+            _cache.Add(typeof(TInterface), instance);
+            Logger.Write.Trace($"Registered Type \"{typeof(TInterface).Name}\" as service.");
+
+            return this;
+        }
     }
 }

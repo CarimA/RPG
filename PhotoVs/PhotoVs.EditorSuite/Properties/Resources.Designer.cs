@@ -83,9 +83,29 @@ namespace PhotoVs.EditorSuite.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap BooleanData_16x {
+            get {
+                object obj = ResourceManager.GetObject("BooleanData_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap BuildSolution_16x {
             get {
                 object obj = ResourceManager.GetObject("BuildSolution_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Choose_16x {
+            get {
+                object obj = ResourceManager.GetObject("Choose_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,6 +183,26 @@ namespace PhotoVs.EditorSuite.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap Flag_16x {
+            get {
+                object obj = ResourceManager.GetObject("Flag_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap FlowDecision_16x {
+            get {
+                object obj = ResourceManager.GetObject("FlowDecision_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap FolderClosed_16x {
             get {
                 object obj = ResourceManager.GetObject("FolderClosed_16x", resourceCulture);
@@ -176,6 +216,16 @@ namespace PhotoVs.EditorSuite.Properties {
         public static System.Drawing.Bitmap FolderOpened_16x {
             get {
                 object obj = ResourceManager.GetObject("FolderOpened_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Integer_16x {
+            get {
+                object obj = ResourceManager.GetObject("Integer_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -206,6 +256,16 @@ namespace PhotoVs.EditorSuite.Properties {
         public static System.Drawing.Bitmap Redo_16x {
             get {
                 object obj = ResourceManager.GetObject("Redo_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap RepeatButton_16x {
+            get {
+                object obj = ResourceManager.GetObject("RepeatButton_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -263,6 +323,16 @@ namespace PhotoVs.EditorSuite.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap Script_16x1 {
+            get {
+                object obj = ResourceManager.GetObject("Script_16x1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Settings_16x {
             get {
                 object obj = ResourceManager.GetObject("Settings_16x", resourceCulture);
@@ -283,9 +353,39 @@ namespace PhotoVs.EditorSuite.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap String_16x {
+            get {
+                object obj = ResourceManager.GetObject("String_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Text_16x {
             get {
                 object obj = ResourceManager.GetObject("Text_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Text_16x1 {
+            get {
+                object obj = ResourceManager.GetObject("Text_16x1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Time_16x {
+            get {
+                object obj = ResourceManager.GetObject("Time_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

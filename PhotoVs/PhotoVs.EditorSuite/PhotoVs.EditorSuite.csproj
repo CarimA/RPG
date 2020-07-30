@@ -56,9 +56,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameData\Actor.cs" />
     <Compile Include="Crc32.cs" />
-    <Compile Include="Events\Graph.cs" />
-    <Compile Include="Events\Node.cs" />
+    <Compile Include="GameData\DefaultSoundEffects.cs" />
+    <Compile Include="GameData\Emotion.cs" />
+    <Compile Include="GameData\Events\DataNode.cs" />
+    <Compile Include="GameData\Events\DialogueNode.cs" />
+    <Compile Include="GameData\Events\FlowControlNode.cs" />
+    <Compile Include="GameData\Events\FunctionNode.cs" />
+    <Compile Include="GameData\Graph.cs" />
+    <Compile Include="GameData\Events\Node.cs" />
+    <Compile Include="GameData\Events\NodeInputLabel.cs" />
+    <Compile Include="GameData\Events\NodeLabel.cs" />
+    <Compile Include="GameData\Events\NodeOutputLabel.cs" />
+    <Compile Include="GameData\Events\StartNode.cs" />
+    <Compile Include="GameData\Events\Trigger.cs" />
+    <Compile Include="GameData\Flag.cs" />
+    <Compile Include="GameData\FlagCollection.cs" />
+    <Compile Include="GameData\FlagType.cs" />
+    <Compile Include="GameData\GameProperties.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,12 +99,19 @@
     <Compile Include="Panels\ScriptEditor.Designer.cs">
       <DependentUpon>ScriptEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameData\Portrait.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Project.cs" />
-    <Compile Include="ProjectData.cs" />
+    <Compile Include="GameData\GameData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GameData\Script.cs" />
+    <Compile Include="GameData\Sprite.cs" />
+    <Compile Include="GameData\TextEntry.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Panels\EventEditor.resx">
+      <DependentUpon>EventEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Panels\ProjectExplorer.resx">
       <DependentUpon>ProjectExplorer.cs</DependentUpon>
@@ -193,6 +216,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\BuildSolution_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FlowDecision_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RepeatButton_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Flag_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\String_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Integer_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BooleanData_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Text_16x2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Choose_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Script_16x1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Time_16x.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

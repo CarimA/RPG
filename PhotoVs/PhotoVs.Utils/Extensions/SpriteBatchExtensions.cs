@@ -10,20 +10,6 @@ using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
 namespace PhotoVs.Utils.Extensions
 {
-    public enum HorizontalAlignment
-    {
-        Left,
-        Center,
-        Right
-    }
-
-    public enum VerticalAlignment
-    {
-        Top,
-        Center,
-        Bottom
-    }
-
     public static class SpriteBatchExtensions
     {
         public static void DrawString(this SpriteBatch spriteBatch,

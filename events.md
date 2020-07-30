@@ -426,6 +426,7 @@ Todo:
 
 
         design: lock levels to conditions in groups of 10 and make the previous 10 levels gain boosted exp
+        share exp out to whole team but only grant a level up if they participate
 
 experiment with outputting lua tmx maps
 
@@ -468,6 +469,19 @@ have a socket server on the game which can accept a byte array to deserialize in
 have a socket client on the editor which can send the entire game data when saving
 
 
+save automatically on:
+  - every 20 seconds
+  - tab swapped
+  - tab closed
+  - form closed
+
+
+ok so here's the deal:
+  - the project explorer is just a glorified filesystem. it doesn't matter what goes where, I decide that.
+    - as a result, I need to be able to create, read, update, delete
+    - drag+drop between nodes should work too
+
+
  - autosave every 30 seconds
 
 the project file is just a json of Dictionary<string, object>
@@ -475,23 +489,6 @@ object can be anything (including a Dictionary<string, object> which indicates i
 
 The top level contains a few mandatory things
 
-
- File
-    New Project
-    Load Project
-
-    Save
-    Save All
-
-    Exit
-
-Edit
-    Undo
-    Redo
-
-    Cut
-    Copy
-    Paste
 
 Project
     Explorer
@@ -501,3 +498,52 @@ Test
     Connect to Game
 
 Build
+
+
+
+        public void SaveProject(bool saveAs = false)
+        {
+            if (saveAs || FileLocation == string.Empty)
+            {
+                var sfd = new SaveFileDialog();
+                sfd.Filter = "Json Project|*.json";
+                sfd.Title = "Save Project";
+                if (sfd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                FileLocation = sfd.FileName;
+            }
+
+            // serialize the project
+            var txt = JsonConvert.SerializeObject(_projectData, Formatting.Indented); /*, new JsonSerializerSettings()
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.All
+            });*/
+            File.WriteAllText(FileLocation, txt);
+            _hasChanged = false;
+
+            Console.WriteLine($"Saving project to '{FileLocation}.'");
+        }
+
+        public static ProjectDataReporter LoadProject(ProjectExplorer projectExplorer)
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "Json Project|*.json";
+            ofd.Title = "Open Project";
+
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return null;
+
+            var fileLoc = ofd.FileName;
+            var txt = File.ReadAllText(fileLoc);
+            var obj = JsonConvert.DeserializeObject<ProjectData>(txt);
+
+            var pd = new ProjectDataReporter(obj) {FileLocation = fileLoc, _hasChanged = false};
+
+            Console.WriteLine($"Loading project from '{pd.FileLocation}.'");
+
+            return pd;
+        }
+
+
+  consider using usercontrols for the trigger inputs, script select, etc

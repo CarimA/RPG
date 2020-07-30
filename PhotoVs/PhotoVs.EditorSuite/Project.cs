@@ -9,9 +9,9 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DamienG.Security.Cryptography;
 using Newtonsoft.Json;
-using PhotoVs.EditorSuite.Events;
+using PhotoVs.EditorSuite.GameData;
+using PhotoVs.EditorSuite.GameData.Events;
 using PhotoVs.EditorSuite.Panels;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -38,9 +38,9 @@ namespace PhotoVs.EditorSuite
 
             _rootNode = new DataTreeNode("Project", null, false, false);
 
-            var properties = new DataTreeNode("Properties", new GameProperties(), false, false);
-            _rootNode.Nodes.Add(properties);
-
+            _rootNode.Nodes.Add(new DataTreeNode("Game Properties", new GameProperties(), false, false));
+            _rootNode.Nodes.Add(new DataTreeNode("Game Flags", new FlagCollection(), false, false));
+           
             _openPanels = new Dictionary<object, DockContent>();
         }
 
@@ -54,6 +54,7 @@ namespace PhotoVs.EditorSuite
                 (current, b) => current + b.ToString("x2").ToLowerInvariant());
         }
 
+        public void Autosave() => Save(false, true);
         public void Save(bool saveAs = false, bool autoSave = false)
         {
             // do not save if there's no need to
@@ -79,19 +80,28 @@ namespace PhotoVs.EditorSuite
 
             var json = JsonConvert.SerializeObject(_rootNode, new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = TypeNameHandling.All,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             });
 
-            // check if crc doesn't match
-            if (Crc32(json) == Crc32(File.ReadAllText(_projectLocation)))
-                return;
+            if (File.Exists(_projectLocation))
+            {
+                // check if crc doesn't match
+                if (Crc32(json) == Crc32(File.ReadAllText(_projectLocation)))
+                    return;
+            }
 
             var count = 0;
             while (File.Exists(_projectLocation + $".{count}.bak"))
             {
                 count++;
             }
-            File.Copy(_projectLocation, _projectLocation + $".{count}.bak");
+
+            if (File.Exists(_projectLocation))
+            {
+                File.Copy(_projectLocation, _projectLocation + $".{count}.bak");
+            }
+
             File.WriteAllText(_projectLocation, json);
             _hasMadeChanges = false;
         }
@@ -111,7 +121,8 @@ namespace PhotoVs.EditorSuite
             var json = File.ReadAllText(fileLocation);
             var obj = JsonConvert.DeserializeObject<DataTreeNode>(json, new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = TypeNameHandling.All,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             });
             var result = new Project(fileLocation)
             {
@@ -327,7 +338,7 @@ namespace PhotoVs.EditorSuite
                 if (target.Y < targetNodePosition.Top + buffer)
                 {
                     // do not allow moving above properties
-                    if (targetNode.Parent != null && targetNode.Data.GetType() == typeof(GameProperties))
+                    if (targetNode.Parent != null && targetNode.Data != null && targetNode.Data.GetType() == typeof(GameProperties))
                         return;
 
                     // move above
@@ -517,7 +528,8 @@ namespace PhotoVs.EditorSuite
                 else
                     SetIcon(node, isExpanded ? 2 : 1);
             }
-            else if (node.Data.GetType() == typeof(GameProperties))
+            else if (node.Data.GetType() == typeof(GameProperties) 
+            || node.Data.GetType() == typeof(FlagCollection))
             {
                 SetIcon(node, 3);
             }
@@ -561,6 +573,7 @@ namespace PhotoVs.EditorSuite
                 }
             }
 
+            [JsonProperty] public string Id { get; set; }
             [JsonProperty] public new string Text
             {
                 get => base.Text;
@@ -575,6 +588,7 @@ namespace PhotoVs.EditorSuite
                 Data = data;
                 IsMovable = isMovable;
                 IsEditable = isEditable;
+                Id = Guid.NewGuid().ToString();
             }
         }
 
@@ -634,11 +648,13 @@ namespace PhotoVs.EditorSuite
             // to duplicate easily, we'll just serialize and deserialize the data
             var json = JsonConvert.SerializeObject(dataNode.Data, new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = TypeNameHandling.All,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             });
             var copy = JsonConvert.DeserializeObject(json, new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = TypeNameHandling.All,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             });
 
             var copyNode = new DataTreeNode(dataNode.Text + " - Copy", copy);
@@ -675,6 +691,9 @@ namespace PhotoVs.EditorSuite
                     _openPanels[dataNode.Data].Close();
                 }
             }
+
+            foreach (var child in node.Nodes)
+                Delete((TreeNode)child);
 
             node.Parent.Nodes.Remove(node);
             Save(false, true);

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-namespace DamienG.Security.Cryptography
+namespace PhotoVs.EditorSuite
 {
     /// <summary>
     /// Implements a 32-bit CRC hash algorithm compatible with Zip etc.
