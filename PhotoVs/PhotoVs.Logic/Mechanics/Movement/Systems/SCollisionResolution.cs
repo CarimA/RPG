@@ -145,7 +145,11 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 return;
 
             if (position.VelocityIntent.Count == 0)
+            {
+                // need this to set LastPosition
+                position.Position = position.Position;
                 return;
+            }
 
             position.Position += new Vector2(position.VelocityIntent.Average(x => x.X),
                 position.VelocityIntent.Average(y => y.Y));
