@@ -10,126 +10,15 @@ using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.Core;
 using PhotoVs.Engine.Events.Coroutines;
-using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
-using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Modules;
 using PhotoVs.Logic.NewScenes;
-using PhotoVs.Logic.NewScenes.GameScenes;
 using PhotoVs.Logic.Text;
 
 namespace PhotoVs.Logic
 {
-    public class FullscreenHandler : IHasBeforeUpdate, IStartup
-    {
-        private readonly GraphicsDeviceManager _graphics;
-        private readonly IPlatform _platform;
-        private readonly IGameState _gameState;
-        private readonly ICanvasSize _canvasSize;
-
-        private int _lastWindowWidth;
-        private int _lastWindowHeight;
-
-        public FullscreenHandler(GraphicsDeviceManager graphics, IPlatform platform, IGameState gameState, ICanvasSize canvasSize)
-        {
-            _graphics = graphics;
-            _platform = platform;
-            _gameState = gameState;
-            _canvasSize = canvasSize;
-        }
-
-        public void Start()
-        {
-            if (_platform.OverrideFullscreen || _gameState.Config.Fullscreen)
-            {
-                EnableFullscreen();
-            }
-        }
-
-        public int BeforeUpdatePriority { get; set; } = -9999;
-        public bool BeforeUpdateEnabled { get; set; } = true;
-
-        public void BeforeUpdate(GameTime gameTime)
-        {
-            if (_gameState.Player.Input.ActionPressed(InputActions.Fullscreen))
-                ToggleFullscreen();
-        }
-
-        public void EnableFullscreen()
-        {
-            _lastWindowWidth = _graphics.PreferredBackBufferWidth;
-            _lastWindowHeight = _graphics.PreferredBackBufferHeight;
-            _graphics.PreferredBackBufferWidth = _graphics.GraphicsDevice.DisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = _graphics.GraphicsDevice.DisplayMode.Height;
-            _graphics.IsFullScreen = true;
-            _graphics.ApplyChanges();
-        }
-
-        public void DisableFullscreen()
-        {
-            _graphics.PreferredBackBufferWidth = _lastWindowWidth;
-            _graphics.PreferredBackBufferHeight = _lastWindowHeight;
-            _graphics.IsFullScreen = false;
-            _graphics.ApplyChanges();
-        }
-
-        public void ToggleFullscreen()
-        {
-            if (_graphics.IsFullScreen)
-                DisableFullscreen();
-            else
-                EnableFullscreen();
-        }
-    }
-
-    public class StartupSequence : IStartup
-    {
-        private readonly IGameState _gameState;
-        private readonly ISignal _signal;
-        private readonly IOverworld _overworld;
-        private readonly SceneMachine _sceneMachine;
-        private readonly IAudio _audio;
-        private readonly IAssetLoader _assetLoader;
-        private readonly IRenderer _renderer;
-        private readonly SpriteBatch _spriteBatch;
-        private readonly GraphicsDevice _graphicsDevice;
-        private readonly ICanvasSize _canvasSize;
-
-        public StartupSequence(IGameState gameState, ISignal signal, IOverworld overworld, SceneMachine sceneMachine, IAudio audio, 
-            IAssetLoader assetLoader, IRenderer renderer, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ICanvasSize canvasSize)
-        {
-            _gameState = gameState;
-            _signal = signal;
-            _overworld = overworld;
-            _sceneMachine = sceneMachine;
-            _audio = audio;
-            _assetLoader = assetLoader;
-            _renderer = renderer;
-            _spriteBatch = spriteBatch;
-            _graphicsDevice = graphicsDevice;
-            _canvasSize = canvasSize;
-        }
-
-        public void Start()
-        {
-            _overworld.LoadMaps("maps/");
-            _overworld.SetMap("novalondinium");
-
-            _gameState.Player.PlayerData.Position.Position = new Vector2(8400, 6000);
-
-            _sceneMachine.Push(new WorldScene(_assetLoader, _renderer, _overworld, _spriteBatch, _gameState, _signal,
-                _graphicsDevice, _canvasSize));
-            //_sceneMachine.Push(new TitleScene(_services));
-            _sceneMachine.Push(new WorldLogicScene(_gameState, _assetLoader, _spriteBatch, _overworld, _signal));
-
-            _signal.Notify("GameStart", new GameEventArgs(this));
-
-            _audio.PlayBgm("key");
-        }
-    }
-
     public class MainGame : Game
     {
         private readonly GraphicsDeviceManager _graphics;
@@ -178,8 +67,7 @@ namespace PhotoVs.Logic
                 .Bind<ICoroutineRunner, CoroutineRunner>()
                 .Bind<IAssetLoader, AssetLoader>()
                 .Bind<IRenderer, Renderer>()
-                .Bind<IAudio>(_platform.Audio)
-                //.Bind<IAudio, DummyAudio>() // todo: figure out how to substitute from platform
+                .Bind<IAudio>(new DebugAudio(new DummyAudio())) // _platform.Audio))
                 .Bind<IScriptHost, ScriptHost<Closure>>()
                 .Bind<IInterpreter<Closure>, MoonSharpInterpreter>()
 
@@ -216,8 +104,6 @@ namespace PhotoVs.Logic
                     (DataLocation.Content, "logic/"),
                     (DataLocation.Storage, "mods/")
                 }));
-
-            // todo: substitute anything provided from platform
 
             _kernel.Construct();
             _scheduler.Start();
