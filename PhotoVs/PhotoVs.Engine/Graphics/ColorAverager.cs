@@ -5,15 +5,24 @@ namespace PhotoVs.Engine.Graphics
 {
     public class ColorAverager
     {
-        private readonly Renderer _renderer;
         private readonly Effect _effect;
+        private readonly EffectParameter _phaseParameter;
+        private readonly IRenderer _renderer;
         private readonly EffectParameter _texAParameter;
         private readonly EffectParameter _texBParameter;
-        private readonly EffectParameter _phaseParameter;
-        private readonly GraphicsDevice _graphicsDevice;
+        private RenderTarget2D _outputTex;
         private Texture2D _texA;
         private Texture2D _texB;
-        private RenderTarget2D _outputTex;
+
+        public ColorAverager(IRenderer renderer, Effect effect)
+        {
+            _renderer = renderer;
+            _effect = effect;
+
+            _texAParameter = _effect.Parameters["texA"];
+            _texBParameter = _effect.Parameters["texB"];
+            _phaseParameter = _effect.Parameters["phase"];
+        }
 
         public void SetTextures(Texture2D texA, Texture2D texB)
         {
@@ -29,27 +38,14 @@ namespace PhotoVs.Engine.Graphics
                 _texBParameter.SetValue(_texB);
             }
 
-            if (_outputTex == null || (_outputTex.Width != texA.Width || _outputTex.Height != texA.Height)
-                                   || (_outputTex.Width != texB.Width || _outputTex.Height != texB.Height))
-            {
-                _outputTex = new RenderTarget2D(_graphicsDevice, texA.Width, texA.Height);
-            }
+            if (_outputTex == null || _outputTex.Width != texA.Width || _outputTex.Height != texA.Height ||
+                _outputTex.Width != texB.Width ||
+                _outputTex.Height != texB.Height) _outputTex = _renderer.CreateRenderTarget(texA.Width, texA.Height);
         }
 
         public void SetPhase(float phase)
         {
             _phaseParameter.SetValue(phase);
-        }
-
-        public ColorAverager(Renderer renderer, Effect effect)
-        {
-            _renderer = renderer;
-            _graphicsDevice = renderer.GraphicsDevice;
-            _effect = effect;
-
-            _texAParameter = _effect.Parameters["texA"];
-            _texBParameter = _effect.Parameters["texB"];
-            _phaseParameter = _effect.Parameters["phase"];
         }
 
         public RenderTarget2D Average(SpriteBatch spriteBatch)

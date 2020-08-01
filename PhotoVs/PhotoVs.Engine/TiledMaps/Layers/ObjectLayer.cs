@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using PhotoVs.Engine.TiledMaps.Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
+using PhotoVs.Engine.TiledMaps.Objects;
 
 namespace PhotoVs.Engine.TiledMaps.Layers
 {

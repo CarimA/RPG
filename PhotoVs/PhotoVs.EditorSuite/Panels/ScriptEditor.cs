@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using PhotoVs.EditorSuite.GameData;
 using ScintillaNET;
 using WeifenLuo.WinFormsUI.Docking;
@@ -23,8 +16,10 @@ namespace PhotoVs.EditorSuite.Panels
             "assert collectgarbage dofile error _G getmetatable ipairs loadfile next pairs pcall print rawequal rawget rawset setmetatable tonumber tostring type _VERSION xpcall string table math coroutine io os debug" +
             " getfenv gcinfo load loadlib loadstring require select setfenv unpack _LOADED LUA_PATH _REQUIREDNAME package rawlen package bit32 utf8 _ENV";
 
-        private Project _project;
-        private Script _script;
+        private readonly Project _project;
+        private readonly Script _script;
+
+        private int maxLineNumberCharLength;
 
         public ScriptEditor(Project project, Script script)
         {
@@ -42,7 +37,7 @@ namespace PhotoVs.EditorSuite.Panels
             };
 
             SetCodeEditor();
-            
+
             codeEdit.Text = _script.Code;
         }
 
@@ -100,9 +95,16 @@ namespace PhotoVs.EditorSuite.Panels
             // Basic Functions
             codeEdit.SetKeywords(1, FUNCTIONS);
             // String Manipulation & Mathematical
-            codeEdit.SetKeywords(2, "string.byte string.char string.dump string.find string.format string.gsub string.len string.lower string.rep string.sub string.upper table.concat table.insert table.remove table.sort math.abs math.acos math.asin math.atan math.atan2 math.ceil math.cos math.deg math.exp math.floor math.frexp math.ldexp math.log math.max math.min math.pi math.pow math.rad math.random math.randomseed math.sin math.sqrt math.tan" + " string.gfind string.gmatch string.match string.reverse string.pack string.packsize string.unpack table.foreach table.foreachi table.getn table.setn table.maxn table.pack table.unpack table.move math.cosh math.fmod math.huge math.log10 math.modf math.mod math.sinh math.tanh math.maxinteger math.mininteger math.tointeger math.type math.ult" + " bit32.arshift bit32.band bit32.bnot bit32.bor bit32.btest bit32.bxor bit32.extract bit32.replace bit32.lrotate bit32.lshift bit32.rrotate bit32.rshift" + " utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset");
+            codeEdit.SetKeywords(2,
+                "string.byte string.char string.dump string.find string.format string.gsub string.len string.lower string.rep string.sub string.upper table.concat table.insert table.remove table.sort math.abs math.acos math.asin math.atan math.atan2 math.ceil math.cos math.deg math.exp math.floor math.frexp math.ldexp math.log math.max math.min math.pi math.pow math.rad math.random math.randomseed math.sin math.sqrt math.tan" +
+                " string.gfind string.gmatch string.match string.reverse string.pack string.packsize string.unpack table.foreach table.foreachi table.getn table.setn table.maxn table.pack table.unpack table.move math.cosh math.fmod math.huge math.log10 math.modf math.mod math.sinh math.tanh math.maxinteger math.mininteger math.tointeger math.type math.ult" +
+                " bit32.arshift bit32.band bit32.bnot bit32.bor bit32.btest bit32.bxor bit32.extract bit32.replace bit32.lrotate bit32.lshift bit32.rrotate bit32.rshift" +
+                " utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset");
             // Input and Output Facilities and System Facilities
-            codeEdit.SetKeywords(3, "coroutine.create coroutine.resume coroutine.status coroutine.wrap coroutine.yield io.close io.flush io.input io.lines io.open io.output io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr os.clock os.date os.difftime os.execute os.exit os.getenv os.remove os.rename os.setlocale os.time os.tmpname" + " coroutine.isyieldable coroutine.running io.popen module package.loaders package.seeall package.config package.searchers package.searchpath" + " require package.cpath package.loaded package.loadlib package.path package.preload");
+            codeEdit.SetKeywords(3,
+                "coroutine.create coroutine.resume coroutine.status coroutine.wrap coroutine.yield io.close io.flush io.input io.lines io.open io.output io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr os.clock os.date os.difftime os.execute os.exit os.getenv os.remove os.rename os.setlocale os.time os.tmpname" +
+                " coroutine.isyieldable coroutine.running io.popen module package.loaders package.seeall package.config package.searchers package.searchpath" +
+                " require package.cpath package.loaded package.loadlib package.path package.preload");
 
             // Instruct the lexer to calculate folding
             codeEdit.SetProperty("fold", "1");
@@ -115,7 +117,7 @@ namespace PhotoVs.EditorSuite.Panels
             codeEdit.Margins[2].Width = 20;
 
             // Set colors for all folding markers
-            for (int i = 25; i <= 31; i++)
+            for (var i = 25; i <= 31; i++)
             {
                 codeEdit.Markers[i].SetForeColor(SystemColors.ControlLightLight);
                 codeEdit.Markers[i].SetBackColor(SystemColors.ControlDark);
@@ -131,7 +133,7 @@ namespace PhotoVs.EditorSuite.Panels
             codeEdit.Markers[Marker.FolderTail].Symbol = MarkerSymbol.LCorner;
 
             // Enable automatic folding
-            codeEdit.AutomaticFold = (AutomaticFold.Show | AutomaticFold.Click | AutomaticFold.Change);
+            codeEdit.AutomaticFold = AutomaticFold.Show | AutomaticFold.Click | AutomaticFold.Change;
 
             codeEdit.CharAdded += CodeEditOnCharAdded;
 
@@ -143,7 +145,6 @@ namespace PhotoVs.EditorSuite.Panels
             codeEdit.TextChanged += CodeEditOnTextChanged;
         }
 
-        private int maxLineNumberCharLength;
         private void CodeEditOnTextChanged(object sender, EventArgs e)
         {
             // Did the number of characters in the line number display change?
@@ -155,7 +156,8 @@ namespace PhotoVs.EditorSuite.Panels
             // Calculate the width required to display the last line number
             // and include some padding for good measure.
             const int padding = 2;
-            codeEdit.Margins[0].Width = codeEdit.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
+            codeEdit.Margins[0].Width =
+                codeEdit.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
             this.maxLineNumberCharLength = maxLineNumberCharLength;
         }
 
@@ -170,7 +172,7 @@ namespace PhotoVs.EditorSuite.Panels
         {
             // Starting at the specified line index, update each
             // subsequent line margin text with a hex line number.
-            for (int i = startingAtLine; i < codeEdit.Lines.Count; i++)
+            for (var i = startingAtLine; i < codeEdit.Lines.Count; i++)
             {
                 codeEdit.Lines[i].MarginStyle = Style.LineNumber;
                 codeEdit.Lines[i].MarginText = i.ToString();
@@ -186,10 +188,8 @@ namespace PhotoVs.EditorSuite.Panels
             // Display the autocompletion list
             var lenEntered = currentPos - wordStartPos;
             if (lenEntered > 0)
-            {
                 if (!codeEdit.AutoCActive)
                     codeEdit.AutoCShow(lenEntered, KEYWORDS);
-            }
         }
     }
 }

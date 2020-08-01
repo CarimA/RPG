@@ -2,17 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Events.EventArgs;
-using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Input.Components;
 
 namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
     public class SRaiseInputEvents : IUpdateableSystem
     {
+        private readonly ISignal _signal;
+        private readonly IEnumerable<InputActions> AllInputActions;
+
+        public SRaiseInputEvents(ISignal signal)
+        {
+            AllInputActions = Enum.GetValues(typeof(InputActions))
+                .Cast<InputActions>();
+            _signal = signal;
+        }
+
         public int Priority { get; set; } = -998;
         public bool Active { get; set; } = true;
 
@@ -21,19 +30,8 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             typeof(CInputState)
         };
 
-        private readonly GameEventQueue _eventQueue;
-        private readonly IEnumerable<InputActions> AllInputActions;
-
-        public SRaiseInputEvents(Services services)
-        {
-            AllInputActions = Enum.GetValues(typeof(InputActions))
-                .Cast<InputActions>();
-            _eventQueue = services.Get<GameEventQueue>();
-        }
-
         public void BeforeUpdate(GameTime gameTime)
         {
-
         }
 
         public void Update(GameTime gameTime, GameObjectList entities)
@@ -45,13 +43,11 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
                 foreach (var action in AllInputActions)
                 {
                     if (inputState.ActionPressed(action))
-                        _eventQueue.Notify(GameEvents.InputActionPressed, 
-                            Enum.GetName(typeof(InputActions), action), 
+                        _signal.Notify($"InputActionPressed:{Enum.GetName(typeof(InputActions), action)}",
                             new GameObjectEventArgs(this, gameObject));
 
                     if (inputState.ActionReleased(action))
-                        _eventQueue.Notify(GameEvents.InputActionReleased,
-                            Enum.GetName(typeof(InputActions), action),
+                        _signal.Notify($"InputActionReleased:{Enum.GetName(typeof(InputActions), action)}",
                             new GameObjectEventArgs(this, gameObject));
                 }
             }
@@ -59,7 +55,6 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
 
         public void AfterUpdate(GameTime gameTime)
         {
-
         }
     }
 }

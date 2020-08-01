@@ -1,12 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using PhotoVs.Engine.Events.Coroutines.Instructions;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Core;
+using PhotoVs.Engine.Events.Coroutines.Instructions;
 
 namespace PhotoVs.Engine.Events.Coroutines
 {
-    public class CoroutineRunner
+    public class CoroutineRunner : ICoroutineRunner, IHasUpdate
     {
         // Timings guide: https://www.alanzucconi.com/2017/02/15/nested-coroutines-in-unity/
 
@@ -68,8 +69,10 @@ namespace PhotoVs.Engine.Events.Coroutines
                                         _coroutines.RemoveAt(i--);
                         }
                         else if (!enumerator.MoveNext())
+                        {
                             if (!coroutine.MoveNext())
                                 _coroutines.RemoveAt(i--);
+                        }
 
                         break;
                     case null:
@@ -82,5 +85,8 @@ namespace PhotoVs.Engine.Events.Coroutines
                 }
             }
         }
+
+        public int UpdatePriority { get; set; } = 0;
+        public bool UpdateEnabled { get; set; } = true;
     }
 }

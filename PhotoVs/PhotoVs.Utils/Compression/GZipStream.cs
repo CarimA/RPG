@@ -69,119 +69,6 @@ namespace PhotoVs.Utils.Compression
         ///     after the first call to <c>Read()</c>.
         /// </remarks>
         internal DateTime? LastModified;
-        // GZip format
-        // source: http://tools.ietf.org/html/rfc1952
-        //
-        //  header id:           2 bytes    1F 8B
-        //  compress method      1 byte     8= DEFLATE (none other supported)
-        //  flag                 1 byte     bitfield (See below)
-        //  mtime                4 bytes    time_t (seconds since jan 1, 1970 UTC of the file.
-        //  xflg                 1 byte     2 = max compress used , 4 = max speed (can be ignored)
-        //  OS                   1 byte     OS for originating archive. set to 0xFF in compression.
-        //  extra field length   2 bytes    optional - only if FEXTRA is set.
-        //  extra field          varies
-        //  filename             varies     optional - if FNAME is set.  zero terminated. ISO-8859-1.
-        //  file comment         varies     optional - if FCOMMENT is set. zero terminated. ISO-8859-1.
-        //  crc16                1 byte     optional - present only if FHCRC bit is set
-        //  compressed data      varies
-        //  CRC32                4 bytes
-        //  isize                4 bytes    data size modulo 2^32
-        //
-        //     FLG (FLaGs)
-        //                bit 0   FTEXT - indicates file is ASCII text (can be safely ignored)
-        //                bit 1   FHCRC - there is a CRC16 for the header immediately following the header
-        //                bit 2   FEXTRA - extra fields are present
-        //                bit 3   FNAME - the zero-terminated filename is present. encoding; ISO-8859-1.
-        //                bit 4   FCOMMENT  - a zero-terminated file comment is present. encoding: ISO-8859-1
-        //                bit 5   reserved
-        //                bit 6   reserved
-        //                bit 7   reserved
-        //
-        // On consumption:
-        // Extra field is a bunch of nonsense and can be safely ignored.
-        // Header CRC and OS, likewise.
-        //
-        // on generation:
-        // all optional fields get 0, except for the OS, which gets 255.
-        //
-
-
-        /// <summary>
-        ///     The comment on the GZIP stream.
-        /// </summary>
-        /// <remarks>
-        ///     <para>
-        ///         The GZIP format allows for each file to optionally have an associated
-        ///         comment stored with the file.  The comment is encoded with the ISO-8859-1
-        ///         code page.  To include a comment in a GZIP stream you create, set this
-        ///         property before calling <c>Write()</c> for the first time on the
-        ///         <c>GZipStream</c>.
-        ///     </para>
-        ///     <para>
-        ///         When using <c>GZipStream</c> to decompress, you can retrieve this property
-        ///         after the first call to <c>Read()</c>.  If no comment has been set in the
-        ///         GZIP bytestream, the Comment property will return <c>null</c>
-        ///         (<c>Nothing</c> in VB).
-        ///     </para>
-        /// </remarks>
-        internal string Comment
-        {
-            get => _Comment;
-            set
-            {
-                if (_disposed)
-                    throw new ObjectDisposedException("GZipStream");
-                _Comment = value;
-            }
-        }
-
-        /// <summary>
-        ///     The FileName for the GZIP stream.
-        /// </summary>
-        /// <remarks>
-        ///     <para>
-        ///         The GZIP format optionally allows each file to have an associated
-        ///         filename.  When compressing data (through <c>Write()</c>), set this
-        ///         FileName before calling <c>Write()</c> the first time on the <c>GZipStream</c>.
-        ///         The actual filename is encoded into the GZIP bytestream with the
-        ///         ISO-8859-1 code page, according to RFC 1952. It is the application's
-        ///         responsibility to insure that the FileName can be encoded and decoded
-        ///         correctly with this code page.
-        ///     </para>
-        ///     <para>
-        ///         When decompressing (through <c>Read()</c>), you can retrieve this value
-        ///         any time after the first <c>Read()</c>.  In the case where there was no filename
-        ///         encoded into the GZIP bytestream, the property will return <c>null</c> (<c>Nothing</c>
-        ///         in VB).
-        ///     </para>
-        /// </remarks>
-        internal string FileName
-        {
-            get => _FileName;
-            set
-            {
-                if (_disposed)
-                    throw new ObjectDisposedException("GZipStream");
-                _FileName = value;
-                if (_FileName == null)
-                    return;
-                if (_FileName.IndexOf("/") != -1)
-                    _FileName = _FileName.Replace("/", "\\");
-                if (_FileName.EndsWith("\\"))
-                    throw new Exception("Illegal filename");
-                if (_FileName.IndexOf("\\") != -1)
-                    // trim any leading path
-                    _FileName = Path.GetFileName(_FileName);
-            }
-        }
-
-        /// <summary>
-        ///     The CRC on the GZIP stream.
-        /// </summary>
-        /// <remarks>
-        ///     This is used for internal error checking. You probably don't need to look at this property.
-        /// </remarks>
-        internal int Crc32 { get; private set; }
 
 
         /// <summary>
@@ -470,6 +357,119 @@ namespace PhotoVs.Utils.Compression
         {
             _baseStream = new ZlibBaseStream(stream, mode, level, ZlibStreamFlavor.GZIP, leaveOpen);
         }
+        // GZip format
+        // source: http://tools.ietf.org/html/rfc1952
+        //
+        //  header id:           2 bytes    1F 8B
+        //  compress method      1 byte     8= DEFLATE (none other supported)
+        //  flag                 1 byte     bitfield (See below)
+        //  mtime                4 bytes    time_t (seconds since jan 1, 1970 UTC of the file.
+        //  xflg                 1 byte     2 = max compress used , 4 = max speed (can be ignored)
+        //  OS                   1 byte     OS for originating archive. set to 0xFF in compression.
+        //  extra field length   2 bytes    optional - only if FEXTRA is set.
+        //  extra field          varies
+        //  filename             varies     optional - if FNAME is set.  zero terminated. ISO-8859-1.
+        //  file comment         varies     optional - if FCOMMENT is set. zero terminated. ISO-8859-1.
+        //  crc16                1 byte     optional - present only if FHCRC bit is set
+        //  compressed data      varies
+        //  CRC32                4 bytes
+        //  isize                4 bytes    data size modulo 2^32
+        //
+        //     FLG (FLaGs)
+        //                bit 0   FTEXT - indicates file is ASCII text (can be safely ignored)
+        //                bit 1   FHCRC - there is a CRC16 for the header immediately following the header
+        //                bit 2   FEXTRA - extra fields are present
+        //                bit 3   FNAME - the zero-terminated filename is present. encoding; ISO-8859-1.
+        //                bit 4   FCOMMENT  - a zero-terminated file comment is present. encoding: ISO-8859-1
+        //                bit 5   reserved
+        //                bit 6   reserved
+        //                bit 7   reserved
+        //
+        // On consumption:
+        // Extra field is a bunch of nonsense and can be safely ignored.
+        // Header CRC and OS, likewise.
+        //
+        // on generation:
+        // all optional fields get 0, except for the OS, which gets 255.
+        //
+
+
+        /// <summary>
+        ///     The comment on the GZIP stream.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The GZIP format allows for each file to optionally have an associated
+        ///         comment stored with the file.  The comment is encoded with the ISO-8859-1
+        ///         code page.  To include a comment in a GZIP stream you create, set this
+        ///         property before calling <c>Write()</c> for the first time on the
+        ///         <c>GZipStream</c>.
+        ///     </para>
+        ///     <para>
+        ///         When using <c>GZipStream</c> to decompress, you can retrieve this property
+        ///         after the first call to <c>Read()</c>.  If no comment has been set in the
+        ///         GZIP bytestream, the Comment property will return <c>null</c>
+        ///         (<c>Nothing</c> in VB).
+        ///     </para>
+        /// </remarks>
+        internal string Comment
+        {
+            get => _Comment;
+            set
+            {
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
+                _Comment = value;
+            }
+        }
+
+        /// <summary>
+        ///     The FileName for the GZIP stream.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The GZIP format optionally allows each file to have an associated
+        ///         filename.  When compressing data (through <c>Write()</c>), set this
+        ///         FileName before calling <c>Write()</c> the first time on the <c>GZipStream</c>.
+        ///         The actual filename is encoded into the GZIP bytestream with the
+        ///         ISO-8859-1 code page, according to RFC 1952. It is the application's
+        ///         responsibility to insure that the FileName can be encoded and decoded
+        ///         correctly with this code page.
+        ///     </para>
+        ///     <para>
+        ///         When decompressing (through <c>Read()</c>), you can retrieve this value
+        ///         any time after the first <c>Read()</c>.  In the case where there was no filename
+        ///         encoded into the GZIP bytestream, the property will return <c>null</c> (<c>Nothing</c>
+        ///         in VB).
+        ///     </para>
+        /// </remarks>
+        internal string FileName
+        {
+            get => _FileName;
+            set
+            {
+                if (_disposed)
+                    throw new ObjectDisposedException("GZipStream");
+                _FileName = value;
+                if (_FileName == null)
+                    return;
+                if (_FileName.IndexOf("/") != -1)
+                    _FileName = _FileName.Replace("/", "\\");
+                if (_FileName.EndsWith("\\"))
+                    throw new Exception("Illegal filename");
+                if (_FileName.IndexOf("\\") != -1)
+                    // trim any leading path
+                    _FileName = Path.GetFileName(_FileName);
+            }
+        }
+
+        /// <summary>
+        ///     The CRC on the GZIP stream.
+        /// </summary>
+        /// <remarks>
+        ///     This is used for internal error checking. You probably don't need to look at this property.
+        /// </remarks>
+        internal int Crc32 { get; private set; }
 
         private int EmitHeader()
         {
@@ -501,7 +501,7 @@ namespace PhotoVs.Utils.Compression
             if (!LastModified.HasValue)
                 LastModified = DateTime.Now;
             var delta = LastModified.Value - _unixEpoch;
-            var timet = (int)delta.TotalSeconds;
+            var timet = (int) delta.TotalSeconds;
             Array.Copy(BitConverter.GetBytes(timet), 0, header, i, 4);
             i += 4;
 

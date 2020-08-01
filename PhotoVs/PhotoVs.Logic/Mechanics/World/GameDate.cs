@@ -1,49 +1,55 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using PhotoVs.Engine;
-using PhotoVs.Logic.Events;
+using PhotoVs.Engine.Core;
 using PhotoVs.Logic.Events.EventArgs;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
+    // todo: reimplement as service
     public class GameDate
     {
-        private GameEventQueue _eventQueue;
-
-        private float _time;
         private TimeSpan _dayLength;
-        private bool _timeIsFlowing;
         private TimePhase _lastTimePhase;
+        private readonly ISignal _signal;
+
+        private bool _timeIsFlowing;
+
+        public GameDate(ISignal signal)
+        {
+            _signal = signal;
+            TimeScale = 0;
+            SetDayLength(TimeSpan.FromSeconds(24));
+            _timeIsFlowing = true;
+        }
 
         public TimePhase TimePhase
         {
             get
             {
-                if (_time >= Normalise(1, 0) && _time < Normalise(5, 0))
+                if (TimeScale >= Normalise(1, 0) && TimeScale < Normalise(5, 0))
                     return TimePhase.EarlyMorning;
-                else if (_time >= Normalise(5, 0) && _time < Normalise(11, 0))
+                if (TimeScale >= Normalise(5, 0) && TimeScale < Normalise(11, 0))
                     return TimePhase.LateMorning;
-                else if (_time >= Normalise(11, 0) && _time < Normalise(13, 0))
+                if (TimeScale >= Normalise(11, 0) && TimeScale < Normalise(13, 0))
                     return TimePhase.Noon;
-                else if (_time >= Normalise(13, 0) && _time < Normalise(17, 0))
+                if (TimeScale >= Normalise(13, 0) && TimeScale < Normalise(17, 0))
                     return TimePhase.Afternoon;
-                else if (_time >= Normalise(17, 0) && _time < Normalise(20, 0))
+                if (TimeScale >= Normalise(17, 0) && TimeScale < Normalise(20, 0))
                     return TimePhase.EarlyEvening;
-                else if (_time >= Normalise(20, 0) && _time < Normalise(23, 0))
+                if (TimeScale >= Normalise(20, 0) && TimeScale < Normalise(23, 0))
                     return TimePhase.LateEvening;
-                else
-                    return TimePhase.Midnight;
+                return TimePhase.Midnight;
             }
         }
 
-        public float TimeScale => _time;
+        public float TimeScale { get; private set; }
 
         public (int, int) Time
         {
             get
             {
-                var normalised = _time * 24f;
+                var normalised = TimeScale * 24f;
                 var fraction = normalised - Math.Floor(normalised);
                 var hour = (int) Math.Floor(normalised);
                 var minute = (int) (fraction * 60f);
@@ -53,36 +59,25 @@ namespace PhotoVs.Logic.Mechanics.World
 
         public Day Day { get; private set; }
 
-        public GameDate(Services services)
-        {
-            _eventQueue = services.Get<GameEventQueue>();
-            _time = 0;
-            SetDayLength(TimeSpan.FromSeconds(24));
-            _timeIsFlowing = true;
-        }
-
         public void Update(GameTime gameTime)
         {
             if (!_timeIsFlowing)
                 return;
 
-            var increment = 1f / (float)_dayLength.TotalSeconds;
-            _time += increment * gameTime.GetElapsedSeconds();
+            var increment = 1f / (float) _dayLength.TotalSeconds;
+            TimeScale += increment * gameTime.GetElapsedSeconds();
 
             var newTimePhase = TimePhase;
-            if (TimePhase != _lastTimePhase)
-            {
-                _eventQueue.Notify(GameEvents.TimePhaseChanged, new TimeEventArgs(this, newTimePhase));
-            }
+            if (TimePhase != _lastTimePhase) _signal.Notify("TimePhaseChanged", new TimeEventArgs(this, newTimePhase));
             _lastTimePhase = TimePhase;
 
-            if (_time > 1f)
+            if (TimeScale > 1f)
                 NextDay();
         }
 
         private void NextDay()
         {
-            _time -= 1f;
+            TimeScale -= 1f;
             Day = Day switch
             {
                 Day.Monday => Day.Tuesday,
@@ -95,12 +90,12 @@ namespace PhotoVs.Logic.Mechanics.World
                 _ => Day
             };
 
-            _eventQueue.Notify(GameEvents.DayChanged, new DayEventArgs(this, Day));
+            _signal.Notify("DayChanged", new DayEventArgs(this, Day));
         }
 
         private float Normalise(int hour, int minute)
         {
-            return (hour + (minute / 60f)) / 24f;
+            return (hour + minute / 60f) / 24f;
         }
 
         public void EnableTimeFlow()
@@ -120,7 +115,7 @@ namespace PhotoVs.Logic.Mechanics.World
 
         public void SetTime(int hour, int minute)
         {
-            _time = Normalise(hour, minute);
+            TimeScale = Normalise(hour, minute);
         }
 
         public void SetDay(Day day)

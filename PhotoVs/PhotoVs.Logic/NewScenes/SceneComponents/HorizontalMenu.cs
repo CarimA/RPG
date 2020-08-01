@@ -7,17 +7,10 @@ namespace PhotoVs.Logic.NewScenes.SceneComponents
 {
     public class HorizontalMenu : List<MenuItem>
     {
+        private readonly Rectangle _boundary;
+        private readonly SpriteFont _font;
         private int _highlightedIndex;
-        private Rectangle _boundary;
-        private SpriteFont _font;
-        private SpriteFont _outlineFont;
-
-        public Color TextColor { get; set; }
-        public Color OutlineColor { get; set; }
-        public Color HighlightColor { get; set; }
-        public Color HighlightOutlineColor { get; set; }
-
-        public MenuItem HighlightedItem => this[_highlightedIndex];
+        private readonly SpriteFont _outlineFont;
 
         public HorizontalMenu(Rectangle boundary, SpriteFont font, SpriteFont outlineFont)
         {
@@ -28,12 +21,19 @@ namespace PhotoVs.Logic.NewScenes.SceneComponents
             _outlineFont = outlineFont;
         }
 
+        public Color TextColor { get; set; }
+        public Color OutlineColor { get; set; }
+        public Color HighlightColor { get; set; }
+        public Color HighlightOutlineColor { get; set; }
+
+        public MenuItem HighlightedItem => this[_highlightedIndex];
+
         public Rectangle GetItemPosition(int index)
         {
             var width = _boundary.Width / Count;
 
             return new Rectangle(
-                _boundary.X + (width * index),
+                _boundary.X + width * index,
                 _boundary.Y,
                 width,
                 _boundary.Height);
@@ -56,15 +56,15 @@ namespace PhotoVs.Logic.NewScenes.SceneComponents
                     _outlineFont,
                     item.Text,
                     vecPosition,
-                    (i == _highlightedIndex) ? HighlightOutlineColor : OutlineColor,
+                    i == _highlightedIndex ? HighlightOutlineColor : OutlineColor,
                     HorizontalAlignment.Center,
                     VerticalAlignment.Center);
                 spriteBatch.DrawString(
                     _font,
                     item.Text,
                     vecPosition,
-                    (i == _highlightedIndex) ? HighlightColor : TextColor, 
-                    HorizontalAlignment.Center, 
+                    i == _highlightedIndex ? HighlightColor : TextColor,
+                    HorizontalAlignment.Center,
                     VerticalAlignment.Center);
             }
         }

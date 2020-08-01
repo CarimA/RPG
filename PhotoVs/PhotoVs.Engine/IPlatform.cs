@@ -10,6 +10,5 @@ namespace PhotoVs.Engine
         Dictionary<string, string> FileExtensionReplacement { get; }
         IAudio Audio { get; }
         IStreamProvider StreamProvider { get; set; }
-
     }
 }

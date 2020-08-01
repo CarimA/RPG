@@ -1,20 +1,16 @@
-﻿using Android.Content.Res;
-using PhotoVs.Engine.Assets;
-using PhotoVs.Engine.Assets.StreamProviders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using Android.Content.Res;
+using PhotoVs.Engine.Assets;
+using PhotoVs.Engine.Assets.StreamProviders;
 
 namespace PhotoVs.Platform.Android
 {
-    class AndroidStreamProvider : IStreamProvider
+    internal class AndroidStreamProvider : IStreamProvider
     {
         private readonly AssetManager _assetManager;
-
-        public string ContentDirectory { get; }
-        public string StorageDirectory { get; }
 
         public AndroidStreamProvider(AssetManager assetManager)
         {
@@ -30,6 +26,9 @@ namespace PhotoVs.Platform.Android
             CreateDirectory(DataLocation.Storage, "\\Screenshots\\");
             CreateDirectory(DataLocation.Storage, "\\Logs\\");
         }
+
+        public string ContentDirectory { get; }
+        public string StorageDirectory { get; }
 
         public void Write(DataLocation location, string filepath, Stream stream)
         {
@@ -49,24 +48,12 @@ namespace PhotoVs.Platform.Android
                 var ms = new MemoryStream(bytes);
                 return ms;
             }
-            else if (location == DataLocation.Content)
-            {
+
+            if (location == DataLocation.Content)
                 //var test = debugasset(_assetManager, "content").ToList(); //.List("/assets");
                 return _assetManager.Open("content/" + filepath);
-            }
 
             throw new NotSupportedException();
-        }
-
-        private IEnumerable<string> debugasset(AssetManager asset, string folder)
-        {
-            var a = asset.List(folder);
-
-            foreach (var s in a)
-            {
-                yield return s;
-                debugasset(asset, s);
-            }
         }
 
         public void Delete(DataLocation location, string filepath)
@@ -96,10 +83,7 @@ namespace PhotoVs.Platform.Android
 
         public void CreateDirectory(DataLocation location, string directory)
         {
-            if (location == DataLocation.Storage)
-            {
-                Directory.CreateDirectory(StorageDirectory + "/" + directory);
-            }
+            if (location == DataLocation.Storage) Directory.CreateDirectory(StorageDirectory + "/" + directory);
         }
 
         public IEnumerable<string> EnumerateFiles(DataLocation location, string directory)
@@ -114,12 +98,11 @@ namespace PhotoVs.Platform.Android
                     .Select(asset => directory + "/" + asset)
                     .Where(IsFile);
             }
-            else if (location == DataLocation.Storage)
+
+            if (location == DataLocation.Storage)
             {
                 if (!Directory.Exists(StorageDirectory + "/" + directory))
-                {
                     Directory.CreateDirectory(StorageDirectory + "/" + directory);
-                }
 
                 return Directory.EnumerateFiles(StorageDirectory + "/" + directory);
             }
@@ -135,6 +118,17 @@ namespace PhotoVs.Platform.Android
         public string GetFilepath(DataLocation location, string filepath)
         {
             throw new NotImplementedException();
+        }
+
+        private IEnumerable<string> debugasset(AssetManager asset, string folder)
+        {
+            var a = asset.List(folder);
+
+            foreach (var s in a)
+            {
+                yield return s;
+                debugasset(asset, s);
+            }
         }
 
         private bool IsFile(string filepath)
@@ -156,10 +150,7 @@ namespace PhotoVs.Platform.Android
 
         private string RemoveTrailingSlash(string input)
         {
-            if (input.Last() == '/')
-            {
-                return input.Substring(0, input.LastIndexOf('/'));
-            }
+            if (input.Last() == '/') return input.Substring(0, input.LastIndexOf('/'));
 
             return input;
         }

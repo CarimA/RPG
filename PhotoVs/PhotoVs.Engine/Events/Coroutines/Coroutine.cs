@@ -1,15 +1,12 @@
-﻿using PhotoVs.Engine.Scripting;
-using System;
+﻿using System;
 using System.Collections;
+using PhotoVs.Engine.Scripting;
 
 namespace PhotoVs.Engine.Events.Coroutines
 {
     public class Coroutine
     {
-        public string Source { get; }
-        private IEnumerator _routine;
-
-        public object Current => _routine.Current;
+        private readonly IEnumerator _routine;
 
         public Coroutine(IEnumerator routine)
         {
@@ -22,6 +19,10 @@ namespace PhotoVs.Engine.Events.Coroutines
             Source = source;
             _routine = routine;
         }
+
+        public string Source { get; }
+
+        public object Current => _routine.Current;
 
         public bool MoveNext()
         {

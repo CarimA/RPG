@@ -1,25 +1,19 @@
 ﻿using System;
+using MoonSharp.Interpreter;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.Text;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class TextModule : Module
+    public class TextModule
     {
-        private TextDatabase _textDatabase;
+        private readonly ITextDatabase _textDatabase;
 
-        public TextModule(TextDatabase textDatabase)
+        public TextModule(IInterpreter<Closure> interpreter, ITextDatabase textDatabase)
         {
             _textDatabase = textDatabase;
-        }
 
-        public override void DefineApi(MoonSharpInterpreter interpreter)
-        {
-            if (interpreter == null) throw new ArgumentNullException(nameof(interpreter));
-
-            interpreter.AddFunction("Text", (Func<string, string>)GetText);
-
-            base.DefineApi(interpreter);
+            interpreter.AddFunction("Text", (Func<string, string>) GetText);
         }
 
         private string GetText(string id)

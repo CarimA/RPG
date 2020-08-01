@@ -6,30 +6,32 @@ namespace PhotoVs.Engine.Graphics.Filters
 {
     public class FunkyFilter : IUpdateFilter
     {
-        private readonly Renderer _renderer;
+        private readonly EffectParameter _colorAParam;
+        private readonly EffectParameter _colorBParam;
+        private readonly EffectParameter _colorCParam;
 
         private readonly Effect _effect;
         private readonly EffectPass _effectPass;
+        private readonly EffectParameter _maskSizeParam;
+        private readonly EffectParameter _noiseSizeParam;
         private readonly EffectParameter _noiseTextureAParam;
         private readonly EffectParameter _noiseTextureBParam;
         private readonly EffectParameter _offsetAParam;
         private readonly EffectParameter _offsetBParam;
-        private readonly EffectParameter _colorAParam;
-        private readonly EffectParameter _colorBParam;
-        private readonly EffectParameter _colorCParam;
-        private readonly EffectParameter _noiseSizeParam;
-        private readonly EffectParameter _maskSizeParam;
         private readonly EffectParameter _pulseParam;
-
-        private RenderTarget2D _outputTexture;
+        private readonly IRenderer _renderer;
+        private readonly SpriteBatch _spriteBatch;
 
         private Vector2 _offsetA;
         private Vector2 _offsetB;
 
-        public FunkyFilter(Renderer renderer, Effect effect, Texture2D noiseA, 
+        private RenderTarget2D _outputTexture;
+
+        public FunkyFilter(IRenderer renderer, SpriteBatch spriteBatch, Effect effect, Texture2D noiseA,
             Texture2D noiseB, Color colorA, Color colorB, Color colorC)
         {
             _renderer = renderer;
+            _spriteBatch = spriteBatch;
             _effect = effect;
 
             _effectPass = _effect.CurrentTechnique.Passes[0];
@@ -60,17 +62,17 @@ namespace PhotoVs.Engine.Graphics.Filters
             if (_outputTexture == null || _outputTexture.Width != inputTexture.Width ||
                 _outputTexture.Height != inputTexture.Height)
             {
-                _outputTexture = new RenderTarget2D(_renderer.GraphicsDevice, inputTexture.Width, inputTexture.Height);
+                _outputTexture = _renderer.CreateRenderTarget(inputTexture.Width, inputTexture.Height);
                 _maskSizeParam.SetValue(new Vector2(_outputTexture.Width, _outputTexture.Height));
             }
 
             _renderer.RequestSubRenderer(_outputTexture);
 
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointWrap);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointWrap);
             _effect.Parameters["Texture"].SetValue(inputTexture);
             _effectPass.Apply();
-            _renderer.SpriteBatch.Draw(inputTexture, Vector2.Zero, Color.White);
-            _renderer.SpriteBatch.End();
+            _spriteBatch.Draw(inputTexture, Vector2.Zero, Color.White);
+            _spriteBatch.End();
 
             _renderer.RelinquishSubRenderer();
             return _outputTexture;

@@ -1,11 +1,16 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace PhotoVs.Engine.TiledMaps.Objects
 {
     [JsonConverter(typeof(ObjectConverter))]
     public abstract class BaseObject
     {
+        public BaseObject(Dictionary<string, string> properties)
+        {
+            Properties = properties;
+        }
+
         [JsonProperty("name")] public string Name { get; set; }
 
         [JsonProperty("type")] public string ObjectType { get; set; }
@@ -27,10 +32,5 @@ namespace PhotoVs.Engine.TiledMaps.Objects
 
         [JsonProperty("properties")]
         public Dictionary<string, string> Properties { get; } = new Dictionary<string, string>();
-
-        public BaseObject(Dictionary<string, string> properties)
-        {
-            Properties = properties;
-        }
     }
 }

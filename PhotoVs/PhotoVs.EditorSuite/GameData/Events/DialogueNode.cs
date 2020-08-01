@@ -12,7 +12,7 @@ namespace PhotoVs.EditorSuite.GameData.Events
 
         public override void Assign()
         {
-            Inputs.AddRange(new List<NodeInputLabel>()
+            Inputs.AddRange(new List<NodeInputLabel>
             {
                 new NodeInputLabel
                 {

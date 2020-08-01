@@ -2,11 +2,11 @@
 {
     public class CInputPriority
     {
-        public InputPriority InputPriority { get; set; }
-
         public CInputPriority(InputPriority priority)
         {
             InputPriority = priority;
         }
+
+        public InputPriority InputPriority { get; set; }
     }
 }

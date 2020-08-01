@@ -18,13 +18,6 @@ namespace PhotoVs.Engine.Graphics.TextureAtlases
 
         private readonly Rectangle[] _destinationPatches = new Rectangle[9];
 
-        public Rectangle[] SourcePatches { get; } = new Rectangle[9];
-        public Thickness Padding { get; }
-        public int LeftPadding => Padding.Left;
-        public int TopPadding => Padding.Top;
-        public int RightPadding => Padding.Right;
-        public int BottomPadding => Padding.Bottom;
-
         public NinePatchRegion2D(TextureRegion2D textureRegion, Thickness padding)
             : base(textureRegion.Name, textureRegion.Texture, textureRegion.X, textureRegion.Y, textureRegion.Width,
                 textureRegion.Height)
@@ -53,6 +46,13 @@ namespace PhotoVs.Engine.Graphics.TextureAtlases
             : this(new TextureRegion2D(texture), thickness)
         {
         }
+
+        public Rectangle[] SourcePatches { get; } = new Rectangle[9];
+        public Thickness Padding { get; }
+        public int LeftPadding => Padding.Left;
+        public int TopPadding => Padding.Top;
+        public int RightPadding => Padding.Right;
+        public int BottomPadding => Padding.Bottom;
 
         public Rectangle[] CreatePatches(Rectangle rectangle)
         {

@@ -1,19 +1,14 @@
-﻿using PhotoVs.Engine;
-using PhotoVs.Engine.Assets.StreamProviders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Engine.Audio;
 
 namespace PhotoVs.Platform.Desktop
 {
     public class DesktopPlatform : IPlatform
     {
-        public bool OverrideFullscreen => false;
-        public Dictionary<string, string> FileExtensionReplacement { get; }
-        public IAudio Audio { get; }
-        public IStreamProvider StreamProvider { get; set; }
-
         public DesktopPlatform()
         {
             StreamProvider = new FileSystemStreamProvider(
@@ -25,5 +20,10 @@ namespace PhotoVs.Platform.Desktop
             };
             Audio = new DummyAudio();
         }
+
+        public bool OverrideFullscreen => false;
+        public Dictionary<string, string> FileExtensionReplacement { get; }
+        public IAudio Audio { get; }
+        public IStreamProvider StreamProvider { get; set; }
     }
 }

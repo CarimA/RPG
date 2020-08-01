@@ -1,19 +1,19 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Utils.Extensions;
-using System.Collections.Generic;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
-    public class Overworld
+    public class Overworld : IOverworld
     {
         private readonly IAssetLoader _assetLoader;
 
         private readonly Dictionary<string, OverworldMap> _maps;
-        private OverworldMap _currentMap;
         private readonly SpriteBatch _spriteBatch;
+        private OverworldMap _currentMap;
 
         public Overworld(SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
@@ -31,22 +31,6 @@ namespace PhotoVs.Logic.Mechanics.World
             files.ForEach(LoadMap);
         }
 
-        private void LoadMap(string filepath)
-        {
-            if (!filepath.EndsWith("tmx"))
-                return;
-
-            var name = filepath.Replace('\\', '/');
-            if (name.Contains("/"))
-            {
-                name = name.Substring(name.LastIndexOf('/') + 1);
-            }
-
-            name = name.Substring(0, name.Length - ".tmx".Length);
-
-            _maps[name] = new OverworldMap(_assetLoader.Get<Map>(filepath), _assetLoader);
-        }
-
         public void SetMap(string map)
         {
             _currentMap = _maps[map];
@@ -55,6 +39,19 @@ namespace PhotoVs.Logic.Mechanics.World
         public OverworldMap GetMap()
         {
             return _currentMap;
+        }
+
+        private void LoadMap(string filepath)
+        {
+            if (!filepath.EndsWith("tmx"))
+                return;
+
+            var name = filepath.Replace('\\', '/');
+            if (name.Contains("/")) name = name.Substring(name.LastIndexOf('/') + 1);
+
+            name = name.Substring(0, name.Length - ".tmx".Length);
+
+            _maps[name] = new OverworldMap(_assetLoader.Get<Map>(filepath), _assetLoader);
         }
     }
 }

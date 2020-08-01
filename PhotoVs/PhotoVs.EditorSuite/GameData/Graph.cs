@@ -5,11 +5,11 @@ namespace PhotoVs.EditorSuite.GameData
 {
     public class Graph
     {
-        public List<Node> Nodes { get; }
-
         public Graph()
         {
             Nodes = new List<Node>();
         }
+
+        public List<Node> Nodes { get; }
     }
 }

@@ -7,9 +7,6 @@ namespace PhotoVs.Logic.NewScenes
 {
     public abstract class Scene : State
     {
-        public virtual bool IsBlocking { get; }
-        public virtual SystemList Systems { get; }
-
         public Scene()
         {
             Systems = new SystemList();
@@ -20,10 +17,19 @@ namespace PhotoVs.Logic.NewScenes
             Systems = systems;
         }
 
-        public virtual void ProcessInput(GameTime gameTime, CInputState inputState) {}
+        public virtual bool IsBlocking { get; }
+        public virtual SystemList Systems { get; }
 
-        public virtual void Update(GameTime gameTime) {}
+        public virtual void ProcessInput(GameTime gameTime, CInputState inputState)
+        {
+        }
 
-        public virtual void Draw(GameTime gameTime, Matrix uiOrigin) {}
+        public virtual void Update(GameTime gameTime)
+        {
+        }
+
+        public virtual void Draw(GameTime gameTime, Matrix uiOrigin)
+        {
+        }
     }
 }

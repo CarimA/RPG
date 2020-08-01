@@ -1,11 +1,11 @@
-﻿using PhotoVs.Utils.Extensions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Utils.Collections
 {
     public class LinearTweener<T>
     {
-        private List<(float, T)> _points;
+        private readonly List<(float, T)> _points;
 
         public LinearTweener()
         {
@@ -40,12 +40,9 @@ namespace PhotoVs.Utils.Collections
 
             if (rightIndex == 0)
             {
-                if (phase <= right.Item1)
-                {
-                    phase += 1f;
-                }
+                if (phase <= right.Item1) phase += 1f;
 
-                var value = (phase).Map(left.Item1, 1f + right.Item1, 0f, 1f);
+                var value = phase.Map(left.Item1, 1f + right.Item1, 0f, 1f);
                 return (value, right.Item2, left.Item2);
             }
             else

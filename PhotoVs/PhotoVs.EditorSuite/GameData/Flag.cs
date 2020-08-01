@@ -2,7 +2,7 @@
 {
     public class Flag
     {
-        public string Name;
         public FlagType FlagType;
+        public string Name;
     }
 }

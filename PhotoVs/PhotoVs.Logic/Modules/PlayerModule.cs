@@ -1,30 +1,23 @@
-﻿using PhotoVs.Engine.Scripting;
+﻿using System;
+using MoonSharp.Interpreter;
+using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.PlayerData;
-using System;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class PlayerModule : Module
+    public class PlayerModule
     {
         private readonly Player _player;
 
-        public PlayerModule(Player player)
+        public PlayerModule(IInterpreter<Closure> interpreter, IGameState gameState)
         {
-            _player = player;
-        }
+            _player = gameState.Player;
 
-        public override void DefineApi(MoonSharpInterpreter interpreter)
-        {
-            if (interpreter == null)
-                throw new ArgumentNullException(nameof(interpreter));
-
-            interpreter.AddFunction("Lock", (Action)LockMovement);
-            interpreter.AddFunction("Unlock", (Action)UnlockMovement);
-            interpreter.AddFunction("Flag", (Func<string, bool?, bool>)Flag);
-            interpreter.AddFunction("Var", (Func<string, IComparable, object>)Var);
-            interpreter.AddFunction("Save", (Action)Save);
-
-            base.DefineApi(interpreter);
+            interpreter.AddFunction("Lock", (Action) LockMovement);
+            interpreter.AddFunction("Unlock", (Action) UnlockMovement);
+            interpreter.AddFunction("Flag", (Func<string, bool?, bool>) Flag);
+            interpreter.AddFunction("Var", (Func<string, IComparable, object>) Var);
+            interpreter.AddFunction("Save", (Action) Save);
         }
 
         private void Save()
@@ -49,8 +42,8 @@ namespace PhotoVs.Logic.Modules
                 _player.PlayerData.SetFlag(flag, value.Value);
                 return value.Value;
             }
-            else
-                return _player.PlayerData.GetFlag(flag);
+
+            return _player.PlayerData.GetFlag(flag);
         }
 
         private object Var(string flag, IComparable value = null)
@@ -60,8 +53,8 @@ namespace PhotoVs.Logic.Modules
                 _player.PlayerData.SetVariable(flag, value);
                 return value;
             }
-            else
-                return _player.PlayerData.GetVariable(flag);
+
+            return _player.PlayerData.GetVariable(flag);
         }
     }
 }

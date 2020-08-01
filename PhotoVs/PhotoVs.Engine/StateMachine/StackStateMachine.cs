@@ -5,48 +5,47 @@ namespace PhotoVs.Engine.StateMachine
 {
     public class StackStateMachine<T> : IEnumerable<T> where T : State
     {
-        private readonly Stack<T> _states;
-        public Stack<T> States => _states;
-
         public StackStateMachine()
         {
-            _states = new Stack<T>();
+            States = new Stack<T>();
+        }
+
+        public Stack<T> States { get; }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return States.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return States.GetEnumerator();
         }
 
         public virtual T Peek()
         {
-            return _states.Count > 0 ? _states.Peek() : default;
+            return States.Count > 0 ? States.Peek() : default;
         }
 
         public virtual void Push(T state)
         {
             Peek()?.OnDeactivate();
-            _states.Push(state);
+            States.Push(state);
             Peek()?.OnActivate();
         }
 
         public virtual T Pop()
         {
             Peek()?.OnDeactivate();
-            var output = _states.Pop();
+            var output = States.Pop();
             Peek()?.OnActivate();
             return output;
         }
 
         public virtual IEnumerable<T> PopAll()
         {
-            while (_states.Count > 0)
+            while (States.Count > 0)
                 yield return Pop();
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _states.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _states.GetEnumerator();
         }
     }
 }

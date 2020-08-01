@@ -25,6 +25,5 @@ namespace PhotoVs.Engine.ECS
             foreach (var system in systems)
                 Add(system);
         }
-
     }
 }

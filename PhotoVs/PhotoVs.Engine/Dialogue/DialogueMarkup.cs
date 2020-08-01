@@ -1,21 +1,21 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine.Dialogue.Markups;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Dialogue.Markups;
 
 namespace PhotoVs.Engine.Dialogue
 {
     public class DialogueMarkup
     {
         private readonly SpriteFont _font;
-        private readonly SpriteFont _outlineFont;
         private readonly Dictionary<int, List<IMarkup>> _markupIndex;
         private readonly float _maxCharTime;
 
         private readonly int _maxLines;
         private readonly Vector2 _origin;
+        private readonly SpriteFont _outlineFont;
 
         private readonly Random _rng;
         private readonly string _text;
@@ -24,11 +24,8 @@ namespace PhotoVs.Engine.Dialogue
         private int _currentIndex;
         private int _remainingLines;
 
-        public bool FastForward { get; set; }
-        public bool IsFinished { get; set; }
-        public bool IsPaused { get; set; }
-
-        public DialogueMarkup(SpriteFont font, SpriteFont outlineFont, Vector2 origin, string text, int lines, int width)
+        public DialogueMarkup(SpriteFont font, SpriteFont outlineFont, Vector2 origin, string text, int lines,
+            int width)
         {
             _font = font;
             _outlineFont = outlineFont;
@@ -48,11 +45,15 @@ namespace PhotoVs.Engine.Dialogue
             _rng = new Random();
         }
 
+        public bool FastForward { get; set; }
+        public bool IsFinished { get; set; }
+        public bool IsPaused { get; set; }
+
         public void Update(GameTime gameTime)
         {
             if (!IsPaused && !IsFinished)
             {
-                _charTime -= (float)gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 25 : 1);
+                _charTime -= (float) gameTime.ElapsedGameTime.TotalSeconds * (FastForward ? 25 : 1);
 
                 if (_charTime <= 0)
                 {
@@ -145,7 +146,7 @@ namespace PhotoVs.Engine.Dialogue
 
                         if (effect is WaveMarkup)
                             wave = new Vector2(0,
-                                (float)Math.Sin(10 * gameTime.TotalGameTime.TotalSeconds + i * 0.6) * 3 - 1.5f);
+                                (float) Math.Sin(10 * gameTime.TotalGameTime.TotalSeconds + i * 0.6) * 3 - 1.5f);
 
                         if (effect is ShakeMarkup)
                             // todo: limit to time
@@ -157,9 +158,7 @@ namespace PhotoVs.Engine.Dialogue
 
                 // todo: set active colour or position changing
                 if (outlineColor != Color.Transparent)
-                {
                     spriteBatch.DrawString(_outlineFont, "" + c, _origin + position + wave + shake, outlineColor);
-                }
 
                 spriteBatch.DrawString(_font, "" + c, _origin + position + wave + shake, activeColor);
                 position.X += r.WidthIncludingBearings;
@@ -195,13 +194,8 @@ namespace PhotoVs.Engine.Dialogue
             foreach (var t in text)
             {
                 if (p == '.')
-                {
                     activeMarkups.Add(new WaitMarkup(0.75f));
-                }
-                else if (p == ',')
-                {
-                    activeMarkups.Add(new WaitMarkup(0.4f));
-                }
+                else if (p == ',') activeMarkups.Add(new WaitMarkup(0.4f));
 
                 if (t == '\n')
                 {
@@ -237,7 +231,7 @@ namespace PhotoVs.Engine.Dialogue
                                 if (prop == null)
                                     activeMarkups.Add(new ColorMarkup(default));
                                 else
-                                    activeMarkups.Add(new ColorMarkup((Color)prop.GetValue(null, null)));
+                                    activeMarkups.Add(new ColorMarkup((Color) prop.GetValue(null, null)));
                             }
                             else
                             {
@@ -277,6 +271,7 @@ namespace PhotoVs.Engine.Dialogue
                             {
                                 activeMarkups.Add(new WaitMarkup());
                             }
+
                             break;
 
                         case "o":
@@ -286,7 +281,7 @@ namespace PhotoVs.Engine.Dialogue
                                 if (prop == null)
                                     activeMarkups.Add(new OutlineMarkup(default));
                                 else
-                                    activeMarkups.Add(new OutlineMarkup((Color)prop.GetValue(null, null)));
+                                    activeMarkups.Add(new OutlineMarkup((Color) prop.GetValue(null, null)));
                             }
                             else
                             {
@@ -303,7 +298,6 @@ namespace PhotoVs.Engine.Dialogue
                 }
                 else
                 {
-
                     if (isBuffering)
                     {
                         buffer += t;

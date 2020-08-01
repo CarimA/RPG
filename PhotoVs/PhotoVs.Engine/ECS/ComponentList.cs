@@ -5,8 +5,8 @@ namespace PhotoVs.Engine.ECS
 {
     public class ComponentList
     {
-        private Dictionary<Type, object> _enabledComponents;
-        private Dictionary<Type, object> _disabledComponents;
+        private readonly Dictionary<Type, object> _disabledComponents;
+        private readonly Dictionary<Type, object> _enabledComponents;
 
         public ComponentList()
         {
@@ -25,14 +25,14 @@ namespace PhotoVs.Engine.ECS
 
         public bool Remove<T>() where T : class
         {
-            return (_enabledComponents.Remove(typeof(T))
-                    || _disabledComponents.Remove(typeof(T)));
+            return _enabledComponents.Remove(typeof(T))
+                   || _disabledComponents.Remove(typeof(T));
         }
 
         public T Get<T>() where T : class
         {
             if (_enabledComponents.TryGetValue(typeof(T), out var result))
-                return (T)result;
+                return (T) result;
             return null;
         }
 
@@ -51,6 +51,7 @@ namespace PhotoVs.Engine.ECS
         {
             return _enabledComponents.ContainsKey(type);
         }
+
         public IEnumerable<Type> GetTypes()
         {
             foreach (var enabled in _enabledComponents)

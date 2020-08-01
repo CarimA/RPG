@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Diagnostics;
+using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Utils
 {
@@ -112,7 +112,7 @@ namespace PhotoVs.Utils
         public override bool Equals(object obj)
         {
             if (obj is Point2)
-                return Equals((Point2)obj);
+                return Equals((Point2) obj);
             return false;
         }
 
@@ -161,8 +161,8 @@ namespace PhotoVs.Utils
         {
             Point2 p = new Point
             {
-                X = (int)(point.X + vector.X),
-                Y = (int)(point.Y + vector.Y)
+                X = (int) (point.X + vector.X),
+                Y = (int) (point.Y + vector.Y)
             };
             return p;
         }
@@ -194,8 +194,8 @@ namespace PhotoVs.Utils
         {
             Point2 p = new Point
             {
-                X = (int)(point.X - vector.X),
-                Y = (int)(point.Y - vector.Y)
+                X = (int) (point.X - vector.X),
+                Y = (int) (point.Y - vector.Y)
             };
             return p;
         }

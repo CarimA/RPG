@@ -23,16 +23,6 @@ namespace PhotoVs.Utils.Compression
         private uint _register = 0xFFFFFFFFU;
         private uint[] crc32Table;
 
-        /// <summary>
-        ///     Indicates the total number of bytes applied to the CRC.
-        /// </summary>
-        internal long TotalBytesRead { get; private set; }
-
-        /// <summary>
-        ///     Indicates the current CRC for all blocks slurped in.
-        /// </summary>
-        internal int Crc32Result => unchecked((int)~_register);
-
 
         /// <summary>
         ///     Create an instance of the CRC32 class using the default settings: no
@@ -60,7 +50,7 @@ namespace PhotoVs.Utils.Compression
         ///     </para>
         /// </remarks>
         internal CRC32(bool reverseBits) :
-            this(unchecked((int)0xEDB88320), reverseBits)
+            this(unchecked((int) 0xEDB88320), reverseBits)
         {
         }
 
@@ -92,9 +82,19 @@ namespace PhotoVs.Utils.Compression
         internal CRC32(int polynomial, bool reverseBits)
         {
             this.reverseBits = reverseBits;
-            dwPolynomial = (uint)polynomial;
+            dwPolynomial = (uint) polynomial;
             GenerateLookupTable();
         }
+
+        /// <summary>
+        ///     Indicates the total number of bytes applied to the CRC.
+        /// </summary>
+        internal long TotalBytesRead { get; private set; }
+
+        /// <summary>
+        ///     Indicates the current CRC for all blocks slurped in.
+        /// </summary>
+        internal int Crc32Result => unchecked((int) ~_register);
 
         /// <summary>
         ///     Returns the CRC32 for the specified stream.
@@ -137,7 +137,7 @@ namespace PhotoVs.Utils.Compression
                     TotalBytesRead += count;
                 }
 
-                return (int)~_register;
+                return (int) ~_register;
             }
         }
 
@@ -151,12 +151,12 @@ namespace PhotoVs.Utils.Compression
         /// <returns>The CRC-ized result.</returns>
         internal int ComputeCrc32(int W, byte B)
         {
-            return InternalComputeCrc32((uint)W, B);
+            return InternalComputeCrc32((uint) W, B);
         }
 
         internal int InternalComputeCrc32(uint W, byte B)
         {
-            return (int)(crc32Table[(W ^ B) & 0xFF] ^ (W >> 8));
+            return (int) (crc32Table[(W ^ B) & 0xFF] ^ (W >> 8));
         }
 
 
@@ -232,15 +232,15 @@ namespace PhotoVs.Utils.Compression
                 {
                     var temp = (_register >> 24) ^ b;
                     _register = (_register << 8) ^ crc32Table[temp >= 0
-                                    ? temp
-                                    : temp + 256];
+                        ? temp
+                        : temp + 256];
                 }
                 else
                 {
                     var temp = (_register & 0x000000FF) ^ b;
                     _register = (_register >> 8) ^ crc32Table[temp >= 0
-                                    ? temp
-                                    : temp + 256];
+                        ? temp
+                        : temp + 256];
                 }
         }
 
@@ -262,11 +262,11 @@ namespace PhotoVs.Utils.Compression
         {
             unchecked
             {
-                var u = (uint)data * 0x00020202;
+                var u = (uint) data * 0x00020202;
                 uint m = 0x01044010;
                 var s = u & m;
                 var t = (u << 2) & (m << 1);
-                return (byte)((0x01001001 * (s + t)) >> 24);
+                return (byte) ((0x01001001 * (s + t)) >> 24);
             }
         }
 
@@ -354,7 +354,7 @@ namespace PhotoVs.Utils.Compression
                 return;
 
             var crc1 = ~_register;
-            var crc2 = (uint)crc;
+            var crc2 = (uint) crc;
 
             // put operator for one zero bit in odd
             odd[0] = dwPolynomial; // the CRC-32 polynomial
@@ -371,7 +371,7 @@ namespace PhotoVs.Utils.Compression
             // put operator for four zero bits in odd
             Gf2MatrixSquare(odd, even);
 
-            var len2 = (uint)length;
+            var len2 = (uint) length;
 
             // apply len2 zeros to crc1 (first square will put the operator for one
             // zero byte, eight zero bits, in even)

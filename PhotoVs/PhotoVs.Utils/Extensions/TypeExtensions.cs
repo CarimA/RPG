@@ -21,8 +21,8 @@ namespace PhotoVs.Utils.Extensions
 
             var toRemove = new HashSet<Type>();
             foreach (var implementedByMostDerivedClass in allInterfaces)
-                foreach (var implementedByOtherInterfaces in implementedByMostDerivedClass.GetInterfaces())
-                    toRemove.Add(implementedByOtherInterfaces);
+            foreach (var implementedByOtherInterfaces in implementedByMostDerivedClass.GetInterfaces())
+                toRemove.Add(implementedByOtherInterfaces);
 
             allInterfaces.ExceptWith(toRemove);
 

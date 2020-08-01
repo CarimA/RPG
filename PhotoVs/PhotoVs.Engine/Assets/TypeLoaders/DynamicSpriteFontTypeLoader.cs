@@ -1,23 +1,24 @@
-﻿using SpriteFontPlus;
-using System.IO;
+﻿using System.IO;
+using PhotoVs.Engine.Assets.AssetLoaders;
+using SpriteFontPlus;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {
-    public class DynamicSpriteFontTypeLoader : ITypeLoader<DynamicSpriteFont>
+    public class DynamicSpriteFontTypeLoader : TypeLoader<DynamicSpriteFont>
     {
-        private readonly int _defaultFontSize;
+        public int FontSize { get; set; } = 32;
 
-        public DynamicSpriteFontTypeLoader(int defaultFontSize)
+        public DynamicSpriteFontTypeLoader(IAssetLoader assetLoader) : base(assetLoader)
         {
-            _defaultFontSize = defaultFontSize;
+
         }
 
-        public DynamicSpriteFont Load(Stream stream)
+        public override DynamicSpriteFont Load(Stream stream)
         {
             using var memory = new MemoryStream();
             stream.CopyTo(memory);
             var bytes = memory.ToArray();
-            var font = DynamicSpriteFont.FromTtf(bytes, _defaultFontSize);
+            var font = DynamicSpriteFont.FromTtf(bytes, FontSize);
             return font;
         }
     }

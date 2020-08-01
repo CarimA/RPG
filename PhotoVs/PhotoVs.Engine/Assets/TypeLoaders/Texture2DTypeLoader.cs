@@ -1,18 +1,19 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System.IO;
+﻿using System.IO;
+using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine.Assets.AssetLoaders;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {
-    public class Texture2DTypeLoader : ITypeLoader<Texture2D>
+    public class Texture2DTypeLoader : TypeLoader<Texture2D>
     {
         private readonly GraphicsDevice _graphicsDevice;
 
-        public Texture2DTypeLoader(GraphicsDevice graphicsDevice)
+        public Texture2DTypeLoader(IAssetLoader assetLoader, GraphicsDevice graphicsDevice) : base(assetLoader)
         {
             _graphicsDevice = graphicsDevice;
         }
 
-        public Texture2D Load(Stream stream)
+        public override Texture2D Load(Stream stream)
         {
             return Texture2D.FromStream(_graphicsDevice, stream);
         }

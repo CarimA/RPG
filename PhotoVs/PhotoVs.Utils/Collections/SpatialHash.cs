@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Utils.Collections
 {
@@ -8,7 +8,6 @@ namespace PhotoVs.Utils.Collections
     {
         public SpatialHash(int cellSize) : base(cellSize)
         {
-
         }
     }
 
@@ -62,14 +61,14 @@ namespace PhotoVs.Utils.Collections
             var snapBottom = Snap(bounds.Bottom) + _cellSize;
 
             for (var x = snapLeft; x <= snapRight; x += _cellSize)
-                for (var y = snapTop; y <= snapBottom; y += _cellSize)
-                {
-                    var points = GetPoint(x, y);
-                    foreach (var point in points)
-                        //if (!output.Contains(point))
-                        yield return point;
-                    //output.Add(point);
-                }
+            for (var y = snapTop; y <= snapBottom; y += _cellSize)
+            {
+                var points = GetPoint(x, y);
+                foreach (var point in points)
+                    //if (!output.Contains(point))
+                    yield return point;
+                //output.Add(point);
+            }
 
             //return output;
         }
@@ -77,8 +76,8 @@ namespace PhotoVs.Utils.Collections
         private void ForRange(RectangleF range, Action<int, int> action)
         {
             for (var x = Snap(range.Left); x <= Snap(range.Right); x += _cellSize)
-                for (var y = Snap(range.Top); y <= Snap(range.Bottom); y += _cellSize)
-                    action(x, y);
+            for (var y = Snap(range.Top); y <= Snap(range.Bottom); y += _cellSize)
+                action(x, y);
         }
 
         private void ForRange(Rectangle range, Action<int, int> action)
@@ -89,13 +88,13 @@ namespace PhotoVs.Utils.Collections
             var snapBottom = Snap(range.Bottom) + _cellSize;
 
             for (var x = snapLeft; x <= snapRight; x += _cellSize)
-                for (var y = snapTop; y <= snapBottom; y += _cellSize)
-                    action(x, y);
+            for (var y = snapTop; y <= snapBottom; y += _cellSize)
+                action(x, y);
         }
 
         private int Snap(float input)
         {
-            return (int)(Math.Round(input / _cellSize) * _cellSize);
+            return (int) (Math.Round(input / _cellSize) * _cellSize);
         }
 
         private static int HashPosition(int x, int y)

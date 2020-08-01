@@ -2,11 +2,11 @@
 {
     public class CSolid
     {
-        public bool Enabled { get; set; }
-
         public CSolid(bool enabled)
         {
             Enabled = enabled;
         }
+
+        public bool Enabled { get; set; }
     }
 }

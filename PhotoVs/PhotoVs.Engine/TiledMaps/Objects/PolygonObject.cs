@@ -4,8 +4,6 @@ namespace PhotoVs.Engine.TiledMaps.Objects
 {
     public class PolygonObject : BaseObject
     {
-        public Position[] Polygon { get; set; }
-
         internal PolygonObject(Dictionary<string, string> properties) : base(properties)
         {
         }
@@ -13,5 +11,7 @@ namespace PhotoVs.Engine.TiledMaps.Objects
         public PolygonObject() : base(new Dictionary<string, string>())
         {
         }
+
+        public Position[] Polygon { get; set; }
     }
 }

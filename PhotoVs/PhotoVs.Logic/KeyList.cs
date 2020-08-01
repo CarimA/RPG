@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace PhotoVs.Logic
 {
-    sealed class KeyList<T> : List<T>, IEquatable<KeyList<T>>, IEnumerable
+    internal sealed class KeyList<T> : List<T>, IEquatable<KeyList<T>>, IEnumerable
     {
-        int _hashCode;
-        List<T> _items;
+        private int _hashCode;
+        private readonly List<T> _items;
 
         public KeyList()
         {
@@ -25,14 +25,25 @@ namespace PhotoVs.Logic
 
         public int Count => _items.Count;
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public bool Equals(KeyList<T> rhs)
+        {
+            var ic = _items.Count;
+            if (ic != rhs._items.Count)
+                return false;
+            for (var i = 0; i < ic; ++i)
+                if (!Equals(_items[i], rhs._items[i]))
+                    return false;
+            return true;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _items.GetEnumerator();
         }
 
         public void Add(T item)
@@ -45,17 +56,6 @@ namespace PhotoVs.Logic
         public override int GetHashCode()
         {
             return _hashCode;
-        }
-
-        public bool Equals(KeyList<T> rhs)
-        {
-            var ic = _items.Count;
-            if (ic != rhs._items.Count)
-                return false;
-            for (var i = 0; i < ic; ++i)
-                if (!Equals(_items[i], rhs._items[i]))
-                    return false;
-            return true;
         }
 
         public override bool Equals(object obj)

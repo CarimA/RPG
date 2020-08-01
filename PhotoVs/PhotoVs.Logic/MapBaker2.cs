@@ -16,48 +16,48 @@ using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic
 {
-    class MapBaker2
+    internal class MapBaker2
     {
         private const int _maxOutputWidth = 4096;
         private const int _maxOutputHeight = 4096;
 
-        private readonly string _inputDir;
-        private readonly string _outputDir;
-        private readonly int _tileSize;
-
         private readonly IAssetLoader _assetLoader;
-        private readonly SpriteBatch _spriteBatch;
-        private readonly Renderer _renderer;
-
-        private readonly Texture2D _pixelTexture;
-
-        private readonly IEnumerable<Map> _mapData;
-        private readonly Dictionary<string, Texture2D> _textureCache;
-        private readonly Dictionary<string, Texture2D> _materialCache;
-
-        private readonly Dictionary<Map, Dictionary<(int, int, bool), KeyList<int>>> _maps;
         private readonly Dictionary<KeyList<int>, List<(Map, int, int, bool)>> _dedupe;
 
-        private readonly List<(Texture2D, Texture2D, int, int)> _sourceCache;
-        private readonly Dictionary<(Texture2D, int, int), bool> _transparencyCache;
-        private readonly Dictionary<(Texture2D, int, int), bool> _opaqueCache;
-
-        private readonly Dictionary<Texture2D, Color[]> _textureDataCache;
+        private readonly string _inputDir;
 
         private readonly Dictionary<KeyList<int>, (int, int)> _instructions;
 
-        private Dictionary<string, int> _minX;
-        private Dictionary<string, int> _minY;
-        private Dictionary<string, int> _maxX;
-        private Dictionary<string, int> _maxY;
+        private readonly IEnumerable<Map> _mapData;
+
+        private readonly Dictionary<Map, Dictionary<(int, int, bool), KeyList<int>>> _maps;
+        private readonly Dictionary<string, Texture2D> _materialCache;
+        private readonly Dictionary<(Texture2D, int, int), bool> _opaqueCache;
+        private readonly string _outputDir;
+
+        private readonly Texture2D _pixelTexture;
+        private readonly Renderer _renderer;
+
+        private readonly List<(Texture2D, Texture2D, int, int)> _sourceCache;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly Dictionary<string, Texture2D> _textureCache;
+
+        private readonly Dictionary<Texture2D, Color[]> _textureDataCache;
+        private readonly int _tileSize;
+        private readonly Dictionary<(Texture2D, int, int), bool> _transparencyCache;
+        private readonly Dictionary<string, int> _maxX;
+        private readonly Dictionary<string, int> _maxY;
+
+        private readonly Dictionary<string, int> _minX;
+        private readonly Dictionary<string, int> _minY;
 
         private int _tilePerRow;
 
-        public MapBaker2(Services services, string inputDir, string outputDir, int tileSize)
+        public MapBaker2(string inputDir, string outputDir, int tileSize)
         {
-            _assetLoader = services.Get<IAssetLoader>();
-            _spriteBatch = services.Get<SpriteBatch>();
-            _renderer = services.Get<Renderer>();
+            //_assetLoader = services.Get<IAssetLoader>();
+            //_spriteBatch = services.Get<SpriteBatch>();
+            //_renderer = services.Get<Renderer>();
 
             _pixelTexture = _assetLoader.Get<Texture2D>("ui/pixel.png");
 
@@ -75,7 +75,7 @@ namespace PhotoVs.Logic
             _sourceCache = new List<(Texture2D, Texture2D, int, int)>();
             _textureCache = new Dictionary<string, Texture2D>();
             _materialCache = new Dictionary<string, Texture2D>();
-            _transparencyCache = new Dictionary<(Texture2D,  int, int), bool>();
+            _transparencyCache = new Dictionary<(Texture2D, int, int), bool>();
             _opaqueCache = new Dictionary<(Texture2D, int, int), bool>();
             _maxX = new Dictionary<string, int>();
             _maxY = new Dictionary<string, int>();
@@ -96,7 +96,7 @@ namespace PhotoVs.Logic
 
         private void ProcessMaps()
         {
-            foreach (var map in _mapData) 
+            foreach (var map in _mapData)
                 ProcessMap(map);
         }
 
@@ -123,68 +123,63 @@ namespace PhotoVs.Logic
         private void ProcessLayer(Map map, TileLayer layer, bool isMask)
         {
             for (int y = 0, i = 0; y < layer.Height; y++)
+            for (var x = 0; x < layer.Width; x++, i++)
             {
-                for (var x = 0; x < layer.Width; x++, i++)
+                var gid = layer.Data[i];
+                if (gid == 0)
+                    continue;
+
+                var tileset = map.Tilesets.Single(ts =>
+                    gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
+                var tile = tileset[gid];
+
+                var tilesetPath = tileset.ImagePath.Replace("../", "");
+                tilesetPath = "tilesets/" + Path.GetFileName(tilesetPath);
+
+                if (!_textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
                 {
-                    var gid = layer.Data[i];
-                    if (gid == 0)
-                        continue;
-
-                    var tileset = map.Tilesets.Single(ts =>
-                        gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
-                    var tile = tileset[gid];
-
-                    var tilesetPath = tileset.ImagePath.Replace("../", "");
-                    tilesetPath = "tilesets/" + Path.GetFileName(tilesetPath);
-
-                    if (!_textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
-                    {
-                        tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
-                        _textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
-                    }
-
-                    var materialPath = tilesetPath.Substring(0, tilesetPath.Length - ".png".Length) +
-                                       "_mat.png";
-                    if (!_materialCache.TryGetValue(materialPath, out var materialTexture))
-                    {
-                        materialTexture = _assetLoader.Get<Texture2D>(materialPath);
-                        _materialCache.Add(materialPath, _assetLoader.Get<Texture2D>(materialPath));
-                    }
-
-                    var mapName = map.Properties["name"];
-
-                    if (tileset.TileWidth > _tileSize || tileset.TileHeight > _tileSize)
-                    {
-                        ProcessOversizedTile(map,
-                            tilesetTexture,
-                            materialTexture,
-                            mapName,
-                            tile.Left,
-                            tile.Top,
-                            tileset.TileWidth,
-                            tileset.TileHeight,
-                            x,
-                            y,
-                            isMask);
-                    }
-                    else
-                    {
-                        ProcessTile(
-                            map,
-                            tilesetTexture, 
-                            materialTexture,
-                            mapName,
-                            tile.Left,
-                            tile.Top,
-                            x,
-                            y,
-                            isMask);
-                    }
+                    tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
+                    _textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
                 }
+
+                var materialPath = tilesetPath.Substring(0, tilesetPath.Length - ".png".Length) +
+                                   "_mat.png";
+                if (!_materialCache.TryGetValue(materialPath, out var materialTexture))
+                {
+                    materialTexture = _assetLoader.Get<Texture2D>(materialPath);
+                    _materialCache.Add(materialPath, _assetLoader.Get<Texture2D>(materialPath));
+                }
+
+                var mapName = map.Properties["name"];
+
+                if (tileset.TileWidth > _tileSize || tileset.TileHeight > _tileSize)
+                    ProcessOversizedTile(map,
+                        tilesetTexture,
+                        materialTexture,
+                        mapName,
+                        tile.Left,
+                        tile.Top,
+                        tileset.TileWidth,
+                        tileset.TileHeight,
+                        x,
+                        y,
+                        isMask);
+                else
+                    ProcessTile(
+                        map,
+                        tilesetTexture,
+                        materialTexture,
+                        mapName,
+                        tile.Left,
+                        tile.Top,
+                        x,
+                        y,
+                        isMask);
             }
         }
 
-        private void ProcessOversizedTile(Map map, Texture2D tileset, Texture2D material, string mapName, int sourceX, int sourceY, int tileWidth, int tileHeight, int mapX, int mapY, bool isMask)
+        private void ProcessOversizedTile(Map map, Texture2D tileset, Texture2D material, string mapName, int sourceX,
+            int sourceY, int tileWidth, int tileHeight, int mapX, int mapY, bool isMask)
         {
             var xi = 0;
             for (var x = sourceX; x < sourceX + tileWidth; x += _tileSize)
@@ -198,7 +193,7 @@ namespace PhotoVs.Logic
                         mapName,
                         x,
                         y,
-                            mapX + xi,
+                        mapX + xi,
                         mapY + yi + 1,
                         isMask);
                     yi++;
@@ -208,7 +203,8 @@ namespace PhotoVs.Logic
             }
         }
 
-        private void ProcessTile(Map map, Texture2D tileset, Texture2D material, string mapName, int sourceX, int sourceY, int mapX, int mapY, bool isMask)
+        private void ProcessTile(Map map, Texture2D tileset, Texture2D material, string mapName, int sourceX,
+            int sourceY, int mapX, int mapY, bool isMask)
         {
             // if transparent, just ignore it entirely
             if (CheckIfTransparent((tileset, sourceX, sourceY)))
@@ -218,7 +214,7 @@ namespace PhotoVs.Logic
                 _maps.Add(map, new Dictionary<(int, int, bool), KeyList<int>>());
 
             var m = _maps[map];
-            
+
             if (!m.ContainsKey((mapX, mapY, isMask)))
                 m.Add((mapX, mapY, isMask), new KeyList<int>());
 
@@ -227,10 +223,7 @@ namespace PhotoVs.Logic
             {
                 m[(mapX, mapY, isMask)] = new KeyList<int>();
 
-                if (!isMask)
-                {
-                    m.Remove((mapX, mapY, true));
-                }
+                if (!isMask) m.Remove((mapX, mapY, true));
             }
             else
             {
@@ -265,10 +258,7 @@ namespace PhotoVs.Logic
                         break;
                 }
 
-                if (isOccluded)
-                {
-                    m[(mapX, mapY, isMask)] = new KeyList<int>();
-                }
+                if (isOccluded) m[(mapX, mapY, isMask)] = new KeyList<int>();
             }
 
             var key = (tileset, material, sourceX, sourceY);
@@ -311,11 +301,13 @@ namespace PhotoVs.Logic
         {
             if (!_transparencyCache.TryGetValue(index, out var value))
             {
-                var colorData = GetTextureData(index.Item1, new Rectangle(index.Item2, index.Item3, _tileSize, _tileSize));
+                var colorData = GetTextureData(index.Item1,
+                    new Rectangle(index.Item2, index.Item3, _tileSize, _tileSize));
                 var isTransparent = colorData.All(color => color == Color.Transparent);
                 value = isTransparent;
                 _transparencyCache.Add(index, value);
             }
+
             return value;
         }
 
@@ -323,11 +315,13 @@ namespace PhotoVs.Logic
         {
             if (!_opaqueCache.TryGetValue(index, out var value))
             {
-                var colorData = GetTextureData(index.Item1, new Rectangle(index.Item2, index.Item3, _tileSize, _tileSize));
+                var colorData = GetTextureData(index.Item1,
+                    new Rectangle(index.Item2, index.Item3, _tileSize, _tileSize));
                 var isOpaque = colorData.All(color => color.A == byte.MaxValue);
                 value = isOpaque;
                 _opaqueCache.Add(index, value);
             }
+
             return value;
         }
 
@@ -452,7 +446,7 @@ namespace PhotoVs.Logic
             var outputHeight = 1;
             var alternator = false;
 
-            while ((outputWidth * outputHeight) < tiles)
+            while (outputWidth * outputHeight < tiles)
             {
                 if (alternator)
                     outputWidth *= 2;
@@ -490,10 +484,11 @@ namespace PhotoVs.Logic
                 {
                     var pos = _sourceCache[index];
                     _spriteBatch.Draw(isMaterial ? pos.Item2 : pos.Item1,
-                    new Rectangle(x, y, _tileSize, _tileSize),
-                    new Rectangle(pos.Item3, pos.Item4, _tileSize, _tileSize),
-                    Color.White);
+                        new Rectangle(x, y, _tileSize, _tileSize),
+                        new Rectangle(pos.Item3, pos.Item4, _tileSize, _tileSize),
+                        Color.White);
                 }
+
                 if (!_instructions.ContainsKey(key))
                     _instructions.Add(key, (x, y));
 
@@ -510,10 +505,7 @@ namespace PhotoVs.Logic
 
         private void CreateTilemaps()
         {
-            foreach (var kvp in _maps)
-            {
-                CreateTilemap(kvp.Key, kvp.Value);
-            }
+            foreach (var kvp in _maps) CreateTilemap(kvp.Key, kvp.Value);
         }
 
         private void CreateTilemap(Map map, Dictionary<(int, int, bool), KeyList<int>> tiles)
@@ -600,7 +592,7 @@ namespace PhotoVs.Logic
             if (!_textureDataCache.TryGetValue(texture, out var value))
             {
                 value = new Color[texture.Width * texture.Height];
-                texture.GetData<Color>(value);
+                texture.GetData(value);
                 _textureDataCache.Add(texture, value);
             }
 

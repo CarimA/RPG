@@ -1,35 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using PhotoVs.EditorSuite.GameData;
-using PhotoVs.EditorSuite.GameData.Events;
 using PhotoVs.EditorSuite.Panels;
+using PhotoVs.EditorSuite.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace PhotoVs.EditorSuite
 {
     public class Project
     {
-        // the backing project is hidden so that invalidation can be abstracted
-        private DataTreeNode _rootNode;
-        private string _projectLocation;
-        private bool _hasMadeChanges;
-
         private Control _bar;
-        DataTreeNode hovered = null;
         private Control _bar2;
 
         private DockPanel _dockPanel;
-        private Dictionary<object, DockContent> _openPanels;
+        private bool _hasMadeChanges;
+        private readonly Dictionary<object, DockContent> _openPanels;
+
+        private string _projectLocation;
+
+        // the backing project is hidden so that invalidation can be abstracted
+        private DataTreeNode _rootNode;
+        private DataTreeNode hovered;
 
         public Project(string path)
         {
@@ -40,7 +38,7 @@ namespace PhotoVs.EditorSuite
 
             _rootNode.Nodes.Add(new DataTreeNode("Game Properties", new GameProperties(), false, false));
             _rootNode.Nodes.Add(new DataTreeNode("Game Flags", new FlagCollection(), false, false));
-           
+
             _openPanels = new Dictionary<object, DockContent>();
         }
 
@@ -50,15 +48,19 @@ namespace PhotoVs.EditorSuite
             var hash = crc32.ComputeHash(Encoding.UTF8.GetBytes(input));
 
             return hash.Aggregate(
-                string.Empty, 
+                string.Empty,
                 (current, b) => current + b.ToString("x2").ToLowerInvariant());
         }
 
-        public void Autosave() => Save(false, true);
+        public void Autosave()
+        {
+            Save(false, true);
+        }
+
         public void Save(bool saveAs = false, bool autoSave = false)
         {
             // do not save if there's no need to
-            if (!autoSave && (!saveAs && !_hasMadeChanges))
+            if (!autoSave && !saveAs && !_hasMadeChanges)
                 return;
 
             if (autoSave && _projectLocation.Trim() == string.Empty)
@@ -68,7 +70,7 @@ namespace PhotoVs.EditorSuite
             {
                 var sfd = new SaveFileDialog
                 {
-                    Filter = "Photeus Project|*.pvp", 
+                    Filter = "Photeus Project|*.pvp",
                     Title = "Save Project"
                 };
 
@@ -85,22 +87,14 @@ namespace PhotoVs.EditorSuite
             });
 
             if (File.Exists(_projectLocation))
-            {
                 // check if crc doesn't match
                 if (Crc32(json) == Crc32(File.ReadAllText(_projectLocation)))
                     return;
-            }
 
             var count = 0;
-            while (File.Exists(_projectLocation + $".{count}.bak"))
-            {
-                count++;
-            }
+            while (File.Exists(_projectLocation + $".{count}.bak")) count++;
 
-            if (File.Exists(_projectLocation))
-            {
-                File.Copy(_projectLocation, _projectLocation + $".{count}.bak");
-            }
+            if (File.Exists(_projectLocation)) File.Copy(_projectLocation, _projectLocation + $".{count}.bak");
 
             File.WriteAllText(_projectLocation, json);
             _hasMadeChanges = false;
@@ -108,7 +102,7 @@ namespace PhotoVs.EditorSuite
 
         public static Project Load()
         {
-            var ofd = new OpenFileDialog()
+            var ofd = new OpenFileDialog
             {
                 Filter = "Photeus Project|*.pvp",
                 Title = "Open Project"
@@ -148,10 +142,7 @@ namespace PhotoVs.EditorSuite
 
             MoveBar(-10000, 0);
 
-            _dockPanel.ActivePaneChanged += (sender, args) =>
-            {
-                Save(false, true);
-            };
+            _dockPanel.ActivePaneChanged += (sender, args) => { Save(false, true); };
 
             treeView.Nodes.Clear();
 
@@ -165,13 +156,10 @@ namespace PhotoVs.EditorSuite
                     return;
 
                 if (node is DataTreeNode dataNode)
-                {
                     if (!dataNode.IsEditable)
                     {
                         args.CancelEdit = true;
-                        return;
                     }
-                }
             };
 
             treeView.AfterLabelEdit += (sender, args) =>
@@ -198,12 +186,8 @@ namespace PhotoVs.EditorSuite
                     dataNode.Text = args.Label;
 
                     if (dataNode.Data != null)
-                    {
                         if (_openPanels.ContainsKey(dataNode.Data))
-                        {
                             _openPanels[dataNode.Data].Text = dataNode.Text;
-                        }
-                    }
 
                     Save(false, true);
                 }
@@ -216,10 +200,7 @@ namespace PhotoVs.EditorSuite
                 if (node == null)
                     return;
 
-                if (node is DataTreeNode dataNode)
-                {
-                    Open(dataNode);
-                }
+                if (node is DataTreeNode dataNode) Open(dataNode);
             };
 
             filter.DoubleClick += (sender, args) =>
@@ -229,30 +210,24 @@ namespace PhotoVs.EditorSuite
                 if (node == null)
                     return;
 
-                if (node is DataTreeNode dataNode)
-                {
-                    Open(dataNode);
-                }
+                if (node is DataTreeNode dataNode) Open(dataNode);
             };
 
             treeView.AllowDrop = true;
 
             treeView.ItemDrag += (sender, args) =>
             {
-                if (((DataTreeNode)args.Item).IsMovable)
+                if (((DataTreeNode) args.Item).IsMovable)
                     treeView.DoDragDrop(args.Item, DragDropEffects.Move);
             };
 
-            treeView.DragEnter += (sender, args) =>
-            {
-                args.Effect = DragDropEffects.Move;
-            };
+            treeView.DragEnter += (sender, args) => { args.Effect = DragDropEffects.Move; };
 
             treeView.DragOver += (sender, args) =>
             {
                 var target = treeView.PointToClient(new Point(args.X, args.Y));
-                var targetNode = (DataTreeNode)treeView.GetNodeAt(target);
-                var draggedNode = (DataTreeNode)args.Data.GetData(typeof(DataTreeNode));
+                var targetNode = (DataTreeNode) treeView.GetNodeAt(target);
+                var draggedNode = (DataTreeNode) args.Data.GetData(typeof(DataTreeNode));
                 var buffer = 6;
 
                 if (targetNode == null)
@@ -267,7 +242,8 @@ namespace PhotoVs.EditorSuite
                 }
 
                 if (targetNode.Parent == null
-                    || (targetNode.Parent != null && targetNode.Data != null && targetNode.Data.GetType() == typeof(GameProperties)))
+                    || targetNode.Parent != null && targetNode.Data != null &&
+                    targetNode.Data.GetType() == typeof(GameProperties))
                 {
                     MoveBar(-10000, 0);
                     return;
@@ -290,10 +266,10 @@ namespace PhotoVs.EditorSuite
                 {
                     if (CanDropInto(targetNode, draggedNode))
                         MoveBar(targetNodePosition.Top, targetNodePosition.Left, true, treeView.ItemHeight);
-                    else 
+                    else
                         MoveBar(-10000, 0);
                 }
-                
+
                 hovered = targetNode;
             };
 
@@ -338,7 +314,8 @@ namespace PhotoVs.EditorSuite
                 if (target.Y < targetNodePosition.Top + buffer)
                 {
                     // do not allow moving above properties
-                    if (targetNode.Parent != null && targetNode.Data != null && targetNode.Data.GetType() == typeof(GameProperties))
+                    if (targetNode.Parent != null && targetNode.Data != null &&
+                        targetNode.Data.GetType() == typeof(GameProperties))
                         return;
 
                     // move above
@@ -371,12 +348,12 @@ namespace PhotoVs.EditorSuite
             };
 
             var imageList = new ImageList();
-            imageList.Images.Add(Properties.Resources.SourceConrolFolder_16x);
-            imageList.Images.Add(Properties.Resources.FolderClosed_16x);
-            imageList.Images.Add(Properties.Resources.FolderOpened_16x);
-            imageList.Images.Add(Properties.Resources.Settings_16x);
-            imageList.Images.Add(Properties.Resources.Script_16x);
-            imageList.Images.Add(Properties.Resources.Event_16x);
+            imageList.Images.Add(Resources.SourceConrolFolder_16x);
+            imageList.Images.Add(Resources.FolderClosed_16x);
+            imageList.Images.Add(Resources.FolderOpened_16x);
+            imageList.Images.Add(Resources.Settings_16x);
+            imageList.Images.Add(Resources.Script_16x);
+            imageList.Images.Add(Resources.Event_16x);
 
             treeView.ImageList = imageList;
 
@@ -392,10 +369,8 @@ namespace PhotoVs.EditorSuite
         private void Open(DataTreeNode dataNode)
         {
             if (dataNode?.Data == null)
-            {
                 //dataNode.Toggle();
                 return;
-            }
 
             var data = dataNode.Data;
 
@@ -407,7 +382,7 @@ namespace PhotoVs.EditorSuite
 
             if (data.GetType() == typeof(Script))
             {
-                var scriptEditor = new ScriptEditor(this, (Script)data)
+                var scriptEditor = new ScriptEditor(this, (Script) data)
                 {
                     HideOnClose = false,
                     CloseButton = true,
@@ -429,7 +404,7 @@ namespace PhotoVs.EditorSuite
 
             if (data.GetType() == typeof(Graph))
             {
-                var eventEditor = new EventEditor(this, (Graph)data)
+                var eventEditor = new EventEditor(this, (Graph) data)
                 {
                     HideOnClose = false,
                     CloseButton = true,
@@ -457,11 +432,11 @@ namespace PhotoVs.EditorSuite
 
             var canDrop = true;
             var parentNode = targetNode;
-            while (canDrop && (parentNode != null))
+            while (canDrop && parentNode != null)
             {
                 // this node is a descendent
-                canDrop = !Object.ReferenceEquals(draggedNode, parentNode);
-                parentNode = (DataTreeNode)parentNode.Parent;
+                canDrop = !ReferenceEquals(draggedNode, parentNode);
+                parentNode = (DataTreeNode) parentNode.Parent;
             }
 
             if (!canDrop)
@@ -508,10 +483,7 @@ namespace PhotoVs.EditorSuite
         private void SetIcons(DataTreeNode node)
         {
             SetIcon(node);
-            foreach (var child in node.Nodes)
-            {
-                SetIcons((DataTreeNode)child);
-            }
+            foreach (var child in node.Nodes) SetIcons((DataTreeNode) child);
         }
 
         private void SetIcon(DataTreeNode node)
@@ -528,8 +500,8 @@ namespace PhotoVs.EditorSuite
                 else
                     SetIcon(node, isExpanded ? 2 : 1);
             }
-            else if (node.Data.GetType() == typeof(GameProperties) 
-            || node.Data.GetType() == typeof(FlagCollection))
+            else if (node.Data.GetType() == typeof(GameProperties)
+                     || node.Data.GetType() == typeof(FlagCollection))
             {
                 SetIcon(node, 3);
             }
@@ -548,48 +520,6 @@ namespace PhotoVs.EditorSuite
             node.ImageIndex = index;
             node.StateImageIndex = index;
             node.SelectedImageIndex = index;
-        }
-
-        [JsonObject(MemberSerialization.OptIn)]
-        public class DataTreeNode : TreeNode
-        {
-            [JsonProperty]
-            public List<DataTreeNode> Children
-            {
-                get
-                {
-                    var list = new List<DataTreeNode>();
-                    foreach (var node in base.Nodes)
-                        list.Add((DataTreeNode)node);
-
-                    return list;
-                }
-                set
-                {
-                    foreach (var node in value)
-                    {
-                        base.Nodes.Add(node);
-                    }
-                }
-            }
-
-            [JsonProperty] public string Id { get; set; }
-            [JsonProperty] public new string Text
-            {
-                get => base.Text;
-                set => base.Text = value;
-            }
-            [JsonProperty] public object Data { get; set; }
-            [JsonProperty] public bool IsMovable { get; set; }
-            [JsonProperty] public bool IsEditable { get; set; }
-            
-            public DataTreeNode(string text, object data, bool isMovable = true, bool isEditable = true) : base(text)
-            {
-                Data = data;
-                IsMovable = isMovable;
-                IsEditable = isEditable;
-                Id = Guid.NewGuid().ToString();
-            }
         }
 
         private void AddObject<T>(TreeNode node, string name) where T : new()
@@ -685,15 +615,11 @@ namespace PhotoVs.EditorSuite
             // todo: [IMPORTANT] CHECK IF THE USER WANTS IT GONE FIRST
 
             if (dataNode.Data != null)
-            {
                 if (_openPanels.ContainsKey(dataNode.Data))
-                {
                     _openPanels[dataNode.Data].Close();
-                }
-            }
 
             foreach (var child in node.Nodes)
-                Delete((TreeNode)child);
+                Delete((TreeNode) child);
 
             node.Parent.Nodes.Remove(node);
             Save(false, true);
@@ -715,7 +641,7 @@ namespace PhotoVs.EditorSuite
                 return;
             }
 
-            var text = $"New Folder";
+            var text = "New Folder";
 
             var newNode = new DataTreeNode(text, null);
             dataNode.Nodes.Add(newNode);
@@ -734,6 +660,48 @@ namespace PhotoVs.EditorSuite
                 return;
 
             Process.Start("explorer.exe", Path.GetDirectoryName(_projectLocation));
+        }
+
+        [JsonObject(MemberSerialization.OptIn)]
+        public class DataTreeNode : TreeNode
+        {
+            public DataTreeNode(string text, object data, bool isMovable = true, bool isEditable = true) : base(text)
+            {
+                Data = data;
+                IsMovable = isMovable;
+                IsEditable = isEditable;
+                Id = Guid.NewGuid().ToString();
+            }
+
+            [JsonProperty]
+            public List<DataTreeNode> Children
+            {
+                get
+                {
+                    var list = new List<DataTreeNode>();
+                    foreach (var node in Nodes)
+                        list.Add((DataTreeNode) node);
+
+                    return list;
+                }
+                set
+                {
+                    foreach (var node in value) Nodes.Add(node);
+                }
+            }
+
+            [JsonProperty] public string Id { get; set; }
+
+            [JsonProperty]
+            public new string Text
+            {
+                get => base.Text;
+                set => base.Text = value;
+            }
+
+            [JsonProperty] public object Data { get; set; }
+            [JsonProperty] public bool IsMovable { get; set; }
+            [JsonProperty] public bool IsEditable { get; set; }
         }
     }
 }

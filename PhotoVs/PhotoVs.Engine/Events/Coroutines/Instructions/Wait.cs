@@ -12,16 +12,16 @@ namespace PhotoVs.Engine.Events.Coroutines.Instructions
             _time = time;
         }
 
-        public void SetTime(float time)
-        {
-            _time = time;
-        }
-
         public bool CanContinue(GameTime gameTime)
         {
             var dt = gameTime.GetElapsedSeconds();
             _time -= dt;
             return _time <= 0f;
+        }
+
+        public void SetTime(float time)
+        {
+            _time = time;
         }
     }
 }

@@ -1,19 +1,14 @@
-﻿using PhotoVs.Engine;
-using PhotoVs.Engine.Assets.StreamProviders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using PhotoVs.Engine;
+using PhotoVs.Engine.Assets.StreamProviders;
 using PhotoVs.Engine.Audio;
 
 namespace PhotoVs.Platform.WindowsDX
 {
     public class WindowsDXPlatform : IPlatform
     {
-        public bool OverrideFullscreen => false;
-        public Dictionary<string, string> FileExtensionReplacement { get; }
-        public IAudio Audio { get; }
-        public IStreamProvider StreamProvider { get; set; }
-
         public WindowsDXPlatform()
         {
             StreamProvider = new FileSystemStreamProvider(
@@ -25,5 +20,10 @@ namespace PhotoVs.Platform.WindowsDX
             };
             Audio = new CscoreAudio();
         }
+
+        public bool OverrideFullscreen => false;
+        public Dictionary<string, string> FileExtensionReplacement { get; }
+        public IAudio Audio { get; }
+        public IStreamProvider StreamProvider { get; set; }
     }
 }

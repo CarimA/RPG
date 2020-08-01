@@ -1,22 +1,22 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.IO;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using SpriteFontPlus;
-using System.IO;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {
-    public class SpriteFontTypeLoader : ITypeLoader<SpriteFont>
+    public class SpriteFontTypeLoader : TypeLoader<SpriteFont>
     {
         private readonly IAssetLoader _assetLoader;
         private readonly GraphicsDevice _graphicsDevice;
 
-        public SpriteFontTypeLoader(GraphicsDevice graphicsDevice, IAssetLoader loader)
+        public SpriteFontTypeLoader(IAssetLoader assetLoader, GraphicsDevice graphicsDevice) : base(assetLoader)
         {
             _graphicsDevice = graphicsDevice;
-            _assetLoader = loader;
+            _assetLoader = assetLoader;
         }
 
-        public SpriteFont Load(Stream stream)
+        public override SpriteFont Load(Stream stream)
         {
             using var reader = new StreamReader(stream);
             var fontData = reader.ReadToEnd();

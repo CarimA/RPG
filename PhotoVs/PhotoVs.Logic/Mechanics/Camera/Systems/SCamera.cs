@@ -1,20 +1,20 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.Camera.Systems
 {
     public class SCamera : IUpdateableSystem
     {
+        private readonly ICanvasSize _canvasSize;
         private readonly Random _random;
-        private readonly Renderer _renderer;
 
         private bool _isDirty;
         private Vector2 _lastPosition;
@@ -25,19 +25,18 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
         private float _rotate;
         private GameObject _target;
 
-        private Matrix _transform = Matrix.Identity;
-        public Matrix Transform => _transform;
-        private float _zoom;
-        public float Zoom => _zoom;
-
-        public SCamera(Renderer renderer)
+        public SCamera(ICanvasSize canvasSize)
         {
-            _renderer = renderer;
+            _canvasSize = canvasSize;
             _isDirty = false;
-            _zoom = 1f;
+            Zoom = 1f;
             _rotate = 0f;
             _random = new Random();
         }
+
+        public Matrix Transform { get; private set; } = Matrix.Identity;
+
+        public float Zoom { get; private set; }
 
         public int Priority { get; set; } = -99;
         public bool Active { get; set; } = true;
@@ -84,9 +83,9 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
         private void UpdateLerp(GameTime gameTime)
         {
-            if (Math.Abs(_zoom - _lerpZoom) > 0f)
+            if (Math.Abs(Zoom - _lerpZoom) > 0f)
             {
-                _lerpZoom = MathHelper.Lerp(_lerpZoom, _zoom, 1f * gameTime.GetElapsedSeconds());
+                _lerpZoom = MathHelper.Lerp(_lerpZoom, Zoom, 1f * gameTime.GetElapsedSeconds());
                 _isDirty = true;
             }
 
@@ -126,36 +125,36 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
             var midpoint = rect.Center;
             var distance = Vector2.Distance(rect.TopLeft, rect.BottomRight);
 
-            var zWidth = _renderer.VirtualWidth / rect.Width;
-            var zHeight = _renderer.VirtualHeight / rect.Height;
+            var zWidth = _canvasSize.DisplayWidth / rect.Width;
+            var zHeight = _canvasSize.DisplayHeight / rect.Height;
 
             var zoom = Math.Min(zWidth, zHeight);
 
             var follow = new GameObject();
             follow.Components.Add(new CPosition(midpoint));
             Follow(follow);
-            _zoom = zoom;
+            Zoom = zoom;
         }
 
         private void UpdateCamera()
         {
-            _transform = Matrix.CreateTranslation(new Vector3(-_lerpPosition.X, -_lerpPosition.Y, 0)) *
-                         Matrix.CreateScale(new Vector3(_lerpZoom, _lerpZoom, 1)) *
-                         Matrix.CreateTranslation(new Vector3(_renderer.GameWidth / 2,
-                             _renderer.GameHeight / 2,
-                             0)) *
-                         Matrix.CreateRotationZ(_rotate);
+            Transform = Matrix.CreateTranslation(new Vector3(-_lerpPosition.X, -_lerpPosition.Y, 0)) *
+                        Matrix.CreateScale(new Vector3(_lerpZoom, _lerpZoom, 1)) *
+                        Matrix.CreateTranslation(new Vector3(_canvasSize.DisplayWidth / 2f,
+                            _canvasSize.DisplayHeight / 2f,
+                            0)) *
+                        Matrix.CreateRotationZ(_rotate);
             _isDirty = false;
         }
 
         public void SetZoom(float zoom)
         {
-            if (_zoom == zoom)
+            if (Zoom == zoom)
                 return;
 
             var max = 10f;
             var min = 0.1f;
-            _zoom = Math.Min(max, Math.Max(min, zoom));
+            Zoom = Math.Min(max, Math.Max(min, zoom));
             _isDirty = true;
         }
 
@@ -186,31 +185,31 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
                 _lastPosition += size.Size / 2;
 
             _isDirty = true;
-            _zoom = 1f;
+            Zoom = 1f;
         }
 
         public Vector2 WorldToScreen(Vector2 position)
         {
-            return Vector2.Transform(position, _transform);
+            return Vector2.Transform(position, Transform);
         }
 
         public Vector2 ScreenToWorld(Vector2 position)
         {
-            return Vector2.Transform(position, Matrix.Invert(_transform));
+            return Vector2.Transform(position, Matrix.Invert(Transform));
         }
 
         public Rectangle VisibleArea()
         {
-            if (_transform == Matrix.Identity)
+            if (Transform == Matrix.Identity)
                 return Rectangle.Empty;
 
-            var inverseTransform = Matrix.Invert(_transform);
+            var inverseTransform = Matrix.Invert(Transform);
 
             var topLeft = Vector2.Transform(Vector2.Zero, inverseTransform);
-            var topRight = Vector2.Transform(new Vector2(_renderer.GameWidth, 0), inverseTransform);
-            var bottomLeft = Vector2.Transform(new Vector2(0, _renderer.GameHeight), inverseTransform);
+            var topRight = Vector2.Transform(new Vector2(_canvasSize.DisplayWidth, 0), inverseTransform);
+            var bottomLeft = Vector2.Transform(new Vector2(0, _canvasSize.DisplayHeight), inverseTransform);
             var bottomRight = Vector2.Transform(
-                new Vector2(_renderer.GameWidth, _renderer.GameHeight),
+                new Vector2(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight),
                 inverseTransform);
 
             var min = new Vector2(
@@ -220,7 +219,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
                 MathHelper.Max(topLeft.X, MathHelper.Max(topRight.X, MathHelper.Max(bottomLeft.X, bottomRight.X))),
                 MathHelper.Max(topLeft.Y, MathHelper.Max(topRight.Y, MathHelper.Max(bottomLeft.Y, bottomRight.Y))));
 
-            var bounds = new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
+            var bounds = new Rectangle((int) min.X, (int) min.Y, (int) (max.X - min.X), (int) (max.Y - min.Y));
             return bounds;
         }
 

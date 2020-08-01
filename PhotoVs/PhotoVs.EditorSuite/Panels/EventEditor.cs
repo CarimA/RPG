@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Channels;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using PhotoVs.EditorSuite.GameData;
 using PhotoVs.EditorSuite.GameData.Events;
+using PhotoVs.EditorSuite.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace PhotoVs.EditorSuite.Panels
@@ -20,21 +16,21 @@ namespace PhotoVs.EditorSuite.Panels
     {
         private const int NodeWidth = 200;
         private const int GridSize = 25;
-
-        private Project _project;
-        private Graph _graph;
-
-        private Dictionary<Node, Control> _panelReference;
-        private Dictionary<Control, Node> _nodeReference;
+        private NodeLabel _dragEndLabel;
 
         private NodeLabel _dragStartLabel;
-        private NodeLabel _dragEndLabel;
+
+        private Control _focusedNode;
+        private readonly Graph _graph;
+        private readonly Dictionary<Control, Node> _nodeReference;
+
+        private readonly Dictionary<Node, Control> _panelReference;
+
+        private readonly Project _project;
 
         private bool isDragDropping;
         private int offsetX;
         private int offsetY;
-
-        private Control _focusedNode;
 
         public EventEditor(Project project, Graph graph)
         {
@@ -47,8 +43,8 @@ namespace PhotoVs.EditorSuite.Panels
             _graph = graph;
 
             // set double buffering on the panel
-            typeof(Panel).InvokeMember("DoubleBuffered", 
-                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, 
+            typeof(Panel).InvokeMember("DoubleBuffered",
+                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
                 null,
                 pnlCanvas, new object[] {true});
 
@@ -66,7 +62,7 @@ namespace PhotoVs.EditorSuite.Panels
 
             pnlCanvas.AllowDrop = true;
 
-            tsbFlowControl.MouseDown += (sender, args) => 
+            tsbFlowControl.MouseDown += (sender, args) =>
                 pnlCanvas.DoDragDrop(typeof(FlowControlNode), DragDropEffects.Move);
 
 
@@ -81,10 +77,7 @@ namespace PhotoVs.EditorSuite.Panels
                 }
             };
 
-            if (_graph.Nodes.Count == 0)
-            {
-                AddNode<StartNode>(50, 50);
-            }
+            if (_graph.Nodes.Count == 0) AddNode<StartNode>(50, 50);
 
             UpdateNodes();
         }
@@ -98,7 +91,7 @@ namespace PhotoVs.EditorSuite.Panels
 
         private void AddNode(Type type, int x, int y)
         {
-            var node = (Node)Activator.CreateInstance(type);
+            var node = (Node) Activator.CreateInstance(type);
             node.X = x;
             node.Y = y;
             node.Assign();
@@ -122,17 +115,10 @@ namespace PhotoVs.EditorSuite.Panels
         {
             // disconnect it first
             foreach (var input in node.Inputs)
-            {
-                foreach (var output in input.ConnectedFrom)
-                {
-                    output.ConnectedTo = null;
-                }
-            }
+            foreach (var output in input.ConnectedFrom)
+                output.ConnectedTo = null;
 
-            foreach (var output in node.Outputs)
-            {
-                output.ConnectedTo?.ConnectedFrom.Remove(output);
-            }
+            foreach (var output in node.Outputs) output.ConnectedTo?.ConnectedFrom.Remove(output);
 
             _graph.Nodes.Remove(node);
             UpdateNodes();
@@ -146,7 +132,7 @@ namespace PhotoVs.EditorSuite.Panels
             {
                 if (_panelReference.ContainsKey(node))
                     continue;
-                
+
                 // there is something new in the graph, so it should be added
                 // to the form
 
@@ -162,7 +148,7 @@ namespace PhotoVs.EditorSuite.Panels
             {
                 if (_graph.Nodes.Contains(node))
                     continue;
-                
+
                 // this thing was removed from the graph, so it should be removed
                 // from the form.
 
@@ -199,7 +185,7 @@ namespace PhotoVs.EditorSuite.Panels
             typeof(Panel).InvokeMember("DoubleBuffered",
                 BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
                 null,
-                panel, new object[] { true });
+                panel, new object[] {true});
 
             var titlePanel = new Panel
             {
@@ -213,7 +199,7 @@ namespace PhotoVs.EditorSuite.Panels
                 Text = node.Name,
                 AutoSize = false,
                 Size = new Size(NodeWidth, titleLabelHeight),
-                Location = new Point((titleHeight / 2) - (titleLabelHeight / 2), (titleHeight / 2) - (titleLabelHeight / 2)),
+                Location = new Point(titleHeight / 2 - titleLabelHeight / 2, titleHeight / 2 - titleLabelHeight / 2),
                 TextAlign = ContentAlignment.MiddleLeft,
                 Font = new Font(FontFamily.GenericSansSerif, titleLabelHeight / 2, FontStyle.Bold, GraphicsUnit.Pixel),
                 ForeColor = Color.Black
@@ -223,16 +209,13 @@ namespace PhotoVs.EditorSuite.Panels
             {
                 var remove = new Panel
                 {
-                    BackgroundImage = Properties.Resources.Close_red_16x,
+                    BackgroundImage = Resources.Close_red_16x,
                     BackgroundImageLayout = ImageLayout.Center,
                     Size = new Size(titleHeight, titleHeight),
-                    Location = new Point(NodeWidth - titleHeight, 0),
+                    Location = new Point(NodeWidth - titleHeight, 0)
                 };
 
-                remove.Click += (sender, args) =>
-                {
-                    RemoveNode(node);
-                };
+                remove.Click += (sender, args) => { RemoveNode(node); };
 
                 titlePanel.Controls.Add(remove);
             }
@@ -248,11 +231,10 @@ namespace PhotoVs.EditorSuite.Panels
                     Focus(node);
                 }
             }
-            
+
             void OnMouseMove(object sender, MouseEventArgs e)
             {
                 if (e.Button == MouseButtons.Left)
-                {
                     if (isDragDropping)
                     {
                         Refresh();
@@ -263,11 +245,10 @@ namespace PhotoVs.EditorSuite.Panels
                         node.X = panel.Location.X;
                         node.Y = panel.Location.Y;
                     }
-                }
             }
 
             void OnMouseUp(object sender, MouseEventArgs e)
-            { 
+            {
                 if (e.Button == MouseButtons.Left)
                 {
                     isDragDropping = false;
@@ -315,7 +296,7 @@ namespace PhotoVs.EditorSuite.Panels
                         Text = input.Name,
                         AutoSize = false,
                         Location = new Point(nodeSize, inputHeight),
-                        TextAlign = ContentAlignment.MiddleLeft,
+                        TextAlign = ContentAlignment.MiddleLeft
                     };
 
                     panel.Controls.Add(connector);
@@ -325,10 +306,7 @@ namespace PhotoVs.EditorSuite.Panels
                     {
                         if (args.Button == MouseButtons.Right)
                         {
-                            foreach (var connection in input.ConnectedFrom)
-                            {
-                                connection.ConnectedTo = null;
-                            }
+                            foreach (var connection in input.ConnectedFrom) connection.ConnectedTo = null;
 
                             input.ConnectedFrom = new List<NodeOutputLabel>();
                             Refresh();
@@ -341,10 +319,7 @@ namespace PhotoVs.EditorSuite.Panels
                         }
                     };
 
-                    connector.DragEnter += (sender, args) =>
-                    {
-                        args.Effect = DragDropEffects.Move;
-                    };
+                    connector.DragEnter += (sender, args) => { args.Effect = DragDropEffects.Move; };
 
                     connector.DragDrop += (sender, args) =>
                     {
@@ -352,13 +327,8 @@ namespace PhotoVs.EditorSuite.Panels
                         Reconcile();
                     };
                 }
-                else
-                {
-                    // this is a label that does not directly connect to other nodes
-                    // and has its own data
-                }
 
-                inputHeight += (nodeSize + nodePadding);
+                inputHeight += nodeSize + nodePadding;
             }
 
             for (var i = 0; i < node.Outputs.Count; i++)
@@ -378,8 +348,8 @@ namespace PhotoVs.EditorSuite.Panels
                     Text = output.Name,
                     AutoSize = false,
                     Location = new Point(nodeSize, outputHeight),
-                    Size = new Size(NodeWidth - (nodeSize * 2), nodeSize),
-                    TextAlign = ContentAlignment.MiddleRight,
+                    Size = new Size(NodeWidth - nodeSize * 2, nodeSize),
+                    TextAlign = ContentAlignment.MiddleRight
                 };
 
                 panel.Controls.Add(connector);
@@ -412,7 +382,7 @@ namespace PhotoVs.EditorSuite.Panels
                     Reconcile();
                 };
 
-                outputHeight += (nodeSize + nodePadding);
+                outputHeight += nodeSize + nodePadding;
             }
 
             if (inputHeight > outputHeight)
@@ -428,7 +398,7 @@ namespace PhotoVs.EditorSuite.Panels
         private void Reconcile()
         {
             // if either are null, it got cancelled midway
-            if ((_dragStartLabel == null || _dragEndLabel == null))
+            if (_dragStartLabel == null || _dragEndLabel == null)
             {
                 CancelDragDrop();
                 return;
@@ -488,7 +458,7 @@ namespace PhotoVs.EditorSuite.Panels
 
         private int Snap(int input)
         {
-            return (int)Math.Round((double)(input / GridSize)) * GridSize;
+            return (int) Math.Round((double) (input / GridSize)) * GridSize;
         }
 
         public void Refresh()
@@ -512,25 +482,30 @@ namespace PhotoVs.EditorSuite.Panels
 
             g.Clear(Color.FromArgb(31, 41, 51));
 
-            for (var x = Snap(-pnlCanvas.AutoScrollPosition.X); x < Snap(-pnlCanvas.AutoScrollPosition.X + pnlCanvas.Width + GridSize); x += GridSize)
-                g.DrawLine(grid, x, -pnlCanvas.AutoScrollPosition.Y, x, -pnlCanvas.AutoScrollPosition.Y + pnlCanvas.Height);
+            for (var x = Snap(-pnlCanvas.AutoScrollPosition.X);
+                x < Snap(-pnlCanvas.AutoScrollPosition.X + pnlCanvas.Width + GridSize);
+                x += GridSize)
+                g.DrawLine(grid, x, -pnlCanvas.AutoScrollPosition.Y, x,
+                    -pnlCanvas.AutoScrollPosition.Y + pnlCanvas.Height);
 
-            for (var y = Snap(-pnlCanvas.AutoScrollPosition.Y); y < Snap(-pnlCanvas.AutoScrollPosition.Y + pnlCanvas.Height + GridSize); y += GridSize)
-                g.DrawLine(grid, -pnlCanvas.AutoScrollPosition.X, y, -pnlCanvas.AutoScrollPosition.X + pnlCanvas.Width, y);
+            for (var y = Snap(-pnlCanvas.AutoScrollPosition.Y);
+                y < Snap(-pnlCanvas.AutoScrollPosition.Y + pnlCanvas.Height + GridSize);
+                y += GridSize)
+                g.DrawLine(grid, -pnlCanvas.AutoScrollPosition.X, y, -pnlCanvas.AutoScrollPosition.X + pnlCanvas.Width,
+                    y);
 
             foreach (var kvp in _panelReference)
             {
                 var control = kvp.Value;
 
                 g.DrawRectangle(
-                    (ReferenceEquals(control, _focusedNode))
+                    ReferenceEquals(control, _focusedNode)
                         ? border
                         : smallBorder,
                     new Rectangle(
                         new Point(control.Location.X - pnlCanvas.AutoScrollPosition.X,
                             control.Location.Y - pnlCanvas.AutoScrollPosition.Y),
                         control.Size));
-
             }
 
             foreach (var kvp in _panelReference)
@@ -540,7 +515,6 @@ namespace PhotoVs.EditorSuite.Panels
 
                 // draw all outputs. inputs will implicitly be drawn.
                 foreach (var output in node.Outputs)
-                {
                     if (output.ConnectedTo != null)
                     {
                         var connectedNode = output.ConnectedTo.Parent;
@@ -553,27 +527,26 @@ namespace PhotoVs.EditorSuite.Panels
 
                         var p1Pos = new Point(n1Control.Location.X - pnlCanvas.AutoScrollPosition.X,
                             n1Control.Location.Y - pnlCanvas.AutoScrollPosition.Y);
-                        var n1Pos = new Point(NodeWidth - 15, 34 + (n1Index * 26));
+                        var n1Pos = new Point(NodeWidth - 15, 34 + n1Index * 26);
                         var p2Pos = new Point(n2Control.Location.X - pnlCanvas.AutoScrollPosition.X,
                             n2Control.Location.Y - pnlCanvas.AutoScrollPosition.Y);
-                        var n2Pos = new Point(15, 34 + (n2Index * 26));
+                        var n2Pos = new Point(15, 34 + n2Index * 26);
 
                         g.DrawBezier(lines,
                             new Point(
-                                p1Pos.X + n1Pos.X + 10, 
+                                p1Pos.X + n1Pos.X + 10,
                                 p1Pos.Y + n1Pos.Y + 10),
                             new Point(
-                                p1Pos.X + n1Pos.X + 10 + 60, 
+                                p1Pos.X + n1Pos.X + 10 + 60,
                                 p1Pos.Y + n1Pos.Y + 10),
                             new Point(
-                                p2Pos.X + n2Pos.X - 10 - 60, 
+                                p2Pos.X + n2Pos.X - 10 - 60,
                                 p2Pos.Y + n2Pos.Y + 10),
                             new Point(
-                                p2Pos.X + n2Pos.X - 10, 
+                                p2Pos.X + n2Pos.X - 10,
                                 p2Pos.Y + n2Pos.Y + 10)
                         );
                     }
-                }
             }
         }
 
@@ -585,8 +558,8 @@ namespace PhotoVs.EditorSuite.Panels
 
         private Point GetCenter()
         {
-            var x = -pnlCanvas.AutoScrollPosition.X + (pnlCanvas.PreferredSize.Width / 2);
-            var y = -pnlCanvas.AutoScrollPosition.Y + (pnlCanvas.PreferredSize.Height / 2);
+            var x = -pnlCanvas.AutoScrollPosition.X + pnlCanvas.PreferredSize.Width / 2;
+            var y = -pnlCanvas.AutoScrollPosition.Y + pnlCanvas.PreferredSize.Height / 2;
             return new Point(x, y);
         }
     }

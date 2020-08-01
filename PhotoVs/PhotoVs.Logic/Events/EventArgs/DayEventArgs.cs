@@ -3,15 +3,15 @@ using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Events.EventArgs
 {
-    class TimeEventArgs : IGameEventArgs
+    internal class TimeEventArgs : IGameEventArgs
     {
-        public object Sender { get; }
-        public TimePhase TimePhase { get; }
-
         public TimeEventArgs(object sender, TimePhase timePhase)
         {
             Sender = sender;
             TimePhase = timePhase;
         }
+
+        public TimePhase TimePhase { get; }
+        public object Sender { get; }
     }
 }

@@ -4,8 +4,8 @@ namespace PhotoVs.Engine.Graphics.Filters
 {
     public class TextureAveragingFilter
     {
-        private readonly Renderer _renderer;
         private readonly Effect _effect;
+        private readonly Renderer _renderer;
 
         public TextureAveragingFilter(Renderer renderer, Effect effect)
         {
@@ -15,7 +15,6 @@ namespace PhotoVs.Engine.Graphics.Filters
 
         public void Filter(SpriteBatch spriteBatch, Texture2D inputTexture)
         {
-
         }
     }
 }

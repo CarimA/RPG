@@ -1,26 +1,20 @@
-﻿using PhotoVs.Engine.Scripting;
-using PhotoVs.Logic.Scenes;
-using System;
+﻿using System;
+using MoonSharp.Interpreter;
+using PhotoVs.Engine.Scripting;
 using PhotoVs.Logic.NewScenes;
+using PhotoVs.Logic.Scenes;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class DialogueModule : Module
+    public class DialogueModule
     {
-        private SceneMachine _sceneMachine;
+        private readonly SceneMachine _sceneMachine;
 
-        public DialogueModule(SceneMachine sceneMachine)
+        public DialogueModule(IInterpreter<Closure> interpreter, SceneMachine sceneMachine)
         {
             _sceneMachine = sceneMachine;
-        }
 
-        public override void DefineApi(MoonSharpInterpreter interpreter)
-        {
-            if (interpreter == null)
-                throw new ArgumentNullException(nameof(interpreter));
-
-            interpreter.AddFunction("_Say", (Func<string, string, bool>)DialogueState);
-            base.DefineApi(interpreter);
+            interpreter.AddFunction("_Say", (Func<string, string, bool>) DialogueState);
         }
 
         private bool DialogueState(string name, string dialogue)
@@ -30,11 +24,9 @@ namespace PhotoVs.Logic.Modules
                 _sceneMachine.Pop();
                 return false;
             }
-            else
-            {
-                //overworld.PushDialogue(name, dialogue);
-                return true;
-            }
+
+            //overworld.PushDialogue(name, dialogue);
+            return true;
         }
     }
 }

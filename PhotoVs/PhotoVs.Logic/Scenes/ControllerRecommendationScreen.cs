@@ -25,16 +25,20 @@ namespace PhotoVs.Logic.Scenes
         private bool _isChanging;
         private string _playWithAGamepad;
 
-        public ControllerRecommendationScreen(Services services)
+        public ControllerRecommendationScreen()
         {
-            _scene = services.Get<SceneMachine>();
+            /*_scene = services.Get<SceneMachine>();
             _player = services.Get<Player>();
             _textDatabase = services.Get<TextDatabase>();
             _assetLoader = services.Get<IAssetLoader>();
-            _spriteBatch = services.Get<SpriteBatch>();
+            _spriteBatch = services.Get<SpriteBatch>();*/
             Entities = new GameObjectList();
             Systems = new SystemList();
         }
+
+        public GameObjectList Entities { get; }
+        public SystemList Systems { get; }
+        public bool IsBlocking { get; set; }
 
         public void Draw(GameTime gameTime)
         {
@@ -55,10 +59,6 @@ namespace PhotoVs.Logic.Scenes
             _spriteBatch.End();
         }
 
-        public GameObjectList Entities { get; }
-        public SystemList Systems { get; }
-        public bool IsBlocking { get; set; }
-
         public void Enter(params object[] args)
         {
             _continueTime = 8f;
@@ -75,7 +75,6 @@ namespace PhotoVs.Logic.Scenes
 
         public void Exit()
         {
-
         }
 
         public void Resume()

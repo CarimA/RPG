@@ -4,8 +4,8 @@ namespace PhotoVs.Logic.NewScenes.SceneComponents
 {
     public class MenuItem
     {
-        public string Text;
         public Action OnClick;
+        public string Text;
 
         public MenuItem(string text, Action onClick)
         {

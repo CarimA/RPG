@@ -1,4 +1,6 @@
 ﻿namespace PhotoVs.EditorSuite.GameData.Events
 {
-    public sealed class Trigger { }
+    public sealed class Trigger
+    {
+    }
 }

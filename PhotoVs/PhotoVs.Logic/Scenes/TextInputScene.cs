@@ -1,12 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
-using PhotoVs.Logic.PlayerData;
-using System.Collections.Generic;
-using PhotoVs.Engine;
 using PhotoVs.Logic.NewScenes;
+using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.Scenes
 {
@@ -34,20 +34,17 @@ namespace PhotoVs.Logic.Scenes
         private int _cursorX;
         private int _cursorY;
 
-        private int _limit;
+        private readonly int _limit;
 
-        private string _question;
+        private readonly string _question;
 
         private bool _shiftMode;
 
-        public string Text { get; private set; }
-        public bool IsFinished { get; private set; }
-
-        public TextInputScene(Services services, string question, string defaultText = "", int limit = 15)
+        public TextInputScene(string question, string defaultText = "", int limit = 15)
         {
-            _player = services.Get<Player>();
+            /*_player = services.Get<Player>();
             _assetLoader = services.Get<IAssetLoader>();
-            _spriteBatch = services.Get<SpriteBatch>();
+            _spriteBatch = services.Get<SpriteBatch>();*/
 
 
             _question = question;
@@ -59,6 +56,11 @@ namespace PhotoVs.Logic.Scenes
 
             IsFinished = false;
         }
+
+        public string Text { get; private set; }
+        public bool IsFinished { get; private set; }
+
+        public bool IsBlocking { get; set; } = false;
 
         public void Draw(GameTime gameTime)
         {
@@ -77,7 +79,7 @@ namespace PhotoVs.Logic.Scenes
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: uiOrigin);
 
             var questionSize = font.MeasureString(_question).X;
-            var qX = (int)(320 / 2 - questionSize / 2);
+            var qX = (int) (320 / 2 - questionSize / 2);
             var qY = offsetY - 40;
 
             _spriteBatch.DrawString(font, _question, new Vector2(qX, qY), Color.HotPink);
@@ -93,55 +95,53 @@ namespace PhotoVs.Logic.Scenes
                     : Text[i]).ToString();
                 var characterSize = font.MeasureString(character).X;
 
-                _spriteBatch.DrawString(font, character, new Vector2((int)(tX + (14 * i - characterSize / 2)), tY),
+                _spriteBatch.DrawString(font, character, new Vector2((int) (tX + (14 * i - characterSize / 2)), tY),
                     Color.White);
             }
 
             for (var y = 0; y < KeyboardCellHeight(); y++)
-                for (var x = 0; x < KeyboardCellWidth(); x++)
+            for (var x = 0; x < KeyboardCellWidth(); x++)
+            {
+                // ^ is shift
+                // & is next keyboard
+                // £ is delete
+                // $ is submit
+                var character = GetKey(x, y);
+
+                switch (character)
                 {
-                    // ^ is shift
-                    // & is next keyboard
-                    // £ is delete
-                    // $ is submit
-                    var character = GetKey(x, y);
+                    case "|":
+                        continue;
 
-                    switch (character)
-                    {
-                        case "|":
-                            continue;
+                    case "^":
+                        character = "^";
+                        break;
 
-                        case "^":
-                            character = "^";
-                            break;
+                    case "&":
+                        character = "->";
+                        break;
 
-                        case "&":
-                            character = "->";
-                            break;
+                    case "£":
+                        character = "<-";
+                        break;
 
-                        case "£":
-                            character = "<-";
-                            break;
-
-                        case "$":
-                            character = "SUBMIT";
-                            break;
-                    }
-
-                    var characterSize = font.MeasureString(character);
-                    var dX = offsetX + (int)(cellWidth * x + (cellWidth / 2 - characterSize.X / 2));
-                    var dY = offsetY + (int)(cellHeight * y + (cellHeight / 2 - characterSize.Y / 2));
-                    var color = y == _cursorY && x == _cursorX
-                        ? Color.Yellow
-                        : Color.White;
-
-                    _spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
+                    case "$":
+                        character = "SUBMIT";
+                        break;
                 }
+
+                var characterSize = font.MeasureString(character);
+                var dX = offsetX + (int) (cellWidth * x + (cellWidth / 2 - characterSize.X / 2));
+                var dY = offsetY + (int) (cellHeight * y + (cellHeight / 2 - characterSize.Y / 2));
+                var color = y == _cursorY && x == _cursorX
+                    ? Color.Yellow
+                    : Color.White;
+
+                _spriteBatch.DrawString(font, character, new Vector2(dX, dY), color);
+            }
 
             _spriteBatch.End();
         }
-
-        public bool IsBlocking { get; set; } = false;
 
         public void Enter(params object[] args)
         {

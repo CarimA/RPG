@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
@@ -8,9 +10,6 @@ using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Utils.Extensions;
-using System;
-using System.Collections.Generic;
-using PhotoVs.Engine;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
@@ -18,20 +17,20 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
     {
         private readonly IAssetLoader _assetLoader;
         private readonly SCamera _camera;
-        private readonly Overworld _overworld;
+        private readonly IOverworld _overworld;
         private readonly SpriteBatch _spriteBatch;
 
-        public SCollisionDebugRender(Services services)
+        public SCollisionDebugRender(IAssetLoader assetLoader, SpriteBatch spriteBatch, IOverworld overworld, IGameState gameState)
         {
-            _spriteBatch = services.Get<SpriteBatch>();
-            _assetLoader = services.Get<IAssetLoader>();
-            _camera = services.Get<SCamera>();
-            _overworld = services.Get<Overworld>();
+            _assetLoader = assetLoader;
+            _spriteBatch = spriteBatch;
+            _overworld = overworld;
+            _camera = gameState.Camera;
         }
 
         public int Priority { get; set; } = 99;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CCollisionBound), typeof(CPosition) };
+        public Type[] Requires { get; } = {typeof(CCollisionBound), typeof(CPosition)};
 
         public void BeforeDraw(GameTime gameTime)
         {
@@ -90,7 +89,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
         // todo: move to/create a primitives class
         private void DrawBox(Vector2 topLeft, Vector2 topRight, Vector2 bottomLeft, Vector2 bottomRight, Color color)
         {
-            DrawPolygon(Vector2.Zero, new List<Vector2> { topLeft, topRight, bottomRight, bottomLeft }, color);
+            DrawPolygon(Vector2.Zero, new List<Vector2> {topLeft, topRight, bottomRight, bottomLeft}, color);
         }
 
         private void DrawPolygon(Vector2 origin, List<Vector2> points, Color color)
@@ -111,13 +110,13 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             var edge = end - start;
             // calculate angle to rotate line
             var angle =
-                (float)Math.Atan2(edge.Y, edge.X);
+                (float) Math.Atan2(edge.Y, edge.X);
 
             _spriteBatch.Draw(_assetLoader.Get<Texture2D>("ui/pixel.png"),
                 new Rectangle( // rectangle defines shape of line and position of start of line
-                    (int)start.X,
-                    (int)start.Y,
-                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
+                    (int) start.X,
+                    (int) start.Y,
+                    (int) edge.Length(), //sb will strech the texture to fill this rectangle
                     thickness), //width of line, change this to make thicker line
                 null,
                 color, //colour of line

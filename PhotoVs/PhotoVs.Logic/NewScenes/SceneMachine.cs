@@ -2,28 +2,55 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.StateMachine;
 using PhotoVs.Logic.Mechanics.Input.Components;
-using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.NewScenes
 {
-    public class SceneMachine : StackStateMachine<Scene>
+    public class SceneMachine : StackStateMachine<Scene>, IHasUpdate, IHasDraw
     {
-        private readonly Renderer _renderer;
-        private readonly CInputState _inputState;
-        public readonly GameObjectList GameObjects;
-        public readonly SystemList Systems;
+        private readonly IGameState _gameState;
 
-        public SceneMachine(Player player, Renderer renderer, SystemList systems, GameObjectList gameObjects)
+        private readonly CInputState _inputState;
+        // todo: move before/after update/draw into methods from interface calls
+
+        private readonly IRenderer _renderer;
+
+        public SceneMachine(IGameState gameState, IRenderer renderer)
         {
-            GameObjects = gameObjects;
-            Systems = systems;
-            _inputState = player.Components.Get<CInputState>();
+            _gameState = gameState;
+            _inputState = _gameState.Player.Components.Get<CInputState>();
             _renderer = renderer;
+        }
+
+        public int DrawPriority { get; set; } = 0;
+        public bool DrawEnabled { get; set; } = true;
+
+        public void Draw(GameTime gameTime)
+        {
+            Process<IDrawableSystem>(
+                BeforeDraw,
+                Draw,
+                AfterDraw,
+                SceneDraw,
+                gameTime);
+        }
+
+        public int UpdatePriority { get; set; } = 0;
+        public bool UpdateEnabled { get; set; } = true;
+
+        public void Update(GameTime gameTime)
+        {
+            Process<IUpdateableSystem>(
+                BeforeUpdate,
+                Update,
+                AfterUpdate,
+                SceneUpdate,
+                gameTime);
         }
 
         private void Process<T>(
@@ -34,45 +61,19 @@ namespace PhotoVs.Logic.NewScenes
             GameTime gameTime) where T : ISystem
         {
             var scenes = CurrentScenes();
-            var work = Systems.ToList();
+            var work = _gameState.Systems.ToList();
 
-            foreach (var scene in scenes)
-            {
-                work.AddRange(scene.Systems);
-            }
+            foreach (var scene in scenes) work.AddRange(scene.Systems);
 
             work.Sort(SortByPriority);
 
             var relevantWork = work.OfType<T>();
 
             beforeDo(relevantWork, gameTime);
-            nowDo(relevantWork, GameObjects, gameTime);
+            nowDo(relevantWork, _gameState.GameObjects, gameTime);
             afterDo(relevantWork, gameTime);
 
-            foreach (var scene in scenes)
-            {
-                sceneAction(scene, gameTime);
-            }
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            Process<IUpdateableSystem>(
-                BeforeUpdate, 
-                Update, 
-                AfterUpdate, 
-                SceneUpdate, 
-                gameTime);
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-            Process<IDrawableSystem>(
-                BeforeDraw,
-                Draw,
-                AfterDraw,
-                SceneDraw,
-                gameTime);
+            foreach (var scene in scenes) sceneAction(scene, gameTime);
         }
 
         private void BeforeUpdate(IEnumerable<IUpdateableSystem> systems, GameTime gameTime)

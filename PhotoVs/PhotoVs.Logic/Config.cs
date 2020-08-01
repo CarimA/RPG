@@ -1,13 +1,13 @@
-﻿using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
-using PhotoVs.Logic.Mechanics.Input;
-using PhotoVs.Logic.PlayerData;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.PlayerData;
 using YamlDotNet.Serialization;
-using Encoding = System.Text.Encoding;
 
 namespace PhotoVs.Logic
 {
@@ -98,29 +98,29 @@ namespace PhotoVs.Logic
 
                 ControlsGamepad = new Dictionary<InputActions, List<Buttons>>
                 {
-                    [InputActions.Up] = new List<Buttons> { Buttons.DPadUp, Buttons.LeftThumbstickUp },
-                    [InputActions.Down] = new List<Buttons> { Buttons.DPadDown, Buttons.LeftThumbstickDown },
-                    [InputActions.Left] = new List<Buttons> { Buttons.DPadLeft, Buttons.LeftThumbstickLeft },
-                    [InputActions.Right] = new List<Buttons> { Buttons.DPadRight, Buttons.LeftThumbstickRight },
-                    [InputActions.Action] = new List<Buttons> { Buttons.A },
-                    [InputActions.Submit] = new List<Buttons> { Buttons.Start },
-                    [InputActions.Cancel] = new List<Buttons> { Buttons.B },
-                    [InputActions.Run] = new List<Buttons> { Buttons.B },
-                    [InputActions.Fullscreen] = new List<Buttons> { Buttons.LeftShoulder },
-                    [InputActions.Screenshot] = new List<Buttons> { Buttons.Back }
+                    [InputActions.Up] = new List<Buttons> {Buttons.DPadUp, Buttons.LeftThumbstickUp},
+                    [InputActions.Down] = new List<Buttons> {Buttons.DPadDown, Buttons.LeftThumbstickDown},
+                    [InputActions.Left] = new List<Buttons> {Buttons.DPadLeft, Buttons.LeftThumbstickLeft},
+                    [InputActions.Right] = new List<Buttons> {Buttons.DPadRight, Buttons.LeftThumbstickRight},
+                    [InputActions.Action] = new List<Buttons> {Buttons.A},
+                    [InputActions.Submit] = new List<Buttons> {Buttons.Start},
+                    [InputActions.Cancel] = new List<Buttons> {Buttons.B},
+                    [InputActions.Run] = new List<Buttons> {Buttons.B},
+                    [InputActions.Fullscreen] = new List<Buttons> {Buttons.LeftShoulder},
+                    [InputActions.Screenshot] = new List<Buttons> {Buttons.Back}
                 },
                 ControlsKeyboard = new Dictionary<InputActions, List<Keys>>
                 {
-                    [InputActions.Up] = new List<Keys> { Keys.Up, Keys.W },
-                    [InputActions.Down] = new List<Keys> { Keys.Down, Keys.S },
-                    [InputActions.Left] = new List<Keys> { Keys.Left, Keys.A },
-                    [InputActions.Right] = new List<Keys> { Keys.Right, Keys.D },
-                    [InputActions.Action] = new List<Keys> { Keys.Z, Keys.P },
-                    [InputActions.Submit] = new List<Keys> { Keys.Enter },
-                    [InputActions.Cancel] = new List<Keys> { Keys.X, Keys.O },
-                    [InputActions.Run] = new List<Keys> { Keys.X, Keys.O },
-                    [InputActions.Fullscreen] = new List<Keys> { Keys.F1 },
-                    [InputActions.Screenshot] = new List<Keys> { Keys.F12 }
+                    [InputActions.Up] = new List<Keys> {Keys.Up, Keys.W},
+                    [InputActions.Down] = new List<Keys> {Keys.Down, Keys.S},
+                    [InputActions.Left] = new List<Keys> {Keys.Left, Keys.A},
+                    [InputActions.Right] = new List<Keys> {Keys.Right, Keys.D},
+                    [InputActions.Action] = new List<Keys> {Keys.Z, Keys.P},
+                    [InputActions.Submit] = new List<Keys> {Keys.Enter},
+                    [InputActions.Cancel] = new List<Keys> {Keys.X, Keys.O},
+                    [InputActions.Run] = new List<Keys> {Keys.X, Keys.O},
+                    [InputActions.Fullscreen] = new List<Keys> {Keys.F1},
+                    [InputActions.Screenshot] = new List<Keys> {Keys.F12}
                 },
 
                 Deadzone = 20,

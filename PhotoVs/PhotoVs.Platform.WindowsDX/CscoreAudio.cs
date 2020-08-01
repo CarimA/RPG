@@ -13,31 +13,9 @@ namespace PhotoVs.Platform.WindowsDX
 {
     public class CscoreAudio : IAudio, IDisposable
     {
-        private event EventHandler<PlaybackStoppedEventArgs> PlaybackStopped;
-
         private readonly ObservableCollection<MMDevice> _devices = new ObservableCollection<MMDevice>();
         private ISoundOut _soundOut;
         private IWaveSource _waveSource;
-
-        private PlaybackState PlaybackState => _soundOut?.PlaybackState ?? PlaybackState.Stopped;
-
-        private TimeSpan Position
-        {
-            get => _waveSource?.GetPosition() ?? TimeSpan.Zero;
-            set => _waveSource?.SetPosition(value);
-        }
-
-        private TimeSpan Length => _waveSource?.GetLength() ?? TimeSpan.Zero;
-
-        private int Volume
-        {
-            get => _soundOut != null ? Math.Min(100, Math.Max((int)(_soundOut.Volume * 100), 0)) : 100;
-            set
-            {
-                if (_soundOut != null)
-                    _soundOut.Volume = Math.Min(1.0f, Math.Max(value / 100f, 0f));
-            }
-        }
 
         public CscoreAudio()
         {
@@ -51,9 +29,27 @@ namespace PhotoVs.Platform.WindowsDX
             _devices.Add(mmDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console));
             //Logger.Info("Default Audio Device: {0}", _devices.First().FriendlyName);
             foreach (var device in mmDeviceCollection)
-            {
                 _devices.Add(device);
-                //Logger.Debug("Available Audio Device: {0}", device.FriendlyName);
+            //Logger.Debug("Available Audio Device: {0}", device.FriendlyName);
+        }
+
+        private PlaybackState PlaybackState => _soundOut?.PlaybackState ?? PlaybackState.Stopped;
+
+        private TimeSpan Position
+        {
+            get => _waveSource?.GetPosition() ?? TimeSpan.Zero;
+            set => _waveSource?.SetPosition(value);
+        }
+
+        private TimeSpan Length => _waveSource?.GetLength() ?? TimeSpan.Zero;
+
+        private int Volume
+        {
+            get => _soundOut != null ? Math.Min(100, Math.Max((int) (_soundOut.Volume * 100), 0)) : 100;
+            set
+            {
+                if (_soundOut != null)
+                    _soundOut.Volume = Math.Min(1.0f, Math.Max(value / 100f, 0f));
             }
         }
 
@@ -118,6 +114,14 @@ namespace PhotoVs.Platform.WindowsDX
             throw new NotImplementedException();
         }
 
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            CleanupPlayback();
+        }
+
+        private event EventHandler<PlaybackStoppedEventArgs> PlaybackStopped;
+
         private void Open(string filename, MMDevice device)
         {
             CleanupPlayback();
@@ -127,17 +131,11 @@ namespace PhotoVs.Platform.WindowsDX
                     .Loop()
                     .ToSampleSource()
                     .ToWaveSource();
-            _soundOut = new WasapiOut { Latency = 100, Device = device };
+            _soundOut = new WasapiOut {Latency = 100, Device = device};
             _soundOut.Initialize(_waveSource);
 
             if (PlaybackStopped != null)
                 _soundOut.Stopped += PlaybackStopped;
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            CleanupPlayback();
         }
 
         private void Play()

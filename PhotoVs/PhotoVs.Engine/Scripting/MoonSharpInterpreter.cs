@@ -1,28 +1,38 @@
-﻿using MoonSharp.Interpreter;
+﻿using System;
+using MoonSharp.Interpreter;
+using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Utils.Logging;
-using System;
+using Coroutine = PhotoVs.Engine.Events.Coroutines.Coroutine;
 
 namespace PhotoVs.Engine.Scripting
 {
-    public class MoonSharpInterpreter
+    public class MoonSharpInterpreter : IInterpreter<Closure>
     {
-        public Script Script { get; }
+        private readonly ICoroutineRunner _coroutineRunner;
+        private Script _script;
 
-        public MoonSharpInterpreter()
+        public MoonSharpInterpreter(ICoroutineRunner coroutineRunner)
         {
-            Script = new Script();
+            _coroutineRunner = coroutineRunner;
+            ClearScripts();
+        }
+
+        public void ClearScripts()
+        {
+            _script = new Script();
+            AddFunction("print", (Action<string, object[]>) Logger.Write.Trace);
         }
 
         public void AddFunction(string name, object func)
         {
-            Script.Globals[name] = func;
+            _script.Globals[name] = func;
         }
 
         public object CallFunction(string name, params object[] args)
         {
             try
             {
-                return Script.Call(name, args);
+                return _script.Call(name, args);
             }
             catch (Exception e)
             {
@@ -51,14 +61,14 @@ namespace PhotoVs.Engine.Scripting
 
         public void RegisterGlobal(string name, object obj)
         {
-            Script.Globals[name] = obj;
+            _script.Globals[name] = obj;
         }
 
         public void RunScript(string script)
         {
             try
             {
-                Script.DoString(script);
+                _script.DoString(script);
             }
             catch (Exception e)
             {
@@ -69,21 +79,28 @@ namespace PhotoVs.Engine.Scripting
 
         public bool IsDefined(string name)
         {
-            return Script.Globals[name] != null;
+            return _script.Globals[name] != null;
+        }
+
+        public void RunCoroutine(string source, Closure closure)
+        {
+            var coroutine = _script.CreateCoroutine(closure);
+            var iterator = coroutine.Coroutine.AsUnityCoroutine();
+            _coroutineRunner.Start(new Coroutine(source, iterator));
         }
 
         public static void HandleError(Exception exception, string where)
         {
             switch (exception)
             {
-                case MoonSharp.Interpreter.SyntaxErrorException syntaxError:
-                    Logger.Write.Error($"{@where}: {syntaxError.DecoratedMessage}");
+                case SyntaxErrorException syntaxError:
+                    Logger.Write.Error($"{where}: {syntaxError.DecoratedMessage}");
                     break;
-                case MoonSharp.Interpreter.InterpreterException interpreter:
-                    Logger.Write.Error($"{@where}: {interpreter.DecoratedMessage}");
+                case InterpreterException interpreter:
+                    Logger.Write.Error($"{where}: {interpreter.DecoratedMessage}");
                     break;
                 default:
-                    Logger.Write.Error($"{@where}: {exception.Message}");
+                    Logger.Write.Error($"{where}: {exception.Message}");
                     break;
             }
         }

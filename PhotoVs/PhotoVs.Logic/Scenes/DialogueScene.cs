@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
@@ -19,20 +20,16 @@ namespace PhotoVs.Logic.Scenes
         private readonly Player _player;
         private readonly SceneMachine _scene;
         private readonly SpriteBatch _spriteBatch;
-        private DialogueMarkup _dialogue;
+        private readonly DialogueMarkup _dialogue;
 
-        private string _name;
+        private readonly string _name;
 
-        // todo: text log by saving a queue
-
-        public bool IsFinished { get; private set; }
-
-        public DialogueScene(Services services, string name, string dialogue)
+        public DialogueScene(string name, string dialogue)
         {
-            _scene = services.Get<SceneMachine>();
+            /*_scene = services.Get<SceneMachine>();
             _player = services.Get<Player>();
             _assetLoader = services.Get<IAssetLoader>();
-            _spriteBatch = services.Get<SpriteBatch>();
+            _spriteBatch = services.Get<SpriteBatch>();*/
 
             _name = name;
             _dialogue = new DialogueMarkup(_assetLoader.Get<SpriteFont>("ui/fonts/outline_12.fnt"),
@@ -44,6 +41,12 @@ namespace PhotoVs.Logic.Scenes
 
             IsFinished = false;
         }
+
+        // todo: text log by saving a queue
+
+        public bool IsFinished { get; private set; }
+
+        public bool IsBlocking { get; set; }
 
         public void Draw(GameTime gameTime)
         {
@@ -64,7 +67,8 @@ namespace PhotoVs.Logic.Scenes
             _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: uiOrigin);
 
             _spriteBatch.Draw(pixel, new Rectangle(x + 12, y + 108, 294, 58), new Rectangle(0, 0, 1, 1), Color.White);
-            _spriteBatch.Draw(darkPixel, new Rectangle(x + 70, y + 108, 236, 16), new Rectangle(0, 0, 1, 1), Color.White);
+            _spriteBatch.Draw(darkPixel, new Rectangle(x + 70, y + 108, 236, 16), new Rectangle(0, 0, 1, 1),
+                Color.White);
             _spriteBatch.Draw(portrait, new Vector2(x + 12, y + 108), Color.White);
             _spriteBatch.DrawNineSlice(slice, new Rectangle(x + 7, y + 103, 304, 68), new Rectangle(0, 0, 21, 21));
             _spriteBatch.DrawNineSlice(slice2, new Rectangle(x + 7, y + 103, 68, 68), new Rectangle(0, 0, 21, 21));
@@ -75,7 +79,7 @@ namespace PhotoVs.Logic.Scenes
             if (_dialogue.IsPaused || _dialogue.IsFinished)
             {
                 var next = _assetLoader.Get<Texture2D>("ui/next.png");
-                var drift = ((float)System.Math.Sin(gameTime.TotalGameTime.TotalSeconds * 8) * 2) - 1;
+                var drift = (float) Math.Sin(gameTime.TotalGameTime.TotalSeconds * 8) * 2 - 1;
                 _spriteBatch.Draw(next, new Vector2(x + 291, y + 162 + drift), Color.White);
             }
 
@@ -101,8 +105,6 @@ namespace PhotoVs.Logic.Scenes
                         _dialogue.Next();
             }
         }
-
-        public bool IsBlocking { get; set; }
 
         public void Enter(params object[] args)
         {

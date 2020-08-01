@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using PhotoVs.EditorSuite.Panels;
+using PhotoVs.EditorSuite.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace PhotoVs.EditorSuite
 {
     public partial class MainForm : Form
     {
+        private Timer _autosaveTimer;
         private DockPanel _dockPanel;
 
-        private ProjectExplorer _projectExplorer;
-        private Timer _autosaveTimer;
+        private readonly ProjectExplorer _projectExplorer;
 
         public MainForm()
         {
@@ -74,14 +69,14 @@ namespace PhotoVs.EditorSuite
             file.DropDownItems.Add(newProject = new ToolStripMenuItem("New Project")
             {
                 ShortcutKeys = Keys.Control | Keys.Shift | Keys.N,
-                Image = Properties.Resources.NewFile_16x
+                Image = Resources.NewFile_16x
             });
             newProject.Click += (sender, args) => _projectExplorer?.NewProject();
 
             file.DropDownItems.Add(saveProject = new ToolStripMenuItem("Save Project As")
             {
                 ShortcutKeys = Keys.Control | Keys.Shift | Keys.S,
-                Image = Properties.Resources.SaveAs_16x
+                Image = Resources.SaveAs_16x
             });
             saveProject.Click += (sender, args) => _projectExplorer?.SaveProjectAs();
 
@@ -101,17 +96,14 @@ namespace PhotoVs.EditorSuite
                 else
                     _autosaveTimer.Start();
             };
-            file.Click += (sender, args) =>
-            {
-                autosave.Checked = _autosaveTimer.Enabled;
-            };
+            file.Click += (sender, args) => { autosave.Checked = _autosaveTimer.Enabled; };
 
             file.DropDownItems.Add(new ToolStripSeparator());
 
             file.DropDownItems.Add(exit = new ToolStripMenuItem("Exit")
             {
                 ShortcutKeys = Keys.Alt | Keys.F4,
-                Image = Properties.Resources.Close_red_16x
+                Image = Resources.Close_red_16x
             });
 
             menu.Items.Add(edit = new ToolStripMenuItem("Edit"));
@@ -121,13 +113,13 @@ namespace PhotoVs.EditorSuite
             edit.DropDownItems.Add(undo = new ToolStripMenuItem("Undo")
             {
                 ShortcutKeys = Keys.Control | Keys.Z,
-                Image = Properties.Resources.Undo_16x
+                Image = Resources.Undo_16x
             });
 
             edit.DropDownItems.Add(redo = new ToolStripMenuItem("Redo")
             {
                 ShortcutKeys = Keys.Control | Keys.Y,
-                Image = Properties.Resources.Redo_16x
+                Image = Resources.Redo_16x
             });
 
             edit.DropDownItems.Add(new ToolStripSeparator());
@@ -135,19 +127,19 @@ namespace PhotoVs.EditorSuite
             edit.DropDownItems.Add(cut = new ToolStripMenuItem("Cut")
             {
                 ShortcutKeys = Keys.Control | Keys.X,
-                Image = Properties.Resources.Cut_16x
+                Image = Resources.Cut_16x
             });
 
             edit.DropDownItems.Add(copy = new ToolStripMenuItem("Copy")
             {
                 ShortcutKeys = Keys.Control | Keys.C,
-                Image = Properties.Resources.Copy_16x
+                Image = Resources.Copy_16x
             });
 
             edit.DropDownItems.Add(paste = new ToolStripMenuItem("Paste")
             {
                 ShortcutKeys = Keys.Control | Keys.V,
-                Image = Properties.Resources.Paste_16x
+                Image = Resources.Paste_16x
             });
 
 
@@ -158,13 +150,13 @@ namespace PhotoVs.EditorSuite
             project.DropDownItems.Add(connectToGame = new ToolStripMenuItem("Connect to Game")
             {
                 ShortcutKeys = Keys.F5,
-                Image = Properties.Resources.Run_16x
+                Image = Resources.Run_16x
             });
 
             project.DropDownItems.Add(build = new ToolStripMenuItem("Build")
             {
                 ShortcutKeys = Keys.F6,
-                Image = Properties.Resources.BuildSolution_16x
+                Image = Resources.BuildSolution_16x
             });
         }
     }

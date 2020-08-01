@@ -1,24 +1,21 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using PhotoVs.Utils.Extensions;
-using System;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
     public class Wind
     {
-        public Vector2 Direction { get; private set; }
-        public float Force { get; private set; }
+        private readonly Vector2 _maxRange;
+
+        private float _maxTimer;
+
+        private readonly Vector2 _minRange;
+        private float _nextUpdate;
+        private readonly Random _random;
 
         private Vector2 _targetDirection;
         private float _targetForce;
-
-        private float _maxTimer;
-        private float _nextUpdate;
-        private Random _random;
-
-        private Vector2 _minRange;
-        private Vector2 _maxRange;
 
         public Wind()
         {
@@ -28,8 +25,11 @@ namespace PhotoVs.Logic.Mechanics.World
             _nextUpdate = 0;
 
             Direction = _random.NextVector2(_minRange, _maxRange);
-            Force = (float)((_random.NextDouble() + 0.5f) * _random.Next(-4, 4));
+            Force = (float) ((_random.NextDouble() + 0.5f) * _random.Next(-4, 4));
         }
+
+        public Vector2 Direction { get; private set; }
+        public float Force { get; private set; }
 
 
         public void Update(GameTime gameTime)
@@ -38,17 +38,17 @@ namespace PhotoVs.Logic.Mechanics.World
 
             if (_nextUpdate <= 0f)
             {
-                _nextUpdate = (float)((_random.NextDouble() + 0.5f) * _random.Next(2, 6));
+                _nextUpdate = (float) ((_random.NextDouble() + 0.5f) * _random.Next(2, 6));
                 _maxTimer = _nextUpdate;
                 _targetDirection = _random.NextVector2(_minRange, _maxRange);
-                _targetForce = (float)(_random.NextDouble()) * 0.5f;
+                _targetForce = (float) _random.NextDouble() * 0.5f;
             }
 
             var currentAngle = Direction.ToAngle();
             var newAngle = _targetDirection.ToAngle();
             var step = MathHelper.Lerp(currentAngle, newAngle, 0.15f * gameTime.GetElapsedSeconds());
             Direction = step.ToDirection();
-            Force = MathHelper.SmoothStep(Force, _targetForce, (Progress()) / 10f);
+            Force = MathHelper.SmoothStep(Force, _targetForce, Progress() / 10f);
         }
 
         public float Progress()

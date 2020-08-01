@@ -1,4 +1,6 @@
 ﻿namespace PhotoVs.EditorSuite.GameData.Events
 {
-    public abstract class DataNode : Node {}
+    public abstract class DataNode : Node
+    {
+    }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Utils.Extensions
 {
@@ -10,7 +10,7 @@ namespace PhotoVs.Utils.Extensions
             if (gameTime == null)
                 throw new ArgumentNullException(nameof(gameTime));
 
-            return (float)gameTime.ElapsedGameTime.TotalSeconds;
+            return (float) gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public static float GetTotalSeconds(this GameTime gameTime)
@@ -18,7 +18,7 @@ namespace PhotoVs.Utils.Extensions
             if (gameTime == null)
                 throw new ArgumentNullException(nameof(gameTime));
 
-            return (float)gameTime.TotalGameTime.TotalSeconds;
+            return (float) gameTime.TotalGameTime.TotalSeconds;
         }
     }
 }

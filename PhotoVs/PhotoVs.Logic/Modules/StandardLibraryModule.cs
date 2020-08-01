@@ -1,9 +1,10 @@
 ﻿using System;
+using MoonSharp.Interpreter;
 using PhotoVs.Engine.Scripting;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class StandardLibraryModule : Module
+    public class StandardLibraryModule
     {
         public const string StdLib = @"
 -- event conditions
@@ -48,17 +49,10 @@ function LockWhile(f, ...)
 end
 ";
 
-        public StandardLibraryModule()
-        {
-            
-        }
-
-        public override void DefineApi(MoonSharpInterpreter interpreter)
+        public StandardLibraryModule(IInterpreter<Closure> interpreter)
         {
             if (interpreter == null) throw new ArgumentNullException(nameof(interpreter));
             interpreter.RunScript(StdLib);
-
-            base.DefineApi(interpreter);
         }
     }
 }

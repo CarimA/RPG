@@ -1,44 +1,30 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using MoonSharp.Interpreter;
 using PhotoVs.Engine.Scripting;
 using PhotoVs.Utils.Extensions;
-using System;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class TimingModule : Module
+    public class TimingModule
     {
-        private GameTime _latestGameTime;
+        private readonly IGameState _gameState;
 
-        public TimingModule()
+        public TimingModule(IInterpreter<Closure> interpreter, IGameState gameState)
         {
-            _latestGameTime = new GameTime();
-        }
+            _gameState = gameState;
 
-        public override void DefineApi(MoonSharpInterpreter interpreter)
-        {
-            if (interpreter == null)
-                throw new ArgumentNullException(nameof(interpreter));
-
-            interpreter.AddFunction("GetDeltaTime", (Func<float>)GetDeltaTime);
-            interpreter.AddFunction("GetTotalTime", (Func<float>)GetTime);
-
-            base.DefineApi(interpreter);
+            interpreter.AddFunction("GetDeltaTime", (Func<float>) GetDeltaTime);
+            interpreter.AddFunction("GetTotalTime", (Func<float>) GetTime);
         }
 
         private float GetDeltaTime()
         {
-            return _latestGameTime.GetElapsedSeconds();
+            return _gameState.GameTime.GetElapsedSeconds();
         }
 
         private float GetTime()
         {
-            return _latestGameTime.GetTotalSeconds();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            _latestGameTime = gameTime;
-            base.Update(gameTime);
+            return _gameState.GameTime.GetTotalSeconds();
         }
     }
 }

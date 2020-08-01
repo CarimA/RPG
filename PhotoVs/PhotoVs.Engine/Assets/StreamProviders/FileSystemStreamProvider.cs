@@ -7,9 +7,6 @@ namespace PhotoVs.Engine.Assets.StreamProviders
 {
     public class FileSystemStreamProvider : IStreamProvider
     {
-        public string ContentDirectory { get; }
-        public string StorageDirectory { get; }
-
         public FileSystemStreamProvider(string contentDirectory, string storageDirectory)
         {
             ContentDirectory = FixDirectory(contentDirectory);
@@ -25,15 +22,18 @@ namespace PhotoVs.Engine.Assets.StreamProviders
             CreateDirectory(DataLocation.Storage, "\\Logs\\");
         }
 
+        public string ContentDirectory { get; }
+        public string StorageDirectory { get; }
+
         public void Write(DataLocation location, string filepath, Stream stream)
         {
             if (location == DataLocation.Content || location == DataLocation.Raw)
                 throw new NotSupportedException("Cannot write files outside of storage.");
 
             var path = GetFilepath(location, filepath);
-            using var fileStream = new FileStream(path, FileMode.OpenOrCreate, System.IO.FileAccess.Write);
+            using var fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
             var bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, (int)stream.Length);
+            stream.Read(bytes, 0, (int) stream.Length);
             fileStream.Write(bytes, 0, bytes.Length);
         }
 
@@ -109,6 +109,17 @@ namespace PhotoVs.Engine.Assets.StreamProviders
             return results;
         }
 
+        public string GetFilepath(DataLocation location, string filepath)
+        {
+            return location switch
+            {
+                DataLocation.Content => ContentDirectory + FixFilename(filepath),
+                DataLocation.Storage => StorageDirectory + FixFilename(filepath),
+                DataLocation.Raw => FixFilename(filepath),
+                _ => throw new ArgumentOutOfRangeException(nameof(location), location, null)
+            };
+        }
+
         private string ResolveDirectory(DataLocation location)
         {
             return location switch
@@ -140,17 +151,6 @@ namespace PhotoVs.Engine.Assets.StreamProviders
                 directory += "/";
 
             return directory;
-        }
-
-        public string GetFilepath(DataLocation location, string filepath)
-        {
-            return location switch
-            {
-                DataLocation.Content => ContentDirectory + FixFilename(filepath),
-                DataLocation.Storage => StorageDirectory + FixFilename(filepath),
-                DataLocation.Raw => FixFilename(filepath),
-                _ => throw new ArgumentOutOfRangeException(nameof(location), location, null)
-            };
         }
     }
 }

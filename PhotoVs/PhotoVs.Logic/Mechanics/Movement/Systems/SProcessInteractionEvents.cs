@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Events.EventArgs;
-using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
@@ -10,30 +12,28 @@ using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Logic.PlayerData;
-using System;
-using System.Collections.Generic;
-using PhotoVs.Engine;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     internal class SProcessInteractionEvents : IUpdateableSystem
     {
-        private readonly HashSet<GameObject> _enteredScripts;
-        private readonly GameEventQueue _events;
         private readonly SCamera _camera;
-        private readonly Overworld _overworld;
+        private readonly HashSet<GameObject> _enteredScripts;
+        private readonly IOverworld _overworld;
+        private readonly ISignal _signal;
 
-        public SProcessInteractionEvents(Services services)
+        public SProcessInteractionEvents(IGameState gameState, IOverworld overworld, ISignal signal)
         {
-            _camera = services.Get<SCamera>();
-            _overworld = services.Get<Overworld>();
-            _events = services.Get<GameEventQueue>();
+            _overworld = overworld;
+            _signal = signal;
+            _camera = gameState.Camera;
+
             _enteredScripts = new HashSet<GameObject>();
         }
 
         public int Priority { get; set; } = -1;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CInputState) };
+        public Type[] Requires { get; } = {typeof(CInputState)};
 
         public void BeforeUpdate(GameTime gameTime)
         {
@@ -69,12 +69,12 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 if (result.AreIntersecting)
                 {
                     if (input.ActionPressed(InputActions.Action))
-                        _events.Notify(GameEvents.InteractAction, scriptName, new InteractEventArgs(this, player, script));
+                        _signal.Notify($"InteractAction:{scriptName}", new InteractEventArgs(this, player, script));
 
                     if (!_enteredScripts.Contains(script))
                     {
                         _enteredScripts.Add(script);
-                        _events.Notify(GameEvents.InteractAreaEnter, scriptName, new InteractEventArgs(this, player, script));
+                        _signal.Notify($"InteractAreaEnter:{scriptName}", new InteractEventArgs(this, player, script));
                     }
 
                     if (position.DeltaPosition != Vector2.Zero)
@@ -84,18 +84,21 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                         {
                             if (player.CanMove)
                                 // todo: should only fire on footstep touching ground
-                                _events.Notify(GameEvents.InteractAreaRun, scriptName, new InteractEventArgs(this, player, script));
+                                _signal.Notify($"InteractAreaRun:{scriptName}",
+                                    new InteractEventArgs(this, player, script));
                         }
                         else
                         {
                             if (player.CanMove)
-                                _events.Notify(GameEvents.InteractAreaWalk, scriptName, new InteractEventArgs(this, player, script));
+                                _signal.Notify($"InteractAreaWalk:{scriptName}",
+                                    new InteractEventArgs(this, player, script));
                         }
                     }
                     else
                     {
                         if (player.CanMove)
-                            _events.Notify(GameEvents.InteractAreaStand, scriptName, new InteractEventArgs(this, player, script));
+                            _signal.Notify($"InteractAreaStand:{scriptName}",
+                                new InteractEventArgs(this, player, script));
                     }
                 }
                 else
@@ -104,7 +107,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                         continue;
 
                     _enteredScripts.Remove(script);
-                    _events.Notify(GameEvents.InteractAreaExit, scriptName, new InteractEventArgs(this, player, script));
+                    _signal.Notify($"InteractAreaExit:{scriptName}", new InteractEventArgs(this, player, script));
                 }
             }
         }

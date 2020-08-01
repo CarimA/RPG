@@ -1,50 +1,48 @@
-﻿using PhotoVs.Engine.Assets.StreamProviders;
-using PhotoVs.Engine.Assets.TypeLoaders;
-using PhotoVs.Engine.Events.Coroutines;
-using PhotoVs.Engine.Events.Coroutines.Instructions;
-using PhotoVs.Utils.Logging;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Assets.StreamProviders;
+using PhotoVs.Engine.Assets.TypeLoaders;
+using PhotoVs.Engine.Core;
+using PhotoVs.Utils.Extensions;
+using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Assets.AssetLoaders
 {
-    public class AssetLoader : IAssetLoader
+    public class AssetLoader : IAssetLoader, IHasBeforeUpdate
     {
-        public IStreamProvider StreamProvider { get; }
-
-        private IPlatform _platform { get; }
+        private const int UnloadTime = 8;
         private readonly Dictionary<string, object> _assetCache;
         private readonly Dictionary<string, int> _lastUsed;
         private readonly Dictionary<Type, object> _typeLoaders;
+        private float _unloadTimer;
 
-        public AssetLoader(Services services, IStreamProvider streamProvider)
+        public AssetLoader(IPlatform platform)
         {
-            _platform = services.Get<IPlatform>();
+            _platform = platform;
             _lastUsed = new Dictionary<string, int>();
             _assetCache = new Dictionary<string, object>();
             _typeLoaders = new Dictionary<Type, object>();
-            StreamProvider = streamProvider;
-
-            services.Get<CoroutineRunner>().Start(new Coroutine(UnloadUnusedAssets()));
+            StreamProvider = platform.StreamProvider;
         }
+
+        private IPlatform _platform { get; }
+        public IStreamProvider StreamProvider { get; }
 
         public T Get<T>(string filepath) where T : class
         {
             var ext = Path.GetExtension(filepath);
             if (_platform.FileExtensionReplacement.TryGetValue(ext, out var value))
-            {
                 filepath = filepath.Replace(ext, value);
-            }
 
             filepath = SanitiseFilename(filepath);
             if (_assetCache.TryGetValue(filepath, out var asset))
             {
                 _lastUsed[filepath] = Environment.TickCount;
                 if (asset != null)
-                    return (T)asset;
+                    return (T) asset;
             }
             else
             {
@@ -103,31 +101,27 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
         {
             if (typeLoader != null)
             {
-                Logger.Write.Info("Registered Type Loader for \"{0}\"", typeof(T).Name);
+                Logger.Write.Info("Registered asset type loader for \"{0}\"", typeof(T).Name);
                 _typeLoaders[typeof(T)] = typeLoader;
             }
 
             return this;
         }
 
-        private string SanitiseFilename(string filename)
-        {
-            return filename.ToLowerInvariant();
-        }
+        public int BeforeUpdatePriority { get; set; } = 0;
+        public bool BeforeUpdateEnabled { get; set; } = true;
 
-        private IEnumerator UnloadUnusedAssets()
+        public void BeforeUpdate(GameTime gameTime)
         {
-            const float time = 20f;
-            var pause = new Wait(time);
-            var toRemove = new List<string>();
-
-            while (true)
+            _unloadTimer -= gameTime.GetElapsedSeconds();
+            if (_unloadTimer <= 0)
             {
-                yield return pause;
-                pause.SetTime(time);
+                _unloadTimer = UnloadTime;
+
+                var toRemove = new List<string>();
 
                 foreach (var kvp in _lastUsed.Where(kvp => _assetCache.ContainsKey(kvp.Key))
-                    .Where(kvp => kvp.Value < Environment.TickCount - (time * 1000)))
+                    .Where(kvp => kvp.Value < Environment.TickCount - UnloadTime * 1000))
                 {
                     toRemove.Add(kvp.Key);
                     Unload(kvp.Key);
@@ -138,6 +132,11 @@ namespace PhotoVs.Engine.Assets.AssetLoaders
 
                 toRemove.Clear();
             }
+        }
+
+        private string SanitiseFilename(string filename)
+        {
+            return filename.ToLowerInvariant();
         }
     }
 }

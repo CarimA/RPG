@@ -1,12 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
 namespace PhotoVs.Utils.Extensions
 {
@@ -34,7 +33,7 @@ namespace PhotoVs.Utils.Extensions
 
             if (verticalAlignment == VerticalAlignment.Center)
             {
-                pos.Y -= (int)((splits.Length * font.LineSpacing) / 2f);
+                pos.Y -= (int) (splits.Length * font.LineSpacing / 2f);
             }
 
             foreach (var line in splits)
@@ -45,7 +44,7 @@ namespace PhotoVs.Utils.Extensions
                 pos.X = horizontalAlignment switch
                 {
                     HorizontalAlignment.Left => anchor.X,
-                    HorizontalAlignment.Center => (int) (anchor.X - (width / 2)),
+                    HorizontalAlignment.Center => (int) (anchor.X - width / 2),
                     HorizontalAlignment.Right => anchor.X - width,
                     _ => pos.X
                 };
@@ -95,14 +94,14 @@ namespace PhotoVs.Utils.Extensions
 
             // top
             spriteBatch.Draw(texture,
-                new Rectangle(destination.Left + sliceWidth, destination.Top, destination.Width - (sliceWidth * 2),
+                new Rectangle(destination.Left + sliceWidth, destination.Top, destination.Width - sliceWidth * 2,
                     sliceHeight), new Rectangle(source.Left + sliceWidth, source.Top, sliceWidth, sliceHeight),
                 Color.White);
 
             // bottom
             spriteBatch.Draw(texture,
                 new Rectangle(destination.Left + sliceWidth, destination.Bottom - sliceHeight,
-                    destination.Width - (sliceWidth * 2),
+                    destination.Width - sliceWidth * 2,
                     sliceHeight),
                 new Rectangle(source.Left + sliceWidth, source.Bottom - sliceHeight, sliceWidth, sliceHeight),
                 Color.White);
@@ -110,29 +109,29 @@ namespace PhotoVs.Utils.Extensions
             // left
             spriteBatch.Draw(texture,
                 new Rectangle(destination.Left, destination.Top + sliceHeight, sliceWidth,
-                    destination.Height - (sliceHeight * 2)),
+                    destination.Height - sliceHeight * 2),
                 new Rectangle(source.Left, source.Top + sliceHeight, sliceWidth, sliceHeight),
                 Color.White);
 
             // right
             spriteBatch.Draw(texture,
                 new Rectangle(destination.Right - sliceWidth, destination.Top + sliceHeight, sliceWidth,
-                    destination.Height - (sliceHeight * 2)),
+                    destination.Height - sliceHeight * 2),
                 new Rectangle(source.Right - sliceWidth, source.Top + sliceHeight, sliceWidth, sliceHeight),
                 Color.White);
 
             // centre
             spriteBatch.Draw(texture,
                 new Rectangle(destination.Left + sliceWidth, destination.Top + sliceHeight,
-                    destination.Width - (sliceWidth * 2),
-                    destination.Height - (sliceHeight * 2)),
+                    destination.Width - sliceWidth * 2,
+                    destination.Height - sliceHeight * 2),
                 new Rectangle(source.Left + sliceWidth, source.Top + sliceHeight, sliceWidth, sliceHeight),
                 Color.White);
         }
 
         public static Color ToColor(this object obj)
         {
-            var hashcode = (uint)obj.GetHashCode();
+            var hashcode = (uint) obj.GetHashCode();
             var color = new Color(hashcode)
             {
                 A = byte.MaxValue
@@ -149,18 +148,21 @@ namespace PhotoVs.Utils.Extensions
             }*/
 
             var textureData = new uint[texture.Width * texture.Height];
-            texture.GetData<uint>(textureData);
+            texture.GetData(textureData);
 
             var bmp = new Bitmap(texture.Width, texture.Height, PixelFormat.Format32bppArgb);
 
             unsafe
             {
-                var origdata = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
-                var byteData = (uint*)origdata.Scan0;
+                var origdata = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height),
+                    ImageLockMode.WriteOnly, bmp.PixelFormat);
+                var byteData = (uint*) origdata.Scan0;
                 for (var i = 0; i < textureData.Length; i++)
                 {
-                    byteData[i] = (textureData[i] & 0x000000ff) << 16 | (textureData[i] & 0x0000FF00) | (textureData[i] & 0x00FF0000) >> 16 | (textureData[i] & 0xFF000000);
+                    byteData[i] = (textureData[i] & 0x000000ff) << 16 | (textureData[i] & 0x0000FF00) |
+                                  (textureData[i] & 0x00FF0000) >> 16 | (textureData[i] & 0xFF000000);
                 }
+
                 bmp.UnlockBits(origdata);
             }
 

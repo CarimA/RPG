@@ -1,44 +1,27 @@
-﻿using MoonSharp.Interpreter;
+﻿using System;
+using System.Linq;
+using MoonSharp.Interpreter;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.Scripting;
-using PhotoVs.Logic.Events;
-using System;
-using System.Linq;
 using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class EventTriggersModule : Module
+    public class EventTriggersModule
     {
-        private readonly GameEventQueue _events;
+        private readonly IInterpreter<Closure> _interpreter;
         private readonly Player _player;
+        private readonly ISignal _signal;
 
-        public EventTriggersModule(GameEventQueue events, Player player)
+        public EventTriggersModule(IInterpreter<Closure> interpreter, ISignal signal, IGameState gameState)
         {
-            _events = events;
-            _player = player;
-        }
+            _interpreter = interpreter;
+            _signal = signal;
+            _player = gameState.Player;
 
-        public override void DefineApi(MoonSharpInterpreter interpreter)
-        {
-            if (interpreter == null)
-                throw new ArgumentNullException(nameof(interpreter));
-
-            interpreter.AddFunction("Subscribe", (Action<Table>)CreateEvent);
-            interpreter.AddFunction("Notify", (Action<GameEvents, string>)Notify);
-
-            interpreter.AddType<GameEvents>("Events");
-
-            interpreter.AddType<(GameEvents, string)>("_triggerTuple");
-            interpreter.RegisterGlobal("Trigger", (Func<GameEvents, string, (GameEvents, string)>)Trigger);
-
-            base.DefineApi(interpreter);
-        }
-
-        private (GameEvents, string) Trigger(GameEvents arg1, string arg2)
-        {
-            arg2 ??= string.Empty;
-            return (arg1, arg2);
+            interpreter.AddFunction("Subscribe", (Action<Table>) CreateEvent);
+            interpreter.AddFunction("Notify", (Action<string>) Notify);
         }
 
         private void CreateEvent(Table table)
@@ -55,27 +38,21 @@ namespace PhotoVs.Logic.Modules
                 throw new ArgumentException("Event cannot be empty");
 
             var runOnceBool = runOnce as bool? ?? false;
-            var runOnceKey = runOnce != null ? (runOnce is bool ? string.Empty : ((DynValue)runOnce).String) : string.Empty;
+            var runOnceKey = runOnce != null
+                ? runOnce is bool ? string.Empty : ((DynValue) runOnce).String
+                : string.Empty;
 
             foreach (var trigger in triggers.Values)
             {
-                if (trigger.UserData.Object.GetType() == typeof((GameEvents, string)))
-                {
-                    var (key, delimiter) = ((GameEvents, string))trigger.UserData.Object;
-                    RegisterEvent(key, delimiter, conditions, action, runOnceBool, runOnceKey);
-                }
-                else
-                {
-                    RegisterEvent((GameEvents) trigger.Number, string.Empty, conditions, action, runOnceBool,
-                        runOnceKey);
-                }
+                var key = trigger.String;
+                RegisterSignal(key, conditions, action, runOnceBool, runOnceKey);
             }
         }
 
-        private void RegisterEvent(GameEvents gameEvent, string delimiter, Table conditions, Closure closure,
+        private void RegisterSignal(string signal, Table conditions, Closure closure,
             bool runOnce = false, string runOnceFlag = "")
         {
-            var reservedId = _events.ReserveId();
+            var reservedId = _signal.ReserveId();
 
             var action = new Action<IGameEventArgs>(obj =>
             {
@@ -89,24 +66,24 @@ namespace PhotoVs.Logic.Modules
                     if (_player.PlayerData.GetFlag(runOnceFlag))
                         return;
 
-                ScriptHost.RunCoroutine(
-                    $"event subscribed to ({Enum.GetName(typeof(GameEvents), gameEvent)}, {delimiter})", closure);
+                _interpreter.RunCoroutine(
+                    $"event subscribed to ({signal})", closure);
 
                 if (runOnce)
                 {
-                    _events.Unsubscribe(reservedId);
+                    _signal.Unsubscribe(reservedId);
 
                     if (!string.Equals(runOnceFlag, string.Empty))
                         _player.PlayerData.SetFlag(runOnceFlag, true);
                 }
             });
 
-            _events.Subscribe(reservedId, gameEvent, delimiter, action);
+            _signal.Subscribe(reservedId, signal, action);
         }
 
-        public void Notify(GameEvents eventKey, string delimiter)
+        public void Notify(string signal)
         {
-            _events.Notify(eventKey, delimiter, null);
+            _signal.Notify(signal, null);
         }
     }
 }

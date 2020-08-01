@@ -1,81 +1,82 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.Filters;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
-using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
-using System;
 using SpriteFontPlus;
 
 namespace PhotoVs.Logic.Mechanics.World.Systems
 {
     public class SRenderOverworld : IDrawableSystem
     {
-        private readonly Overworld _overworld;
-        private readonly SpriteBatch _spriteBatch;
         private readonly SCamera _camera;
-
-        private GameObjectList _gameObjects;
-
-        public int Priority { get; set; } = 0;
-        public bool Active { get; set; } = true;
-
-        public Type[] Requires { get; } =
-        {
-        };
-
-        private GameDate _gameDate;
-
-        private LinearTweener<Texture2D> _dayNight;
-        private ColorGradingFilter _colorGrade;
-        private ColorAverager _colorAverager;
-        private RenderTarget2D _target;
-        private RenderTarget2D _material;
-        private RenderTarget2D _waterReflection;
-        private RenderTarget2D _water;
-        private RenderTarget2D _combinedWater;
-        private RenderTarget2D _waterDisplace;
-        private RenderTarget2D _final;
-        private Effect _waterReflectionEffect;
-        private Effect _waterEffect;
-        private Effect _displaceEffect;
-        private Effect _tilemapEffect;
-        private Renderer _renderer;
-        private Texture2D _noiseA;
-        private Texture2D _noiseB;
-        private Texture2D _displacementTexture;
-        private Texture2D _displacementTexture2;
-        private Texture2D _tilemapTexture;
-        private Texture2D _indexTexture;
-        private Texture2D _indexMaterialTexture;
+        private readonly ICanvasSize _canvasSize;
+        private readonly GraphicsDevice _graphicsDevice;
+        private readonly SpriteBatch _spriteBatch;
 
         private Texture2D _checkerboardTexture;
+        private readonly ColorAverager _colorAverager;
+        private readonly ColorGradingFilter _colorGrade;
+        private RenderTarget2D _combinedWater;
+
+        private readonly LinearTweener<Texture2D> _dayNight;
+        private readonly Effect _displaceEffect;
+        private readonly Texture2D _displacementTexture;
+        private readonly Texture2D _displacementTexture2;
+        private RenderTarget2D _final;
+
+        private readonly GameDate _gameDate;
+
+        private GameObjectList _gameObjects;
+        private readonly Texture2D _indexMaterialTexture;
+        private readonly Texture2D _indexTexture;
+        private RenderTarget2D _material;
+        private readonly Texture2D _noiseA;
+        private readonly Texture2D _noiseB;
         private CPosition _playerPosition;
-        private DynamicSpriteFont bold;
+        private readonly IRenderer _renderer;
+        private RenderTarget2D _target;
+        private readonly Effect _tilemapEffect;
+        private readonly Texture2D _tilemapTexture;
+        private RenderTarget2D _water;
+        private RenderTarget2D _waterDisplace;
+        private readonly Effect _waterEffect;
+        private RenderTarget2D _waterReflection;
+        private readonly Effect _waterReflectionEffect;
+        private readonly DynamicSpriteFont bold;
 
-        public SRenderOverworld(Services services)
+        private float throttleRender;
+        private float time;
+
+        private Vector2 waterA;
+        private Vector2 waterB;
+
+        public SRenderOverworld(IAssetLoader assetLoader, IRenderer renderer, IOverworld overworld,
+            SpriteBatch spriteBatch, IGameState gameState,
+            ISignal signal, GraphicsDevice graphicsDevice, ICanvasSize canvasSize)
         {
-            var assetLoader = services.Get<IAssetLoader>();
-            _renderer = services.Get<Renderer>();
-            _overworld = services.Get<Overworld>();
-            _spriteBatch = services.Get<SpriteBatch>();
-            _camera = services.Get<SCamera>();
+            _renderer = renderer;
+            _spriteBatch = spriteBatch;
+            _graphicsDevice = graphicsDevice;
+            _canvasSize = canvasSize;
+            _camera = gameState.Camera;
 
-            _playerPosition = services.Get<Player>().PlayerData.Position;
+            _playerPosition = gameState.Player.PlayerData.Position;
 
-            _gameDate = new GameDate(services);
+            _gameDate = new GameDate(signal);
             bold = assetLoader.Get<DynamicSpriteFont>("ui/fonts/ubuntu.ttf");
 
-            _colorAverager = new ColorAverager(services.Get<Renderer>(),
+            _colorAverager = new ColorAverager(renderer,
                 assetLoader.Get<Effect>("shaders/average.fx"));
-            _colorGrade = new ColorGradingFilter(services.Get<Renderer>(),
+            _colorGrade = new ColorGradingFilter(renderer, spriteBatch,
                 assetLoader.Get<Effect>("shaders/color.fx"));
             _dayNight = new LinearTweener<Texture2D>();
             _waterReflectionEffect = assetLoader.Get<Effect>("shaders/water_reflection.fx");
@@ -105,38 +106,26 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.7708333f, assetLoader.Get<Texture2D>("luts/daycycle8.png"));
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
+
+            OnResize();
+            _canvasSize.OnResize += OnResize;
         }
+
+        public int Priority { get; set; } = 0;
+        public bool Active { get; set; } = true;
+
+        public Type[] Requires { get; } =
+        {
+        };
 
         public void BeforeDraw(GameTime gameTime)
         {
-
         }
-
-        private Vector2 waterA;
-        private Vector2 waterB;
-
-        private float throttleRender;
-        private float time;
 
         public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
             var cameraRect = _camera.VisibleArea();
-            var tPos = (new Vector2(cameraRect.Left, cameraRect.Top));
-
-            if (_target == null || _target.Width != _renderer.GameWidth ||
-                _target.Height != _renderer.GameHeight)
-            {
-                _target = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-                _material = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-                _waterReflection =
-                    new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-                _water = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-                _final = new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-                _combinedWater =
-                    new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-                _waterDisplace =
-                    new RenderTarget2D(_renderer.GraphicsDevice, _renderer.GameWidth, _renderer.GameHeight);
-            }
+            var tPos = new Vector2(cameraRect.Left, cameraRect.Top);
 
             _gameDate.Update(gameTime);
 
@@ -161,14 +150,10 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             }
 
 
-
-
-
             _renderer.RequestSubRenderer(_target);
 
-            
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp,
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
 
 
@@ -179,22 +164,24 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             //_tilemapEffect.Parameters["viewSize"].SetValue(new Vector2(_renderer.GameWidth, _renderer.GameHeight));
             //_tilemapEffect.Parameters["viewOffset"].SetValue(new Vector2(cameraRect.Left, cameraRect.Top));
             _tilemapEffect.Parameters["tileSize"].SetValue(new Vector2(tileSize, tileSize));
-            _tilemapEffect.Parameters["inverseIndexTexSize"].SetValue(new Vector2(1f / _indexTexture.Width, 1f / _indexTexture.Height));
-            _tilemapEffect.Parameters["mapSize"].SetValue(new Vector2((_tilemapTexture.Width) * tileSize,  _tilemapTexture.Height * tileSize));
+            _tilemapEffect.Parameters["inverseIndexTexSize"]
+                .SetValue(new Vector2(1f / _indexTexture.Width, 1f / _indexTexture.Height));
+            _tilemapEffect.Parameters["mapSize"]
+                .SetValue(new Vector2(_tilemapTexture.Width * tileSize, _tilemapTexture.Height * tileSize));
 
             _tilemapEffect.CurrentTechnique.Passes[0].Apply();
 
             _spriteBatch.Draw(_tilemapTexture,
-                new Rectangle(0, 0, (int)((_tilemapTexture.Width / 2) * tileSize), (int)(_tilemapTexture.Height * tileSize)),
+                new Rectangle(0, 0, _tilemapTexture.Width / 2 * tileSize, _tilemapTexture.Height * tileSize),
                 new Rectangle(0, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
                 Color.White);
 
 
             _spriteBatch.Draw(_tilemapTexture,
-                new Rectangle(0, 0, (_tilemapTexture.Width / 2) * tileSize, _tilemapTexture.Height * tileSize),
+                new Rectangle(0, 0, _tilemapTexture.Width / 2 * tileSize, _tilemapTexture.Height * tileSize),
                 new Rectangle(_tilemapTexture.Width / 2, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
                 Color.White);
-            
+
             /*_overworld.GetMap()
                 .Draw(_spriteBatch,
                     gameTime,
@@ -206,12 +193,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _renderer.RelinquishSubRenderer();
 
 
-
-
-
             _renderer.RequestSubRenderer(_material);
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp,
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
 
 
@@ -221,19 +205,21 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             //_tilemapEffect.Parameters["viewSize"].SetValue(new Vector2(_renderer.GameWidth, _renderer.GameHeight));
             //_tilemapEffect.Parameters["viewOffset"].SetValue(new Vector2(cameraRect.Left, cameraRect.Top));
             _tilemapEffect.Parameters["tileSize"].SetValue(new Vector2(tileSize, tileSize));
-            _tilemapEffect.Parameters["inverseIndexTexSize"].SetValue(new Vector2(1f / _indexTexture.Width, 1f / _indexTexture.Height));
-            _tilemapEffect.Parameters["mapSize"].SetValue(new Vector2((_tilemapTexture.Width) * tileSize, _tilemapTexture.Height * tileSize));
+            _tilemapEffect.Parameters["inverseIndexTexSize"]
+                .SetValue(new Vector2(1f / _indexTexture.Width, 1f / _indexTexture.Height));
+            _tilemapEffect.Parameters["mapSize"]
+                .SetValue(new Vector2(_tilemapTexture.Width * tileSize, _tilemapTexture.Height * tileSize));
 
             _tilemapEffect.CurrentTechnique.Passes[0].Apply();
 
             _spriteBatch.Draw(_tilemapTexture,
-                new Rectangle(0, 0, (int)((_tilemapTexture.Width / 2) * tileSize), (int)(_tilemapTexture.Height * tileSize)),
+                new Rectangle(0, 0, _tilemapTexture.Width / 2 * tileSize, _tilemapTexture.Height * tileSize),
                 new Rectangle(0, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
                 Color.White);
 
 
             _spriteBatch.Draw(_tilemapTexture,
-                new Rectangle(0, 0, (_tilemapTexture.Width / 2) * tileSize, _tilemapTexture.Height * tileSize),
+                new Rectangle(0, 0, _tilemapTexture.Width / 2 * tileSize, _tilemapTexture.Height * tileSize),
                 new Rectangle(_tilemapTexture.Width / 2, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
                 Color.White);
 
@@ -248,14 +234,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _renderer.RelinquishSubRenderer();
 
 
-
-
-
-
-
             _renderer.RequestSubRenderer(_waterReflection);
 
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
 
             //_waterEffect.Parameters["texMap"].SetValue(_material);
             _waterReflectionEffect.Parameters["Texture"].SetValue(_material);
@@ -269,18 +250,16 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 .SetValue(new Vector4(0.03529411764f, 0.3725490196f, 0.47843137254f, 1.0f));
 
             _waterReflectionEffect.CurrentTechnique.Passes[0].Apply();
-            _renderer.SpriteBatch.Draw(_material, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(_material, Vector2.Zero, Color.White);
 
-            _renderer.SpriteBatch.End();
+            _spriteBatch.End();
 
             _renderer.RelinquishSubRenderer();
 
 
-
-
             _renderer.RequestSubRenderer(_water);
 
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
                 transformMatrix: _camera.Transform);
 
             _waterEffect.Parameters["Texture"].SetValue(_material);
@@ -295,62 +274,51 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _waterEffect.Parameters["highlightWater"]
                 .SetValue(new Vector4(0.37647058823f, 0.70588235294f, 0.84705882352f, 1.0f));
 
-            _waterEffect.Parameters["offsetXA"].SetValue(((waterA.X + tPos.X) % _material.Width) / _material.Width);
+            _waterEffect.Parameters["offsetXA"].SetValue((waterA.X + tPos.X) % _material.Width / _material.Width);
             _waterEffect.Parameters["offsetYA"]
-                .SetValue(((waterA.Y + tPos.Y) % _material.Height) / _material.Height);
-            _waterEffect.Parameters["offsetXB"].SetValue(((waterB.X + tPos.X) % _material.Width) / _material.Width);
+                .SetValue((waterA.Y + tPos.Y) % _material.Height / _material.Height);
+            _waterEffect.Parameters["offsetXB"].SetValue((waterB.X + tPos.X) % _material.Width / _material.Width);
             _waterEffect.Parameters["offsetYB"]
-                .SetValue(((waterB.Y + tPos.Y) % _material.Height) / _material.Height);
+                .SetValue((waterB.Y + tPos.Y) % _material.Height / _material.Height);
             _waterEffect.Parameters["time"].SetValue(time / 60f);
 
             _waterEffect.CurrentTechnique.Passes[0].Apply();
 
-            _renderer.SpriteBatch.Draw(_material, cameraRect, Color.White);
+            _spriteBatch.Draw(_material, cameraRect, Color.White);
 
-            _renderer.SpriteBatch.End();
+            _spriteBatch.End();
 
             _renderer.RelinquishSubRenderer();
-
-
-
-
 
 
             _renderer.RequestSubRenderer(_combinedWater);
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
-            _renderer.SpriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.76f);
-            _renderer.SpriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.45f);
-            _renderer.SpriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
+            _spriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.76f);
+            _spriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.45f);
+            _spriteBatch.End();
             _renderer.RelinquishSubRenderer();
 
 
-
-
-
-
             _renderer.RequestSubRenderer(_waterDisplace);
-            _renderer.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
                 transformMatrix: _camera.Transform);
             _displaceEffect.Parameters["Texture"].SetValue(_combinedWater);
             _displaceEffect.Parameters["texMask"].SetValue(_material);
             _displaceEffect.Parameters["texDisplace"].SetValue(_displacementTexture);
             _displaceEffect.Parameters["texDisplace2"].SetValue(_displacementTexture2);
             _displaceEffect.Parameters["offsetX"]
-                .SetValue((((waterA.X * 15) + tPos.X) % _material.Width) / _material.Width);
+                .SetValue((waterA.X * 15 + tPos.X) % _material.Width / _material.Width);
             _displaceEffect.Parameters["offsetY"]
-                .SetValue((((waterA.Y * 8) + tPos.Y) % _material.Height) / _material.Height);
+                .SetValue((waterA.Y * 8 + tPos.Y) % _material.Height / _material.Height);
             //_displaceEffect.Parameters["time"].SetValue(time * 1);
             _displaceEffect.Parameters["pixWidth"].SetValue(1f / _waterDisplace.Width);
             _displaceEffect.Parameters["pixHeight"].SetValue(1f / _waterDisplace.Height);
             _displaceEffect.Parameters["maxDisplace"].SetValue(4f);
             _displaceEffect.Parameters["water"].SetValue(new Vector4(0.01568628F, 0.172549F, 0.2235294F, 1.0f));
             _displaceEffect.CurrentTechnique.Passes[0].Apply();
-            _renderer.SpriteBatch.Draw(_combinedWater, cameraRect, Color.White);
-            _renderer.SpriteBatch.End();
+            _spriteBatch.Draw(_combinedWater, cameraRect, Color.White);
+            _spriteBatch.End();
             _renderer.RelinquishSubRenderer();
-
-
-
 
 
             _renderer.RequestSubRenderer(_final);
@@ -383,23 +351,30 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             }*/
         }
 
-        public void EntityDraw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            foreach (var gameObject in _gameObjects)
-            {
-
-            }
-        }
-
         public void AfterDraw(GameTime gameTime)
         {
-
         }
 
         public void DrawUI(GameTime gameTime, GameObjectList gameObjectCollection, Matrix uiOrigin)
         {
+        }
 
+        private void OnResize()
+        {
+            _target = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+            _material = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+            _waterReflection = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+            _water = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+            _final = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+            _combinedWater = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+            _waterDisplace = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+        }
 
+        public void EntityDraw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            foreach (var gameObject in _gameObjects)
+            {
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Graphics;
@@ -15,22 +14,19 @@ namespace PhotoVs.Logic.NewScenes.GameScenes
 {
     public class TitleScene : Scene
     {
-        private readonly Renderer _renderer;
-        private readonly SpriteBatch _spriteBatch;
-        private readonly Texture2D _ui;
+        private readonly AnimatedRectangle _button;
+        private readonly ICanvasSize _canvasSize;
         private readonly Texture2D _filmdust;
         private readonly HorizontalMenu _menu;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly Texture2D _ui;
         private readonly int menuHeight = 25;
 
-        private readonly AnimatedRectangle _button;
-
-        public override bool IsBlocking => false;
-
-        public TitleScene(Services services) : base(new SystemList())
+        public TitleScene(IAssetLoader assetLoader, SpriteBatch spriteBatch, ICanvasSize canvasSize) : base(
+            new SystemList())
         {
-            var assetLoader = services.Get<IAssetLoader>();
-            _renderer = services.Get<Renderer>();
-            _spriteBatch = services.Get<SpriteBatch>();
+            _canvasSize = canvasSize;
+            _spriteBatch = spriteBatch;
             _ui = assetLoader.Get<Texture2D>("ui/title.png");
 
             var padding = 60;
@@ -38,8 +34,8 @@ namespace PhotoVs.Logic.NewScenes.GameScenes
             _menu = new HorizontalMenu(
                 new Rectangle(
                     padding,
-                    _renderer.VirtualHeight - padding - menuHeight,
-                    _renderer.VirtualWidth - (padding * 2),
+                    _canvasSize.Height - padding - menuHeight,
+                    _canvasSize.Width - padding * 2,
                     menuHeight),
                 assetLoader.Get<SpriteFont>("ui/fonts/plain_12.fnt"),
                 assetLoader.Get<SpriteFont>("ui/fonts/border_12.fnt"));
@@ -54,12 +50,14 @@ namespace PhotoVs.Logic.NewScenes.GameScenes
             _menu.Add(new MenuItem("Credits", Dummy));
             _menu.Add(new MenuItem("Quit", Dummy));
 
-            _button = new AnimatedRectangle(_menu.GetHighlightedItemPosition(), TimeSpan.FromSeconds(0.135f), Easings.Functions.EaseOutBack);
+            _button = new AnimatedRectangle(_menu.GetHighlightedItemPosition(), TimeSpan.FromSeconds(0.135f),
+                Easings.Functions.EaseOutBack);
         }
+
+        public override bool IsBlocking => false;
 
         private void Dummy()
         {
-
         }
 
         public override void Update(GameTime gameTime)
@@ -94,7 +92,7 @@ namespace PhotoVs.Logic.NewScenes.GameScenes
         {
             _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
             _spriteBatch.Draw(_ui,
-                new Vector2(_renderer.GameWidth / 2 - 420, _renderer.GameHeight / 2 - 200),
+                new Vector2(_canvasSize.DisplayWidth / 2 - 420, _canvasSize.DisplayHeight / 2 - 200),
                 new Rectangle(0, 400, 840, 400),
                 Color.White);
 
@@ -107,10 +105,14 @@ namespace PhotoVs.Logic.NewScenes.GameScenes
             _spriteBatch.DrawNineSlice(_ui, _button.Current, new Rectangle(840, 0, 12, 12));
             _menu.Draw(_spriteBatch);
 
-            var offset = (int)(Math.Sin(gameTime.GetTotalSeconds() * 5) * 3);
+            var offset = (int) (Math.Sin(gameTime.GetTotalSeconds() * 5) * 3);
 
-            _spriteBatch.Draw(_ui, new Vector2(_button.Current.Right + 4 + offset, _button.Current.Top + (_button.Current.Height / 2) - 5), new Rectangle(857, 0, 6, 10), Color.White);
-            _spriteBatch.Draw(_ui, new Vector2(_button.Current.Left - 10 - offset, _button.Current.Top + (_button.Current.Height / 2) - 5), new Rectangle(852, 0, 6, 10) , Color.White);
+            _spriteBatch.Draw(_ui,
+                new Vector2(_button.Current.Right + 4 + offset, _button.Current.Top + _button.Current.Height / 2 - 5),
+                new Rectangle(857, 0, 6, 10), Color.White);
+            _spriteBatch.Draw(_ui,
+                new Vector2(_button.Current.Left - 10 - offset, _button.Current.Top + _button.Current.Height / 2 - 5),
+                new Rectangle(852, 0, 6, 10), Color.White);
 
             _spriteBatch.End();
 

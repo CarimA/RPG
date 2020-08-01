@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
@@ -11,27 +15,21 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.World
 {
     public class OverworldMap
     {
-        private IAssetLoader _assetLoader;
-
-        public Dictionary<string, string> Properties { get; }
-
-        private SpatialHash<Tile> _maskTiles;
-        private SpatialHash<Tile> _fringeTiles;
-        private SpatialHash<GameObject, GameObjectList> _collisions;
-        private SpatialHash<GameObject, GameObjectList> _scripts;
-        private SpatialHash<GameObject, GameObjectList> _zones;
+        private readonly int _cellHeight;
 
         private readonly int _cellWidth;
-        private readonly int _cellHeight;
+        private readonly IAssetLoader _assetLoader;
+        private readonly SpatialHash<GameObject, GameObjectList> _collisions;
+        private readonly SpatialHash<Tile> _fringeTiles;
+
+        private readonly SpatialHash<Tile> _maskTiles;
+        private readonly SpatialHash<GameObject, GameObjectList> _scripts;
+        private readonly SpatialHash<GameObject, GameObjectList> _zones;
 
         public OverworldMap(Map map, IAssetLoader assetLoader)
         {
@@ -52,6 +50,8 @@ namespace PhotoVs.Logic.Mechanics.World
             ParseObjects(map);
         }
 
+        public Dictionary<string, string> Properties { get; }
+
         private void ParseTiles(Map map)
         {
             var isMask = true;
@@ -61,58 +61,54 @@ namespace PhotoVs.Logic.Mechanics.World
 
             map.Layers
                 .OfType<TileLayer>()
-                .ForEach((layer) =>
+                .ForEach(layer =>
                 {
                     if (layer.Name.Equals("FringeStart"))
                         isMask = false;
 
                     for (int y = 0, i = 0; y < layer.Height; y++)
-                        for (var x = 0; x < layer.Width; x++, i++)
+                    for (var x = 0; x < layer.Width; x++, i++)
+                    {
+                        var gid = layer.Data[i];
+                        if (gid == 0)
+                            continue;
+
+                        if (!tilesetCache.TryGetValue(gid, out var tileset))
                         {
-                            var gid = layer.Data[i];
-                            if (gid == 0)
-                                continue;
-
-                            if (!tilesetCache.TryGetValue(gid, out var tileset))
-                            {
-                                tileset = map.Tilesets.Single(ts =>
-                                    gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
-                                tilesetCache.Add(gid, tileset);
-                            }
-
-                            var tile = tileset[gid];
-
-                            if (!replaceCache.TryGetValue(tileset.ImagePath, out var tilesetPath))
-                            {
-                                tilesetPath = tileset.ImagePath.Replace("../", "");
-                                tilesetPath = "tilesets/" + Path.GetFileName(tilesetPath);
-                                replaceCache.Add(tileset.ImagePath, tilesetPath);
-                            }
-
-                            if (!textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
-                            {
-                                tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
-                                textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
-                            }
-
-                            var posX = map.XOffset + (x * map.CellWidth) + layer.X;
-                            var posY = map.YOffset + (y * map.CellHeight) + layer.Y;
-
-                            var materialPath = tilesetPath.Substring(0, tilesetPath.Length - ".png".Length) +
-                                "_mat.png";
-                            var materialTexture = _assetLoader.Get<Texture2D>(materialPath);
-
-                            var tileData = new Tile(posX, posY, tile.Left, tile.Top, tilesetTexture, materialTexture);
-
-                            if (isMask)
-                            {
-                                _maskTiles.Add(tileData, new RectangleF(posX, posY, tile.Width, tile.Height));
-                            }
-                            else
-                            {
-                                _fringeTiles.Add(tileData, new Rectangle(posX, posY, tile.Width, tile.Height));
-                            }
+                            tileset = map.Tilesets.Single(ts =>
+                                gid >= ts.FirstGid && ts.FirstGid + ts.TileCount > gid);
+                            tilesetCache.Add(gid, tileset);
                         }
+
+                        var tile = tileset[gid];
+
+                        if (!replaceCache.TryGetValue(tileset.ImagePath, out var tilesetPath))
+                        {
+                            tilesetPath = tileset.ImagePath.Replace("../", "");
+                            tilesetPath = "tilesets/" + Path.GetFileName(tilesetPath);
+                            replaceCache.Add(tileset.ImagePath, tilesetPath);
+                        }
+
+                        if (!textureCache.TryGetValue(tilesetPath, out var tilesetTexture))
+                        {
+                            tilesetTexture = _assetLoader.Get<Texture2D>(tilesetPath);
+                            textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
+                        }
+
+                        var posX = map.XOffset + x * map.CellWidth + layer.X;
+                        var posY = map.YOffset + y * map.CellHeight + layer.Y;
+
+                        var materialPath = tilesetPath.Substring(0, tilesetPath.Length - ".png".Length) +
+                                           "_mat.png";
+                        var materialTexture = _assetLoader.Get<Texture2D>(materialPath);
+
+                        var tileData = new Tile(posX, posY, tile.Left, tile.Top, tilesetTexture, materialTexture);
+
+                        if (isMask)
+                            _maskTiles.Add(tileData, new RectangleF(posX, posY, tile.Width, tile.Height));
+                        else
+                            _fringeTiles.Add(tileData, new Rectangle(posX, posY, tile.Width, tile.Height));
+                    }
                 });
         }
 
@@ -120,10 +116,10 @@ namespace PhotoVs.Logic.Mechanics.World
         {
             map.Layers
                 .OfType<ObjectLayer>()
-                .ForEach((layer) =>
+                .ForEach(layer =>
                 {
                     layer.Objects
-                        .ForEach((mapObject) =>
+                        .ForEach(mapObject =>
                         {
                             if (layer.Name.Contains("col"))
                                 ProcessObject(_collisions, mapObject, ProcessCollision);
@@ -207,7 +203,8 @@ namespace PhotoVs.Logic.Mechanics.World
             entity.Components.Add(new CZone(obj.Properties["zone"]));
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, SCamera camera, Action<SpriteBatch, GameTime> drawBetween)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, SCamera camera,
+            Action<SpriteBatch, GameTime> drawBetween)
         {
             //var (maskTiles, fringeTiles) = GetTilesInBoundary(camera.VisibleArea());
             var boundaries = camera.VisibleArea();
@@ -219,7 +216,9 @@ namespace PhotoVs.Logic.Mechanics.World
             //System.Diagnostics.Debug.WriteLine("Drew " + maskTiles.Count + " masks");
             //System.Diagnostics.Debug.WriteLine("Drew " + fringeTiles.Count + " fringes");
         }
-        public void DrawMaterial(SpriteBatch spriteBatch, GameTime gameTime, SCamera camera, Action<SpriteBatch, GameTime> drawBetween)
+
+        public void DrawMaterial(SpriteBatch spriteBatch, GameTime gameTime, SCamera camera,
+            Action<SpriteBatch, GameTime> drawBetween)
         {
             //var (maskTiles, fringeTiles) = GetTilesInBoundary(camera.VisibleArea());
             var boundaries = camera.VisibleArea();
@@ -236,25 +235,24 @@ namespace PhotoVs.Logic.Mechanics.World
             return (_maskTiles.Get(boundaries), _fringeTiles.Get(boundaries));
         }
 
-        private void DrawLayer(SpatialHash<Tile> tiles, Rectangle boundaries, SpriteBatch spriteBatch, GameTime gameTime)
+        private void DrawLayer(SpatialHash<Tile> tiles, Rectangle boundaries, SpriteBatch spriteBatch,
+            GameTime gameTime)
         {
             foreach (var tile in tiles.Get(boundaries))
-            {
                 spriteBatch.Draw(tile.Texture,
                     new Rectangle(tile.X, tile.Y, _cellWidth, _cellHeight),
                     new Rectangle(tile.SourceX, tile.SourceY, _cellWidth, _cellHeight),
                     Color.White);
-            }
         }
-        private void DrawLayerMaterial(SpatialHash<Tile> tiles, Rectangle boundaries, SpriteBatch spriteBatch, GameTime gameTime)
+
+        private void DrawLayerMaterial(SpatialHash<Tile> tiles, Rectangle boundaries, SpriteBatch spriteBatch,
+            GameTime gameTime)
         {
             foreach (var tile in tiles.Get(boundaries))
-            {
                 spriteBatch.Draw(tile.Material,
                     new Rectangle(tile.X, tile.Y, _cellWidth, _cellHeight),
                     new Rectangle(tile.SourceX, tile.SourceY, _cellWidth, _cellHeight),
                     Color.White);
-            }
         }
 
         public IEnumerable<GameObject> GetCollisions(SCamera camera)

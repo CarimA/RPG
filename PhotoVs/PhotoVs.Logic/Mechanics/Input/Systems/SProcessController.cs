@@ -1,26 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Utils.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
     public class SProcessController : IUpdateableSystem
     {
-        public int Priority { get; set; } = -999;
-        public bool Active { get; set; } = true;
-
-        public Type[] Requires { get; } =
-        {
-            typeof(CInputState),
-            typeof(CController)
-        };
-
         private readonly IEnumerable<InputActions> AllInputActions;
         private readonly Vector2 InverseY;
 
@@ -31,17 +22,26 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             InverseY = new Vector2(1, -1);
         }
 
+        public int Priority { get; set; } = -999;
+        public bool Active { get; set; } = true;
+
+        public Type[] Requires { get; } =
+        {
+            typeof(CInputState),
+            typeof(CController)
+        };
+
         public void BeforeUpdate(GameTime gameTime)
         {
-
         }
 
         public void Update(GameTime gameTime, GameObjectList entities)
         {
-            foreach (var gameObject in entities)
-            {
-                ProcessInput(gameObject, gameTime);
-            }
+            foreach (var gameObject in entities) ProcessInput(gameObject, gameTime);
+        }
+
+        public void AfterUpdate(GameTime gameTime)
+        {
         }
 
         private void ProcessInput(GameObject gameObject, GameTime gameTime)
@@ -56,7 +56,6 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             var gamePad = GamePad.GetState(controller.PlayerIndex);
 
             foreach (var action in AllInputActions)
-            {
                 if (controller.AnyButtonDown(gamePad, controller.ButtonMappings[action]))
                 {
                     inputState.IsPressed[action] = true;
@@ -67,7 +66,6 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
                     inputState.IsPressed[action] = false;
                     inputState.PressedTime[action] = 0;
                 }
-            }
 
             inputState.LeftAxis = GetAxisWithDeadzone(gamePad.ThumbSticks.Left, controller.Deadzone);
             inputState.RightAxis = GetAxisWithDeadzone(gamePad.ThumbSticks.Right, controller.Deadzone);
@@ -82,17 +80,12 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
                 length = 1f;
 
             if (length < deadzone)
-                return Vector2.Zero;
-            else
             {
-                var deadzoneAdjusted = stick * ((length - deadzone) / (1f - deadzone));
-                return deadzoneAdjusted;
+                return Vector2.Zero;
             }
-        }
 
-        public void AfterUpdate(GameTime gameTime)
-        {
-
+            var deadzoneAdjusted = stick * ((length - deadzone) / (1f - deadzone));
+            return deadzoneAdjusted;
         }
     }
 }

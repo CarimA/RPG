@@ -1,8 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Events.EventArgs;
-using PhotoVs.Logic.Events;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.Input.Components;
@@ -12,33 +15,28 @@ using PhotoVs.Logic.Mechanics.World.Components;
 using PhotoVs.Logic.PlayerData;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using PhotoVs.Engine;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
 {
     public class SCollisionResolution : IUpdateableSystem
     {
-        private Overworld _overworld;
-        private SCamera _camera;
-        private readonly GameEventQueue _gameEvents;
+        private readonly SCamera _camera;
+        private readonly IOverworld _overworld;
+        private readonly ISignal _signal;
 
-        public SCollisionResolution(Services services)
+        public SCollisionResolution(IOverworld overworld, ISignal signal, IGameState gameState)
         {
-            _overworld = services.Get<Overworld>();
-            _camera = services.Get<SCamera>();
-            _gameEvents = services.Get<GameEventQueue>();
+            _overworld = overworld;
+            _signal = signal;
+            _camera = gameState.Camera;
         }
 
         public int Priority { get; set; } = -1;
         public bool Active { get; set; } = true;
-        public Type[] Requires { get; } = { typeof(CCollisionBound), typeof(CPosition) };
+        public Type[] Requires { get; } = {typeof(CCollisionBound), typeof(CPosition)};
 
         public void BeforeUpdate(GameTime gameTime)
         {
-
         }
 
         public void Update(GameTime gameTime, GameObjectList entities)
@@ -50,8 +48,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             foreach (var entity in entities)
                 if (entity.Components.Has<CSolid>())
                     extraStationaryList.Add(entity);
-                else
-                    if (entity.Components.Has<CInputState>())
+                else if (entity.Components.Has<CInputState>())
                     movingList.Add(entity);
 
             extraStationaryList.AddRange(stationaryList);
@@ -120,7 +117,7 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
                 if (!result.AreIntersecting)
                     continue;
 
-                _gameEvents.Notify(GameEvents.Collision, new InteractEventArgs(this, moving, stationary));
+                _signal.Notify("Collision", new InteractEventArgs(this, moving, stationary));
             }
 
             if (minimumTranslations.Count > 0)

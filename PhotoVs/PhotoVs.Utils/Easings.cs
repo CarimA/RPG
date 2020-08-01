@@ -94,21 +94,12 @@ namespace PhotoVs.Utils
             var d1 = 2.75f;
 
             if (input < 1f / d1)
-            {
                 return n1 * input * input;
-            }
-            else if (input < 2f / d1)
-            {
+            if (input < 2f / d1)
                 return n1 * (input -= 1.5f / d1) * input + 0.75f;
-            }
-            else if (input < 2.5f / d1)
-            {
+            if (input < 2.5f / d1)
                 return n1 * (input -= 2.25f / d1) * input + 0.9375f;
-            }
-            else
-            {
-                return n1 * (input -= 2.625f / d1) * input + 0.984375f;
-            }
+            return n1 * (input -= 2.625f / d1) * input + 0.984375f;
         }
 
         private static float EaseInBounce(float input)
@@ -126,7 +117,7 @@ namespace PhotoVs.Utils
                     ? 1f
                     : input < 0.5f
                         ? -(Math.Pow(2f, 20f * input - 10f) * Math.Sin((20f * input - 11.125f) * c5)) / 2f
-                        : (Math.Pow(2f, -20f * input + 10f) * Math.Sin((20f * input - 11.125f) * c5)) / 2f + 1f);
+                        : Math.Pow(2f, -20f * input + 10f) * Math.Sin((20f * input - 11.125f) * c5) / 2f + 1f);
         }
 
         private static float EaseOutElastic(float input)
@@ -157,7 +148,7 @@ namespace PhotoVs.Utils
             const float c2 = c1 * 1.525f;
 
             return (float) (input < 0.5f
-                ? (Math.Pow(2f * input, 2f) * ((c2 + 1f) * 2f * input - c2)) / 2f
+                ? Math.Pow(2f * input, 2f) * ((c2 + 1f) * 2f * input - c2) / 2f
                 : (Math.Pow(2f * input - 2f, 2f) * ((c2 + 1f) * (input * 2f - 2f) + c2) + 2f) / 2f);
         }
 
@@ -174,7 +165,7 @@ namespace PhotoVs.Utils
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
 
-            return (float) (c3 * input * input * input - c1 * input * input);
+            return c3 * input * input * input - c1 * input * input;
         }
 
         private static float EaseInOutCirc(float input)
@@ -271,7 +262,7 @@ namespace PhotoVs.Utils
 
         private static float EaseOutSine(float input)
         {
-            return (float) Math.Sin((input * Math.PI) / 2f);
+            return (float) Math.Sin(input * Math.PI / 2f);
         }
 
         private static float EaseInOutSine(float input)

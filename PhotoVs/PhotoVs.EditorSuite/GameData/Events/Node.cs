@@ -5,6 +5,12 @@ namespace PhotoVs.EditorSuite.GameData.Events
 {
     public abstract class Node
     {
+        protected Node()
+        {
+            Inputs = new List<NodeInputLabel>();
+            Outputs = new List<NodeOutputLabel>();
+        }
+
         public abstract string Name { get; }
         public int X { get; set; }
         public int Y { get; set; }
@@ -17,12 +23,6 @@ namespace PhotoVs.EditorSuite.GameData.Events
         public abstract bool CanAddInputs { get; }
         public abstract bool CanAddOutputs { get; }
 
-        protected Node()
-        {
-            Inputs = new List<NodeInputLabel>();
-            Outputs = new List<NodeOutputLabel>();
-        }
-
         public virtual void AddInput()
         {
         }
@@ -33,7 +33,6 @@ namespace PhotoVs.EditorSuite.GameData.Events
 
         public virtual void Assign()
         {
-
         }
     }
 }

@@ -1,317 +1,251 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using MoonSharp.Interpreter;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
-using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Events.EventArgs;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
-using PhotoVs.Logic.Debugger;
-using PhotoVs.Logic.Events;
-using PhotoVs.Logic.Mechanics.Camera.Systems;
-using PhotoVs.Logic.Mechanics.Input.Systems;
-using PhotoVs.Logic.Modules;
-using PhotoVs.Logic.PlayerData;
-using PhotoVs.Logic.Text;
-using System.Collections.Generic;
-using PhotoVs.Engine.Graphics.Filters;
+using PhotoVs.Logic.Mechanics.Input;
 using PhotoVs.Logic.Mechanics.World;
+using PhotoVs.Logic.Modules;
 using PhotoVs.Logic.NewScenes;
 using PhotoVs.Logic.NewScenes.GameScenes;
-using Color = Microsoft.Xna.Framework.Color;
+using PhotoVs.Logic.Text;
 
 namespace PhotoVs.Logic
 {
+    public class FullscreenHandler : IHasBeforeUpdate, IStartup
+    {
+        private readonly GraphicsDeviceManager _graphics;
+        private readonly IPlatform _platform;
+        private readonly IGameState _gameState;
+        private readonly ICanvasSize _canvasSize;
+
+        private int _lastWindowWidth;
+        private int _lastWindowHeight;
+
+        public FullscreenHandler(GraphicsDeviceManager graphics, IPlatform platform, IGameState gameState, ICanvasSize canvasSize)
+        {
+            _graphics = graphics;
+            _platform = platform;
+            _gameState = gameState;
+            _canvasSize = canvasSize;
+        }
+
+        public void Start()
+        {
+            if (_platform.OverrideFullscreen || _gameState.Config.Fullscreen)
+            {
+                EnableFullscreen();
+            }
+        }
+
+        public int BeforeUpdatePriority { get; set; } = -9999;
+        public bool BeforeUpdateEnabled { get; set; } = true;
+
+        public void BeforeUpdate(GameTime gameTime)
+        {
+            if (_gameState.Player.Input.ActionPressed(InputActions.Fullscreen))
+                ToggleFullscreen();
+        }
+
+        public void EnableFullscreen()
+        {
+            _lastWindowWidth = _graphics.PreferredBackBufferWidth;
+            _lastWindowHeight = _graphics.PreferredBackBufferHeight;
+            _graphics.PreferredBackBufferWidth = _graphics.GraphicsDevice.DisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = _graphics.GraphicsDevice.DisplayMode.Height;
+            _graphics.IsFullScreen = true;
+            _graphics.ApplyChanges();
+        }
+
+        public void DisableFullscreen()
+        {
+            _graphics.PreferredBackBufferWidth = _lastWindowWidth;
+            _graphics.PreferredBackBufferHeight = _lastWindowHeight;
+            _graphics.IsFullScreen = false;
+            _graphics.ApplyChanges();
+        }
+
+        public void ToggleFullscreen()
+        {
+            if (_graphics.IsFullScreen)
+                DisableFullscreen();
+            else
+                EnableFullscreen();
+        }
+    }
+
+    public class StartupSequence : IStartup
+    {
+        private readonly IGameState _gameState;
+        private readonly ISignal _signal;
+        private readonly IOverworld _overworld;
+        private readonly SceneMachine _sceneMachine;
+        private readonly IAudio _audio;
+        private readonly IAssetLoader _assetLoader;
+        private readonly IRenderer _renderer;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly GraphicsDevice _graphicsDevice;
+        private readonly ICanvasSize _canvasSize;
+
+        public StartupSequence(IGameState gameState, ISignal signal, IOverworld overworld, SceneMachine sceneMachine, IAudio audio, 
+            IAssetLoader assetLoader, IRenderer renderer, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, ICanvasSize canvasSize)
+        {
+            _gameState = gameState;
+            _signal = signal;
+            _overworld = overworld;
+            _sceneMachine = sceneMachine;
+            _audio = audio;
+            _assetLoader = assetLoader;
+            _renderer = renderer;
+            _spriteBatch = spriteBatch;
+            _graphicsDevice = graphicsDevice;
+            _canvasSize = canvasSize;
+        }
+
+        public void Start()
+        {
+            _overworld.LoadMaps("maps/");
+            _overworld.SetMap("novalondinium");
+
+            _gameState.Player.PlayerData.Position.Position = new Vector2(8400, 6000);
+
+            _sceneMachine.Push(new WorldScene(_assetLoader, _renderer, _overworld, _spriteBatch, _gameState, _signal,
+                _graphicsDevice, _canvasSize));
+            //_sceneMachine.Push(new TitleScene(_services));
+            _sceneMachine.Push(new WorldLogicScene(_gameState, _assetLoader, _spriteBatch, _overworld, _signal));
+
+            _signal.Notify("GameStart", new GameEventArgs(this));
+
+            _audio.PlayBgm("key");
+        }
+    }
+
     public class MainGame : Game
     {
+        private readonly GraphicsDeviceManager _graphics;
+        private readonly Kernel _kernel;
         private readonly IPlatform _platform;
-
-        private readonly GameEventQueue _events;
-        private readonly GraphicsDeviceManager _graphicsDeviceManager;
-        private readonly Services _services;
-        private IAssetLoader _assetLoader;
-        private SCamera _camera;
-        private DiagnosticInfo _info;
-        private Player _player;
-        private Renderer _renderer;
-        private SceneMachine _sceneMachine;
-        private SpriteBatch _spriteBatch;
-        private CoroutineRunner _coroutineRunner;
-        private Overworld _world;
-
-        private ScriptHost _scriptHost;
+        private readonly Scheduler _scheduler;
 
         public MainGame(IPlatform platform)
         {
+            _platform = platform;
+
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-
-            _services = new Services();
-            _events = new GameEventQueue();
-            _coroutineRunner = new CoroutineRunner();
-            _services.Set(_events);
-            _services.Set(_coroutineRunner);
-
-            _platform = platform;
-            _services.Set(platform);
-
-            _graphicsDeviceManager = new GraphicsDeviceManager(this)
-            {
-                GraphicsProfile = GraphicsProfile.HiDef,
-                SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight
-            };
-            if (_platform.OverrideFullscreen)
-            {
-                _graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
-                _graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
-                _graphicsDeviceManager.IsFullScreen = true;
-            }
-            else
-            {
-                _graphicsDeviceManager.PreferredBackBufferWidth = 640 * 2;
-                _graphicsDeviceManager.PreferredBackBufferHeight = 360 * 2;
-            }
-            _graphicsDeviceManager.ApplyChanges();
-            _services.Set(_graphicsDeviceManager);
-            _services.Set(Window);
-
-            // use screen refresh rate
-            _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             InactiveSleepTime = TimeSpan.Zero;
             IsFixedTimeStep = false;
+
+            _graphics = new GraphicsDeviceManager(this)
+            {
+                GraphicsProfile = GraphicsProfile.HiDef,
+                SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight,
+                SynchronizeWithVerticalRetrace = true,
+                PreferredBackBufferWidth = 1920,
+                PreferredBackBufferHeight = 1080
+            };
+            _graphics.ApplyChanges();
+
+            _kernel = new Kernel();
+            _scheduler = new Scheduler(_kernel);
         }
 
         protected override void Initialize()
         {
-            _services.Set(GraphicsDevice);
+            _kernel
+                // monogame specific things
+                .Bind<Game>(this)
+                .Bind(_graphics)
+                .Bind(GraphicsDevice)
+                .Bind<SpriteBatch>()
+                .Bind(Window)
 
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _services.Set(_spriteBatch);
+                // core engine specific things
+                .Bind(_platform)
+                .Bind<ISignal, Signal>()
+                .Bind<FullscreenHandler>()
+                .Bind<ICanvasSize, TargetCanvasSize>()
+                .Bind<ICoroutineRunner, CoroutineRunner>()
+                .Bind<IAssetLoader, AssetLoader>()
+                .Bind<IRenderer, Renderer>()
+                .Bind<IAudio>(_platform.Audio)
+                //.Bind<IAudio, DummyAudio>() // todo: figure out how to substitute from platform
+                .Bind<IScriptHost, ScriptHost<Closure>>()
+                .Bind<IInterpreter<Closure>, MoonSharpInterpreter>()
 
-            _assetLoader = CreateAssetLoader();
-            _services.Set(_assetLoader);
+                // type loaders for assets
+                .Bind<EffectTypeLoader>()
+                .Bind<TextTypeLoader>()
+                .Bind<Texture2DTypeLoader>()
+                .Bind<SpriteFontTypeLoader>()
+                .Bind<DynamicSpriteFontTypeLoader>()
+                .Bind<MapTypeLoader>()
 
-            _services.Set(Config.Load(_assetLoader));
+                // game logic
+                .Bind<StartupSequence>()
+                .Bind<IGameState, GameState>()
+                .Bind<ITextDatabase, TextDatabase>()
+                .Bind<SceneMachine>()
+                .Bind<IOverworld, Overworld>()
 
-            _renderer = CreateRenderer();
-            _services.Set(_renderer);
+                // modules for scripting
+                .Bind<StandardLibraryModule>()
+                .Bind<EventConditionsModule>()
+                .Bind<EventTriggersModule>()
+                .Bind<SceneMachineModule>()
+                .Bind<TimingModule>()
+                .Bind<DialogueModule>()
+                .Bind<PlayerModule>()
+                .Bind<GameObjectModule>()
+                .Bind<TextModule>()
 
-            _player = new Player(_services);
-            _services.Set(_player);
-
-            _camera = CreateCamera();
-            _services.Set(_camera);
-
-            _services.Set(CreateTextDatabase());
-
-            _sceneMachine = CreateSceneMachine();
-            _services.Set(_sceneMachine);
-
-            _services.Set(CreateAudio());
-
-            _info = new DiagnosticInfo(this, _spriteBatch, _assetLoader);
-
-            if (_services.Get<Config>().Fullscreen)
-                EnableFullscreen();
-
-            _scriptHost = new ScriptHost(_services,
-                new List<(DataLocation, string)>()
+                // data that will get used to initialise state
+                .Bind(new VirtualGameSize(640, 360))
+                .Bind(new ScriptData(new List<(DataLocation, string)>
                 {
                     (DataLocation.Content, "logic/"),
                     (DataLocation.Storage, "mods/")
-                },
-                new List<Module>
-                {
-                    new StandardLibraryModule(), // <--- THIS MUST ALWAYS GO FIRST.
+                }));
 
-                    new GraphicsModule(_services),
-                    new EventConditionsModule(_services.Get<Player>()),
-                    new EventTriggersModule(_services.Get<GameEventQueue>(), _services.Get<Player>()),
-                    new SceneMachineModule(_services),
-                    new TimingModule(),
-                    new DialogueModule(_services.Get<SceneMachine>()),
-                    new PlayerModule(_services.Get<Player>()),
-                    new GameObjectModule(_services.Get<SceneMachine>(), _services.Get<Player>()),
-                    new TextModule(_services.Get<TextDatabase>())
-                });
+            // todo: substitute anything provided from platform
 
-            _camera.SetZoom(_renderer.VirtualWidth / 640f);
-            _world = new Overworld(_spriteBatch, _assetLoader);
-            _world.LoadMaps("maps/");
-            _world.SetMap("novalondinium");
-            _services.Set(_world);
-
-            _services.Get<Player>()
-                .PlayerData.Position.Position = new Vector2(8400, 6000);
-
-            _sceneMachine.Push(new WorldScene(_services));
-            //_sceneMachine.Push(new TitleScene(_services));
-            _sceneMachine.Push(new WorldLogicScene(_services));
-
-            _events.Notify(GameEvents.GameStart, new GameEventArgs(this));
-
-            //var mapBaker = new MapBaker(_assetLoader, _spriteBatch, _renderer);
-            //mapBaker.Bake("content/maps/", "content/debug/");
-
-            //var mapBaker2 = new MapBaker2(_services, "content/maps/", "content/debug/", 16);
-            //mapBaker2.Bake();
-
-            //_services.Get<IAudio>().PlayBgm("key");
+            _kernel.Construct();
+            _scheduler.Start();
 
             base.Initialize();
         }
 
-        private IAssetLoader CreateAssetLoader()
-        {
-            var assetLoader = new AssetLoader(_services, _platform.StreamProvider);
-            assetLoader
-                .RegisterTypeLoader(new EffectTypeLoader(GraphicsDevice))
-                .RegisterTypeLoader(new TextTypeLoader())
-                .RegisterTypeLoader(new Texture2DTypeLoader(GraphicsDevice))
-                .RegisterTypeLoader(new SpriteFontTypeLoader(GraphicsDevice, assetLoader))
-                .RegisterTypeLoader(new DynamicSpriteFontTypeLoader(80))
-                .RegisterTypeLoader(new MapTypeLoader());
-
-            return assetLoader;
-        }
-
-        private IAudio CreateAudio()
-        {
-            return _platform.Audio;
-        }
-
-        private TextDatabase CreateTextDatabase()
-        {
-            var textDatabase = new TextDatabase(_services);
-            return textDatabase;
-        }
-
-        private Renderer CreateRenderer()
-        {
-            // base = 360
-            // 720, 1080, 1440 (2K), 2160 (4K), 4320 (8K)
-
-            var assumedScreenHeight = 1080;
-            var assumedScreenWidth = (assumedScreenHeight / 9) * 16;
-            // turns out that ultrawide is not actually 21:9, it's 64:27. Who could've guessed that?
-            var ultrawideWidth = (assumedScreenHeight / 27) * 64;
-            // extra space for 16:10 screens
-            var goldenHeight = (assumedScreenWidth / 16) * 10;
-
-            var renderer = new Renderer(_services, 
-                assumedScreenWidth, 
-                assumedScreenHeight,
-                ultrawideWidth,
-                goldenHeight);
-
-            renderer.AddFilter(
-                new FunkyFilter(
-                    renderer,
-                    _assetLoader.Get<Effect>("shaders/funky.fx"),
-                    _assetLoader.Get<Texture2D>("ui/noise3.png"),
-                    _assetLoader.Get<Texture2D>("ui/noise4.png"),
-                    new Color(251, 246, 63),
-                    new Color(222, 31, 152),
-                    new Color(1, 124, 213)));
-
-            return renderer;
-        }
-
-        private SceneMachine CreateSceneMachine()
-        {
-            var sceneMachine = new SceneMachine(_player, _renderer, CreateGlobalSystems(), CreateGlobalEntities());
-            return sceneMachine;
-        }
-
-        private GameObjectList CreateGlobalEntities()
-        {
-            var globalEntities = new GameObjectList
-            {
-                _player
-            };
-            return globalEntities;
-        }
-        private SystemList CreateGlobalSystems()
-        {
-            var globalSystems = new SystemList
-            {
-                _camera,
-                new SProcessInputState(),
-                new SProcessController(),
-                new SProcessKeyboard(),
-                new SRaiseInputEvents(_services)
-                /*new SHandleFullscreen(_graphicsDeviceManager, GraphicsDevice),
-                new STakeScreenshot(GraphicsDevice, _renderer, _spriteBatch,
-                    _assetLoader.Get<SpriteFont>("ui/fonts/bold_outline_12.fnt"),
-                        _services.Get<Config>())*/
-            };
-            return globalSystems;
-        }
-
-        private SCamera CreateCamera()
-        {
-            var camera = new SCamera(_renderer);
-            camera.Follow(_player);
-            return camera;
-        }
-
         protected override void Update(GameTime gameTime)
         {
-            _events.ProcessQueue();
-
-            _info.BeforeUpdate();
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            _scriptHost.Update(gameTime);
-            _coroutineRunner.Update(gameTime);
-            _sceneMachine.Update(gameTime);
+            _scheduler.BeforeUpdate(gameTime);
+            _scheduler.Update(gameTime);
+            _scheduler.AfterUpdate(gameTime);
 
             base.Update(gameTime);
-
-            _info.AfterUpdate();
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            _info.BeforeDraw();
-
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            _renderer.BeforeDraw();
-            _sceneMachine.Draw(gameTime);
-            //_sceneMachine.DrawUI(gameTime, _renderer.GetUIOrigin());
-            _renderer.Draw(gameTime);
-
-            base.Draw(gameTime);
-
-            _info.AfterDraw();
-            _info.Draw(gameTime);
+            _scheduler.BeforeDraw(gameTime);
+            _scheduler.Draw(gameTime);
+            _scheduler.AfterDraw(gameTime);
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            var audio = _services.Get<IAudio>();
-            if (audio is IDisposable disposableAudio)
-                disposableAudio.Dispose();
-
+            _kernel.Dispose();
             base.OnExiting(sender, args);
-        }
-
-        private void EnableFullscreen()
-        {
-            _graphicsDeviceManager.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            _graphicsDeviceManager.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            _graphicsDeviceManager.IsFullScreen = true;
-            _graphicsDeviceManager.ApplyChanges();
         }
     }
 }

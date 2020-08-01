@@ -8,8 +8,6 @@ namespace PhotoVs.Engine.ECS
     public class GameObjectList : IList<GameObject>
     {
         private readonly List<GameObject> _gameObjects;
-        public int Count => _gameObjects.Count;
-        public bool IsReadOnly => false;
 
         public GameObjectList()
         {
@@ -22,6 +20,8 @@ namespace PhotoVs.Engine.ECS
         }
 
         public GameObject this[string id] => _gameObjects.Find(gameObject => gameObject.ID.Equals(id));
+        public int Count => _gameObjects.Count;
+        public bool IsReadOnly => false;
 
         public void Add(GameObject gameObject)
         {
@@ -46,48 +46,12 @@ namespace PhotoVs.Engine.ECS
             _gameObjects.CopyTo(array, arrayIndex);
         }
 
-        public void AddRange(IEnumerable<GameObject> gameObjects)
-        {
-            foreach (var gameObject in gameObjects)
-                Add(gameObject);
-        }
-
         public bool Remove(GameObject gameObject)
         {
             if (gameObject == null)
                 throw new ArgumentNullException(nameof(gameObject));
 
             return _gameObjects.Remove(gameObject);
-        }
-
-        private GameObjectList ApplyLinq(Predicate<GameObject> predicate)
-        {
-            return new GameObjectList(_gameObjects.FindAll(gameObject => gameObject.Enabled && predicate(gameObject)));
-        }
-
-        public GameObjectList All(params Type[] types)
-        {
-            return ApplyLinq(obj => types.All(obj.Components.Has));
-        }
-
-        public GameObjectList Any(params Type[] types)
-        {
-            return ApplyLinq(obj => types.Any(obj.Components.Has));
-        }
-
-        public GameObjectList Except(params Type[] types)
-        {
-            return ApplyLinq(obj => types.All(type => !obj.Components.Has(type)));
-        }
-
-        public GameObjectList HasTag(string tag)
-        {
-            return ApplyLinq(obj => obj.Tags.Contains(tag));
-        }
-
-        public GameObject FindByName(string name)
-        {
-            return _gameObjects.Find(gameObject => gameObject.Name.Equals(name));
         }
 
         public IEnumerator<GameObject> GetEnumerator()
@@ -119,6 +83,42 @@ namespace PhotoVs.Engine.ECS
         {
             get => _gameObjects[index];
             set => _gameObjects[index] = value;
+        }
+
+        public void AddRange(IEnumerable<GameObject> gameObjects)
+        {
+            foreach (var gameObject in gameObjects)
+                Add(gameObject);
+        }
+
+        private GameObjectList ApplyLinq(Predicate<GameObject> predicate)
+        {
+            return new GameObjectList(_gameObjects.FindAll(gameObject => gameObject.Enabled && predicate(gameObject)));
+        }
+
+        public GameObjectList All(params Type[] types)
+        {
+            return ApplyLinq(obj => types.All(obj.Components.Has));
+        }
+
+        public GameObjectList Any(params Type[] types)
+        {
+            return ApplyLinq(obj => types.Any(obj.Components.Has));
+        }
+
+        public GameObjectList Except(params Type[] types)
+        {
+            return ApplyLinq(obj => types.All(type => !obj.Components.Has(type)));
+        }
+
+        public GameObjectList HasTag(string tag)
+        {
+            return ApplyLinq(obj => obj.Tags.Contains(tag));
+        }
+
+        public GameObject FindByName(string name)
+        {
+            return _gameObjects.Find(gameObject => gameObject.Name.Equals(name));
         }
     }
 }

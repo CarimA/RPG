@@ -1,19 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 
 namespace PhotoVs.Logic.Mechanics.Input.Components
 {
     public class CInputState
     {
-        public Dictionary<InputActions, bool> IsPressed { get; }
-        public Dictionary<InputActions, float> PressedTime { get; }
-        public Dictionary<InputActions, bool> WasPressed { get; }
-
-        public Vector2 LeftAxis { get; set; }
-        public Vector2 RightAxis { get; set; }
-
         public CInputState()
         {
             IsPressed = new Dictionary<InputActions, bool>();
@@ -32,6 +25,13 @@ namespace PhotoVs.Logic.Mechanics.Input.Components
             LeftAxis = Vector2.Zero;
             RightAxis = Vector2.Zero;
         }
+
+        public Dictionary<InputActions, bool> IsPressed { get; }
+        public Dictionary<InputActions, float> PressedTime { get; }
+        public Dictionary<InputActions, bool> WasPressed { get; }
+
+        public Vector2 LeftAxis { get; set; }
+        public Vector2 RightAxis { get; set; }
 
         public bool ActionPressed(InputActions action)
         {

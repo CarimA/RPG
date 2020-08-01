@@ -1,6 +1,6 @@
 ﻿namespace PhotoVs.Platform.Android
 {
-    class Android8StreamManager
+    internal class Android8StreamManager
     {
     }
 }

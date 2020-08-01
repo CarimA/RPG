@@ -4,8 +4,6 @@ namespace PhotoVs.Engine.TiledMaps.Objects
 {
     public class PolyLineObject : BaseObject
     {
-        public Position[] Polyline { get; set; }
-
         internal PolyLineObject(Dictionary<string, string> properties) : base(properties)
         {
         }
@@ -13,5 +11,7 @@ namespace PhotoVs.Engine.TiledMaps.Objects
         public PolyLineObject() : base(new Dictionary<string, string>())
         {
         }
+
+        public Position[] Polyline { get; set; }
     }
 }

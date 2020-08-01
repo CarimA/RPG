@@ -1,21 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
-using PhotoVs.Logic.Mechanics.Movement.Components;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
+using PhotoVs.Logic.Mechanics.Movement.Components;
 
 namespace PhotoVs.Logic.PlayerData
 {
     public class PlayerData
     {
-        public string CurrentMap { get; set; }
-        public CPosition Position { get; }
-        public double TimePlayed { get; set; }
-        private Dictionary<string, bool> Flags { get; }
-        private Dictionary<string, IComparable> Variables { get; }
-
         public PlayerData()
         {
             Position = new CPosition(Vector2.Zero);
@@ -23,10 +17,16 @@ namespace PhotoVs.Logic.PlayerData
             Variables = new Dictionary<string, IComparable>();
         }
 
+        public string CurrentMap { get; set; }
+        public CPosition Position { get; }
+        public double TimePlayed { get; set; }
+        private Dictionary<string, bool> Flags { get; }
+        private Dictionary<string, IComparable> Variables { get; }
+
         public Stream Save()
         {
             var json = JsonConvert.SerializeObject(this);
-            using var ms = new MemoryStream(UTF8Encoding.Default.GetBytes(json));
+            using var ms = new MemoryStream(Encoding.Default.GetBytes(json));
             return ms;
         }
 
@@ -48,21 +48,14 @@ namespace PhotoVs.Logic.PlayerData
         public void SetFlag(string flag, bool value)
         {
             if (!Flags.ContainsKey(flag))
-            {
                 Flags.Add(flag, value);
-            }
             else
-            {
                 Flags[flag] = value;
-            }
         }
 
         public bool GetFlag(string flag)
         {
-            if (Flags.TryGetValue(flag, out var v))
-            {
-                return v;
-            }
+            if (Flags.TryGetValue(flag, out var v)) return v;
 
             SetFlag(flag, false);
             return false;
@@ -71,21 +64,14 @@ namespace PhotoVs.Logic.PlayerData
         public void SetVariable(string variable, IComparable value)
         {
             if (!Variables.ContainsKey(variable))
-            {
                 Variables.Add(variable, value);
-            }
             else
-            {
                 Variables[variable] = value;
-            }
         }
 
         public IComparable GetVariable(string variable)
         {
-            if (Variables.TryGetValue(variable, out var v))
-            {
-                return v;
-            }
+            if (Variables.TryGetValue(variable, out var v)) return v;
 
             SetVariable(variable, null);
             return null;
@@ -93,10 +79,7 @@ namespace PhotoVs.Logic.PlayerData
 
         public IComparable<T> GetVariable<T>(string variable)
         {
-            if (Variables.TryGetValue(variable, out var v))
-            {
-                return (IComparable<T>)v;
-            }
+            if (Variables.TryGetValue(variable, out var v)) return (IComparable<T>) v;
 
             SetVariable(variable, default);
             return default;

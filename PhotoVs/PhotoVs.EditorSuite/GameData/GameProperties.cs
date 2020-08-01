@@ -4,6 +4,12 @@ namespace PhotoVs.EditorSuite.GameData
 {
     public class GameProperties
     {
+        public GameProperties()
+        {
+            Languages = new Dictionary<string, string>();
+            DefaultSoundEffects = new DefaultSoundEffects();
+        }
+
         // the name of the game, duh
         public string Name { get; set; }
 
@@ -12,11 +18,5 @@ namespace PhotoVs.EditorSuite.GameData
         public Dictionary<string, string> Languages { get; set; }
 
         public DefaultSoundEffects DefaultSoundEffects { get; set; }
-
-        public GameProperties()
-        {
-            Languages = new Dictionary<string, string>();
-            DefaultSoundEffects = new DefaultSoundEffects();
-        }
     }
 }

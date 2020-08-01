@@ -6,10 +6,6 @@ namespace PhotoVs.Engine.Events.Coroutines.Instructions
     {
         public GameTime GameTime { get; private set; }
 
-        public WaitFrame()
-        {
-        }
-
         public bool CanContinue(GameTime gameTime)
         {
             GameTime = gameTime;

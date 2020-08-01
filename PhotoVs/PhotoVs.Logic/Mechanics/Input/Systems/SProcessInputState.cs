@@ -1,25 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Logic.Mechanics.Input.Components;
 using PhotoVs.Utils.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PhotoVs.Logic.Mechanics.Input.Systems
 {
     public class SProcessInputState : IUpdateableSystem
     {
-        public int Priority { get; set; } = -1000;
-        public bool Active { get; set; } = true;
-
-        public Type[] Requires { get; } =
-        {
-            typeof(CInputState)
-        };
-
         private readonly IEnumerable<InputActions> AllInputActions;
 
         public SProcessInputState()
@@ -28,14 +20,25 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
                 .Cast<InputActions>();
         }
 
+        public int Priority { get; set; } = -1000;
+        public bool Active { get; set; } = true;
+
+        public Type[] Requires { get; } =
+        {
+            typeof(CInputState)
+        };
+
         public void BeforeUpdate(GameTime gameTime)
         {
-
         }
 
         public void Update(GameTime gameTime, GameObjectList entities)
         {
             entities.ForEach(ProcessInput);
+        }
+
+        public void AfterUpdate(GameTime gameTime)
+        {
         }
 
         private void ProcessInput(GameObject gameObject)
@@ -60,10 +63,7 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
 
         private void ProcessState(CInputState inputState)
         {
-            foreach (var input in AllInputActions)
-            {
-                inputState.WasPressed[input] = inputState.IsPressed[input];
-            }
+            foreach (var input in AllInputActions) inputState.WasPressed[input] = inputState.IsPressed[input];
         }
 
         private void CheckPriority(GameObject gameObject)
@@ -85,15 +85,9 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
             if (!gameObject.Components.TryGet<CController>(out var controller))
                 priority = InputPriority.Keyboard;
 
-            if (controller != null)
-            {
-                anyKeyDown = keyboard.AnyKeyDown(Keyboard.GetState());
-            }
+            if (controller != null) anyKeyDown = keyboard.AnyKeyDown(Keyboard.GetState());
 
-            if (controller != null)
-            {
-                anyButtonDown = controller.AnyButtonDown(GamePad.GetState(controller.PlayerIndex));
-            }
+            if (controller != null) anyButtonDown = controller.AnyButtonDown(GamePad.GetState(controller.PlayerIndex));
 
             if (anyKeyDown && !anyButtonDown)
                 priority = InputPriority.Keyboard;
@@ -102,11 +96,6 @@ namespace PhotoVs.Logic.Mechanics.Input.Systems
                 priority = InputPriority.GamePad;
 
             prio.InputPriority = priority;
-        }
-
-        public void AfterUpdate(GameTime gameTime)
-        {
-
         }
     }
 }
