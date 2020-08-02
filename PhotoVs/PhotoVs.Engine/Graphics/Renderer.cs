@@ -27,6 +27,8 @@ namespace PhotoVs.Engine.Graphics
             _targetCanvasSize.OnResize += ResizeBuffers;
         }
 
+        public RenderTarget2D Backbuffer => _mainRenderTarget;
+
         public int AfterDrawPriority { get; set; } = int.MaxValue;
         public bool AfterDrawEnabled { get; set; } = true;
 

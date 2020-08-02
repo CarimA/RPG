@@ -22,7 +22,8 @@ namespace PhotoVs.Logic
 
             Camera = new SCamera(canvasSize);
             Camera.Follow(Player);
-            Camera.SetZoom((float)targetCanvasSize.Width / virtualGameSize.Width);
+            ZoomScale = (float) targetCanvasSize.Width / virtualGameSize.Width;
+            Camera.SetZoom(ZoomScale);
             //Camera.SetZoom(canvasSize.DisplayHeight / canvasSize.Height);
 
             Systems = new SystemList
@@ -40,6 +41,7 @@ namespace PhotoVs.Logic
         public Config Config { get; }
         public Player Player { get; }
         public SCamera Camera { get; }
+        public float ZoomScale { get; }
 
         //public SceneMachine SceneMachine { get; }
         public GameObjectList GameObjects { get; }

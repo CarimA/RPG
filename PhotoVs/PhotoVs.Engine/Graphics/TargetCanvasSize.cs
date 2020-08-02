@@ -12,15 +12,15 @@ namespace PhotoVs.Engine.Graphics
 
         private Rectangle _display;
 
-        public TargetCanvasSize(GameWindow window, GraphicsDeviceManager graphicsDeviceManager)
+        public TargetCanvasSize(GameWindow window, GraphicsDeviceManager graphicsDeviceManager, VirtualGameSize virtualGameSize)
         {
             _window = window;
             _graphics = graphicsDeviceManager;
 
-            Height = 1080;
+            Height = virtualGameSize.BackbufferHeight;
             Width = Height / 9 * 16;
             // turns out that ultrawide is not actually 21:9, it's about 64:27. Who could've guessed that?
-            MaxWidth = Height / 27 * 64;
+            MaxWidth = Height / 27 * 69;
             // extra space for 16:10 screens
             MaxHeight = Width / 16 * 10;
 
@@ -48,11 +48,16 @@ namespace PhotoVs.Engine.Graphics
 
         private void WindowOnClientSizeChanged(object sender, EventArgs e)
         {
+            _window.ClientSizeChanged -= WindowOnClientSizeChanged;
+
             var width = _window.ClientBounds.Width;
             var height = _window.ClientBounds.Height;
 
             if (width == 0 || height == 0)
+            {
+                _window.ClientSizeChanged += WindowOnClientSizeChanged;
                 return;
+            }
 
             _graphics.PreferredBackBufferWidth = width;
             _graphics.PreferredBackBufferHeight = height;
@@ -82,6 +87,7 @@ namespace PhotoVs.Engine.Graphics
             _display.Y = height / 2 - _display.Height / 2;
 
             OnResize?.Invoke();
+            _window.ClientSizeChanged += WindowOnClientSizeChanged;
         }
     }
 }

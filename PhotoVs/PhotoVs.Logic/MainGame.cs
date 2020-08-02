@@ -12,6 +12,7 @@ using PhotoVs.Engine.Core;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
+using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Modules;
 using PhotoVs.Logic.NewScenes;
@@ -56,28 +57,31 @@ namespace PhotoVs.Logic
                 .Bind<Game>(this)
                 .Bind(_graphics)
                 .Bind(GraphicsDevice)
-                .Bind<SpriteBatch>()
+                .Bind(new SpriteBatch(GraphicsDevice))
                 .Bind(Window)
 
-                // core engine specific things
-                .Bind(_platform)
-                .Bind<ISignal, Signal>()
-                .Bind<FullscreenHandler>()
-                .Bind<ICanvasSize, TargetCanvasSize>()
-                .Bind<ICoroutineRunner, CoroutineRunner>()
-                .Bind<IAssetLoader, AssetLoader>()
-                .Bind<IRenderer, Renderer>()
-                .Bind<IAudio>(new DebugAudio(new DummyAudio())) // _platform.Audio))
-                .Bind<IScriptHost, ScriptHost<Closure>>()
-                .Bind<IInterpreter<Closure>, MoonSharpInterpreter>()
-
                 // type loaders for assets
+                // this should come before in-case if anything wants to load assets
                 .Bind<EffectTypeLoader>()
                 .Bind<TextTypeLoader>()
                 .Bind<Texture2DTypeLoader>()
                 .Bind<SpriteFontTypeLoader>()
                 .Bind<DynamicSpriteFontTypeLoader>()
                 .Bind<MapTypeLoader>()
+                .Bind<IAssetLoader, AssetLoader>()
+
+                // core engine specific things
+                .Bind(_platform)
+                .Bind<ISignal, Signal>()
+                .Bind<FullscreenHandler>()
+                .Bind<ScreenshotHandler>()
+                .Bind<ICanvasSize, TargetCanvasSize>()
+                .Bind<ICoroutineRunner, CoroutineRunner>()
+                .Bind<IRenderer, Renderer>()
+                .Bind<IAudio>(new DebugAudio(_platform.Audio)) // _platform.Audio))
+                .Bind<IScriptHost, ScriptHost<Closure>>()
+                .Bind<IInterpreter<Closure>, MoonSharpInterpreter>()
+                .Bind<DiagnosticInfo>()
 
                 // game logic
                 .Bind<StartupSequence>()
@@ -98,7 +102,7 @@ namespace PhotoVs.Logic
                 .Bind<TextModule>()
 
                 // data that will get used to initialise state
-                .Bind(new VirtualGameSize(640, 360))
+                .Bind(new VirtualGameSize(640, 360, 720))
                 .Bind(new ScriptData(new List<(DataLocation, string)>
                 {
                     (DataLocation.Content, "logic/"),
@@ -123,9 +127,12 @@ namespace PhotoVs.Logic
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
             _scheduler.BeforeDraw(gameTime);
             _scheduler.Draw(gameTime);
             _scheduler.AfterDraw(gameTime);
+
+            base.Draw(gameTime);
         }
 
         protected override void OnExiting(object sender, EventArgs args)

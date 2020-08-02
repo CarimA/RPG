@@ -4,12 +4,13 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Logic.Debugger
 {
-    public class DiagnosticInfo : ILogger
+    public class DiagnosticInfo : ILogger, IHasBeforeUpdate, IHasAfterUpdate, IHasBeforeDraw, IHasAfterDraw
     {
         private readonly PolygonPrimitive _backgroundBar;
 
@@ -28,15 +29,14 @@ namespace PhotoVs.Logic.Debugger
 
         private int _fpsTicks;
         private float _fpsTimer;
-        private readonly MainGame _game;
+        private readonly Game _game;
         private TimeSpan _lastDraw;
-
         private TimeSpan _lastUpdate;
 
         private readonly Queue<string> _logs;
         private readonly int _retain;
 
-        public DiagnosticInfo(MainGame game, SpriteBatch spriteBatch, IAssetLoader assetLoader)
+        public DiagnosticInfo(Game game, SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
             _logs = new Queue<string>();
             _retain = 15;
@@ -101,32 +101,42 @@ namespace PhotoVs.Logic.Debugger
             Log(LogLevel.Fatal, message, args);
         }
 
-        public void BeforeUpdate()
+        public int BeforeUpdatePriority { get; set; } = int.MaxValue;
+        public bool BeforeUpdateEnabled { get; set; } = true;
+
+        public void BeforeUpdate(GameTime gameTime)
         {
             _updateTimer.Start();
         }
 
-        public void AfterUpdate()
+        public int AfterUpdatePriority { get; set; } = int.MinValue;
+        public bool AfterUpdateEnabled { get; set; } = true;
+
+        public void AfterUpdate(GameTime gameTime)
         {
             _lastUpdate = _updateTimer.Elapsed;
             _updateTimer.Reset();
         }
 
-        public void BeforeDraw()
+        public int BeforeDrawPriority { get; set; } = int.MaxValue;
+        public bool BeforeDrawEnabled { get; set; } = true;
+
+        public void BeforeDraw(GameTime gameTime)
         {
             _drawTimer.Start();
         }
 
-        public void AfterDraw()
+        public int AfterDrawPriority { get; set; } = int.MaxValue;
+        public bool AfterDrawEnabled { get; set; } = true;
+
+        public void AfterDraw(GameTime gameTime)
         {
             _lastDraw = _drawTimer.Elapsed;
             _drawTimer.Reset();
-        }
 
-        public void Draw(GameTime gameTime)
-        {
+
             _fpsTicks++;
-            _fpsTimer -= (float) gameTime.ElapsedGameTime.TotalSeconds;
+            _fpsTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (_fpsTimer <= 0)
             {
                 _fps = _fpsTicks;
@@ -153,7 +163,7 @@ namespace PhotoVs.Logic.Debugger
                 new Vector2(x, y + barHeight)
             });
 
-            var updateWidth = (int) (barWidth * _game.TargetElapsedTime.TotalSeconds * _lastUpdate.TotalMilliseconds);
+            var updateWidth = (int)(barWidth * _game.TargetElapsedTime.TotalSeconds * _lastUpdate.TotalMilliseconds);
 
             _updateBar.SetPoints(new List<Vector2>
             {
@@ -164,7 +174,7 @@ namespace PhotoVs.Logic.Debugger
             });
 
             var nx = x + updateWidth;
-            var drawWidth = (int) (barWidth * _game.TargetElapsedTime.TotalSeconds * _lastDraw.TotalMilliseconds);
+            var drawWidth = (int)(barWidth * _game.TargetElapsedTime.TotalSeconds * _lastDraw.TotalMilliseconds);
 
             _drawBar.SetPoints(new List<Vector2>
             {

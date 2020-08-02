@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
@@ -139,14 +144,8 @@ namespace PhotoVs.Utils.Extensions
             return color;
         }
 
-        public static void SaveAsPng(this Texture2D texture, string filename)
+        public static Bitmap GetBitmap(this Texture2D texture)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
-            /*using var stream = File.Create(filename);
-            {
-                texture.SaveAsPng(stream, texture.Width, texture.Height);
-            }*/
-
             var textureData = new uint[texture.Width * texture.Height];
             texture.GetData(textureData);
 
@@ -156,7 +155,7 @@ namespace PhotoVs.Utils.Extensions
             {
                 var origdata = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height),
                     ImageLockMode.WriteOnly, bmp.PixelFormat);
-                var byteData = (uint*) origdata.Scan0;
+                var byteData = (uint*)origdata.Scan0;
                 for (var i = 0; i < textureData.Length; i++)
                 {
                     byteData[i] = (textureData[i] & 0x000000ff) << 16 | (textureData[i] & 0x0000FF00) |
@@ -166,10 +165,55 @@ namespace PhotoVs.Utils.Extensions
                 bmp.UnlockBits(origdata);
             }
 
-            using var stream = File.Create(filename);
+            return bmp;
+        }
+
+        public static void SaveAsPng(this Texture2D texture, string filename)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+            /*using var stream = File.Create(filename);
             {
-                bmp.Save(stream, ImageFormat.Png);
-            }
+                texture.SaveAsPng(stream, texture.Width, texture.Height);
+            }*/
+
+            var bmp = texture.GetBitmap();
+            using var stream = File.Create(filename);
+            bmp.Save(stream, ImageFormat.Png);
+        }
+
+        public static string UploadToImgur(this Texture2D texture, string clientId)
+        {
+            var bmp = texture.GetBitmap();
+            using var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Png);
+
+            using var request = new WebClient();
+            request.Headers.Add("Authorization", "Client-ID " + clientId);
+            var values = new NameValueCollection { { "image", Convert.ToBase64String(ms.GetBuffer()) } };
+            var res = request.UploadValues("https://api.imgur.com/3/upload.xml", values);
+
+            using var response = new MemoryStream(res);
+
+            var str = Encoding.UTF8.GetString(response.ToArray());
+
+            var startIndex = str.IndexOf("<link>");
+            var endIndex = str.IndexOf("</link>");
+
+            if (startIndex == -1 || endIndex == -1)
+                return string.Empty;
+
+            startIndex += "<link>".Length;
+            var url = str.Substring(startIndex, endIndex - startIndex);
+
+            return url;
+        }
+
+        public static async void UploadToDiscord(this Texture2D texture, string imgurClientId, string discordWebhook)
+        {
+            var imgurUrl = texture.UploadToImgur(imgurClientId);
+            var embed = "{\"embeds\":[{\"image\":{\"url\":\"" + imgurUrl + "\"}}]}";
+            await new HttpClient().PostAsync(discordWebhook,
+                new StringContent(embed, Encoding.UTF8, "application/json"));
         }
     }
 }

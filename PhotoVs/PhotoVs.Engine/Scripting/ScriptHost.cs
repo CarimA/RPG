@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using MoonSharp.Interpreter;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Core;
@@ -79,9 +80,9 @@ namespace PhotoVs.Engine.Scripting
             {
                 _interpreter.RunScript(script);
             }
-            catch (Exception e)
+            catch (ScriptRuntimeException e)
             {
-                Logger.Write.Error($"Issue with script: {source}");
+                Logger.Write.Error($"Issue with script: {e.DecoratedMessage}");
                 throw;
             }
         }

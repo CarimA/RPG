@@ -13,5 +13,6 @@ namespace PhotoVs.Logic
         GameObjectList GameObjects { get; }
         SystemList Systems { get; }
         GameTime GameTime { get; set; }
+        float ZoomScale { get; }
     }
 }

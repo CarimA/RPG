@@ -13,5 +13,6 @@ namespace PhotoVs.Engine.Graphics
         RenderTarget2D CreateRenderTarget(int width, int height);
         void RelinquishSubRenderer();
         Matrix GetUIOrigin();
+        RenderTarget2D Backbuffer { get; }
     }
 }

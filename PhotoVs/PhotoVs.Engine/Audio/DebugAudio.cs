@@ -8,7 +8,7 @@ using PhotoVs.Utils.Logging;
 
 namespace PhotoVs.Engine.Audio
 {
-    public class DebugAudio : IAudio
+    public class DebugAudio : IAudio, IDisposable
     {
         private IAudio _instance;
 
@@ -87,6 +87,12 @@ namespace PhotoVs.Engine.Audio
         {
             _instance.UnmuteSfx();
             Logger.Write.Info($"Unmuting sound effect");
+        }
+
+        public void Dispose()
+        {
+            if (_instance is IDisposable disposable)
+                disposable.Dispose();
         }
     }
 }

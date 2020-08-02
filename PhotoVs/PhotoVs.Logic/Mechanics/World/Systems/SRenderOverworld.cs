@@ -21,6 +21,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private readonly ICanvasSize _canvasSize;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly SpriteBatch _spriteBatch;
+        private readonly IGameState _gameState;
 
         private Texture2D _checkerboardTexture;
         private readonly ColorAverager _colorAverager;
@@ -65,6 +66,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         {
             _renderer = renderer;
             _spriteBatch = spriteBatch;
+            _gameState = gameState;
             _graphicsDevice = graphicsDevice;
             _canvasSize = canvasSize;
             _camera = gameState.Camera;
@@ -125,7 +127,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
             var cameraRect = _camera.VisibleArea();
-            var tPos = new Vector2(cameraRect.Left, cameraRect.Top);
+            var tPos = Vector2.Zero;
 
             _gameDate.Update(gameTime);
 
@@ -262,11 +264,14 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
                 transformMatrix: _camera.Transform);
 
+            var zoomFactor = 1f / _camera.CurrentZoom * (_gameState.ZoomScale * 2);
+
             _waterEffect.Parameters["Texture"].SetValue(_material);
             _waterEffect.Parameters["texNoiseA"].SetValue(_noiseA);
             _waterEffect.Parameters["texNoiseB"].SetValue(_noiseB);
             _waterEffect.Parameters["contrast"].SetValue(1.1f);
             _waterEffect.Parameters["step"].SetValue(6);
+            _waterEffect.Parameters["scale"].SetValue(zoomFactor);
             _waterEffect.Parameters["pixWidth"].SetValue(1f / _water.Width);
             _waterEffect.Parameters["pixHeight"].SetValue(1f / _water.Height);
 
@@ -274,13 +279,13 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _waterEffect.Parameters["highlightWater"]
                 .SetValue(new Vector4(0.37647058823f, 0.70588235294f, 0.84705882352f, 1.0f));
 
-            _waterEffect.Parameters["offsetXA"].SetValue((waterA.X + tPos.X) % _material.Width / _material.Width);
+            _waterEffect.Parameters["offsetXA"].SetValue(waterA.X * zoomFactor * (1f / _water.Width));
             _waterEffect.Parameters["offsetYA"]
-                .SetValue((waterA.Y + tPos.Y) % _material.Height / _material.Height);
-            _waterEffect.Parameters["offsetXB"].SetValue((waterB.X + tPos.X) % _material.Width / _material.Width);
+                .SetValue((waterA.Y) * zoomFactor * (1f / _water.Height));
+            _waterEffect.Parameters["offsetXB"].SetValue((waterB.X) * zoomFactor * (1f / _water.Width));
             _waterEffect.Parameters["offsetYB"]
-                .SetValue((waterB.Y + tPos.Y) % _material.Height / _material.Height);
-            _waterEffect.Parameters["time"].SetValue(time / 60f);
+                .SetValue((waterB.Y) * zoomFactor * (1f / _water.Height));
+            _waterEffect.Parameters["time"].SetValue(time / 6000000f);
 
             _waterEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -323,8 +328,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _renderer.RequestSubRenderer(_final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
-            _spriteBatch.Draw(_target, Vector2.Zero, Color.White);
-            //_spriteBatch.Draw(_water, Vector2.Zero, Color.White * 0.5f);
+            _spriteBatch.Draw(_target, Vector2.Zero, Color.White); 
+            //_spriteBatch.Draw(_water, Vector2.Zero, Color.White);
             _spriteBatch.Draw(_waterDisplace, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(_combinedWater, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(_waterReflection, Vector2.Zero, Color.White * 0.5f);

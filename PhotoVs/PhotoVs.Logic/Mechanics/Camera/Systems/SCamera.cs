@@ -36,6 +36,7 @@ namespace PhotoVs.Logic.Mechanics.Camera.Systems
 
         public Matrix Transform { get; private set; } = Matrix.Identity;
 
+        public float CurrentZoom => _lerpZoom;
         public float Zoom { get; private set; }
 
         public int Priority { get; set; } = -99;

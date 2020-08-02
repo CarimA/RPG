@@ -32,4 +32,8 @@
       <PackageReference Include="StbSharp" Version="0.7.2.38" />
       <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Net.Http" />
+    </ItemGroup>
 </Project>

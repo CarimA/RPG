@@ -120,7 +120,7 @@ namespace PhotoVs.Logic
                     [InputActions.Cancel] = new List<Keys> {Keys.X, Keys.O},
                     [InputActions.Run] = new List<Keys> {Keys.X, Keys.O},
                     [InputActions.Fullscreen] = new List<Keys> {Keys.F1},
-                    [InputActions.Screenshot] = new List<Keys> {Keys.F12}
+                    [InputActions.Screenshot] = new List<Keys> {Keys.PrintScreen}
                 },
 
                 Deadzone = 20,
