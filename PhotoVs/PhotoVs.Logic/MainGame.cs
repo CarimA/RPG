@@ -102,7 +102,7 @@ namespace PhotoVs.Logic
                 .Bind<TextModule>()
 
                 // data that will get used to initialise state
-                .Bind(new VirtualGameSize(640, 360, 720))
+                .Bind(new VirtualGameSize(640, 360, 360)) //720))
                 .Bind(new ScriptData(new List<(DataLocation, string)>
                 {
                     (DataLocation.Content, "logic/"),

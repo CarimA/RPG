@@ -7,8 +7,10 @@ using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.Filters;
+using PhotoVs.Engine.Graphics.Particles;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Particles;
 using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
 using SpriteFontPlus;
@@ -60,6 +62,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private Vector2 waterA;
         private Vector2 waterB;
 
+
+        private Emitter<Leaf> _particleTest;
+
         public SRenderOverworld(IAssetLoader assetLoader, IRenderer renderer, IOverworld overworld,
             SpriteBatch spriteBatch, IGameState gameState,
             ISignal signal, GraphicsDevice graphicsDevice, ICanvasSize canvasSize)
@@ -108,6 +113,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.7708333f, assetLoader.Get<Texture2D>("luts/daycycle8.png"));
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
+
+            _particleTest = new Emitter<Leaf>(25, assetLoader.Get<Texture2D>("particles/leaf.png"), new Rectangle(8445, 5928, 50, 50));
 
             OnResize();
             _canvasSize.OnResize += OnResize;
@@ -179,6 +186,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 Color.White);
 
 
+
+
             _spriteBatch.Draw(_tilemapTexture,
                 new Rectangle(0, 0, _tilemapTexture.Width / 2 * tileSize, _tilemapTexture.Height * tileSize),
                 new Rectangle(_tilemapTexture.Width / 2, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
@@ -191,6 +200,15 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                     EntityDraw);*/
 
             _spriteBatch.End();
+
+
+
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                transformMatrix: _camera.Transform);
+            _particleTest.Update(gameTime);
+            _particleTest.Draw(_spriteBatch, gameTime);
+            _spriteBatch.End();
+
 
             _renderer.RelinquishSubRenderer();
 
@@ -347,7 +365,6 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 Color.Yellow);
 
             _spriteBatch.End();
-
 
             /*using var stream = File.Create("test.png");
             {
