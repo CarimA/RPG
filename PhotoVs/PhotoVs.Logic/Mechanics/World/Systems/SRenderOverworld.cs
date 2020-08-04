@@ -114,7 +114,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
 
-            _particleTest = new Emitter<Leaf>(25, assetLoader.Get<Texture2D>("particles/leaf.png"), new Rectangle(8445, 5928, 50, 50));
+            _particleTest = new Emitter<Leaf>(30, assetLoader.Get<Texture2D>("particles/leaf.png"), new Rectangle(8445, 5928, 50, 50));
 
             OnResize();
             _canvasSize.OnResize += OnResize;
@@ -185,14 +185,6 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 new Rectangle(0, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
                 Color.White);
 
-
-
-
-            _spriteBatch.Draw(_tilemapTexture,
-                new Rectangle(0, 0, _tilemapTexture.Width / 2 * tileSize, _tilemapTexture.Height * tileSize),
-                new Rectangle(_tilemapTexture.Width / 2, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
-                Color.White);
-
             /*_overworld.GetMap()
                 .Draw(_spriteBatch,
                     gameTime,
@@ -207,6 +199,38 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                 transformMatrix: _camera.Transform);
             _particleTest.Update(gameTime);
             _particleTest.Draw(_spriteBatch, gameTime);
+            _spriteBatch.End();
+
+
+
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                transformMatrix: _camera.Transform);
+
+
+            //_tilemapEffect.Parameters["MatrixTransform"].SetValue(_camera.Transform);
+            _tilemapEffect.Parameters["Texture"].SetValue(_tilemapTexture);
+            _tilemapEffect.Parameters["texIndex"].SetValue(_indexTexture);
+            //_tilemapEffect.Parameters["viewSize"].SetValue(new Vector2(_renderer.GameWidth, _renderer.GameHeight));
+            //_tilemapEffect.Parameters["viewOffset"].SetValue(new Vector2(cameraRect.Left, cameraRect.Top));
+            _tilemapEffect.Parameters["tileSize"].SetValue(new Vector2(tileSize, tileSize));
+            _tilemapEffect.Parameters["inverseIndexTexSize"]
+                .SetValue(new Vector2(1f / _indexTexture.Width, 1f / _indexTexture.Height));
+            _tilemapEffect.Parameters["mapSize"]
+                .SetValue(new Vector2(_tilemapTexture.Width * tileSize, _tilemapTexture.Height * tileSize));
+
+            _tilemapEffect.CurrentTechnique.Passes[0].Apply();
+
+            _spriteBatch.Draw(_tilemapTexture,
+                new Rectangle(0, 0, _tilemapTexture.Width / 2 * tileSize, _tilemapTexture.Height * tileSize),
+                new Rectangle(_tilemapTexture.Width / 2, 0, _tilemapTexture.Width / 2, _tilemapTexture.Height),
+                Color.White);
+
+            /*_overworld.GetMap()
+                .Draw(_spriteBatch,
+                    gameTime,
+                    _camera,
+                    EntityDraw);*/
+
             _spriteBatch.End();
 
 

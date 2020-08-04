@@ -66,7 +66,6 @@ namespace PhotoVs.Engine.Graphics.Particles
                 CreateParticle(index);
 
             _particles[index].Update(gameTime);
-            _particles[index].Lifetime -= gameTime.GetElapsedSeconds();
 
             if (_particles[index].Lifetime <= 0f)
             {

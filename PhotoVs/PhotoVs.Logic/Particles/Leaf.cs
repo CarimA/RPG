@@ -28,7 +28,7 @@ namespace PhotoVs.Logic.Particles
 
         public void Create(Random random, Rectangle emitterBounds)
         {
-            Lifetime = random.NextFloat(3, 6);
+            Lifetime = random.NextFloat(3, 4.5f);
             _maxLifetime = Lifetime;
             Source = new Rectangle(0, 0, 32, 32);
             Origin = new Vector2(16, 16);
@@ -36,8 +36,8 @@ namespace PhotoVs.Logic.Particles
             Position = random.NextVector2(emitterBounds);
             Scale = Vector2.One;
 
-            _velocity = random.NextVector2(new Vector2(-0.2f, 0.04f), new Vector2(-0.1f, 0.08f));
-            _rotationSpeed = random.NextFloat(0.001f, 0.015f);
+            _velocity = random.NextVector2(new Vector2(-38f, 14f), new Vector2(-21f, 28f));
+            _rotationSpeed = random.NextFloat(0.08f, 3.8f);
 
             Color = random.NextShuffle(
                 new Color(76, 67, 51), // dark brown
@@ -52,21 +52,25 @@ namespace PhotoVs.Logic.Particles
 
         public void Update(GameTime gameTime)
         {
-            Position += _velocity;
-            Angle += _rotationSpeed;
+            Lifetime -= gameTime.GetElapsedSeconds();
+            Position += _velocity * gameTime.GetElapsedSeconds();
+            Angle += _rotationSpeed * gameTime.GetElapsedSeconds();
 
-            Color = _initialColor;
-            if (Lifetime > _maxLifetime - _startup)
+            if (Lifetime >= (_maxLifetime - _startup))
             {
                 var time = _maxLifetime - Lifetime;
                 var progress = time.Map(0, _startup, 0, 1);
                 Color = _initialColor * progress;
             }
-            else if (Lifetime < _winddown)
+            else if (Lifetime <= _winddown)
             {
                 var time = _winddown - Lifetime;
                 var progress = time.Map(0, _winddown, 1, 0);
                 Color = _initialColor * progress;
+            }
+            else
+            {
+                Color = _initialColor;
             }
             //Color = Color.White * (Lifetime / _maxLifetime);
         }
