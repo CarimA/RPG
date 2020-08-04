@@ -112,6 +112,9 @@ namespace PhotoVs.Logic
             _kernel.Construct();
             _scheduler.Start();
 
+            //var mapBaker2 = new MapBaker2((Kernel)_kernel, "content/maps/", "content/debug/", 16);
+            //mapBaker2.Bake();
+
             base.Initialize();
         }
 

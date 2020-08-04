@@ -26,13 +26,14 @@ namespace PhotoVs.Engine.Core
         public Action<object> OnBind { get; set; }
         public Action OnConstruct { get; set; }
 
-        /*public T Find<T>()
+        [Obsolete("This is only allowed to be used with build tools, ask for objects in constructors instead.")]
+        public T Find<T>()
         {
             if (_instances.TryGetValue(typeof(T), out var value))
                 return (T)value;
 
             throw new KeyNotFoundException(typeof(T).Name);
-        }*/
+        }
 
         public virtual Kernel Bind<T>(T instance) where T : class
         {

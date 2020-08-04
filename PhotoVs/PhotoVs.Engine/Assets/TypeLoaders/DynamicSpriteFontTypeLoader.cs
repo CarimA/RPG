@@ -6,7 +6,7 @@ namespace PhotoVs.Engine.Assets.TypeLoaders
 {
     public class DynamicSpriteFontTypeLoader : TypeLoader<DynamicSpriteFont>
     {
-        public int FontSize { get; set; } = 32;
+        public int FontSize { get; set; } = 20;
 
         public DynamicSpriteFontTypeLoader(IAssetLoader assetLoader) : base(assetLoader)
         {

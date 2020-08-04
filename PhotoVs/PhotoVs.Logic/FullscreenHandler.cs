@@ -82,16 +82,19 @@ namespace PhotoVs.Logic
             var x = (targetWidth / 2) - (backbuffer.Width / 2);
             var y = (targetHeight / 2) - (backbuffer.Height / 2);
 
-            var tX = (targetWidth / 2) - (size.X / 2);
-            var tY = targetHeight - size.Y - 20;
 
-            var screenshotBuffer = _renderer.CreateRenderTarget(targetWidth, targetHeight);
+            var scale = 720 / targetHeight;
+
+            var screenshotBuffer = _renderer.CreateRenderTarget(targetWidth * scale, targetHeight * scale);
+
+            var tX = ((targetWidth * scale) / 2) - (size.X / 2);
+            var tY = (targetHeight * scale) - size.Y - 20;
 
             _graphicsDevice.SetRenderTarget(screenshotBuffer);
             _graphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(backbuffer, new Vector2(x, y), Color.White);
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            _spriteBatch.Draw(backbuffer, new Rectangle(0, 0, targetWidth * scale, targetHeight * scale), Color.White);
 
             var borderSize = 2;
             _spriteBatch.DrawString(_font, text, new Vector2(tX - borderSize, tY - borderSize), Color.Black);

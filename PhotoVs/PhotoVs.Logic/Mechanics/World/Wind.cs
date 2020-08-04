@@ -16,6 +16,7 @@ namespace PhotoVs.Logic.Mechanics.World
 
         private Vector2 _targetDirection;
         private float _targetForce;
+        private float _targetAmplitude;
 
         public Wind()
         {
@@ -25,12 +26,13 @@ namespace PhotoVs.Logic.Mechanics.World
             _nextUpdate = 0;
 
             Direction = _random.NextVector2(_minRange, _maxRange);
-            Force = (float) ((_random.NextDouble() + 0.5f) * _random.Next(-4, 4));
+            Force = (float)_random.NextDouble();
+            Amplitude = Math.Max(0, _random.NextFloat(-3, 5));
         }
 
         public Vector2 Direction { get; private set; }
         public float Force { get; private set; }
-
+        public float Amplitude { get; private set; }
 
         public void Update(GameTime gameTime)
         {
@@ -38,22 +40,26 @@ namespace PhotoVs.Logic.Mechanics.World
 
             if (_nextUpdate <= 0f)
             {
-                _nextUpdate = (float) ((_random.NextDouble() + 0.5f) * _random.Next(2, 6));
+                _nextUpdate = (float) ((_random.NextDouble() + 0.5f) * _random.NextFloat(0.2f, 3f));
                 _maxTimer = _nextUpdate;
                 _targetDirection = _random.NextVector2(_minRange, _maxRange);
-                _targetForce = (float) _random.NextDouble() * 0.5f;
+                _targetForce = _random.NextFloat(0.3f, 0.9f);
+                _targetAmplitude = Math.Max(0, _random.Next(5, 12));
             }
 
             var currentAngle = Direction.ToAngle();
             var newAngle = _targetDirection.ToAngle();
             var step = MathHelper.Lerp(currentAngle, newAngle, 0.15f * gameTime.GetElapsedSeconds());
             Direction = step.ToDirection();
-            Force = MathHelper.SmoothStep(Force, _targetForce, Progress() / 10f);
+            Force = MathHelper.SmoothStep(Force, _targetForce, gameTime.GetElapsedSeconds() * 10f);
+            Amplitude = MathHelper.SmoothStep(Amplitude, _targetAmplitude, gameTime.GetElapsedSeconds() * 10f);
         }
 
         public float Progress()
         {
             var x = _nextUpdate / _maxTimer;
+            //return x;
+
             var xn = x - 0.5f;
             var xs = xn * xn;
             return -(xs * 4f) + 1f;

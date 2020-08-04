@@ -20,6 +20,8 @@ namespace PhotoVs.Engine.Graphics.Particles
         private Rectangle _source;
         private IParticle[] _particles;
 
+        private float _throttleRender;
+
         public Emitter(int total, Texture2D texture, Rectangle emitterBounds)
         {
             _total = total;
@@ -56,8 +58,16 @@ namespace PhotoVs.Engine.Graphics.Particles
 
         public void Update(GameTime gameTime)
         {
+            _throttleRender -= gameTime.GetElapsedSeconds();
+            if (_throttleRender > 0f)
+                return;
+
+            _throttleRender = 1f / 14f;
+            var time = TimeSpan.FromSeconds(_throttleRender);
+            var dTime = new GameTime(TimeSpan.Zero, time);
+
             for (var i = 0; i < _total; i++)
-                UpdateParticle(gameTime, i);
+                UpdateParticle(dTime, i);
         }
 
         private void UpdateParticle(GameTime gameTime, int index)

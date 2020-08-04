@@ -62,6 +62,10 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private Vector2 waterA;
         private Vector2 waterB;
 
+        private RenderTarget2D _windDisplace;
+        private Effect _windEffect;
+        private Wind _wind;
+        private Vector2 _windDir;
 
         private Emitter<Leaf> _particleTest;
 
@@ -116,6 +120,10 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _particleTest = new Emitter<Leaf>(30, assetLoader.Get<Texture2D>("particles/leaf.png"), new Rectangle(8445, 5928, 50, 50));
 
+            _wind = new Wind();
+            _windEffect = assetLoader.Get<Effect>("shaders/wind.fx");
+
+
             OnResize();
             _canvasSize.OnResize += OnResize;
         }
@@ -133,6 +141,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
         public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
+            _wind.Update(gameTime);
+
             var cameraRect = _camera.VisibleArea();
             var tPos = Vector2.Zero;
 
@@ -150,8 +160,9 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             throttleRender -= gameTime.GetElapsedSeconds();
             if (throttleRender <= 0f)
             {
-                var frametime = gameTime.GetElapsedSeconds(); // 1f / 14f;
+                var frametime = 1f / 14f;
                 throttleRender = frametime;
+                _windDir = _wind.Direction * _wind.Progress() * frametime;
 
                 waterA -= new Vector2(.53f, 2.40f) * frametime;
                 waterB -= new Vector2(.12f, -4.2f) * frametime;
@@ -368,9 +379,39 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _renderer.RelinquishSubRenderer();
 
 
+
+
+
+            /*_renderer.RequestSubRenderer(_windDisplace);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap);
+            _windEffect.Parameters["Texture"].SetValue(_target);
+// _windEffect.Parameters["texNoise"].SetValue(_noiseB);
+            _windEffect.Parameters["texMask"].SetValue(_material);
+            _windEffect.Parameters["time"].SetValue(time);
+            _windEffect.Parameters["waveSpeed"].SetValue(0.008f);
+            _windEffect.Parameters["waveFreq"].SetValue(_wind.Force);
+            _windEffect.Parameters["windDir"].SetValue(_windDir);
+            _windEffect.Parameters["waveAmp"].SetValue((1f / _windDisplace.Height) * _wind.Amplitude * _wind.Progress());
+            _windEffect.Parameters["texelSize"]
+                .SetValue(new Vector2(1f / _windDisplace.Width, 1f / _windDisplace.Height));
+            _windEffect.Parameters["offset"]
+                .SetValue(new Vector2(((tPos.X) % _material.Width) / _material.Width,
+                    ((tPos.Y) % _material.Height) / _material.Height));
+            _windEffect.Parameters["texelSize"]
+                .SetValue(new Vector2(1f / _windDisplace.Width, 1f / _windDisplace.Height));
+            _windEffect.CurrentTechnique.Passes[0].Apply();
+            _spriteBatch.Draw(_target, Vector2.Zero, Color.White);
+            _spriteBatch.End();
+            _renderer.RelinquishSubRenderer();*/
+
+
+
+
+
             _renderer.RequestSubRenderer(_final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
-            _spriteBatch.Draw(_target, Vector2.Zero, Color.White); 
+            _spriteBatch.Draw(_target, Vector2.Zero, Color.White);
+            //_spriteBatch.Draw(_windDisplace, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(_water, Vector2.Zero, Color.White);
             _spriteBatch.Draw(_waterDisplace, Vector2.Zero, Color.White);
             //_spriteBatch.Draw(_combinedWater, Vector2.Zero, Color.White);
@@ -379,13 +420,19 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _renderer.RelinquishSubRenderer();
 
             var (hour, minute) = _gameDate.Time;
-            var t = $"{hour}:{minute}";
+            var phaseName = Enum.GetName(typeof(TimePhase), _gameDate.TimePhase);
+            var t = $"Time: {phaseName} - {hour}:{minute}\n" +
+                    $"Wind Amplitude: {_wind.Amplitude}\n" +
+                    $"Wind Direction: {_wind.Direction}\n" +
+                    $"Wind Force: {_wind.Force}";
 
             var output = _colorGrade.Filter(_spriteBatch, _final);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             //_spriteBatch.Draw(_material, Vector2.Zero, Color.White);
             _spriteBatch.Draw(_final, Vector2.Zero, Color.White);
-            _spriteBatch.DrawString(bold, Enum.GetName(typeof(TimePhase), _gameDate.TimePhase) + "\n" + t, Vector2.Zero,
+            _spriteBatch.DrawString(bold, 
+                t, 
+                Vector2.Zero,
                 Color.Yellow);
 
             _spriteBatch.End();
@@ -414,6 +461,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _final = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
             _combinedWater = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
             _waterDisplace = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
+            _windDisplace = _renderer.CreateRenderTarget(_canvasSize.DisplayWidth, _canvasSize.DisplayHeight);
         }
 
         public void EntityDraw(SpriteBatch spriteBatch, GameTime gameTime)

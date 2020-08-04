@@ -41,10 +41,10 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
 
-            entities.ForEach(Draw);
-            _overworld.GetMap().GetCollisions(_camera)?.ForEach(Draw);
-            _overworld.GetMap().GetScripts(_camera)?.ForEach(Draw);
-            _overworld.GetMap().GetZones(_camera)?.ForEach(Draw);
+            //entities.ForEach(Draw);
+            //_overworld.GetMap().GetCollisions(_camera)?.ForEach(Draw);
+            //_overworld.GetMap().GetScripts(_camera)?.ForEach(Draw);
+            //_overworld.GetMap().GetZones(_camera)?.ForEach(Draw);
 
             _spriteBatch.End();
         }

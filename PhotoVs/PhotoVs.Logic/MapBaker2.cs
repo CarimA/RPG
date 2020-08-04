@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.Core;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
@@ -36,7 +37,7 @@ namespace PhotoVs.Logic
         private readonly string _outputDir;
 
         private readonly Texture2D _pixelTexture;
-        private readonly Renderer _renderer;
+        private readonly IRenderer _renderer;
 
         private readonly List<(Texture2D, Texture2D, int, int)> _sourceCache;
         private readonly SpriteBatch _spriteBatch;
@@ -53,11 +54,11 @@ namespace PhotoVs.Logic
 
         private int _tilePerRow;
 
-        public MapBaker2(string inputDir, string outputDir, int tileSize)
+        public MapBaker2(Kernel kernel, string inputDir, string outputDir, int tileSize)
         {
-            //_assetLoader = services.Get<IAssetLoader>();
-            //_spriteBatch = services.Get<SpriteBatch>();
-            //_renderer = services.Get<Renderer>();
+            _assetLoader = kernel.Find<IAssetLoader>();
+            _spriteBatch = kernel.Find<SpriteBatch>();
+            _renderer = kernel.Find<IRenderer>();
 
             _pixelTexture = _assetLoader.Get<Texture2D>("ui/pixel.png");
 
@@ -516,8 +517,8 @@ namespace PhotoVs.Logic
             var maxX = _maxX[mapName];
             var maxY = _maxY[mapName];
 
-            var sizeX = FindNextPoT(maxX - minX);
-            var sizeY = FindNextPoT(maxY - minY);
+            var sizeX = FindNextPoT(maxX);
+            var sizeY = FindNextPoT(maxY);
 
             var tm = _renderer.CreateRenderTarget(sizeX * 2, sizeY);
             _spriteBatch.GraphicsDevice.SetRenderTarget(tm);
@@ -532,7 +533,7 @@ namespace PhotoVs.Logic
                 var (sX, sY) = _instructions[sources];
 
                 _spriteBatch.Draw(_pixelTexture,
-                    new Vector2(x + (isMask ? 0 : sizeX) - minX, y - minY),
+                    new Vector2(x + (isMask ? 0 : sizeX), y),
                     new Color(sX / _tileSize, sY / _tileSize, 0));
             }
 
