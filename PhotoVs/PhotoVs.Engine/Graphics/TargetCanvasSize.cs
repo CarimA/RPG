@@ -20,7 +20,7 @@ namespace PhotoVs.Engine.Graphics
             Height = virtualGameSize.BackbufferHeight;
             Width = Height / 9 * 16;
             // turns out that ultrawide is not actually 21:9, it's about 64:27. Who could've guessed that?
-            MaxWidth = Height / 27 * 69;
+            MaxWidth = Height / 9 * 22;
             // extra space for 16:10 screens
             MaxHeight = Width / 16 * 10;
 

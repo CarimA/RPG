@@ -6,6 +6,21 @@ namespace PhotoVs.Engine.TiledMaps
 {
     internal static class TmxProperties
     {
+        public static void ReadObjectGroup(this XmlReader reader, Dictionary<string, string> properties)
+        {
+            if (!reader.IsStartElement("objectgroup"))
+                throw new XmlException(reader.Name);
+
+            var parent = XNode.ReadFrom(reader) as XElement;
+            foreach (var e in parent.Elements())
+                properties[parent.Attribute("id").Value] = 
+                    e.IsEmpty 
+                        ? $"{e.Attribute("name").Value}|{e.Attribute("type").Value}|" +
+                          $"{e.Attribute("x").Value}|{e.Attribute("y").Value}|" +
+                          $"{e.Attribute("width").Value}|{e.Attribute("height").Value}"
+                        : e.Value;
+        }
+
         public static void ReadProperties(this XmlReader reader, Dictionary<string, string> properties)
         {
             if (!reader.IsStartElement("properties"))

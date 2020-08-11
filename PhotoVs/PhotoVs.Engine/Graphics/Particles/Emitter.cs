@@ -11,13 +11,20 @@ using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Engine.Graphics.Particles
 {
-    public class Emitter<T> where T : IParticle, new()
+    public interface IEmitter
+    {
+        Rectangle Boundaries { get; }
+        void Update(GameTime gameTime);
+        void Draw(SpriteBatch spriteBatch, GameTime gameTime);
+    }
+
+    public class Emitter<T> : IEmitter where T : IParticle, new()
     {
         private int _total;
         private Random _random;
 
         private Texture2D _texture;
-        private Rectangle _source;
+        public Rectangle Boundaries { get; }
         private IParticle[] _particles;
 
         private float _throttleRender;
@@ -27,8 +34,8 @@ namespace PhotoVs.Engine.Graphics.Particles
             _total = total;
             _particles = new IParticle[total];
             _texture = texture;
-            _source = emitterBounds;
-            _random = new Random();
+            Boundaries = emitterBounds;
+            _random = new Random(emitterBounds.GetHashCode());
 
             CreateParticles();
         }
@@ -43,7 +50,7 @@ namespace PhotoVs.Engine.Graphics.Particles
         {
             _particles[index] ??= new T();
 
-            _particles[index].Create(_random, _source);
+            _particles[index].Create(_random, Boundaries);
 
             if (advance)
             {
@@ -56,15 +63,16 @@ namespace PhotoVs.Engine.Graphics.Particles
             }
         }
 
+
         public void Update(GameTime gameTime)
         {
-            _throttleRender -= gameTime.GetElapsedSeconds();
+            /*_throttleRender -= gameTime.GetElapsedSeconds();
             if (_throttleRender > 0f)
                 return;
 
             _throttleRender = 1f / 14f;
-            var time = TimeSpan.FromSeconds(_throttleRender);
-            var dTime = new GameTime(TimeSpan.Zero, time);
+            var time = TimeSpan.FromSeconds(_throttleRender);*/
+            var dTime = gameTime; //new GameTime(TimeSpan.Zero, time);
 
             for (var i = 0; i < _total; i++)
                 UpdateParticle(dTime, i);

@@ -28,6 +28,8 @@ namespace PhotoVs.Logic.Particles
 
         public void Create(Random random, Rectangle emitterBounds)
         {
+            //random = new Random(_velocity.GetHashCode() + GetHashCode() + emitterBounds.GetHashCode());
+
             Lifetime = random.NextFloat(3, 4.5f);
             _maxLifetime = Lifetime;
             Source = new Rectangle(0, 0, 32, 32);
@@ -37,7 +39,7 @@ namespace PhotoVs.Logic.Particles
             Scale = Vector2.One;
 
             _velocity = random.NextVector2(new Vector2(-38f, 14f), new Vector2(-21f, 28f));
-            _rotationSpeed = random.NextFloat(0.08f, 3.8f);
+            _rotationSpeed = random.NextFloat(0.98f, 3.8f);
 
             Color = random.NextShuffle(
                 new Color(76, 67, 51), // dark brown

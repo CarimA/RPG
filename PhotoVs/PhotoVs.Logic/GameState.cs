@@ -9,7 +9,7 @@ using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic
 {
-    public class GameState : IGameState, IHasBeforeUpdate
+    public class GameState : IHasBeforeUpdate
     {
         public GameState(ICanvasSize canvasSize, IAssetLoader assetLoader, ISignal signal, VirtualGameSize virtualGameSize, ICanvasSize targetCanvasSize)
         {
@@ -24,16 +24,7 @@ namespace PhotoVs.Logic
             Camera.Follow(Player);
             ZoomScale = (float) targetCanvasSize.Width / virtualGameSize.Width;
             Camera.SetZoom(ZoomScale);
-            //Camera.SetZoom(canvasSize.DisplayHeight / canvasSize.Height);
-
-            Systems = new SystemList
-            {
-                Camera,
-                new SProcessInputState(),
-                new SProcessController(),
-                new SProcessKeyboard(),
-                new SRaiseInputEvents(signal)
-            };
+            //Camera.SetZoom(canvasSize.DisplayHeight / canvasSize.Height)
 
             //SceneMachine = new SceneMachine(Player, renderer, CreateGlobalSystems(), CreateGlobalEntities());
         }

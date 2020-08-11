@@ -102,6 +102,9 @@ namespace PhotoVs.Engine.TiledMaps
                         case "animation":
                             tileAnimations[id] = reader.ReadAnimation();
                             break;
+                        case "objectgroup":
+                            reader.ReadObjectGroup(properties);
+                            break;
                         default:
                             reader.Skip(); //TODO: Add logging.
                             break;

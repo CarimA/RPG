@@ -46,6 +46,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private readonly Texture2D _noiseB;
         private CPosition _playerPosition;
         private readonly IRenderer _renderer;
+        private readonly IOverworld _overworld;
         private RenderTarget2D _target;
         private readonly Effect _tilemapEffect;
         private readonly Texture2D _tilemapTexture;
@@ -67,13 +68,12 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
         private Wind _wind;
         private Vector2 _windDir;
 
-        private Emitter<Leaf> _particleTest;
-
         public SRenderOverworld(IAssetLoader assetLoader, IRenderer renderer, IOverworld overworld,
             SpriteBatch spriteBatch, IGameState gameState,
             ISignal signal, GraphicsDevice graphicsDevice, ICanvasSize canvasSize)
         {
             _renderer = renderer;
+            _overworld = overworld;
             _spriteBatch = spriteBatch;
             _gameState = gameState;
             _graphicsDevice = graphicsDevice;
@@ -95,8 +95,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _displaceEffect = assetLoader.Get<Effect>("shaders/displace.fx");
 
             _tilemapTexture = assetLoader.Get<Texture2D>("debug/outmap.png");
-            _indexTexture = assetLoader.Get<Texture2D>("debug/outts.png");
-            _indexMaterialTexture = assetLoader.Get<Texture2D>("debug/outts_mat.png");
+            _indexTexture = assetLoader.Get<Texture2D>("debug/supertileset.png");
+            _indexMaterialTexture = assetLoader.Get<Texture2D>("debug/supertileset_mat.png");
             _tilemapEffect = assetLoader.Get<Effect>("shaders/tilemap.fx");
 
             _noiseA = assetLoader.Get<Texture2D>("ui/noise.png");
@@ -118,11 +118,8 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _dayNight.AddPoint(0.82291667f, assetLoader.Get<Texture2D>("luts/daycycle9.png"));
             _dayNight.AddPoint(0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"));
 
-            _particleTest = new Emitter<Leaf>(30, assetLoader.Get<Texture2D>("particles/leaf.png"), new Rectangle(8445, 5928, 50, 50));
-
             _wind = new Wind();
             _windEffect = assetLoader.Get<Effect>("shaders/wind.fx");
-
 
             OnResize();
             _canvasSize.OnResize += OnResize;
@@ -208,10 +205,14 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
-            _particleTest.Update(gameTime);
-            _particleTest.Draw(_spriteBatch, gameTime);
-            _spriteBatch.End();
 
+            foreach (var emitter in _overworld.GetMap().GetMaskEmitters(_camera))
+            {
+                emitter.Update(gameTime);
+                emitter.Draw(_spriteBatch, gameTime);
+            }
+
+            _spriteBatch.End();
 
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
@@ -241,6 +242,19 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
                     gameTime,
                     _camera,
                     EntityDraw);*/
+
+            _spriteBatch.End();
+
+
+
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                transformMatrix: _camera.Transform);
+
+            foreach (var emitter in _overworld.GetMap().GetFringeEmitters(_camera))
+            {
+                emitter.Update(gameTime);
+                emitter.Draw(_spriteBatch, gameTime);
+            }
 
             _spriteBatch.End();
 
@@ -430,10 +444,7 @@ namespace PhotoVs.Logic.Mechanics.World.Systems
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             //_spriteBatch.Draw(_material, Vector2.Zero, Color.White);
             _spriteBatch.Draw(_final, Vector2.Zero, Color.White);
-            _spriteBatch.DrawString(bold, 
-                t, 
-                Vector2.Zero,
-                Color.Yellow);
+            //_spriteBatch.DrawString(bold, t, Vector2.Zero, Color.Yellow);
 
             _spriteBatch.End();
 

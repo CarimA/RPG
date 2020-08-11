@@ -55,6 +55,7 @@ float pixWidth;
 float pixHeight;
 float4 water;
 float4 highlightWater;
+float scale;
 
 float4 main(VertexShaderOutput input) : COLOR
 {
@@ -64,8 +65,8 @@ float4 main(VertexShaderOutput input) : COLOR
 
 	float y = sin(time) / 2.0;
 
-    float4 noiseA = tex2D(texSamplerNoiseA, input.TextureCoordinates + float2(offsetXA + y, offsetYA + y + 0.5));
-    float4 noiseB = tex2D(texSamplerNoiseB, input.TextureCoordinates + float2(offsetXB + y + 0.5, offsetYB + y));
+    float4 noiseA = tex2D(texSamplerNoiseA, scale * (input.TextureCoordinates + float2(offsetXA + y, offsetYA + y + 0.5)));
+    float4 noiseB = tex2D(texSamplerNoiseB, scale * (input.TextureCoordinates + float2(offsetXB + y + 0.5, offsetYB + y)));
 	float4 avg = lerp(noiseA, noiseB, 0.5);
 
 	avg.rgb = max(avg.rgb, 0.15);

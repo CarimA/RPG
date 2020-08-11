@@ -53,7 +53,7 @@ namespace PhotoVs.Logic
 
             _signal.Notify("GameStart", new GameEventArgs(this));
 
-            _audio.PlayBgm("key");
+            //_audio.PlayBgm("key");
         }
     }
 }

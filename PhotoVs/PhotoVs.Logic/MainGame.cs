@@ -9,6 +9,7 @@ using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Assets.TypeLoaders;
 using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.Core;
+using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
@@ -85,10 +86,14 @@ namespace PhotoVs.Logic
 
                 // game logic
                 .Bind<StartupSequence>()
-                .Bind<IGameState, GameState>()
+                .Bind<GameState>()
                 .Bind<ITextDatabase, TextDatabase>()
                 .Bind<SceneMachine>()
                 .Bind<IOverworld, Overworld>()
+
+                // systems
+
+                .Bind<SystemList>()
 
                 // modules for scripting
                 .Bind<StandardLibraryModule>()
@@ -112,8 +117,8 @@ namespace PhotoVs.Logic
             _kernel.Construct();
             _scheduler.Start();
 
-            //var mapBaker2 = new MapBaker2((Kernel)_kernel, "content/maps/", "content/debug/", 16);
-            //mapBaker2.Bake();
+            var mapBaker2 = new MapBaker2((Kernel)_kernel, "content/maps/", "content/debug/", 16);
+            mapBaker2.Bake();
 
             base.Initialize();
         }

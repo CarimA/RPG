@@ -5,10 +5,12 @@ using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.ECS.Systems;
+using PhotoVs.Engine.Graphics.Particles;
 using PhotoVs.Logic.Mechanics.Camera.Systems;
 using PhotoVs.Logic.Mechanics.Movement.Components;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Mechanics.World.Components;
+using PhotoVs.Utils.Collections;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.Movement.Systems
@@ -41,10 +43,14 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
             _spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
 
-            //entities.ForEach(Draw);
-            //_overworld.GetMap().GetCollisions(_camera)?.ForEach(Draw);
-            //_overworld.GetMap().GetScripts(_camera)?.ForEach(Draw);
-            //_overworld.GetMap().GetZones(_camera)?.ForEach(Draw);
+            entities.ForEach(Draw);
+            _overworld.GetMap().GetCollisions(_camera)?.ForEach(Draw);
+            _overworld.GetMap().GetScripts(_camera)?.ForEach(Draw);
+            _overworld.GetMap().GetZones(_camera)?.ForEach(Draw);
+            
+            //DrawQuadtree(_overworld.GetMap().MaskEmitters);
+            //_overworld.GetMap().GetMaskEmitters(_camera)?.ForEach(DrawEmitter);
+            //_overworld.GetMap().GetFringeEmitters(_camera)?.ForEach(DrawEmitter);
 
             _spriteBatch.End();
         }
@@ -55,6 +61,29 @@ namespace PhotoVs.Logic.Mechanics.Movement.Systems
 
         public void DrawUI(GameTime gameTime, GameObjectList gameObjectCollection, Matrix uiOrigin)
         {
+        }
+
+        private void DrawQuadtree<T>(Quadtree<T> quadtree)
+        {
+            DrawBox(
+                new Vector2(quadtree.Boundaries.Left, quadtree.Boundaries.Top),
+                new Vector2(quadtree.Boundaries.Right, quadtree.Boundaries.Top),
+                new Vector2(quadtree.Boundaries.Left, quadtree.Boundaries.Bottom),
+                new Vector2(quadtree.Boundaries.Right, quadtree.Boundaries.Bottom),
+                Color.White);
+
+            foreach (var child in quadtree.GetChildren())
+                DrawQuadtree(child);
+        }
+
+        private void DrawEmitter(IEmitter emitter)
+        {
+            DrawBox(
+                new Vector2(emitter.Boundaries.Left, emitter.Boundaries.Top),
+                new Vector2(emitter.Boundaries.Right, emitter.Boundaries.Top),
+                new Vector2(emitter.Boundaries.Left, emitter.Boundaries.Bottom),
+                new Vector2(emitter.Boundaries.Right, emitter.Boundaries.Bottom),
+                Color.HotPink);
         }
 
         private void Draw(GameObject entity)
