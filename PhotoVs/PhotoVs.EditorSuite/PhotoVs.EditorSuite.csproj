@@ -247,6 +247,8 @@
   <ItemGroup>
     <None Include="Resources\Time_16x.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\MapPolygonLayer_16x.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

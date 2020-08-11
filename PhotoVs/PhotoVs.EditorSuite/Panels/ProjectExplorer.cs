@@ -200,5 +200,10 @@ namespace PhotoVs.EditorSuite.Panels
         {
             Project.AddEvent(_tvExplorer);
         }
+
+        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

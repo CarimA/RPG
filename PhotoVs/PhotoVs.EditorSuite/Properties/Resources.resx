@@ -136,11 +136,11 @@
   <data name="String_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\String_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Time_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Time_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Edit_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Settings_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Settings_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Script_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Script_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -154,8 +154,8 @@
   <data name="Event_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Event_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Text_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Text_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Close_red_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Close_red_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RepeatButton_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RepeatButton_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -181,8 +181,11 @@
   <data name="SaveAs_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SaveAs_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Close_red_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Close_red_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Text_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Text_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Copy_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Copy_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Flag_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Flag_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -208,8 +211,8 @@
   <data name="Run_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Run_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Copy_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Copy_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Settings_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Settings_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="BooleanData_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BooleanData_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -217,7 +220,7 @@
   <data name="Console_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Console_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Time_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Time_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MapPolygonLayer_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MapPolygonLayer_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

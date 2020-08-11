@@ -233,6 +233,16 @@ namespace PhotoVs.EditorSuite.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap MapPolygonLayer_16x {
+            get {
+                object obj = ResourceManager.GetObject("MapPolygonLayer_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap NewFile_16x {
             get {
                 object obj = ResourceManager.GetObject("NewFile_16x", resourceCulture);

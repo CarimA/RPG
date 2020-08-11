@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.EditorSuite.GameData
 {
+    // goals: completely remove the need for hardcoding any asset or manually moving stuff to the right place
+    // ALL IAssetLoader<T>.Get() calls should be done in update/draw loops so that stuff can be automatically
+    // updated on a rebuild
     public class GameData
     {
         public GameData()
@@ -17,9 +21,32 @@ namespace PhotoVs.EditorSuite.GameData
         public GameProperties GameProperties { get; set; }
         public FlagCollection Flags { get; set; }
 
+        // the IDs are generated at build time and substituted into where they are used
+        public Dictionary<string, PackedData> PackedData { get; set; }
+
         // the IDs are the IDs pulled from their respective DataTreeNodes
         public Dictionary<string, Script> Scripts { get; set; }
         public Dictionary<string, Graph> Events { get; set; }
-        public Dictionary<string, TextEntry> Strings { get; }
+        public Dictionary<string, TextEntry> Strings { get; set; }
+        public Dictionary<string, Map> Maps { get; set; }
+
+        public string SuperTilesetId { get; set; }
+        public string OverworldMapId { get; set; }
+    }
+
+    public class Map
+    {
+        public string MaskTextureId { get; set; }
+        public string FringeTextureId { get; set; }
+        public string Name { get; set; }
+        public TimeSpan GameDay { get; set; } // TimeSpan.Zero = no time will pass
+
+    }
+
+    public class PackedData
+    {
+        public int Location;
+        public int Length;
+        public bool IsCompressed;
     }
 }
