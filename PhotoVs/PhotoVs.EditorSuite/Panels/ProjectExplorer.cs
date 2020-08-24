@@ -50,12 +50,9 @@ namespace PhotoVs.EditorSuite.Panels
             if (_tvFilterExplorer != null)
                 pnlContainer.Controls.Remove(_tvFilterExplorer);
 
-            _tvExplorer = new TreeView();
-            _tvExplorer.Dock = DockStyle.Fill;
+            _tvExplorer = new TreeView {Dock = DockStyle.Fill};
 
-            _tvFilterExplorer = new TreeView();
-            _tvFilterExplorer.Dock = DockStyle.Fill;
-            _tvFilterExplorer.Visible = false;
+            _tvFilterExplorer = new TreeView {Dock = DockStyle.Fill, Visible = false};
             //_tvFilterExplorer.BringToFront();
 
             _tvExplorer.ItemHeight = 20;

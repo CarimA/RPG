@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
@@ -10,15 +11,17 @@ namespace PhotoVs.Logic.Mechanics.World
     public class Overworld : IOverworld
     {
         private readonly IAssetLoader _assetLoader;
+        private readonly Random _random;
 
         private readonly Dictionary<string, OverworldMap> _maps;
         private readonly SpriteBatch _spriteBatch;
         private OverworldMap _currentMap;
 
-        public Overworld(SpriteBatch spriteBatch, IAssetLoader assetLoader)
+        public Overworld(SpriteBatch spriteBatch, IAssetLoader assetLoader, Random random)
         {
             _spriteBatch = spriteBatch;
             _assetLoader = assetLoader;
+            _random = random;
 
             _maps = new Dictionary<string, OverworldMap>();
         }
@@ -51,7 +54,7 @@ namespace PhotoVs.Logic.Mechanics.World
 
             name = name.Substring(0, name.Length - ".tmx".Length);
 
-            _maps[name] = new OverworldMap(_assetLoader.Get<Map>(filepath), _assetLoader);
+            _maps[name] = new OverworldMap(_random, _assetLoader.Get<Map>(filepath), _assetLoader);
         }
     }
 }

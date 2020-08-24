@@ -6,7 +6,6 @@ using System.Text;
 using System.Xml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Engine;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Core;
@@ -15,7 +14,7 @@ using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Utils.Extensions;
 
-namespace PhotoVs.Logic
+namespace PhotoVs.Logic.BuildTools
 {
     internal class MapBaker2
     {
@@ -32,14 +31,13 @@ namespace PhotoVs.Logic
         private readonly IEnumerable<Map> _mapData;
 
         private readonly Dictionary<Map, Dictionary<(int, int, bool), KeyList<int>>> _maps;
-        private readonly Dictionary<string, Texture2D> _materialCache;
         private readonly Dictionary<(Texture2D, int, int), bool> _opaqueCache;
         private readonly string _outputDir;
 
         private readonly Texture2D _pixelTexture;
         private readonly IRenderer _renderer;
 
-        private readonly List<(Texture2D, Texture2D, int, int)> _sourceCache;
+        private readonly List<(Texture2D, int, int)> _sourceCache;
         private readonly SpriteBatch _spriteBatch;
         private readonly Dictionary<string, Texture2D> _textureCache;
 
@@ -59,7 +57,7 @@ namespace PhotoVs.Logic
         //      - remove chunks that are completely transparent
         //  - for each chunk:
         //      - remove all completely transparent tiles
-        //      - remove duplicates
+        //      - remove duplicates (check for flipped tiles, use the blue channel to indicate if flipped)
         //  - after all chunks are complete
         //  - after collecting all of the tiles:
         //      - merge the buckets
@@ -87,9 +85,8 @@ namespace PhotoVs.Logic
             _maps = new Dictionary<Map, Dictionary<(int, int, bool), KeyList<int>>>();
             _dedupe = new Dictionary<KeyList<int>, List<(Map, int, int, bool)>>();
 
-            _sourceCache = new List<(Texture2D, Texture2D, int, int)>();
+            _sourceCache = new List<(Texture2D, int, int)>();
             _textureCache = new Dictionary<string, Texture2D>();
-            _materialCache = new Dictionary<string, Texture2D>();
             _transparencyCache = new Dictionary<(Texture2D, int, int), bool>();
             _opaqueCache = new Dictionary<(Texture2D, int, int), bool>();
             _maxX = new Dictionary<string, int>();
@@ -104,8 +101,7 @@ namespace PhotoVs.Logic
         {
             ProcessMaps();
             Deduplicate();
-            CreateSupertileset(false);
-            CreateSupertileset(true);
+            CreateSupertileset();
             CreateTilemaps();
         }
 
@@ -157,20 +153,11 @@ namespace PhotoVs.Logic
                     _textureCache.Add(tilesetPath, _assetLoader.Get<Texture2D>(tilesetPath));
                 }
 
-                var materialPath = tilesetPath.Substring(0, tilesetPath.Length - ".png".Length) +
-                                   "_mat.png";
-                if (!_materialCache.TryGetValue(materialPath, out var materialTexture))
-                {
-                    materialTexture = _assetLoader.Get<Texture2D>(materialPath);
-                    _materialCache.Add(materialPath, _assetLoader.Get<Texture2D>(materialPath));
-                }
-
                 var mapName = map.Properties["name"];
 
                 if (tileset.TileWidth > _tileSize || tileset.TileHeight > _tileSize)
                     ProcessOversizedTile(map,
                         tilesetTexture,
-                        materialTexture,
                         mapName,
                         tile.Left,
                         tile.Top,
@@ -183,7 +170,6 @@ namespace PhotoVs.Logic
                     ProcessTile(
                         map,
                         tilesetTexture,
-                        materialTexture,
                         mapName,
                         tile.Left,
                         tile.Top,
@@ -193,7 +179,7 @@ namespace PhotoVs.Logic
             }
         }
 
-        private void ProcessOversizedTile(Map map, Texture2D tileset, Texture2D material, string mapName, int sourceX,
+        private void ProcessOversizedTile(Map map, Texture2D tileset, string mapName, int sourceX,
             int sourceY, int tileWidth, int tileHeight, int mapX, int mapY, bool isMask)
         {
             var xi = 0;
@@ -204,7 +190,6 @@ namespace PhotoVs.Logic
                 {
                     ProcessTile(map,
                         tileset,
-                        material,
                         mapName,
                         x,
                         y,
@@ -218,7 +203,7 @@ namespace PhotoVs.Logic
             }
         }
 
-        private void ProcessTile(Map map, Texture2D tileset, Texture2D material, string mapName, int sourceX,
+        private void ProcessTile(Map map, Texture2D tileset, string mapName, int sourceX,
             int sourceY, int mapX, int mapY, bool isMask)
         {
             // if transparent, just ignore it entirely
@@ -252,7 +237,7 @@ namespace PhotoVs.Logic
                 {
                     var source = _sourceCache[i];
                     var testData = GetTextureData(source.Item1,
-                        new Rectangle(source.Item3, source.Item4, _tileSize, _tileSize));
+                        new Rectangle(source.Item2, source.Item3, _tileSize, _tileSize));
 
                     for (var c = 0; c < tileData.Length; c++)
                     {
@@ -276,7 +261,7 @@ namespace PhotoVs.Logic
                 if (isOccluded) m[(mapX, mapY, isMask)] = new KeyList<int>();
             }
 
-            var key = (tileset, material, sourceX, sourceY);
+            var key = (tileset, sourceX, sourceY);
             var index = _sourceCache.FindIndex(s => s.Equals(key));
             if (index == -1)
             {
@@ -454,7 +439,7 @@ namespace PhotoVs.Logic
             Console.WriteLine($"Removed {removedCount} duplicates.");*/
         }
 
-        private void CreateSupertileset(bool isMaterial)
+        private void CreateSupertileset()
         {
             var tiles = _dedupe.Count;
             var outputWidth = 1;
@@ -498,9 +483,9 @@ namespace PhotoVs.Logic
                 foreach (var index in key)
                 {
                     var pos = _sourceCache[index];
-                    _spriteBatch.Draw(isMaterial ? pos.Item2 : pos.Item1,
+                    _spriteBatch.Draw(pos.Item1,
                         new Rectangle(x, y, _tileSize, _tileSize),
-                        new Rectangle(pos.Item3, pos.Item4, _tileSize, _tileSize),
+                        new Rectangle(pos.Item2, pos.Item3, _tileSize, _tileSize),
                         Color.White);
                 }
 
@@ -514,8 +499,7 @@ namespace PhotoVs.Logic
 
             _spriteBatch.GraphicsDevice.SetRenderTarget(null);
 
-            var outName = isMaterial ? "supertileset_mat.png" : "supertileset.png";
-            ts.SaveAsPng(Path.Combine(_outputDir, outName));
+            ts.SaveAsPng(Path.Combine(_outputDir, "supertileset.png"));
         }
 
         private void CreateTilemaps()

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using PhotoVs.Engine.Assets.AssetLoaders;
 
 namespace PhotoVs.Engine.Assets.TypeLoaders
 {
     public abstract class TypeLoader<T> : ITypeLoader<T>
     {
-        private IAssetLoader _assetLoader;
+        private readonly IAssetLoader _assetLoader;
 
         public TypeLoader(IAssetLoader assetLoader)
         {

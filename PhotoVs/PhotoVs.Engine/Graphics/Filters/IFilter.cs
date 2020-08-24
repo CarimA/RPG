@@ -1,9 +1,15 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PhotoVs.Engine.Graphics.Filters
 {
     public interface IFilter
     {
-        RenderTarget2D Filter(SpriteBatch spriteBatch, Texture2D inputTexture);
+        void Filter(ref RenderTarget2D renderTarget, SpriteBatch spriteBatch, Texture2D inputTexture);
+    }
+
+    public interface ITransformFilter : IFilter
+    {
+        void SetTransform(Matrix matrix);
     }
 }

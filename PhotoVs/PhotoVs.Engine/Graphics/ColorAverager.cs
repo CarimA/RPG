@@ -40,7 +40,12 @@ namespace PhotoVs.Engine.Graphics
 
             if (_outputTex == null || _outputTex.Width != texA.Width || _outputTex.Height != texA.Height ||
                 _outputTex.Width != texB.Width ||
-                _outputTex.Height != texB.Height) _outputTex = _renderer.CreateRenderTarget(texA.Width, texA.Height);
+                _outputTex.Height != texB.Height)
+            {
+                _outputTex?.Dispose();
+                _outputTex = null;
+                _outputTex = _renderer.CreateRenderTarget(texA.Width, texA.Height);
+            }
         }
 
         public void SetPhase(float phase)

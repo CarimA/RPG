@@ -5,26 +5,44 @@
         <TargetFrameworks>
             net472;
             netcoreapp3.1;
-            monoandroid8;
         </TargetFrameworks>
         <Optimize>false</Optimize>
         <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU;x64</Platforms>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup>
       <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+      <PlatformTarget>x64</PlatformTarget>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|x64'">
+      <PlatformTarget>x64</PlatformTarget>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|x64'">
+      <PlatformTarget>x64</PlatformTarget>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DefineConstants>DEBUG;TRACE</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|x64'">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.6.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="1.2.0-beta-r9" />
+    <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core" Version="1.2.0-beta-r9" />
+    <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.WinX64" Version="1.2.0-beta-r9" />
     <PackageReference Include="MoonSharp" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SpriteFontPlus" Version="0.8.0.38" />
-    <PackageReference Include="System.CodeDom" Version="4.7.0" />
+    <PackageReference Include="SpriteFontPlus" Version="0.8.1.39" />
     <PackageReference Include="ZipStorer" Version="3.6.0" />
   </ItemGroup>
 
@@ -33,25 +51,10 @@
   </ItemGroup>
     
   <ItemGroup Label="Windows reference" Condition="'$(TargetFramework)'=='net472'">
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.7.1.189" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
   </ItemGroup>
 
   <ItemGroup Label="NETCore reference" Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
   </ItemGroup>
-    
-    <ItemGroup Label="Android reference" Condition="'$(TargetFramework)'=='monoandroid8'">
-        <PackageReference Include="MonoGame.Framework.Android" Version="3.7.1.189" />
-        <Reference Include="System.Runtime.Serialization" />
-        <Reference Include="System.Xml.Linq" />
-    </ItemGroup>
-    
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-      <PackageReference Include="CSCore">
-        <Version>1.2.1.2</Version>
-      </PackageReference>
-      <PackageReference Include="CSCore.Ogg">
-        <Version>1.0.0</Version>
-      </PackageReference>
-    </ItemGroup>
 </Project>

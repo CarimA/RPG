@@ -101,6 +101,11 @@ namespace PhotoVs.Engine.ECS
             return ApplyLinq(obj => types.All(obj.Components.Has));
         }
 
+        public GameObjectList All(IEnumerable<Type> types)
+        {
+            return ApplyLinq(obj => types.All(obj.Components.Has));
+        }
+
         public GameObjectList Any(params Type[] types)
         {
             return ApplyLinq(obj => types.Any(obj.Components.Has));

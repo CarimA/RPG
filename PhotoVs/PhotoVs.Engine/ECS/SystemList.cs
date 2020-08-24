@@ -1,110 +1,84 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Microsoft.Xna.Framework;
-using PhotoVs.Engine.ECS.Systems;
 
 namespace PhotoVs.Engine.ECS
 {
-    // todo: bind systems and system collection to kernel
-
-    public class SystemList
+    public class SystemList<T> : IList<T> where T : ISystem
     {
-        private readonly List<System> _updateables;
-        private readonly List<System> _drawables;
+        private readonly List<T> _systems;
 
         public SystemList()
         {
-            _updateables = new List<System>();
-            _drawables = new List<System>();
+            _systems = new List<T>();
         }
 
-        public new void Add(Action<GameTime, GameObjectList> system)
+        public void Add(T system)
         {
             if (system == null)
                 throw new ArgumentNullException(nameof(system));
 
-            var s = new System(system);
-            switch (s.RunOn)
-            { 
-                case RunOn.Draw:
-                    _drawables.Add(s);
-                    _drawables.Sort(SortByPriority);
-                    break;
-                case RunOn.Update:
-                    _updateables.Add(s);
-                    _updateables.Sort(SortByPriority);
-                    break;
-                default:
-                    throw new ArgumentException(nameof(s.RunOn));
-            }
+            _systems.Add(system);
+            _systems.Sort(SortByPriority);
         }
 
-        private int SortByPriority(System a, System b)
+        public void Clear()
+        {
+            _systems.Clear();
+        }
+
+        public bool Contains(T item)
+        {
+            return _systems.Contains(item);
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            _systems.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(T item)
+        {
+            return _systems.Remove(item);
+        }
+
+        public int Count => _systems.Count;
+        public bool IsReadOnly => false;
+
+        private int SortByPriority(T a, T b)
         {
             return a.Priority.CompareTo(b.Priority);
         }
 
-        public new void AddRange(IEnumerable<Action<GameTime, GameObjectList>> systems)
+        public IEnumerator<T> GetEnumerator()
         {
-            foreach (var system in systems)
-                Add(system);
+            return _systems.GetEnumerator();
         }
 
-        public IEnumerator<System> UpdateSystems => _updateables.GetEnumerator();
-        public IEnumerator<System> DrawSystems => _drawables.GetEnumerator();
-
-        [GameSystem(RunOn.Update, typeof(int), typeof(int))]
-        public void DoThis(GameTime gameTime, GameObjectList gameObjects)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-
-        }
-    }
-
-    public class System
-    {
-        private readonly GameSystemAttribute _attribute;
-
-        public Type[] Required => _attribute.Required;
-        public int Priority => _attribute.Priority;
-        public RunOn RunOn => _attribute.RunOn;
-
-        public Action<GameTime, GameObjectList> Method { get; }
-
-        public System(Action<GameTime, GameObjectList> method)
-        {
-            Method = method;
-
-            var methodInfo = method.GetMethodInfo();
-            _attribute =  methodInfo.GetCustomAttribute<GameSystemAttribute>();
-        }
-    }
-
-    public enum RunOn
-    {
-        Update,
-        Draw
-    }
-
-    [AttributeUsage(AttributeTargets.Method)]
-    public class GameSystemAttribute : Attribute
-    {
-
-        public RunOn RunOn { get; }
-        public int Priority { get; }
-        public Type[] Required { get; }
-
-        public GameSystemAttribute(RunOn runOn, params Type[] required) : this(runOn, 0, required)
-        {
-
+            return GetEnumerator();
         }
 
-        public GameSystemAttribute(RunOn runOn, int priority = 0, params Type[] required)
+        public int IndexOf(T item)
         {
-            RunOn = runOn;
-            Priority = priority;
-            Required = required;
+            return _systems.IndexOf(item);
+        }
+
+        public void Insert(int index, T item)
+        {
+            _systems.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            _systems.RemoveAt(index);
+        }
+
+        public T this[int index]
+        {
+            get => _systems[index];
+            set => _systems[index] = value;
         }
     }
 }

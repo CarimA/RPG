@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
-using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.Components;
 
 namespace PhotoVs.Logic.PlayerData
 {

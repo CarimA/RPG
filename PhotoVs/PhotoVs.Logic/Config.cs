@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using PhotoVs.Engine.Assets;
 using PhotoVs.Engine.Assets.AssetLoaders;
-using PhotoVs.Logic.Mechanics.Input;
+using PhotoVs.Logic.Mechanics;
 using PhotoVs.Logic.PlayerData;
 using YamlDotNet.Serialization;
 

@@ -43,9 +43,7 @@ namespace PhotoVs.Engine.Graphics.TextureAtlases
         public static void Draw(this SpriteBatch spriteBatch, TextureRegion2D textureRegion,
             Rectangle destinationRectangle, Color color, Rectangle? clippingRectangle = null)
         {
-            var ninePatchRegion = textureRegion as NinePatchRegion2D;
-
-            if (ninePatchRegion != null)
+            if (textureRegion is NinePatchRegion2D ninePatchRegion)
                 spriteBatch.Draw(ninePatchRegion, destinationRectangle, color, clippingRectangle);
             else
                 spriteBatch.Draw(textureRegion.Texture, textureRegion.Bounds, destinationRectangle, color,

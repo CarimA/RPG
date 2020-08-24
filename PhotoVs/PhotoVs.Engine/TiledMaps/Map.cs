@@ -82,22 +82,18 @@ namespace PhotoVs.Engine.TiledMaps
         /// <returns>Tiled Map</returns>
         public static Map FromStream(Stream stream, Func<ExternalTileset, Stream> tsLoader = null)
         {
-            using (var reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
-            {
-                var map = reader.ReadTmxMap();
+            using var reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
+            var map = reader.ReadTmxMap();
 
-                if (tsLoader != null)
-                    foreach (var item in map.Tilesets)
-                        if (item is ExternalTileset ets)
-                            ets.LoadTileset(e =>
-                            {
-                                using (var s = tsLoader(e))
-                                {
-                                    return Tileset.FromStream(s);
-                                }
-                            });
-                return map;
-            }
+            if (tsLoader != null)
+                foreach (var item in map.Tilesets)
+                    if (item is ExternalTileset ets)
+                        ets.LoadTileset(e =>
+                        {
+                            using var s = tsLoader(e);
+                            return Tileset.FromStream(s);
+                        });
+            return map;
         }
     }
 }

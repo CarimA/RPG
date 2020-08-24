@@ -25,8 +25,6 @@ namespace PhotoVs.Engine.Graphics.Filters
         private Vector2 _offsetA;
         private Vector2 _offsetB;
 
-        private RenderTarget2D _outputTexture;
-
         public FunkyFilter(IRenderer renderer, SpriteBatch spriteBatch, Effect effect, Texture2D noiseA,
             Texture2D noiseB, Color colorA, Color colorB, Color colorC)
         {
@@ -57,16 +55,11 @@ namespace PhotoVs.Engine.Graphics.Filters
             _pulseParam.SetValue(6f);
         }
 
-        public RenderTarget2D Filter(SpriteBatch spriteBatch, Texture2D inputTexture)
+        public void Filter(ref RenderTarget2D renderTarget, SpriteBatch spriteBatch, Texture2D inputTexture)
         {
-            if (_outputTexture == null || _outputTexture.Width != inputTexture.Width ||
-                _outputTexture.Height != inputTexture.Height)
-            {
-                _outputTexture = _renderer.CreateRenderTarget(inputTexture.Width, inputTexture.Height);
-                _maskSizeParam.SetValue(new Vector2(_outputTexture.Width, _outputTexture.Height));
-            }
+            _maskSizeParam.SetValue(new Vector2(renderTarget.Width, renderTarget.Height));
 
-            _renderer.RequestSubRenderer(_outputTexture);
+            _renderer.RequestSubRenderer(renderTarget);
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointWrap);
             _effect.Parameters["Texture"].SetValue(inputTexture);
@@ -75,7 +68,6 @@ namespace PhotoVs.Engine.Graphics.Filters
             _spriteBatch.End();
 
             _renderer.RelinquishSubRenderer();
-            return _outputTexture;
         }
 
         public void Update(GameTime gameTime)

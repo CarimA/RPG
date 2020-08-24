@@ -2,28 +2,35 @@
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Core;
 using PhotoVs.Engine.ECS;
-using PhotoVs.Engine.Graphics;
-using PhotoVs.Logic.Mechanics.Camera.Systems;
-using PhotoVs.Logic.Mechanics.Input.Systems;
+using PhotoVs.Logic.Mechanics;
 using PhotoVs.Logic.PlayerData;
+using PhotoVs.Utils;
 
 namespace PhotoVs.Logic
 {
     public class GameState : IHasBeforeUpdate
     {
-        public GameState(ICanvasSize canvasSize, IAssetLoader assetLoader, ISignal signal, VirtualGameSize virtualGameSize, ICanvasSize targetCanvasSize)
+        public Stage Stage { get; }
+
+        public GameState(Camera camera, Stage stage, IAssetLoader assetLoader)
         {
+            Stage = stage;
             Config = Config.Load(assetLoader);
             Player = new Player(Config);
-            GameObjects = new GameObjectList
-            {
-                Player
-            };
 
-            Camera = new SCamera(canvasSize);
-            Camera.Follow(Player);
-            ZoomScale = (float) targetCanvasSize.Width / virtualGameSize.Width;
-            Camera.SetZoom(ZoomScale);
+            Stage.GameObjects.Add(Player);
+
+            camera.Zoom = 1f;
+            camera.Lerp = 0.1f;
+            camera.Lead = 0;
+            var s = 6f;
+            camera.DeadZone = new RectangleF(
+                (1f - (1f / s)) / 2f,
+                (1f - (1f / s)) / 2f,
+                (1f / s), (1f / s));
+
+            //camera.Boundary = new Rectangle(8000, 5800, 800, 800);
+
             //Camera.SetZoom(canvasSize.DisplayHeight / canvasSize.Height)
 
             //SceneMachine = new SceneMachine(Player, renderer, CreateGlobalSystems(), CreateGlobalEntities());
@@ -31,12 +38,6 @@ namespace PhotoVs.Logic
 
         public Config Config { get; }
         public Player Player { get; }
-        public SCamera Camera { get; }
-        public float ZoomScale { get; }
-
-        //public SceneMachine SceneMachine { get; }
-        public GameObjectList GameObjects { get; }
-        public SystemList Systems { get; }
         public GameTime GameTime { get; set; }
 
         public int BeforeUpdatePriority { get; set; } = int.MinValue;

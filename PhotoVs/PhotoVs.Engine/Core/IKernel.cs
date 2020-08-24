@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PhotoVs.Engine.Core
 {
     public interface IKernel
     {
+        IEnumerable<object> Bindings { get; }
+
         Action<object> OnBind { get; set; }
         Action OnConstruct { get; set; }
 

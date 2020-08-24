@@ -7,9 +7,9 @@ namespace PhotoVs.Logic.Modules
 {
     public class TimingModule
     {
-        private readonly IGameState _gameState;
+        private readonly GameState _gameState;
 
-        public TimingModule(IInterpreter<Closure> interpreter, IGameState gameState)
+        public TimingModule(IInterpreter<Closure> interpreter, GameState gameState)
         {
             _gameState = gameState;
 

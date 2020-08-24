@@ -24,7 +24,7 @@ namespace PhotoVs.Engine.Scripting
             _interpreter = interpreter;
         }
 
-        public void Start()
+        public void Start(IEnumerable<object> bindings)
         {
             LoadScripts();
         }

@@ -5,6 +5,7 @@ namespace PhotoVs.Engine.Core
 {
     public class Scheduler : IScheduler
     {
+        private readonly IKernel _kernel;
         private readonly List<IHasAfterDraw> _afterDraws;
         private readonly List<IHasAfterUpdate> _afterUpdates;
         private readonly List<IHasBeforeDraw> _beforeDraws;
@@ -15,6 +16,7 @@ namespace PhotoVs.Engine.Core
 
         public Scheduler(IKernel kernel)
         {
+            _kernel = kernel;
             _startups = new List<IStartup>();
             _beforeUpdates = new List<IHasBeforeUpdate>();
             _updates = new List<IHasUpdate>();
@@ -30,7 +32,7 @@ namespace PhotoVs.Engine.Core
         public void Start()
         {
             foreach (var item in _startups)
-                item.Start();
+                item.Start(_kernel.Bindings);
         }
 
         public void BeforeUpdate(GameTime gameTime)

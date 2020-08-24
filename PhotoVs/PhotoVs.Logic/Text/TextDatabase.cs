@@ -16,7 +16,7 @@ namespace PhotoVs.Logic.Text
         private readonly Dictionary<Languages, Language> _languages;
         private readonly Player _player;
 
-        public TextDatabase(IAssetLoader assetLoader, IGameState gameState)
+        public TextDatabase(IAssetLoader assetLoader, GameState gameState)
         {
             _config = gameState.Config;
             _player = gameState.Player;

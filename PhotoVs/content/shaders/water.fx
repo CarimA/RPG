@@ -5,10 +5,8 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_3
 #endif
 
-Texture2D Texture : register(t0);
 sampler TextureSampler : register(s0)
 {
-    Texture = (Texture);
 	MipFilter = POINT;
     MinFilter = POINT;
     MagFilter = POINT;
@@ -44,11 +42,9 @@ float4 when_eq(float4 x, float4 y) {
   return 1.0 - abs(sign(x - y));
 }
 
-float offsetXA;
-float offsetYA;
-float offsetXB;
-float offsetYB;
-float time;
+float2 offsetA;
+float2 offsetB;
+float2 cameraPos;
 float contrast;
 int step;
 float pixWidth;
@@ -59,25 +55,18 @@ float scale;
 
 float4 main(VertexShaderOutput input) : COLOR
 {
-    float4 maskColor = tex2D(TextureSampler, input.TextureCoordinates - float2(pixWidth / 2, pixHeight / 2));
-	if (maskColor.b != 1.0)
-		return float4(0.0, 0.0, 0.0, 0.0);
+    float4 maskColor = tex2D(TextureSampler, input.TextureCoordinates);
+	if (maskColor.r != water.r && maskColor.g != water.g && maskColor.b != water.b)
+		return maskColor;
 
-	float y = sin(time) / 2.0;
-
-    float4 noiseA = tex2D(texSamplerNoiseA, scale * (input.TextureCoordinates + float2(offsetXA + y, offsetYA + y + 0.5)));
-    float4 noiseB = tex2D(texSamplerNoiseB, scale * (input.TextureCoordinates + float2(offsetXB + y + 0.5, offsetYB + y)));
+	float2 c = cameraPos;
+	c.x = c.x * 0.5;
+    float4 noiseA = tex2D(texSamplerNoiseA, scale * ((c * pixWidth) + input.TextureCoordinates + float2(offsetA.x, offsetA.y + 0.5)));
+    float4 noiseB = tex2D(texSamplerNoiseB, scale * ((c * pixHeight) + input.TextureCoordinates + float2(offsetB.x + 0.5, offsetB.y)));
 	float4 avg = lerp(noiseA, noiseB, 0.5);
 
 	avg.rgb = max(avg.rgb, 0.15);
 	avg.rgb = min(avg.rgb, 0.85);
-
-	/*if (maskColor.a != 1.0) 
-	{
-		float4 result = water * (maskColor.a);
-		result.a = 1;
-		return result;
-	}*/
 
 	if (avg.r >= 0.75 && maskColor.a == 1.0)
 		return highlightWater;
@@ -85,16 +74,10 @@ float4 main(VertexShaderOutput input) : COLOR
 	avg.rgb = round(avg.rgb * step) / step;
 	avg.rgb = ((avg.rgb - 0.5) * max(contrast, 0)) + 0.5;
 	avg.rgb += 0.15;
-
-	if (maskColor.a != 1.0)
-	{
-		float4 result = water * lerp(avg, 0.5, 1.0 - (maskColor.a - 0.25));
-		result.a = 1;
-		return result;
-	}
 		
 	float4 result = water * avg;
 	result.a = 1;
+	
     return result;
 }
 

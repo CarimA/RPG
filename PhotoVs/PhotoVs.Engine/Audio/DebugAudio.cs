@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using PhotoVs.Utils.Logging;
 
@@ -10,7 +6,7 @@ namespace PhotoVs.Engine.Audio
 {
     public class DebugAudio : IAudio, IDisposable
     {
-        private IAudio _instance;
+        private readonly IAudio _instance;
 
         public DebugAudio(IAudio audio)
         {

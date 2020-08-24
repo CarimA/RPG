@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PhotoVs.EditorSuite.GameData
 {
@@ -32,21 +31,5 @@ namespace PhotoVs.EditorSuite.GameData
 
         public string SuperTilesetId { get; set; }
         public string OverworldMapId { get; set; }
-    }
-
-    public class Map
-    {
-        public string MaskTextureId { get; set; }
-        public string FringeTextureId { get; set; }
-        public string Name { get; set; }
-        public TimeSpan GameDay { get; set; } // TimeSpan.Zero = no time will pass
-
-    }
-
-    public class PackedData
-    {
-        public int Location;
-        public int Length;
-        public bool IsCompressed;
     }
 }

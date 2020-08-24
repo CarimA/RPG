@@ -1,134 +1,24 @@
-﻿using System;
-using System.IO;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine;
-using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.Core;
 using PhotoVs.Engine.Graphics;
-using PhotoVs.Logic.Mechanics.Input;
-using PhotoVs.Utils.Extensions;
-using SpriteFontPlus;
+using PhotoVs.Logic.Mechanics;
 
 namespace PhotoVs.Logic
 {
-    public class ScreenshotHandler : IHasBeforeUpdate, IHasAfterDraw
-    {
-        private readonly IGameState _gameState;
-        private readonly IRenderer _renderer;
-        private readonly ICanvasSize _targetCanvasSize;
-        private readonly GraphicsDevice _graphicsDevice;
-        private readonly SpriteBatch _spriteBatch;
-        private bool _shouldScreenshot;
-        private DynamicSpriteFont _font;
-
-        public ScreenshotHandler(IGameState gameState, IRenderer renderer, ICanvasSize targetCanvasSize,
-            GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IAssetLoader assetLoader)
-        {
-            _gameState = gameState;
-            _renderer = renderer;
-            _targetCanvasSize = targetCanvasSize;
-            _graphicsDevice = graphicsDevice;
-            _spriteBatch = spriteBatch;
-
-            _font = assetLoader.Get<DynamicSpriteFont>("ui/fonts/ubuntu.ttf");
-        }
-
-        public int BeforeUpdatePriority { get; set; } = 0;
-        public bool BeforeUpdateEnabled { get; set; } = true;
-
-        public void BeforeUpdate(GameTime gameTime)
-        {
-            if (_gameState.Player.Input.ActionPressed(InputActions.Screenshot))
-                _shouldScreenshot = true;
-        }
-
-        public int AfterDrawPriority { get; set; } = int.MaxValue;
-        public bool AfterDrawEnabled { get; set; } = true;
-
-        public void AfterDraw(GameTime gameTime)
-        {
-            if (_shouldScreenshot)
-            {
-                TakeScreenshot(false, Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    $"PhotoVs/Screenshots/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{Guid.NewGuid().ToString()}.png"));
-                _shouldScreenshot = false;
-            }
-        }
-
-        public void TakeScreenshot(bool useVirtualResolution, string filename)
-        {
-            if (useVirtualResolution)
-            {
-                var targetWidth = _targetCanvasSize.Width;
-                var targetHeight = _targetCanvasSize.Height;
-                TakeScreenshot(targetWidth, targetHeight, filename);
-            }
-            else
-            {
-                var targetWidth = _targetCanvasSize.DisplayWidth;
-                var targetHeight = _targetCanvasSize.DisplayHeight;
-                TakeScreenshot(targetWidth, targetHeight, filename);
-            }
-        }
-
-        private void TakeScreenshot(int targetWidth, int targetHeight, string filename)
-        {
-            var text = "Photeus - Monster Collecting RPG in Development - www.play-photeus.com";
-            var size = _font.MeasureString(text);
-
-            var backbuffer = _renderer.Backbuffer;
-            var x = (targetWidth / 2) - (backbuffer.Width / 2);
-            var y = (targetHeight / 2) - (backbuffer.Height / 2);
-
-
-            var scale = 720 / targetHeight;
-
-            var screenshotBuffer = _renderer.CreateRenderTarget(targetWidth * scale, targetHeight * scale);
-
-            var tX = ((targetWidth * scale) / 2) - (size.X / 2);
-            var tY = (targetHeight * scale) - size.Y - 20;
-
-            _graphicsDevice.SetRenderTarget(screenshotBuffer);
-            _graphicsDevice.Clear(Color.Black);
-
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(backbuffer, new Rectangle(0, 0, targetWidth * scale, targetHeight * scale), Color.White);
-
-            var borderSize = 2;
-            _spriteBatch.DrawString(_font, text, new Vector2(tX - borderSize, tY - borderSize), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(tX - borderSize, tY + borderSize), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(tX + borderSize, tY - borderSize), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(tX + borderSize, tY + borderSize), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(tX - borderSize, tY), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(tX + borderSize, tY), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(tX, tY - borderSize), Color.Black);
-            _spriteBatch.DrawString(_font, text, new Vector2(tX, tY + borderSize), Color.Black);
-
-            _spriteBatch.DrawString(_font, text, new Vector2(tX, tY), Color.Cyan);
-            _spriteBatch.End();
-
-            _graphicsDevice.SetRenderTarget(null);
-
-            screenshotBuffer.SaveAsPng(filename);
-
-            screenshotBuffer.UploadToDiscord(_gameState.Config.ImgurClientId, _gameState.Config.DiscordWebhookUrl);
-        }
-    }
-
     public class FullscreenHandler : IHasBeforeUpdate, IStartup
     {
         private readonly GraphicsDeviceManager _graphics;
         private readonly IPlatform _platform;
-        private readonly IGameState _gameState;
-        private readonly ICanvasSize _canvasSize;
+        private readonly GameState _gameState;
+        private readonly CanvasSize _canvasSize;
         private readonly GameWindow _window;
 
         private int _lastWindowWidth;
         private int _lastWindowHeight;
 
-        public FullscreenHandler(GraphicsDeviceManager graphics, IPlatform platform, IGameState gameState, ICanvasSize canvasSize, GameWindow window)
+        public FullscreenHandler(GraphicsDeviceManager graphics, IPlatform platform, GameState gameState, CanvasSize canvasSize, GameWindow window)
         {
             _graphics = graphics;
             _platform = platform;
@@ -137,7 +27,7 @@ namespace PhotoVs.Logic
             _window = window;
         }
 
-        public void Start()
+        public void Start(IEnumerable<object> bindings)
         {
             if (_platform.OverrideFullscreen || _gameState.Config.Fullscreen)
             {

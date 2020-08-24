@@ -5,19 +5,20 @@ using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Scripting;
-using PhotoVs.Logic.Mechanics.Input.Components;
-using PhotoVs.Logic.Mechanics.Movement.Components;
+using PhotoVs.Logic.Mechanics.Components;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Modules
 {
     public class GameObjectModule
     {
-        private readonly IGameState _gameState;
+        private readonly GameState _gameState;
+        private readonly Stage _stage;
 
-        public GameObjectModule(IInterpreter<Closure> interpreter, IGameState gameState)
+        public GameObjectModule(IInterpreter<Closure> interpreter, GameState gameState, Stage stage)
         {
             _gameState = gameState;
+            _stage = stage;
 
             interpreter.AddFunction("Player", (Func<string>) GetPlayer);
             interpreter.AddFunction("GameObject", (Func<string, string>) GetGameObjectByName);
@@ -33,7 +34,7 @@ namespace PhotoVs.Logic.Modules
 
         private void Warp(string gameObjectId, Vector2 position)
         {
-            var gameObject = _gameState.GameObjects[gameObjectId];
+            var gameObject = _stage.GameObjects[gameObjectId];
             var cPosition = gameObject.Components.Get<CPosition>();
             cPosition.Position = position;
             cPosition.LastPosition = position;
@@ -51,17 +52,17 @@ namespace PhotoVs.Logic.Modules
 
         private IEnumerable<string> GetGameObjectsByTag(string tag)
         {
-            return _gameState.GameObjects.HasTag(tag).Select(gameObject => gameObject.ID);
+            return _stage.GameObjects.HasTag(tag).Select(gameObject => gameObject.ID);
         }
 
         private string GetGameObjectByName(string name)
         {
-            return _gameState.GameObjects[name].ID;
+            return _stage.GameObjects[name].ID;
         }
 
         private bool Move(string gameObjectId, Vector2 target, float speed)
         {
-            var gameObject = _gameState.GameObjects[gameObjectId];
+            var gameObject = _stage.GameObjects[gameObjectId];
             var position = gameObject.Components.Get<CPosition>();
             var input = gameObject.Components.Get<CInputState>();
             var amount = speed * _gameState.GameTime.GetElapsedSeconds();

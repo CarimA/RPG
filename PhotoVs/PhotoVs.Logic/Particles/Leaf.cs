@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Graphics.Particles;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Particles
 {
-    public struct Leaf : IParticle
+    public class Leaf : IParticle
     {
         public float Lifetime { get; set; }
         public Rectangle Source { get; set; }
@@ -42,12 +38,12 @@ namespace PhotoVs.Logic.Particles
             _rotationSpeed = random.NextFloat(0.98f, 3.8f);
 
             Color = random.NextShuffle(
-                new Color(76, 67, 51), // dark brown
+                //new Color(76, 67, 51), // dark brown
                 new Color(79, 81, 42), // darkest green
                 new Color(124, 138, 27), // dark green
                 new Color(154, 169, 25), // green
-                new Color(157, 185, 24), // light green
-                new Color(127, 99, 53) // brown
+                new Color(157, 185, 24) // light green
+               // new Color(127, 99, 53) // brown
             );
             _initialColor = Color;
         }
@@ -68,6 +64,8 @@ namespace PhotoVs.Logic.Particles
             {
                 var time = _winddown - Lifetime;
                 var progress = time.Map(0, _winddown, 1, 0);
+                _velocity = Vector2.Lerp(_velocity, Vector2.Zero, 1f);
+                _rotationSpeed = MathHelper.Lerp(_rotationSpeed, 0, 0.2f);
                 Color = _initialColor * progress;
             }
             else

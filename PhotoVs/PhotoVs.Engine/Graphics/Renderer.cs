@@ -11,12 +11,12 @@ namespace PhotoVs.Engine.Graphics
         private readonly List<IFilter> _filters;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly SpriteBatch _spriteBatch;
-        private readonly ICanvasSize _targetCanvasSize;
+        private readonly CanvasSize _targetCanvasSize;
 
         private RenderTarget2D _mainRenderTarget;
         private RenderTarget2D _tempRenderTarget;
 
-        public Renderer(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, ICanvasSize targetCanvasSize)
+        public Renderer(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, CanvasSize targetCanvasSize)
         {
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
@@ -54,14 +54,14 @@ namespace PhotoVs.Engine.Graphics
                 if (filter is IUpdateFilter updateFilter)
                     updateFilter.Update(gameTime);
 
-                copy = filter.Filter(_spriteBatch, copy);
+                filter.Filter(ref copy, _spriteBatch, copy);
             }
 
             _graphicsDevice.SetRenderTarget(null);
             _graphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(copy, _targetCanvasSize.DisplayRectangle, Color.White);
+            _spriteBatch.Draw(copy, _targetCanvasSize.VirtualDisplay, Color.White);
             _spriteBatch.End();
         }
 
@@ -95,17 +95,16 @@ namespace PhotoVs.Engine.Graphics
             _spriteBatch.End();
         }
 
-        public Matrix GetUIOrigin()
-        {
-            return Matrix.CreateTranslation(new Vector3(
-                _targetCanvasSize.DisplayWidth / 2 - _targetCanvasSize.Width / 2,
-                _targetCanvasSize.DisplayHeight / 2 - _targetCanvasSize.Height / 2, 0));
-        }
 
         private void ResizeBuffers()
         {
-            _mainRenderTarget = CreateRenderTarget(_targetCanvasSize.DisplayWidth, _targetCanvasSize.DisplayHeight);
-            _tempRenderTarget = CreateRenderTarget(_targetCanvasSize.DisplayWidth, _targetCanvasSize.DisplayHeight);
+            _mainRenderTarget?.Dispose();
+            _tempRenderTarget?.Dispose();
+            _mainRenderTarget = null;
+            _tempRenderTarget = null;
+
+            _mainRenderTarget = CreateRenderTarget(_targetCanvasSize.TrueCurrentWidth, _targetCanvasSize.TrueCurrentHeight);
+            _tempRenderTarget = CreateRenderTarget(_targetCanvasSize.TrueCurrentWidth, _targetCanvasSize.TrueCurrentHeight);
         }
     }
 }

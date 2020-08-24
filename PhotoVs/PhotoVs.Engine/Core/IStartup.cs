@@ -1,7 +1,9 @@
-﻿namespace PhotoVs.Engine.Core
+﻿using System.Collections.Generic;
+
+namespace PhotoVs.Engine.Core
 {
     public interface IStartup
     {
-        void Start();
+        void Start(IEnumerable<object> bindings);
     }
 }

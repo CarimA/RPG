@@ -10,7 +10,7 @@ namespace PhotoVs.Logic.Modules
     {
         private readonly Player _player;
 
-        public EventConditionsModule(IInterpreter<Closure> interpreter, IGameState gameState)
+        public EventConditionsModule(IInterpreter<Closure> interpreter, GameState gameState)
         {
             _player = gameState.Player;
 

@@ -13,10 +13,12 @@ using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
+using PhotoVs.Logic.BuildTools;
 using PhotoVs.Logic.Debugger;
+using PhotoVs.Logic.Mechanics;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Modules;
-using PhotoVs.Logic.NewScenes;
+using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
 
 namespace PhotoVs.Logic
@@ -27,6 +29,7 @@ namespace PhotoVs.Logic
         private readonly Kernel _kernel;
         private readonly IPlatform _platform;
         private readonly Scheduler _scheduler;
+        private SpriteBatch _spriteBatch;
 
         public MainGame(IPlatform platform)
         {
@@ -53,12 +56,14 @@ namespace PhotoVs.Logic
 
         protected override void Initialize()
         {
+            // todo: maybe have a BindModule<T, TProxy>() that integrates with scripting?
+
             _kernel
                 // monogame specific things
                 .Bind<Game>(this)
                 .Bind(_graphics)
                 .Bind(GraphicsDevice)
-                .Bind(new SpriteBatch(GraphicsDevice))
+                .Bind(_spriteBatch = new SpriteBatch(GraphicsDevice))
                 .Bind(Window)
 
                 // type loaders for assets
@@ -76,38 +81,45 @@ namespace PhotoVs.Logic
                 .Bind<ISignal, Signal>()
                 .Bind<FullscreenHandler>()
                 .Bind<ScreenshotHandler>()
-                .Bind<ICanvasSize, TargetCanvasSize>()
+                .Bind<CanvasSize>()
                 .Bind<ICoroutineRunner, CoroutineRunner>()
                 .Bind<IRenderer, Renderer>()
+                .Bind<Primitive>()
                 .Bind<IAudio>(new DebugAudio(_platform.Audio)) // _platform.Audio))
                 .Bind<IScriptHost, ScriptHost<Closure>>()
                 .Bind<IInterpreter<Closure>, MoonSharpInterpreter>()
                 .Bind<DiagnosticInfo>()
 
                 // game logic
+                .Bind<Random>(new Random())
                 .Bind<StartupSequence>()
                 .Bind<GameState>()
                 .Bind<ITextDatabase, TextDatabase>()
-                .Bind<SceneMachine>()
                 .Bind<IOverworld, Overworld>()
+                .Bind<GameDate>()
 
                 // systems
+                .Bind<Stage>()
+                .Bind<GlobalSystems>()
+                .Bind<Camera>()
+                .Bind<Input>()
+                .Bind<DrawMap>()
+                .Bind<Movement>()
 
-                .Bind<SystemList>()
+                // scenes
+                .Bind<Test>()
 
                 // modules for scripting
                 .Bind<StandardLibraryModule>()
                 .Bind<EventConditionsModule>()
                 .Bind<EventTriggersModule>()
-                .Bind<SceneMachineModule>()
                 .Bind<TimingModule>()
-                .Bind<DialogueModule>()
                 .Bind<PlayerModule>()
                 .Bind<GameObjectModule>()
                 .Bind<TextModule>()
 
                 // data that will get used to initialise state
-                .Bind(new VirtualGameSize(640, 360, 360)) //720))
+                .Bind(new VirtualResolution(640, 360))
                 .Bind(new ScriptData(new List<(DataLocation, string)>
                 {
                     (DataLocation.Content, "logic/"),
@@ -122,6 +134,7 @@ namespace PhotoVs.Logic
 
             base.Initialize();
         }
+
 
         protected override void Update(GameTime gameTime)
         {

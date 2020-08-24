@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./css/reset.css">
+        <link rel="stylesheet" href="./css/font.css">
+        <link rel="stylesheet" href="./css/utility.css">
+    </head>
+
+    <!-- <iframe src="templates.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe> -->
+
+    <body class="viewport">
+        <div class="fill bg-transparent flex-center-children">
+            <div class="open flex flex-column overflow-hide bg-grey-mid color-grey-dark width-30 max-width-quarter-vw">
+                <header class="flex flex-align-items-center flex-shrink flex-justify-start position-relative mg-0 pd-t-l">
+                    <p class="text-bold text-big flex-grow text-align-center pd-0 mg-0">Quit Game?</p>
+                </header>
+                <section class="bg-grey-light display-block min-height-fifth-vh flex-grow flex-shrink mg-m pd-m">
+                    <p class="pd-0 mg-0">The game will close, and unsaved progress <strong>will be lost</strong>. Are you sure you want to quit?</p>
+                </section>
+                <footer class="pd-b-m ">
+                    <div class="width-full flex flex-justify-end">
+                        <button class="bg-grey-light pd-s mg-r-m">Cancel</button>
+                        <button class="bg-grey-light pd-s mg-r-m">Quit</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>

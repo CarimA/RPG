@@ -14,7 +14,7 @@ namespace PhotoVs.Logic.Modules
         private readonly Player _player;
         private readonly ISignal _signal;
 
-        public EventTriggersModule(IInterpreter<Closure> interpreter, ISignal signal, IGameState gameState)
+        public EventTriggersModule(IInterpreter<Closure> interpreter, ISignal signal, GameState gameState)
         {
             _interpreter = interpreter;
             _signal = signal;

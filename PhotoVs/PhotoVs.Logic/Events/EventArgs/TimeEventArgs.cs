@@ -1,4 +1,5 @@
 ﻿using PhotoVs.Engine.Events.EventArgs;
+using PhotoVs.Logic.Mechanics;
 using PhotoVs.Logic.Mechanics.World;
 
 namespace PhotoVs.Logic.Events.EventArgs

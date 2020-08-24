@@ -196,17 +196,13 @@ namespace PhotoVs.Engine.TiledMaps
                 case "csv":
                     return reader.ReadCSV(count);
                 case "base64":
-                    switch (compression)
+                    return compression switch
                     {
-                        case null:
-                            return reader.ReadBase64(count);
-                        case "gzip":
-                            return reader.ReadBase64Decompress((stream, mode) => new GZipStream(stream, mode), count);
-                        case "zlib":
-                            return reader.ReadBase64Decompress((stream, mode) => new ZlibStream(stream, mode), count);
-                        default:
-                            throw new XmlException(compression);
-                    }
+                        null => reader.ReadBase64(count),
+                        "gzip" => reader.ReadBase64Decompress((stream, mode) => new GZipStream(stream, mode), count),
+                        "zlib" => reader.ReadBase64Decompress((stream, mode) => new ZlibStream(stream, mode), count),
+                        _ => throw new XmlException(compression)
+                    };
 
                 default:
                     throw new NotImplementedException($"Encoding: {encoding}");

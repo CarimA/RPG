@@ -10,6 +10,8 @@ namespace PhotoVs.Engine.Core
         private readonly List<(Type, Type)> _injectingTypes;
         private readonly Dictionary<Type, object> _instances;
 
+        public IEnumerable<object> Bindings => _instances.Values;
+
         public Kernel()
         {
             _instances = new Dictionary<Type, object>();

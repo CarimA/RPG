@@ -196,7 +196,7 @@ namespace PhotoVs.Logic.Debugger
                 $"FPS:          {_fps}\nUpdate Avg.:  {_lastUpdate.TotalMilliseconds.ToString("00.000000")} ms\nDraw Avg.:    {_lastDraw.TotalMilliseconds.ToString("00.000000")} ms";
             var theight = _font.MeasureString(text).Y;
             var ty = y - theight - 5;
-            x = x + 1;
+            x += 1;
 
             _spriteBatch.DrawString(_font,
                 text,

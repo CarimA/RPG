@@ -1,41 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PhotoVs.Utils.Collections.Pooling;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Engine.Graphics.Particles
 {
-    public interface IEmitter
-    {
-        Rectangle Boundaries { get; }
-        void Update(GameTime gameTime);
-        void Draw(SpriteBatch spriteBatch, GameTime gameTime);
-    }
-
     public class Emitter<T> : IEmitter where T : IParticle, new()
     {
-        private int _total;
-        private Random _random;
+        private readonly Random _random;
+        private readonly int _total;
 
-        private Texture2D _texture;
+        private readonly Texture2D _texture;
         public Rectangle Boundaries { get; }
-        private IParticle[] _particles;
+        private readonly IParticle[] _particles;
 
         private float _throttleRender;
 
-        public Emitter(int total, Texture2D texture, Rectangle emitterBounds)
+        public Emitter(Random random, int total, Texture2D texture, Rectangle emitterBounds)
         {
+            _random = random;
             _total = total;
             _particles = new IParticle[total];
             _texture = texture;
             Boundaries = emitterBounds;
-            _random = new Random(emitterBounds.GetHashCode());
 
             CreateParticles();
         }
@@ -66,13 +53,13 @@ namespace PhotoVs.Engine.Graphics.Particles
 
         public void Update(GameTime gameTime)
         {
-            /*_throttleRender -= gameTime.GetElapsedSeconds();
+            _throttleRender -= gameTime.GetElapsedSeconds();
             if (_throttleRender > 0f)
                 return;
 
-            _throttleRender = 1f / 14f;
-            var time = TimeSpan.FromSeconds(_throttleRender);*/
-            var dTime = gameTime; //new GameTime(TimeSpan.Zero, time);
+            _throttleRender = 1f / 15f;
+            var time = TimeSpan.FromSeconds(_throttleRender);
+            var dTime = new GameTime(TimeSpan.Zero, time);
 
             for (var i = 0; i < _total; i++)
                 UpdateParticle(dTime, i);

@@ -5,21 +5,8 @@
 	#define PS_SHADERMODEL ps_5_0
 #endif
 
-Texture2D Texture : register(t0);
 sampler TextureSampler : register(s0)
 {
-    Texture = (Texture);
-	  MipFilter = POINT;
-    MinFilter = POINT;
-    MagFilter = POINT;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-};
-
-Texture2D texInput;
-sampler2D texInputMap
-{
-    Texture = <texInput>;
 	  MipFilter = POINT;
     MinFilter = POINT;
     MagFilter = POINT;
@@ -56,14 +43,14 @@ float4 main(VertexShaderOutput input) : COLOR
     float i = 0;
     float2 pos = float2(0, 0);
     float found = 0;
-    int horizonPixels = 50;
+    int horizonPixels = 80;
 
-    [unroll(50)] while (inputColor.b == 1.0)
+    [unroll(80)] while (inputColor.r == water.r && inputColor.g == water.g && inputColor.b == water.b)
     {
         i++;
         pos = input.TextureCoordinates - float2(0.0, pixHeight * i);
         inputColor = tex2D(TextureSampler, pos);
-        outputColor = tex2D(texInputMap, input.TextureCoordinates - float2(0.0, pixHeight * ((2 * i) - 1)));
+        outputColor = tex2D(TextureSampler, input.TextureCoordinates - float2(0.0, pixHeight * ((2 * i) - 1)));
         outputColor.a = 1 - (i / horizonPixels);
 
         found += when_neq(inputColor.b, 1.0);

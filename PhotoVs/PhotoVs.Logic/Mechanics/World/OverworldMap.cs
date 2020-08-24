@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,9 +9,7 @@ using PhotoVs.Engine.Graphics.Particles;
 using PhotoVs.Engine.TiledMaps;
 using PhotoVs.Engine.TiledMaps.Layers;
 using PhotoVs.Engine.TiledMaps.Objects;
-using PhotoVs.Logic.Mechanics.Camera.Systems;
-using PhotoVs.Logic.Mechanics.Movement.Components;
-using PhotoVs.Logic.Mechanics.World.Components;
+using PhotoVs.Logic.Mechanics.Components;
 using PhotoVs.Logic.Particles;
 using PhotoVs.Utils;
 using PhotoVs.Utils.Collections;
@@ -27,6 +22,7 @@ namespace PhotoVs.Logic.Mechanics.World
         private readonly int _cellHeight;
 
         private readonly int _cellWidth;
+        private readonly Random _random;
         private readonly IAssetLoader _assetLoader;
         private readonly Quadtree<GameObject> _collisions;
         private readonly Quadtree<GameObject> _scripts;
@@ -34,9 +30,13 @@ namespace PhotoVs.Logic.Mechanics.World
         private readonly Quadtree<IEmitter> _maskEmitters;
         private readonly Quadtree<IEmitter> _fringeEmitters;
 
+        public Quadtree<IEmitter> MaskEmitters => _maskEmitters;
+        public Quadtree<IEmitter> FringeEmitters => _fringeEmitters;
+
         // todo: hold map texture in here
-        public OverworldMap(Map map, IAssetLoader assetLoader)
+        public OverworldMap(Random random, Map map, IAssetLoader assetLoader)
         {
+            _random = random;
             _assetLoader = assetLoader;
 
             Properties = map.Properties;
@@ -92,14 +92,6 @@ namespace PhotoVs.Logic.Mechanics.World
                         var posX = map.XOffset + x * map.CellWidth + layer.X;
                         var posY = map.YOffset + y * map.CellHeight + layer.Y;
 
-                        /*if (tileset.Name == "trees_fringe")
-                        {
-                            _emitters.Add(new Emitter<Leaf>(30,
-                                    _assetLoader.Get<Texture2D>("particles/leaf.png"),
-                                    new Rectangle(posX, posY, 30, 30)),
-                                new RectangleF(posX, posY, 30, 30));
-                        }*/
-
                         var relativeId = gid - tileset.FirstGid;
                         if (tileset.TileProperties.TryGetValue(relativeId, out var item))
                         {
@@ -127,11 +119,12 @@ namespace PhotoVs.Logic.Mechanics.World
                                             switch (split[1])
                                             {
                                                 case "leaf":
-                                                    _maskEmitters.Add(new Emitter<Leaf>(5,
+                                                    // todo: use isMask to determine
+                                                    _maskEmitters.Add(new Emitter<Leaf>(_random, 2,
                                                         _assetLoader.Get<Texture2D>("particles/leaf.png"),
                                                         boundsT), boundsF);
 
-                                                    _fringeEmitters.Add(new Emitter<Leaf>(2,
+                                                    _fringeEmitters.Add(new Emitter<Leaf>(_random, 1,
                                                         _assetLoader.Get<Texture2D>("particles/leaf.png"),
                                                         boundsT), boundsF);
                                                     break;
@@ -240,39 +233,39 @@ namespace PhotoVs.Logic.Mechanics.World
             entity.Components.Add(new CZone(obj.Properties["zone"]));
         }
 
-        public IEnumerable<GameObject> GetCollisions(SCamera camera)
+        public IEnumerable<GameObject> GetCollisions(Camera camera)
         {
             if (camera == null)
                 throw new ArgumentNullException(nameof(camera));
-            return _collisions.Find(camera.VisibleArea());
+            return _collisions.Find(camera.VisibleArea);
         }
 
-        public IEnumerable<GameObject> GetScripts(SCamera camera)
+        public IEnumerable<GameObject> GetScripts(Camera camera)
         {
             if (camera == null)
                 throw new ArgumentNullException(nameof(camera));
-            return _scripts.Find(camera.VisibleArea());
+            return _scripts.Find(camera.VisibleArea);
         }
 
-        public IEnumerable<GameObject> GetZones(SCamera camera)
+        public IEnumerable<GameObject> GetZones(Camera camera)
         {
             if (camera == null)
                 throw new ArgumentNullException(nameof(camera));
-            return _zones.Find(camera.VisibleArea());
+            return _zones.Find(camera.VisibleArea);
         }
 
-        public IEnumerable<IEmitter> GetMaskEmitters(SCamera camera)
+        public IEnumerable<IEmitter> GetMaskEmitters(Camera camera)
         {
             if (camera == null)
                 throw new ArgumentNullException(nameof(camera));
-            return _maskEmitters.Find(camera.VisibleArea());
+            return _maskEmitters.Find(camera.VisibleArea);
         }
 
-        public IEnumerable<IEmitter> GetFringeEmitters(SCamera camera)
+        public IEnumerable<IEmitter> GetFringeEmitters(Camera camera)
         {
             if (camera == null)
                 throw new ArgumentNullException(nameof(camera));
-            return _fringeEmitters.Find(camera.VisibleArea());
+            return _fringeEmitters.Find(camera.VisibleArea);
         }
     }
 }
