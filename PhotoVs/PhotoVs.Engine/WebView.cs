@@ -28,14 +28,14 @@ namespace PhotoVs.Engine
             }
         }
 
-        private BgraToRgbaFilter _filter;
+        private SimpleFilter _filter;
         private readonly SpriteBatch _spriteBatch;
 
         public WebView(IRenderer renderer, IAssetLoader assetLoader, SpriteBatch spriteBatch, int width, int height, string homePage)
         {
             _rn = renderer;
             _spriteBatch = spriteBatch;
-            _filter = new BgraToRgbaFilter(renderer, spriteBatch, assetLoader.Get<Effect>("shaders/bgra_to_rgba.fx"));
+            _filter = new SimpleFilter(renderer, spriteBatch, assetLoader.Get<Effect>("shaders/bgra_to_rgba.fx"));
 
             InitialiseUltralight();
 
