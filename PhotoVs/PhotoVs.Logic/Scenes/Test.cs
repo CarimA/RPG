@@ -24,7 +24,7 @@ namespace PhotoVs.Logic.Scenes
             //RegisterSystem(drawMap.DebugDrawCollidableEntities, 999);
 
             //RegisterSystem(camera.DebugDraw, 999);
-            RegisterSystem(DebugDrawHtml, 1000);
+            //RegisterSystem(DebugDrawHtml, 1000);
 
             RegisterSystem(movement.ProcessMovement, 0);
 

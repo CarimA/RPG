@@ -20,7 +20,7 @@ namespace PhotoVs.Logic.Mechanics
                 var position = gameObject.Components.Get<CPosition>();
                 var inputState = gameObject.Components.Get<CInputState>();
 
-                position.Position += inputState.LeftAxis * 200 * gameTime.GetElapsedSeconds();
+                position.Position += inputState.LeftAxis * 58 * gameTime.GetElapsedSeconds();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.Components
 {
@@ -23,11 +24,17 @@ namespace PhotoVs.Logic.Mechanics.Components
             {
                 LastPosition = _position;
                 _position = value;
+
+                var delta = DeltaPosition;
+                if (delta != Vector2.Zero)
+                    Direction = delta.ToDirection();
             }
         }
 
         public List<Vector2> VelocityIntent { get; set; }
 
         public Vector2 DeltaPosition => Position - LastPosition;
+
+        public Direction Direction { get; private set; }
     }
 }

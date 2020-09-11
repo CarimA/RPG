@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
@@ -146,7 +147,7 @@ namespace PhotoVs.Logic.Mechanics
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
             DrawMaskParticles(gameTime);
-            //DrawEntities;
+            DrawEntities(gameObjects);
             _spriteBatch.End();
 
             _spriteBatch.Begin();
@@ -165,6 +166,27 @@ namespace PhotoVs.Logic.Mechanics
             _spriteBatch.Begin();
             _spriteBatch.Draw(_colorGradeTarget, Vector2.Zero, Color.White);
             _spriteBatch.End();
+        }
+
+        private void DrawEntities(GameObjectList gameObjects)
+        {
+            var mapObjects = gameObjects.All(typeof(CSprite), typeof(CAnimation), typeof(CPosition));
+            foreach (var mapObject in mapObjects)
+            {
+                var sprite = mapObject.Components.Get<CSprite>();
+                var animation = mapObject.Components.Get<CAnimation>();
+                var position = mapObject.Components.Get<CPosition>();
+
+                var positionVec = position.Position;
+                if (mapObject.Components.TryGet(out CSize size))
+                    positionVec += (size.Size / 2);
+
+                _spriteBatch.Draw(sprite.Texture, 
+                    new Vector2(
+                        (float)Math.Round(positionVec.X, MidpointRounding.AwayFromZero), 
+                        (float)Math.Round(positionVec.Y, MidpointRounding.AwayFromZero)), 
+                    animation.GetFrame(), Color.White, 0, sprite.Origin, Vector2.One, SpriteEffects.None, 0f);
+            }
         }
 
         public void DrawMask(ref RenderTarget2D target, GameTime gameTime)

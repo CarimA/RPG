@@ -4,7 +4,7 @@ namespace PhotoVs.Logic.Mechanics
 {
     public class GlobalSystems
     {
-        public GlobalSystems(Stage stage, Camera camera, Input input)
+        public GlobalSystems(Stage stage, Camera camera, Input input, Animation animation)
         {
             stage.RegisterGlobalSystem(camera.UpdateTransform, int.MinValue);
 
@@ -14,6 +14,9 @@ namespace PhotoVs.Logic.Mechanics
             stage.RegisterGlobalSystem(input.ProcessKeyboards, int.MinValue + 1);
             stage.RegisterGlobalSystem(input.ProcessControllers, int.MinValue + 2);
             stage.RegisterGlobalSystem(input.RaiseEvents, int.MinValue + 3);
+
+            stage.RegisterGlobalSystem(animation.UpdateDirection, int.MinValue);
+            stage.RegisterGlobalSystem(animation.UpdateAnimations, int.MinValue + 1);
         }
     }
 }

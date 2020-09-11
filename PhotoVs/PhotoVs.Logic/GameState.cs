@@ -15,7 +15,7 @@ using PhotoVs.Utils;
 
 namespace PhotoVs.Logic
 {
-    public class GameState : IHasBeforeUpdate
+    public class GameState : IStartup, IHasBeforeUpdate
     {
         private readonly ISignal _signal;
         private readonly IOverworld _overworld;
@@ -38,7 +38,7 @@ namespace PhotoVs.Logic
             _canvasSize = canvasSize;
             Stage = stage;
             Config = Config.Load(assetLoader);
-            Player = new Player(Config);
+            Player = new Player(Config, assetLoader);
 
             Stage.GameObjects.Add(Player);
 

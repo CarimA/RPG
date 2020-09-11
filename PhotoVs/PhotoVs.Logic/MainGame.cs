@@ -105,6 +105,7 @@ namespace PhotoVs.Logic
                 .Bind<Input>()
                 .Bind<DrawMap>()
                 .Bind<Movement>()
+                .Bind<Animation>()
 
                 // scenes
                 .Bind<Test>()
