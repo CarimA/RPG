@@ -5,11 +5,11 @@ using PhotoVs.Logic.Text;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class TextModule
+    public class Text
     {
         private readonly ITextDatabase _textDatabase;
 
-        public TextModule(IInterpreter<Closure> interpreter, ITextDatabase textDatabase)
+        public Text(IInterpreter<Closure> interpreter, ITextDatabase textDatabase)
         {
             _textDatabase = textDatabase;
 

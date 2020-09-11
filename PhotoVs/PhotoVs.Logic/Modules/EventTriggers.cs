@@ -8,13 +8,13 @@ using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class EventTriggersModule
+    public class EventTriggers
     {
         private readonly IInterpreter<Closure> _interpreter;
-        private readonly Player _player;
+        private readonly PlayerData.Player _player;
         private readonly ISignal _signal;
 
-        public EventTriggersModule(IInterpreter<Closure> interpreter, ISignal signal, GameState gameState)
+        public EventTriggers(IInterpreter<Closure> interpreter, ISignal signal, GameState gameState)
         {
             _interpreter = interpreter;
             _signal = signal;

@@ -5,11 +5,11 @@ using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class TimingModule
+    public class Timing
     {
         private readonly GameState _gameState;
 
-        public TimingModule(IInterpreter<Closure> interpreter, GameState gameState)
+        public Timing(IInterpreter<Closure> interpreter, GameState gameState)
         {
             _gameState = gameState;
 

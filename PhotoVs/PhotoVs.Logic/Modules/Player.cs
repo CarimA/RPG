@@ -5,11 +5,11 @@ using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class PlayerModule
+    public class Player
     {
-        private readonly Player _player;
+        private readonly PlayerData.Player _player;
 
-        public PlayerModule(IInterpreter<Closure> interpreter, GameState gameState)
+        public Player(IInterpreter<Closure> interpreter, GameState gameState)
         {
             _player = gameState.Player;
 

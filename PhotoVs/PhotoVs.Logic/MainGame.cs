@@ -20,6 +20,7 @@ using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.Modules;
 using PhotoVs.Logic.Scenes;
 using PhotoVs.Logic.Text;
+using GameObject = PhotoVs.Logic.Modules.GameObject;
 
 namespace PhotoVs.Logic
 {
@@ -92,7 +93,6 @@ namespace PhotoVs.Logic
 
                 // game logic
                 .Bind<Random>(new Random())
-                .Bind<StartupSequence>()
                 .Bind<GameState>()
                 .Bind<ITextDatabase, TextDatabase>()
                 .Bind<IOverworld, Overworld>()
@@ -110,13 +110,13 @@ namespace PhotoVs.Logic
                 .Bind<Test>()
 
                 // modules for scripting
-                .Bind<StandardLibraryModule>()
-                .Bind<EventConditionsModule>()
-                .Bind<EventTriggersModule>()
-                .Bind<TimingModule>()
-                .Bind<PlayerModule>()
-                .Bind<GameObjectModule>()
-                .Bind<TextModule>()
+                .Bind<StandardLibrary>()
+                .Bind<EventConditions>()
+                .Bind<EventTriggers>()
+                .Bind<Timing>()
+                .Bind<Player>()
+                .Bind<GameObject>()
+                .Bind<Modules.Text>()
 
                 // data that will get used to initialise state
                 .Bind(new VirtualResolution(640, 360))

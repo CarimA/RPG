@@ -6,11 +6,11 @@ using PhotoVs.Logic.PlayerData;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class EventConditionsModule
+    public class EventConditions
     {
-        private readonly Player _player;
+        private readonly PlayerData.Player _player;
 
-        public EventConditionsModule(IInterpreter<Closure> interpreter, GameState gameState)
+        public EventConditions(IInterpreter<Closure> interpreter, GameState gameState)
         {
             _player = gameState.Player;
 

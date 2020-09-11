@@ -4,7 +4,7 @@ using PhotoVs.Engine.Scripting;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class StandardLibraryModule
+    public class StandardLibrary
     {
         public const string StdLib = @"
 -- event conditions
@@ -49,7 +49,7 @@ function LockWhile(f, ...)
 end
 ";
 
-        public StandardLibraryModule(IInterpreter<Closure> interpreter)
+        public StandardLibrary(IInterpreter<Closure> interpreter)
         {
             if (interpreter == null) throw new ArgumentNullException(nameof(interpreter));
             interpreter.RunScript(StdLib);

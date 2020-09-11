@@ -10,12 +10,12 @@ using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Modules
 {
-    public class GameObjectModule
+    public class GameObject
     {
         private readonly GameState _gameState;
         private readonly Stage _stage;
 
-        public GameObjectModule(IInterpreter<Closure> interpreter, GameState gameState, Stage stage)
+        public GameObject(IInterpreter<Closure> interpreter, GameState gameState, Stage stage)
         {
             _gameState = gameState;
             _stage = stage;
@@ -84,7 +84,7 @@ namespace PhotoVs.Logic.Modules
             return true;
         }
 
-        private void SetInputs(GameObject gameObject, bool state)
+        private void SetInputs(Engine.ECS.GameObject gameObject, bool state)
         {
             if (state)
             {
