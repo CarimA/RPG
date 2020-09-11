@@ -1,10 +1,10 @@
 
 * {
-    font-family: 'Oeuf';
+    font-family: 'Body';
 }
 
 :root {
-    font-size: 13px;
+    font-size: 16px;
 
     --grey-light: #cfc7ba;
     --grey-mid: #8a8178;
@@ -292,8 +292,8 @@ button {
 .text-italics {font-style: italic;}
 .text-bold {font-weight: bold;}
 .text-big { 
-    font-family: "Roundabout";
-    font-size: 32px;
+    font-family: "Header";
+    font-size: 22px;
 }
 
 .text-align-left { text-align: left; }

@@ -1,0 +1,38 @@
+Portions of this software utilise CSCore by Florian R.
+Portions of this software utilise CSCore.Ogg by Stef Heyenrath
+[cscore]
+
+Portions of this software utilise DockPanelSuite by Weifen Lup
+[dockpanelsuite]
+
+Portions of this software utilise Json.NET (© 2020 Newtonsoft)
+[jsonnet]
+
+Made with assets from Mana Seed by Seliel (@selieltheshaper)
+[manaseed]
+
+Made with MonoGame
+[monogame]
+
+Portions of this software utilise MoonSharp by Marco Mastropaolo
+[moonsharp]
+
+Portions of this software utilise ScintillaNET by Jacob Slusser
+[scintillanet]
+
+Portions of this software utilise SpriteFontPlus by the SpriteFontPlus team
+[spritefontplus]
+
+Portions of this software utilise StbSharp by the StbSharp team
+[stbsharp]
+
+Made with assets from Time Fantasy by Jason Perry (@finalbossblues)
+[timefantasy]
+
+Portions of this software utilise Ultralight (© 2020 Ultralight, Inc.)
+Portions of this software utilise UltralightSharp by Tyler Young
+[ultralight]
+
+Portions of this software utilise YamlDotNet by Antoine Aubry, Adam Hathco
+
+Portions of this software utilise ZipStorer by James Olivares

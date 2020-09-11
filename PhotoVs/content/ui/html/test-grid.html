@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        
+        main {
+            min-width: 640px;
+            max-width: 880px;
+            min-height: 360px;
+            max-height: 400px;
+
+            width: 100vw;
+            height: 100vh;
+
+            display: grid;
+            grid-template-columns: 32px repeat(7, 2fr) 32px;
+            grid-template-rows: 32px repeat(7, 1fr) 32px;
+            gap: 16px 16px;
+        }
+
+        .header {
+            grid-area: 2 / 2 / 2 / 9;
+            background: red;
+        }
+
+        .footer {
+            grid-area: 8 / 2 / 8 / 9;
+            background: green;
+        }
+
+        .main {
+            grid-area:  2 / 2 / 9 / 9;
+            background: blue;
+        }
+
+        .box {
+            background: white;
+            border: 2px dashed blue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .box p {
+            font-family: sans-serif;
+            color: blue;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 0.25rem;
+            text-align:center;
+            text-transform: uppercase;
+        }
+
+        .box span {
+            display: inline-block;
+            max-width: 75%;
+            font-family: sans-serif;
+            color: blue;
+            letter-spacing: 1px;
+            font-size: 70%;
+            text-align:center;
+        }
+
+        /* mockup - main menu */
+        .logo {
+            grid-area: 2 / 2 / 5 / 7;
+        }
+
+        .buttons {
+            grid-area: 5 / 2 / 8 / 5;
+        }
+
+        .copyright-notice {
+            grid-area: 8 / 2 / 8 / 9;
+        }
+        
+    </style>
+</head>
+<body>
+    <main>
+        <div class="logo box">
+            <p>Photeus Logo</p>
+            <span>
+                It should start dark brown and fade to the last map the player was on
+            </span>
+        </div>
+
+        <div class="buttons box">
+            <p>Main Menu Buttons</p>
+            <span>New Game, Load Game, Discord, Options, Credits, Quit</span>
+        </div>
+
+        <div class="copyright-notice box">
+            <p>Copyright Notice</p>
+        </div>
+    </main>
+</body>

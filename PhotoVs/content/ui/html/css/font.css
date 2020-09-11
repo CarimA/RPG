@@ -1,9 +1,9 @@
 @font-face {
-    font-family: 'Oeuf';
-    src: url('../fonts/Oeuf.ttf');
+    font-family: 'Header';
+    src: url('../fonts/m6x11.ttf');
 }
 
 @font-face {
-    font-family: 'Roundabout';
-    src: url('../fonts/Roundabout.ttf');
+    font-family: 'Body';
+    src: url('../fonts/m5x7.ttf');
 }
