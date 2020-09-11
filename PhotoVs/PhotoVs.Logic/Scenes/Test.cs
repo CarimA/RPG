@@ -21,10 +21,10 @@ namespace PhotoVs.Logic.Scenes
             _spriteBatch = spriteBatch;
             RegisterSystem(drawMap.Draw);
 
-            RegisterSystem(drawMap.DebugDrawCollidableEntities, 999);
+            //RegisterSystem(drawMap.DebugDrawCollidableEntities, 999);
 
-            RegisterSystem(camera.DebugDraw, 999);
-            //RegisterSystem(DebugDrawHtml, 1000);
+            //RegisterSystem(camera.DebugDraw, 999);
+            RegisterSystem(DebugDrawHtml, 1000);
 
             RegisterSystem(movement.ProcessMovement, 0);
 

@@ -1,19 +1,41 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
+using PhotoVs.Engine.Audio;
 using PhotoVs.Engine.Core;
 using PhotoVs.Engine.ECS;
+using PhotoVs.Engine.Events.EventArgs;
+using PhotoVs.Engine.Graphics;
 using PhotoVs.Logic.Mechanics;
+using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Logic.PlayerData;
+using PhotoVs.Logic.Scenes;
 using PhotoVs.Utils;
 
 namespace PhotoVs.Logic
 {
     public class GameState : IHasBeforeUpdate
     {
+        private readonly ISignal _signal;
+        private readonly IOverworld _overworld;
+        private readonly IAudio _audio;
+        private readonly IRenderer _renderer;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly GraphicsDevice _graphicsDevice;
+        private readonly CanvasSize _canvasSize;
         public Stage Stage { get; }
 
-        public GameState(Camera camera, Stage stage, IAssetLoader assetLoader)
+        public GameState(Camera camera, Stage stage, IAssetLoader assetLoader, ISignal signal, IOverworld overworld, IAudio audio,
+            IRenderer renderer, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, CanvasSize canvasSize)
         {
+            _signal = signal;
+            _overworld = overworld;
+            _audio = audio;
+            _renderer = renderer;
+            _spriteBatch = spriteBatch;
+            _graphicsDevice = graphicsDevice;
+            _canvasSize = canvasSize;
             Stage = stage;
             Config = Config.Load(assetLoader);
             Player = new Player(Config);
@@ -34,6 +56,24 @@ namespace PhotoVs.Logic
             //Camera.SetZoom(canvasSize.DisplayHeight / canvasSize.Height)
 
             //SceneMachine = new SceneMachine(Player, renderer, CreateGlobalSystems(), CreateGlobalEntities());
+        }
+
+        public void Start(IEnumerable<object> bindings)
+        {
+            _overworld.LoadMaps("maps/");
+            _overworld.SetMap("novalondinium");
+
+            Player.PlayerData.Position.Position = new Vector2(8400, 6000);
+
+            Stage.ChangeScene<Test>();
+            //_sceneMachine.Push(new WorldScene(_assetLoader, _renderer, _overworld, _spriteBatch, _gameState, _signal,
+            //    _graphicsDevice, _canvasSize));
+            //_sceneMachine.Push(new TitleScene(_services));
+            //_sceneMachine.Push(new WorldLogicScene(_gameState, _assetLoader, _spriteBatch, _overworld, _signal));
+
+            _signal.Notify("GameStart", new GameEventArgs(this));
+
+            //_audio.PlayBgm("key");
         }
 
         public Config Config { get; }
