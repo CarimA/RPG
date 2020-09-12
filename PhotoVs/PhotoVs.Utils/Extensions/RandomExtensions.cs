@@ -35,18 +35,19 @@ namespace PhotoVs.Utils.Extensions
         public static Direction ToDirection(this Vector2 direction)
         {
             var angle = direction.ToAngle() + MathHelper.PiOver2;
-            var degrees = angle * (180 / MathHelper.Pi);
+            var degrees = (angle * (180 / MathHelper.Pi));
 
-            var isUp = degrees >= -46 && degrees <= 46;
+            var up = (degrees - 360);
+            var isUp = degrees >= -60 && degrees <= 60;
             
             var down = (degrees - 180);
-            var isDown = down >= -46 && down <= 46;
+            var isDown = down >= -60 && down <= 60;
 
             var left = (degrees - 270);
-            var isLeft = left >= -46 && left <= 46;
+            var isLeft = left >= -60 && left <= 60;
 
             var right = (degrees - 90);
-            var isRight = right >= -46 && right <= 46;
+            var isRight = right >= -60 && right <= 60;
 
             if (isUp)
                 return Direction.Up;
@@ -57,7 +58,8 @@ namespace PhotoVs.Utils.Extensions
             else if (isRight)
                 return Direction.Right;
 
-            return Direction.Down;
+            // don't ask
+            return Direction.Left;
         }
 
         public static Vector2 ToDirection(this float angle)

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Assets.AssetLoaders;
 using PhotoVs.Engine.ECS;
+using PhotoVs.Logic.Mechanics;
 using PhotoVs.Logic.Mechanics.Components;
 
 namespace PhotoVs.Logic.PlayerData
@@ -28,7 +29,7 @@ namespace PhotoVs.Logic.PlayerData
             Components.Add(new CController(PlayerIndex.One, config.ControlsGamepad, config.Deadzone / 100f));
             Components.Add(new CInputPriority(InputPriority.GamePad));
             Components.Add(new CTarget());
-
+            Components.Add(new CRunning());
             Components.Add(new CSprite(assetLoader.Get<Texture2D>("sprites/player.png"), new Vector2(16, 32)));
             
             var animation = new CAnimation();

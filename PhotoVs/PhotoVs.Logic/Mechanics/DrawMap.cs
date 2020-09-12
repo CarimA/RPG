@@ -17,12 +17,12 @@ namespace PhotoVs.Logic.Mechanics
     public class DrawMap
     {
         private readonly IOverworld _overworld;
+        private readonly VirtualResolution _virtualResolution;
         private readonly SpriteBatch _spriteBatch;
         private readonly IRenderer _renderer;
         private readonly IAssetLoader _assetLoader;
         private readonly Camera _camera;
         private readonly Primitive _primitive;
-        private readonly CanvasSize _canvasSize;
 
         private readonly TilemapFilter _tileMapFilter;
         private readonly WaterReflectionFilter _waterReflectionFilter;
@@ -42,15 +42,15 @@ namespace PhotoVs.Logic.Mechanics
         private RenderTarget2D _finalTarget;
         private RenderTarget2D _colorGradeTarget;
 
-        public DrawMap(IOverworld overworld, SpriteBatch spriteBatch, IRenderer renderer, IAssetLoader assetLoader, Camera camera, Primitive primitive, CanvasSize canvasSize, GameDate gameDate)
+        public DrawMap(IOverworld overworld, VirtualResolution virtualResolution, SpriteBatch spriteBatch, IRenderer renderer, IAssetLoader assetLoader, Camera camera, Primitive primitive, GameDate gameDate)
         {
             _overworld = overworld;
+            _virtualResolution = virtualResolution;
             _spriteBatch = spriteBatch;
             _renderer = renderer;
             _assetLoader = assetLoader;
             _camera = camera;
             _primitive = primitive;
-            _canvasSize = canvasSize;
 
             _tempTileMap = _assetLoader.Get<Texture2D>("debug/outmap.png");
             _superTileset = _assetLoader.Get<Texture2D>("debug/supertileset.png");
@@ -63,12 +63,12 @@ namespace PhotoVs.Logic.Mechanics
             _waterReflectionFilter = new WaterReflectionFilter(_renderer, _spriteBatch,
                 _assetLoader.Get<Effect>("shaders/water_reflection.fx"));
 
-            _waterFilter = new WaterFilter(_renderer, _spriteBatch, _camera, canvasSize,
+            _waterFilter = new WaterFilter(_renderer, _spriteBatch, _camera,
                 _assetLoader.Get<Effect>("shaders/water.fx"), 
                 _assetLoader.Get<Texture2D>("ui/noise.png"),
-                _assetLoader.Get<Texture2D>("ui/noise2.png"));
+                _assetLoader.Get<Texture2D>("ui/noise2.png"), _virtualResolution);
 
-            _waterDisplacementFilter = new WaterDisplacementFilter(_renderer, _spriteBatch, _canvasSize, 
+            _waterDisplacementFilter = new WaterDisplacementFilter(_renderer, _spriteBatch, _virtualResolution,
                 _assetLoader.Get<Effect>("shaders/displace.fx"),
                 _assetLoader.Get<Texture2D>("ui/displacement.png"),
                 _assetLoader.Get<Texture2D>("ui/displacement2.png"));
@@ -92,44 +92,19 @@ namespace PhotoVs.Logic.Mechanics
                     (0.90625f, assetLoader.Get<Texture2D>("luts/daycycle10.png"))
                 });
 
-            OnResize();
-            _canvasSize.OnResize += OnResize;
+            CreateRenderTargets();
         }
 
-        private void OnResize()
+        private void CreateRenderTargets()
         {
-            _tilemapRenderTarget?.Dispose();
-            _tilemapRenderTarget = null;
-
-            _reflectionTarget?.Dispose();
-            _reflectionTarget = null;
-
-            _waterTarget?.Dispose();
-            _waterTarget = null;
-
-            _displaceTarget?.Dispose();
-            _displaceTarget = null;
-
-            _maskTarget?.Dispose();
-            _maskTarget = null;
-
-            _fringeTarget?.Dispose();
-            _fringeTarget = null;
-
-            _finalTarget?.Dispose();
-            _finalTarget = null;
-
-            _colorGradeTarget?.Dispose();
-            _colorGradeTarget = null;
-
-            _tilemapRenderTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
-            _waterTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
-            _reflectionTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
-            _displaceTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
-            _maskTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
-            _fringeTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
-            _finalTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
-            _colorGradeTarget = _renderer.CreateRenderTarget(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight);
+            _tilemapRenderTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _waterTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _reflectionTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _displaceTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _maskTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _fringeTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _finalTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _colorGradeTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
         }
 
         [System(RunOn.Draw)]
@@ -157,6 +132,7 @@ namespace PhotoVs.Logic.Mechanics
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
             DrawFringeParticles(gameTime);
+            DrawEntities(gameObjects, 0.25f);
             _spriteBatch.End();
 
             _renderer.RelinquishSubRenderer();
@@ -168,7 +144,7 @@ namespace PhotoVs.Logic.Mechanics
             _spriteBatch.End();
         }
 
-        private void DrawEntities(GameObjectList gameObjects)
+        private void DrawEntities(GameObjectList gameObjects, float opacity = 1f)
         {
             var mapObjects = gameObjects.All(typeof(CSprite), typeof(CAnimation), typeof(CPosition));
             foreach (var mapObject in mapObjects)
@@ -181,11 +157,8 @@ namespace PhotoVs.Logic.Mechanics
                 if (mapObject.Components.TryGet(out CSize size))
                     positionVec += (size.Size / 2);
 
-                _spriteBatch.Draw(sprite.Texture, 
-                    new Vector2(
-                        (float)Math.Round(positionVec.X, MidpointRounding.AwayFromZero), 
-                        (float)Math.Round(positionVec.Y, MidpointRounding.AwayFromZero)), 
-                    animation.GetFrame(), Color.White, 0, sprite.Origin, Vector2.One, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(sprite.Texture, positionVec, 
+                    animation.GetFrame(), Color.White * opacity, 0, sprite.Origin, Vector2.One, SpriteEffects.None, 0f);
             }
         }
 

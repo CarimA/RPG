@@ -11,7 +11,7 @@ namespace PhotoVs.Logic.Mechanics
 {
     public class Camera
     {
-        private readonly CanvasSize _canvasSize;
+        private readonly VirtualResolution _virtualResolution;
         private readonly SpriteBatch _spriteBatch;
         private readonly Primitive _primitive;
         private readonly GraphicsDeviceManager _graphics;
@@ -23,7 +23,7 @@ namespace PhotoVs.Logic.Mechanics
 
         public float Zoom
         {
-            get => _zoom * _canvasSize.Scale;
+            get => _zoom;
             set
             {
                 if (Math.Abs(Zoom - value) < 0.001)
@@ -92,10 +92,10 @@ namespace PhotoVs.Logic.Mechanics
                         return Rectangle.Empty;
 
                     var topLeft = Vector2.Transform(Vector2.Zero, _inverseTransform);
-                    var topRight = Vector2.Transform(new Vector2(_canvasSize.TrueCurrentWidth, 0), _inverseTransform);
-                    var bottomLeft = Vector2.Transform(new Vector2(0, _canvasSize.TrueCurrentHeight), _inverseTransform);
+                    var topRight = Vector2.Transform(new Vector2(_virtualResolution.MaxWidth, 0), _inverseTransform);
+                    var bottomLeft = Vector2.Transform(new Vector2(0, _virtualResolution.MaxHeight), _inverseTransform);
                     var bottomRight = Vector2.Transform(
-                        new Vector2(_canvasSize.TrueCurrentWidth, _canvasSize.TrueCurrentHeight),
+                        new Vector2(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight),
                         _inverseTransform);
 
                     var min = new Vector2(
@@ -123,10 +123,10 @@ namespace PhotoVs.Logic.Mechanics
         public RectangleF DeadZone
         {
             get => new RectangleF(
-                _deadZone.X * _canvasSize.TrueCurrentWidth,
-                _deadZone.Y * _canvasSize.TrueCurrentHeight,
-                _deadZone.Width * _canvasSize.TrueCurrentWidth,
-                _deadZone.Height * _canvasSize.TrueCurrentHeight);
+                _deadZone.X * _virtualResolution.MaxWidth,
+                _deadZone.Y * _virtualResolution.MaxHeight,
+                _deadZone.Width * _virtualResolution.MaxWidth,
+                _deadZone.Height * _virtualResolution.MaxHeight);
             set => _deadZone = value;
         }
         public Rectangle Boundary { get; set; }
@@ -135,16 +135,14 @@ namespace PhotoVs.Logic.Mechanics
 
         private Vector2 _lastTarget;
 
-        public Camera(CanvasSize canvasSize, SpriteBatch spriteBatch, Primitive primitive, GraphicsDeviceManager graphics)
+        public Camera(VirtualResolution virtualResolution, SpriteBatch spriteBatch, Primitive primitive, GraphicsDeviceManager graphics)
         {
-            _canvasSize = canvasSize;
+            _virtualResolution = virtualResolution;
             _spriteBatch = spriteBatch;
             _primitive = primitive;
             _graphics = graphics;
 
             Transform = Matrix.Identity;
-
-            canvasSize.OnResize += () => _isDirty = true;
         }
 
         public Vector2 WorldToScreen(Vector2 position)
@@ -176,8 +174,8 @@ namespace PhotoVs.Logic.Mechanics
         {
             var target = GetAveragePosition(gameObjects);
             var deadZone = DeadZone;
-            var deadZoneOffset = new Vector2((_canvasSize.TrueCurrentWidth / 2) - (_canvasSize.TrueMinWidth / 2),
-                (_canvasSize.TrueCurrentHeight / 2) - (_canvasSize.TrueMinHeight / 2));
+            var deadZoneOffset = new Vector2((_virtualResolution.MaxWidth / 2) - (_virtualResolution.MaxWidth / 2),
+                (_virtualResolution.MaxHeight / 2) - (_virtualResolution.MaxHeight / 2));
             var relativeTarget = WorldToScreen(target);
             var relativeCurrent = WorldToScreen(Position);
             var scroll = Vector2.Zero;
@@ -221,7 +219,7 @@ namespace PhotoVs.Logic.Mechanics
             if (_lastTarget != target)
             {
                 Position = Vector2.Lerp(Position, Position + scroll, Lerp);
-                _moveTimer = 0.35f;
+                _moveTimer = 0.05f;
             }
             else
             {
@@ -229,7 +227,7 @@ namespace PhotoVs.Logic.Mechanics
                 _moveTimer -= gameTime.GetElapsedSeconds();
 
                 if (_moveTimer <= 0f)
-                    Position = Vector2.Lerp(Position, target, Lerp * 0.02f);
+                    Position = Vector2.Lerp(Position, target, Lerp * 0.5f);
             }
 
             _lastTarget = target;
@@ -237,10 +235,10 @@ namespace PhotoVs.Logic.Mechanics
             // apply bounds
             if (!Boundary.IsEmpty)
             {
-                position.X = Math.Min(Math.Max(Position.X, Boundary.Left + (_canvasSize.VirtualCurrentWidth / 2)),
-                    Boundary.Right - (_canvasSize.VirtualCurrentWidth / 2));
-                position.Y = Math.Min(Math.Max(Position.Y, Boundary.Top + (_canvasSize.VirtualCurrentHeight / 2)),
-                    Boundary.Bottom - (_canvasSize.VirtualCurrentHeight / 2));
+                position.X = Math.Min(Math.Max(Position.X, Boundary.Left + (_virtualResolution.MaxWidth / 2)),
+                    Boundary.Right - (_virtualResolution.MaxWidth / 2));
+                position.Y = Math.Min(Math.Max(Position.Y, Boundary.Top + (_virtualResolution.MaxHeight / 2)),
+                    Boundary.Bottom - (_virtualResolution.MaxHeight / 2));
                 Position = position;
             }
 
@@ -249,8 +247,8 @@ namespace PhotoVs.Logic.Mechanics
                 Transform = Matrix.CreateTranslation(new Vector3( -Position.X, -Position.Y, 0)) *
                             Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
                             Matrix.CreateTranslation(new Vector3(
-                                _canvasSize.TrueCurrentWidth / 2f,
-                                _canvasSize.TrueCurrentHeight / 2f,
+                                _virtualResolution.MaxWidth / 2f,
+                                _virtualResolution.MaxHeight / 2f,
                                 0));
                 _isDirty = false;
             }

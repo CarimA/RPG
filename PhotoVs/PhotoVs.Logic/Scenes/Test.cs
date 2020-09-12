@@ -15,7 +15,7 @@ namespace PhotoVs.Logic.Scenes
         private readonly SpriteBatch _spriteBatch;
         private WebView test;
 
-        public Test(DrawMap drawMap, Movement movement, Camera camera, IRenderer renderer, IAssetLoader assetLoader, SpriteBatch spriteBatch, CanvasSize canvasSize, GameDate gameDate)
+        public Test(VirtualResolution virtualResolution, DrawMap drawMap, Movement movement, Camera camera, IRenderer renderer, IAssetLoader assetLoader, SpriteBatch spriteBatch, GameDate gameDate)
         {
             _camera = camera;
             _spriteBatch = spriteBatch;
@@ -29,14 +29,9 @@ namespace PhotoVs.Logic.Scenes
             RegisterSystem(movement.ProcessMovement, 0);
 
             test = new WebView(renderer, assetLoader, spriteBatch, 
-                canvasSize.VirtualCurrentWidth, canvasSize.VirtualCurrentHeight, 
+                virtualResolution.MaxWidth, virtualResolution.MaxHeight, 
                 "file://content/ui/html/test.html");
             
-            canvasSize.OnResize += () =>
-            {
-                test.Resize(canvasSize.VirtualCurrentWidth, canvasSize.VirtualCurrentHeight);
-            };
-
             gameDate.DisableTimeFlow();
         }
 

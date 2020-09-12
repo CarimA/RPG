@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Core;
@@ -11,20 +12,27 @@ namespace PhotoVs.Engine.Graphics
         private readonly List<IFilter> _filters;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly SpriteBatch _spriteBatch;
-        private readonly CanvasSize _targetCanvasSize;
+        private readonly VirtualResolution _virtualResolution;
+        private readonly GameWindow _window;
 
         private RenderTarget2D _mainRenderTarget;
         private RenderTarget2D _tempRenderTarget;
 
-        public Renderer(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, CanvasSize targetCanvasSize)
+        public Renderer(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, VirtualResolution virtualResolution, GameWindow window)
         {
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
-            _targetCanvasSize = targetCanvasSize;
+            _virtualResolution = virtualResolution;
+            _window = window;
             _filters = new List<IFilter>();
 
-            ResizeBuffers();
-            _targetCanvasSize.OnResize += ResizeBuffers;
+            CreateBuffers();
+        }
+
+        private void CreateBuffers()
+        {
+            _mainRenderTarget = CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
+            _tempRenderTarget = CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
         }
 
         public RenderTarget2D Backbuffer => _mainRenderTarget;
@@ -60,9 +68,47 @@ namespace PhotoVs.Engine.Graphics
             _graphicsDevice.SetRenderTarget(null);
             _graphicsDevice.Clear(Color.Black);
 
+            var rect = ScaledBackbuffer(out var scale);
+            var width = (int) (rect.Width * scale);
+            var height = (int) (rect.Height * scale);
+
             _spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(copy, _targetCanvasSize.VirtualDisplay, Color.White);
+            _spriteBatch.Draw(copy, 
+                new Rectangle((_window.ClientBounds.Width / 2) - (width / 2), (_window.ClientBounds.Height / 2) - (height / 2), width, height), 
+                rect, Color.White);
             _spriteBatch.End();
+        }
+
+        private Rectangle ScaledBackbuffer(out float scale)
+        {
+            var width = (float)_window.ClientBounds.Width;
+            var height = (float)_window.ClientBounds.Height;
+            var widthScale = width / (float)_virtualResolution.MinWidth;
+            var heightScale = height / (float)_virtualResolution.MinHeight;
+            var smallest = Math.Min(widthScale, heightScale);
+            float trueWidth, trueHeight;
+
+            if (widthScale < heightScale)
+            {
+                trueWidth = _virtualResolution.MinWidth;
+                trueHeight = (int)(height / widthScale);
+            }
+            else
+            {
+                trueHeight = _virtualResolution.MinHeight;
+                trueWidth = (int)(width / heightScale);
+            }
+
+            trueWidth = Math.Min(trueWidth, _virtualResolution.MaxWidth);
+            trueHeight = Math.Min(trueHeight, _virtualResolution.MaxHeight);
+
+            scale = smallest;
+
+            return new Rectangle(
+                (int)((_virtualResolution.MaxWidth / 2) - (trueWidth / 2)),
+                (int)((_virtualResolution.MaxHeight / 2) - (trueHeight / 2)),
+                (int)(trueWidth),
+                (int)(trueHeight));
         }
 
         public void RequestSubRenderer(RenderTarget2D renderTarget)
@@ -93,18 +139,6 @@ namespace PhotoVs.Engine.Graphics
             _spriteBatch.Begin();
             _spriteBatch.Draw(_tempRenderTarget, Vector2.Zero, Color.White);
             _spriteBatch.End();
-        }
-
-
-        private void ResizeBuffers()
-        {
-            _mainRenderTarget?.Dispose();
-            _tempRenderTarget?.Dispose();
-            _mainRenderTarget = null;
-            _tempRenderTarget = null;
-
-            _mainRenderTarget = CreateRenderTarget(_targetCanvasSize.TrueCurrentWidth, _targetCanvasSize.TrueCurrentHeight);
-            _tempRenderTarget = CreateRenderTarget(_targetCanvasSize.TrueCurrentWidth, _targetCanvasSize.TrueCurrentHeight);
         }
     }
 }

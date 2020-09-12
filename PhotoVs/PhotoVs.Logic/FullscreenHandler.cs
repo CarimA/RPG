@@ -12,18 +12,16 @@ namespace PhotoVs.Logic
         private readonly GraphicsDeviceManager _graphics;
         private readonly IPlatform _platform;
         private readonly GameState _gameState;
-        private readonly CanvasSize _canvasSize;
         private readonly GameWindow _window;
 
         private int _lastWindowWidth;
         private int _lastWindowHeight;
 
-        public FullscreenHandler(GraphicsDeviceManager graphics, IPlatform platform, GameState gameState, CanvasSize canvasSize, GameWindow window)
+        public FullscreenHandler(GraphicsDeviceManager graphics, IPlatform platform, GameState gameState, GameWindow window)
         {
             _graphics = graphics;
             _platform = platform;
             _gameState = gameState;
-            _canvasSize = canvasSize;
             _window = window;
         }
 

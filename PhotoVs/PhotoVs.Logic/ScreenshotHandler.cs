@@ -13,20 +13,20 @@ namespace PhotoVs.Logic
 {
     public class ScreenshotHandler : IHasBeforeUpdate, IHasAfterDraw
     {
+        private readonly VirtualResolution _virtualResolution;
         private readonly GameState _gameState;
         private readonly IRenderer _renderer;
-        private readonly CanvasSize _targetCanvasSize;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly SpriteBatch _spriteBatch;
         private bool _shouldScreenshot;
         private readonly DynamicSpriteFont _font;
 
-        public ScreenshotHandler(GameState gameState, IRenderer renderer, CanvasSize targetCanvasSize,
+        public ScreenshotHandler(GameState gameState, IRenderer renderer, VirtualResolution virtualResolution,
             GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IAssetLoader assetLoader)
         {
             _gameState = gameState;
             _renderer = renderer;
-            _targetCanvasSize = targetCanvasSize;
+            _virtualResolution = virtualResolution;
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
 
@@ -49,27 +49,18 @@ namespace PhotoVs.Logic
         {
             if (_shouldScreenshot)
             {
-                TakeScreenshot(false, Path.Combine(
+                TakeScreenshot(Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     $"PhotoVs/Screenshots/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{Guid.NewGuid().ToString()}.png"));
                 _shouldScreenshot = false;
             }
         }
 
-        public void TakeScreenshot(bool useVirtualResolution, string filename)
+        public void TakeScreenshot(string filename)
         {
-            if (useVirtualResolution)
-            {
-                var targetWidth = _targetCanvasSize.TrueMinWidth;
-                var targetHeight = _targetCanvasSize.TrueMinHeight;
+                var targetWidth = _virtualResolution.MinWidth;
+                var targetHeight = _virtualResolution.MinHeight;
                 TakeScreenshot(targetWidth, targetHeight, filename);
-            }
-            else
-            {
-                var targetWidth = _targetCanvasSize.TrueCurrentWidth;
-                var targetHeight = _targetCanvasSize.TrueCurrentHeight;
-                TakeScreenshot(targetWidth, targetHeight, filename);
-            }
         }
 
         private void TakeScreenshot(int targetWidth, int targetHeight, string filename)

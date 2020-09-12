@@ -13,7 +13,7 @@ namespace PhotoVs.Logic.Filters
         private readonly IRenderer _renderer;
         private readonly SpriteBatch _spriteBatch;
         private readonly Camera _camera;
-        private readonly CanvasSize _canvasSize;
+        private readonly VirtualResolution _virtualResolution;
         private readonly EffectPass _effectPass;
 
         private readonly EffectParameter _scaleParam;
@@ -28,12 +28,12 @@ namespace PhotoVs.Logic.Filters
 
         private float throttleTime;
 
-        public WaterFilter(IRenderer renderer, SpriteBatch spriteBatch, Camera camera, CanvasSize canvasSize, Effect effect, Texture2D noiseA, Texture2D noiseB)
+        public WaterFilter(IRenderer renderer, SpriteBatch spriteBatch, Camera camera, Effect effect, Texture2D noiseA, Texture2D noiseB, VirtualResolution virtualResolution)
         {
             _renderer = renderer;
             _spriteBatch = spriteBatch;
             _camera = camera;
-            _canvasSize = canvasSize;
+            _virtualResolution = virtualResolution;
 
             _scaleParam = effect.Parameters["scale"];
             _pixelWidthParam = effect.Parameters["pixWidth"];
@@ -87,8 +87,8 @@ namespace PhotoVs.Logic.Filters
 
         public void Filter(ref RenderTarget2D renderTarget, SpriteBatch spriteBatch, Texture2D inputTexture)
         {
-            _pixelWidthParam.SetValue(1f / _canvasSize.VirtualCurrentWidth);
-            _pixelHeightParam.SetValue(1f / _canvasSize.VirtualCurrentHeight);
+            _pixelWidthParam.SetValue(1f / _virtualResolution.MaxWidth);
+            _pixelHeightParam.SetValue(1f / _virtualResolution.MaxHeight);
 
             _renderer.RequestSubRenderer(renderTarget);
 

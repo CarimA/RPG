@@ -23,11 +23,10 @@ namespace PhotoVs.Logic
         private readonly IRenderer _renderer;
         private readonly SpriteBatch _spriteBatch;
         private readonly GraphicsDevice _graphicsDevice;
-        private readonly CanvasSize _canvasSize;
         public Stage Stage { get; }
 
         public GameState(Camera camera, Stage stage, IAssetLoader assetLoader, ISignal signal, IOverworld overworld, IAudio audio,
-            IRenderer renderer, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, CanvasSize canvasSize)
+            IRenderer renderer, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             _signal = signal;
             _overworld = overworld;
@@ -35,7 +34,6 @@ namespace PhotoVs.Logic
             _renderer = renderer;
             _spriteBatch = spriteBatch;
             _graphicsDevice = graphicsDevice;
-            _canvasSize = canvasSize;
             Stage = stage;
             Config = Config.Load(assetLoader);
             Player = new Player(Config, assetLoader);

@@ -82,7 +82,6 @@ namespace PhotoVs.Logic
                 .Bind<ISignal, Signal>()
                 .Bind<FullscreenHandler>()
                 .Bind<ScreenshotHandler>()
-                .Bind<CanvasSize>()
                 .Bind<ICoroutineRunner, CoroutineRunner>()
                 .Bind<IRenderer, Renderer>()
                 .Bind<Primitive>()
@@ -120,7 +119,18 @@ namespace PhotoVs.Logic
                 .Bind<Modules.Text>()
 
                 // data that will get used to initialise state
-                .Bind(new VirtualResolution(640, 360))
+
+                /*
+                 * 
+            VirtualMinHeight = virtualResolution.Height;
+            VirtualMinWidth = VirtualMinHeight / 9 * 16;
+            // turns out that ultrawide is not actually 21:9, it's about 64:27. Who could've guessed that?
+            VirtualMaxWidth = VirtualMinHeight / 9 * 22;
+            // extra space for 16:10 screens
+            VirtualMaxHeight = VirtualMinWidth / 16 * 10;
+                 */
+
+                .Bind(new VirtualResolution(640, 360, 880, 400))
                 .Bind(new ScriptData(new List<(DataLocation, string)>
                 {
                     (DataLocation.Content, "logic/"),

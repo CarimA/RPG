@@ -30,6 +30,7 @@ namespace PhotoVs.Logic.Mechanics
             {
                 var animation = gameObject.Components.Get<CAnimation>();
                 var position = gameObject.Components.Get<CPosition>();
+                var running = gameObject.Components.Has<CRunning>();
 
                 if (position.DeltaPosition == Vector2.Zero)
                 {
@@ -51,20 +52,41 @@ namespace PhotoVs.Logic.Mechanics
                 }
                 else
                 {
-                    switch (position.Direction)
+                    if (running)
                     {
-                        case Direction.Up:
-                            animation.Play("walk-up");
-                            break;
-                        case Direction.Down:
-                            animation.Play("walk-down");
-                            break;
-                        case Direction.Left:
-                            animation.Play("walk-left");
-                            break;
-                        case Direction.Right:
-                            animation.Play("walk-right");
-                            break;
+                        switch (position.Direction)
+                        {
+                            case Direction.Up:
+                                animation.Play("run-up");
+                                break;
+                            case Direction.Down:
+                                animation.Play("run-down");
+                                break;
+                            case Direction.Left:
+                                animation.Play("run-left");
+                                break;
+                            case Direction.Right:
+                                animation.Play("run-right");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (position.Direction)
+                        {
+                            case Direction.Up:
+                                animation.Play("walk-up");
+                                break;
+                            case Direction.Down:
+                                animation.Play("walk-down");
+                                break;
+                            case Direction.Left:
+                                animation.Play("walk-left");
+                                break;
+                            case Direction.Right:
+                                animation.Play("walk-right");
+                                break;
+                        }
                     }
                 }
             }

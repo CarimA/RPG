@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.CodeDom;
+using Microsoft.Xna.Framework;
 using PhotoVs.Engine.ECS;
 using PhotoVs.Logic.Mechanics.Components;
 using PhotoVs.Utils.Extensions;
@@ -20,7 +21,18 @@ namespace PhotoVs.Logic.Mechanics
                 var position = gameObject.Components.Get<CPosition>();
                 var inputState = gameObject.Components.Get<CInputState>();
 
-                position.Position += inputState.LeftAxis * 58 * gameTime.GetElapsedSeconds();
+                var speed = 80;
+                var running = inputState.ActionDown(InputActions.Run);
+                if (running)
+                {
+                    speed = 135;
+                    gameObject.Components.Enable<CRunning>();
+                }
+                else
+                    gameObject.Components.Disable<CRunning>();
+
+                position.Position += inputState.LeftAxis * speed * gameTime.GetElapsedSeconds();
+
             }
         }
     }
