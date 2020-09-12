@@ -13,7 +13,6 @@ namespace PhotoVs.EditorSuite.GameData
             Flags = new FlagCollection();
 
             Scripts = new Dictionary<string, Script>();
-            Events = new Dictionary<string, Graph>();
             Strings = new Dictionary<string, TextEntry>();
         }
 
@@ -25,7 +24,6 @@ namespace PhotoVs.EditorSuite.GameData
 
         // the IDs are the IDs pulled from their respective DataTreeNodes
         public Dictionary<string, Script> Scripts { get; set; }
-        public Dictionary<string, Graph> Events { get; set; }
         public Dictionary<string, TextEntry> Strings { get; set; }
         public Dictionary<string, Map> Maps { get; set; }
 

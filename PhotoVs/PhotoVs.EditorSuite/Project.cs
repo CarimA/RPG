@@ -353,7 +353,6 @@ namespace PhotoVs.EditorSuite
             imageList.Images.Add(Resources.FolderOpened_16x);
             imageList.Images.Add(Resources.Settings_16x);
             imageList.Images.Add(Resources.Script_16x);
-            imageList.Images.Add(Resources.Event_16x);
 
             treeView.ImageList = imageList;
 
@@ -364,6 +363,32 @@ namespace PhotoVs.EditorSuite
             _rootNode.Expand();
 
             SetIcons(_rootNode);
+        }
+
+        private void OpenEditor<TEditor, T>(DataTreeNode dataNode)
+            where TEditor : Editor<T>, new()
+        {
+            var data = (T)dataNode.Data;
+            var scriptEditor = new TEditor
+            {
+                HideOnClose = false,
+                CloseButton = true,
+                CloseButtonVisible = true,
+                DockAreas = DockAreas.Document,
+                Project = this,
+                Instance = data,
+                Text = dataNode.Text
+            };
+
+            // todo: save on closing/tab changing
+            scriptEditor.Closed += (sender, args) =>
+            {
+                Save(false, true);
+                _openPanels.Remove(data);
+            };
+
+            scriptEditor.Show(_dockPanel, DockState.Document);
+            _openPanels.Add(data, scriptEditor);
         }
 
         private void Open(DataTreeNode dataNode)
@@ -382,46 +407,39 @@ namespace PhotoVs.EditorSuite
 
             if (data.GetType() == typeof(Script))
             {
-                var scriptEditor = new ScriptEditor(this, (Script) data)
-                {
-                    HideOnClose = false,
-                    CloseButton = true,
-                    CloseButtonVisible = true,
-                    DockAreas = DockAreas.Document,
-                    Text = dataNode.Text
-                };
-
-                // todo: save on closing/tab changing
-                scriptEditor.Closed += (sender, args) =>
-                {
-                    Save(false, true);
-                    _openPanels.Remove(data);
-                };
-
-                scriptEditor.Show(_dockPanel, DockState.Document);
-                _openPanels.Add(data, scriptEditor);
+                OpenEditor<ScriptEditor, Script>(dataNode);
             }
+        }
 
-            if (data.GetType() == typeof(Graph))
+        private void SetIcon(DataTreeNode node)
+        {
+            if (node == null)
+                return;
+
+            var isExpanded = node.IsExpanded;
+
+            if (node.Data == null)
             {
-                var eventEditor = new EventEditor(this, (Graph) data)
-                {
-                    HideOnClose = false,
-                    CloseButton = true,
-                    CloseButtonVisible = true,
-                    DockAreas = DockAreas.Document,
-                    Text = dataNode.Text
-                };
-
-                eventEditor.Closed += (sender, args) =>
-                {
-                    Save(false, true);
-                    _openPanels.Remove(data);
-                };
-
-                eventEditor.Show(_dockPanel, DockState.Document);
-                _openPanels.Add(data, eventEditor);
+                if (node.Data == _rootNode)
+                    SetIcon(node, 0);
+                else
+                    SetIcon(node, isExpanded ? 2 : 1);
             }
+            else if (node.Data.GetType() == typeof(GameProperties)
+                     || node.Data.GetType() == typeof(FlagCollection))
+            {
+                SetIcon(node, 3);
+            }
+            else if (node.Data.GetType() == typeof(Script))
+            {
+                SetIcon(node, 4);
+            }
+            
+        }
+
+        public void AddScript(TreeView treeView)
+        {
+            AddObject<Script>(treeView.SelectedNode, "Script");
         }
 
         private bool CanDropInto(DataTreeNode targetNode, DataTreeNode draggedNode)
@@ -486,35 +504,6 @@ namespace PhotoVs.EditorSuite
             foreach (var child in node.Nodes) SetIcons((DataTreeNode) child);
         }
 
-        private void SetIcon(DataTreeNode node)
-        {
-            if (node == null)
-                return;
-
-            var isExpanded = node.IsExpanded;
-
-            if (node.Data == null)
-            {
-                if (node.Data == _rootNode)
-                    SetIcon(node, 0);
-                else
-                    SetIcon(node, isExpanded ? 2 : 1);
-            }
-            else if (node.Data.GetType() == typeof(GameProperties)
-                     || node.Data.GetType() == typeof(FlagCollection))
-            {
-                SetIcon(node, 3);
-            }
-            else if (node.Data.GetType() == typeof(Script))
-            {
-                SetIcon(node, 4);
-            }
-            else if (node.Data.GetType() == typeof(Graph))
-            {
-                SetIcon(node, 5);
-            }
-        }
-
         private void SetIcon(DataTreeNode node, int index)
         {
             node.ImageIndex = index;
@@ -549,16 +538,6 @@ namespace PhotoVs.EditorSuite
             SetIcon(newNode);
 
             newNode.BeginEdit();
-        }
-
-        public void AddScript(TreeView treeView)
-        {
-            AddObject<Script>(treeView.SelectedNode, "Script");
-        }
-
-        public void AddEvent(TreeView treeView)
-        {
-            AddObject<Graph>(treeView.SelectedNode, "Event");
         }
 
         public void Duplicate(TreeNode node)

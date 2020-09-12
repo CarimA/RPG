@@ -6,7 +6,17 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace PhotoVs.EditorSuite.Panels
 {
-    public partial class ScriptEditor : DockContent
+    public abstract class Editor<T> : DockContent
+    {
+        public Project Project { get; set; }
+        public T Instance { get; set;  }
+
+        protected Editor()
+        {
+        }
+    }
+
+    public partial class ScriptEditor : Editor<Script>
     {
         private const string KEYWORDS =
             "and break do else elseif end for function if in local nil not or repeat return then until while" +
@@ -16,36 +26,30 @@ namespace PhotoVs.EditorSuite.Panels
             "assert collectgarbage dofile error _G getmetatable ipairs loadfile next pairs pcall print rawequal rawget rawset setmetatable tonumber tostring type _VERSION xpcall string table math coroutine io os debug" +
             " getfenv gcinfo load loadlib loadstring require select setfenv unpack _LOADED LUA_PATH _REQUIREDNAME package rawlen package bit32 utf8 _ENV";
 
-        private readonly Project _project;
-        private readonly Script _script;
-
         private int maxLineNumberCharLength;
 
-        public ScriptEditor(Project project, Script script)
+        public ScriptEditor() : base()
         {
             InitializeComponent();
-
-            _project = project;
-            _script = script;
 
             // autosave after 2 seconds of not typing
             save.Interval = 2 * 1000;
             save.Tick += (sender, args) =>
             {
-                _project.Save(false, true);
+                Project.Save(false, true);
                 save.Stop();
             };
 
             SetCodeEditor();
 
-            codeEdit.Text = _script.Code;
+            codeEdit.Text = Instance.Code;
         }
 
         private void SetCodeEditor()
         {
             codeEdit.TextChanged += (sender, args) =>
             {
-                _script.Code = codeEdit.Text;
+                Instance.Code = codeEdit.Text;
 
                 save.Stop();
                 save.Start();

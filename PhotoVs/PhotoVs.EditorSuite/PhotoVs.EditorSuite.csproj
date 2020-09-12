@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>preview</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -33,7 +33,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>preview</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -68,17 +68,6 @@
     <Compile Include="Crc32.cs" />
     <Compile Include="GameData\DefaultSoundEffects.cs" />
     <Compile Include="GameData\Emotion.cs" />
-    <Compile Include="GameData\Events\DataNode.cs" />
-    <Compile Include="GameData\Events\DialogueNode.cs" />
-    <Compile Include="GameData\Events\FlowControlNode.cs" />
-    <Compile Include="GameData\Events\FunctionNode.cs" />
-    <Compile Include="GameData\Graph.cs" />
-    <Compile Include="GameData\Events\Node.cs" />
-    <Compile Include="GameData\Events\NodeInputLabel.cs" />
-    <Compile Include="GameData\Events\NodeLabel.cs" />
-    <Compile Include="GameData\Events\NodeOutputLabel.cs" />
-    <Compile Include="GameData\Events\StartNode.cs" />
-    <Compile Include="GameData\Events\Trigger.cs" />
     <Compile Include="GameData\Flag.cs" />
     <Compile Include="GameData\FlagCollection.cs" />
     <Compile Include="GameData\FlagType.cs" />
@@ -90,12 +79,6 @@
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Panels\EventEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Panels\EventEditor.Designer.cs">
-      <DependentUpon>EventEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Panels\ProjectExplorer.cs">
       <SubType>Form</SubType>
@@ -119,9 +102,6 @@
     <Compile Include="GameData\TextEntry.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Panels\EventEditor.resx">
-      <DependentUpon>EventEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Panels\ProjectExplorer.resx">
       <DependentUpon>ProjectExplorer.cs</DependentUpon>

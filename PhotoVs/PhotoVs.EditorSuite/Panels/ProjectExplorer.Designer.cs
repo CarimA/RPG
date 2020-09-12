@@ -29,23 +29,22 @@
         private void InitializeComponent()
         {
             this.tsMenu = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.txtSearch = new System.Windows.Forms.TextBox();
-            this.pnlContainer = new System.Windows.Forms.Panel();
-            this.bar2 = new System.Windows.Forms.Panel();
-            this.bar = new System.Windows.Forms.Panel();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.newFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.newActorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newEventToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.pnlContainer = new System.Windows.Forms.Panel();
+            this.bar2 = new System.Windows.Forms.Panel();
+            this.bar = new System.Windows.Forms.Panel();
             this.tsMenu.SuspendLayout();
             this.pnlContainer.SuspendLayout();
             this.SuspendLayout();
@@ -67,49 +66,6 @@
             this.tsMenu.TabIndex = 0;
             this.tsMenu.Text = "toolStrip1";
             // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Top;
-            this.txtSearch.Location = new System.Drawing.Point(0, 0);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(944, 20);
-            this.txtSearch.TabIndex = 1;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
-            // pnlContainer
-            // 
-            this.pnlContainer.Controls.Add(this.bar2);
-            this.pnlContainer.Controls.Add(this.bar);
-            this.pnlContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlContainer.Location = new System.Drawing.Point(0, 20);
-            this.pnlContainer.Name = "pnlContainer";
-            this.pnlContainer.Size = new System.Drawing.Size(944, 456);
-            this.pnlContainer.TabIndex = 2;
-            // 
-            // bar2
-            // 
-            this.bar2.BackColor = System.Drawing.Color.Transparent;
-            this.bar2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.bar2.Location = new System.Drawing.Point(387, 176);
-            this.bar2.Name = "bar2";
-            this.bar2.Size = new System.Drawing.Size(200, 100);
-            this.bar2.TabIndex = 5;
-            // 
-            // bar
-            // 
-            this.bar.BackColor = System.Drawing.Color.Transparent;
-            this.bar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.bar.Location = new System.Drawing.Point(166, 176);
-            this.bar.Name = "bar";
-            this.bar.Size = new System.Drawing.Size(200, 100);
-            this.bar.TabIndex = 4;
-            // 
             // toolStripDropDownButton1
             // 
             this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -117,7 +73,6 @@
             this.newFolderToolStripMenuItem,
             this.toolStripSeparator1,
             this.newActorToolStripMenuItem,
-            this.newEventToolStripMenuItem,
             this.newMapToolStripMenuItem,
             this.newScriptToolStripMenuItem,
             this.newStringToolStripMenuItem});
@@ -148,20 +103,13 @@
             this.newActorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newActorToolStripMenuItem.Text = "New Actor";
             // 
-            // newEventToolStripMenuItem
-            // 
-            this.newEventToolStripMenuItem.Image = global::PhotoVs.EditorSuite.Properties.Resources.Event_16x;
-            this.newEventToolStripMenuItem.Name = "newEventToolStripMenuItem";
-            this.newEventToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.newEventToolStripMenuItem.Text = "New Event";
-            this.newEventToolStripMenuItem.Click += new System.EventHandler(this.newEventToolStripMenuItem_Click);
-            // 
             // newMapToolStripMenuItem
             // 
             this.newMapToolStripMenuItem.Image = global::PhotoVs.EditorSuite.Properties.Resources.MapPolygonLayer_16x;
             this.newMapToolStripMenuItem.Name = "newMapToolStripMenuItem";
             this.newMapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newMapToolStripMenuItem.Text = "New Map";
+            this.newMapToolStripMenuItem.Click += new System.EventHandler(this.newMapToolStripMenuItem_Click);
             // 
             // newScriptToolStripMenuItem
             // 
@@ -209,6 +157,11 @@
             this.toolStripButton4.Text = "Delete";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -218,6 +171,44 @@
             this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton1.Text = "Open Containing Folder";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txtSearch.Location = new System.Drawing.Point(0, 0);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(944, 20);
+            this.txtSearch.TabIndex = 1;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
+            // pnlContainer
+            // 
+            this.pnlContainer.Controls.Add(this.bar2);
+            this.pnlContainer.Controls.Add(this.bar);
+            this.pnlContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlContainer.Location = new System.Drawing.Point(0, 20);
+            this.pnlContainer.Name = "pnlContainer";
+            this.pnlContainer.Size = new System.Drawing.Size(944, 456);
+            this.pnlContainer.TabIndex = 2;
+            // 
+            // bar2
+            // 
+            this.bar2.BackColor = System.Drawing.Color.Transparent;
+            this.bar2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.bar2.Location = new System.Drawing.Point(387, 176);
+            this.bar2.Name = "bar2";
+            this.bar2.Size = new System.Drawing.Size(200, 100);
+            this.bar2.TabIndex = 5;
+            // 
+            // bar
+            // 
+            this.bar.BackColor = System.Drawing.Color.Transparent;
+            this.bar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.bar.Location = new System.Drawing.Point(166, 176);
+            this.bar.Name = "bar";
+            this.bar.Size = new System.Drawing.Size(200, 100);
+            this.bar.TabIndex = 4;
             // 
             // ProjectExplorer
             // 
@@ -245,7 +236,6 @@
         private System.Windows.Forms.ToolStripMenuItem newFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem newActorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newEventToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newStringToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButton2;

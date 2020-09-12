@@ -193,12 +193,12 @@ namespace PhotoVs.EditorSuite.Panels
             }
         }
 
-        private void newEventToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
-            Project.AddEvent(_tvExplorer);
+
         }
 
-        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
+        private void newMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
