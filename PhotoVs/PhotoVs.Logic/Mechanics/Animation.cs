@@ -23,7 +23,7 @@ namespace PhotoVs.Logic.Mechanics
         }
 
         // todo: refactor elsewhere
-        [System(RunOn.Update, typeof(CAnimation), typeof(CPosition))]
+        [System(RunOn.Update, typeof(CAnimation), typeof(CPosition), typeof(CAlive))]
         public void UpdateDirection(GameTime gameTime, GameObjectList gameObjects)
         {
             foreach (var gameObject in gameObjects)

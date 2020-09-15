@@ -1,0 +1,441 @@
+{
+    "activeFile": "Master.tmx",
+    "automapping.whileDrawing": true,
+    "expandedProjectPaths": [
+        "Templates/Trees",
+        "Templates/Foliage",
+        "Templates/Rocks/Water",
+        "Tilesets",
+        "Templates/Grass Detail",
+        ".",
+        "Templates",
+        "Templates/Rocks",
+        "Templates/WaterFoliage"
+    ],
+    "exportAsImage.drawTileGrid": false,
+    "exportAsImage.includeBackgroundColor": false,
+    "exportAsImage.useCurrentScale": false,
+    "exportAsImage.visibleLayersOnly": true,
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "F:/Desktop/automap_rules/albion-processed.tmx": {
+            "scale": 2,
+            "selectedLayer": 11,
+            "viewCenter": {
+                "x": 2707.5,
+                "y": 1486.5
+            }
+        },
+        "F:/Desktop/automap_rules/albion.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2699.6666666666665,
+                "y": 1406.3333333333333
+            }
+        },
+        "F:/Desktop/automap_rules/grass.tmx": {
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 151.99999999999997,
+                "y": 128.33333333333331
+            }
+        },
+        "F:/Desktop/automap_rules/rules/dark-dirt.tmx": {
+            "scale": 4.125271739130435,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 184.10908372307492,
+                "y": 56.72353599894605
+            }
+        },
+        "F:/Desktop/automap_rules/rules/dark-grass - Copy.tmx": {
+            "scale": 4.125271739130435,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 184.23028785982478,
+                "y": 56.23871945194652
+            }
+        },
+        "F:/Desktop/automap_rules/rules/dark-grass.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160.2727272727273,
+                "y": 27.818181818181827
+            }
+        },
+        "F:/Desktop/automap_rules/rules/grass-detail.tmx": {
+            "scale": 11.86015625,
+            "selectedLayer": 51,
+            "viewCenter": {
+                "x": 48.06007509386733,
+                "y": 24.030037546933666
+            }
+        },
+        "F:/Desktop/automap_rules/rules/grass-step1.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 335.99999999999994,
+                "y": 123.33333333333334
+            }
+        },
+        "F:/Desktop/automap_rules/rules/grass.tmx": {
+            "scale": 3,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 223.33333333333337,
+                "y": 77.33333333333333
+            }
+        },
+        "F:/Desktop/automap_rules/rules/light-grass.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 216.83333333333331,
+                "y": 38
+            }
+        },
+        "F:/Desktop/automap_rules/rules/mid-grass.tmx": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 184.16666666666666,
+                "y": 56.66666666666666
+            }
+        },
+        "F:/Desktop/automap_rules/test.tmx": {
+            "scale": 3,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 2531.333333333333,
+                "y": 1428.6666666666665
+            }
+        },
+        "F:/Desktop/automap_rules/test2.tmx": {
+            "scale": 3,
+            "selectedLayer": 13,
+            "viewCenter": {
+                "x": 131.16666666666666,
+                "y": 201.16666666666669
+            }
+        },
+        "F:/Desktop/summerforest/sample maps/_summer forest, cliff side.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 603.6666666666666,
+                "y": 203
+            }
+        },
+        "F:/Desktop/untitled.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1433,
+                "y": -885.9999999999999
+            }
+        },
+        "F:/Pictures/PhotoVs/isoinf.tmx": {
+            "scale": 0.015625,
+            "selectedLayer": -1,
+            "viewCenter": {
+                "x": -48544,
+                "y": -22464
+            }
+        },
+        "F:/Pictures/PhotoVs/isotest.tmx": {
+            "scale": 0.30491536458333335,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 83.62976406533562,
+                "y": 662.4789153410909
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/albion-out.tmx": {
+            "scale": 2,
+            "selectedLayer": 11,
+            "viewCenter": {
+                "x": 2676,
+                "y": 1794.5
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/content/albion-out.tmx": {
+            "scale": 3,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 2405.6666666666665,
+                "y": 1414.6666666666665
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/content/albion.tmx": {
+            "scale": 0.4035076530612245,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2768.2250671724355,
+                "y": 1826.4833254306936
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/content/debug/temp-1.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 9640,
+                "y": 4963.333333333333
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/content/debug/temp-2.tmx": {
+            "scale": 0.741259765625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 512.6408010012516,
+                "y": 512.6408010012515
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/content/maps/test.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2582,
+                "y": 977
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/content/maps/test2.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 466.66666666666663,
+                "y": 642
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/PhotoVs.Platform.WindowsDX/bin/Windows/x86/Debug/test.tmx": {
+            "scale": 2,
+            "selectedLayer": 11,
+            "viewCenter": {
+                "x": 2662,
+                "y": 1408.75
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/assets/albion.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2762.875,
+                "y": 1190.75
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/assets/maps/test.tmx": {
+            "scale": 0.926806640625,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 512.5125125125126,
+                "y": 513.0519993677889
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/assets/maps/test/00_00.tmx": {
+            "scale": 1.18193359375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 512.7191605387094,
+                "y": 512.7191605387095
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/assets/maps/test/01_00.tmx": {
+            "scale": 0.926806640625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 512.5125125125126,
+                "y": 513.0519993677889
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/content/maps/albion-out.tmx": {
+            "scale": 0.25809948979591835,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1784.1957005189029,
+                "y": 1712.5179145045713
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/content/maps/albion.tmx": {
+            "scale": 0.25809948979591835,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1776.446750679516,
+                "y": 1179.7776130467012
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/content/maps/novalondinium.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 22,
+            "viewCenter": {
+                "x": 8403.666666666666,
+                "y": 6158.333333333333
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/content/maps/novalondinium2.tmx": {
+            "scale": 2,
+            "selectedLayer": 13,
+            "viewCenter": {
+                "x": 8830.75,
+                "y": 5936.5
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/content/maps/test.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 956.060606060606,
+                "y": 1260.6060606060605
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/content/maps/test2.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 493.66666666666663,
+                "y": 265.3333333333333
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/devdata/maps/novalondinium.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 8674.666666666666,
+                "y": 5783.333333333333
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/devdata/maps/rules/random1.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 16,
+            "viewCenter": {
+                "x": 77.54545454545453,
+                "y": 65.63636363636364
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/devdata/maps/rules/random2.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 18,
+            "viewCenter": {
+                "x": 30.454545454545453,
+                "y": 65.63636363636364
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/devdata/maps/rules/random3.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 315.3333333333333,
+                "y": 326.6666666666667
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/devdata/maps/rules/random4.tmx": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 240.8333333333333,
+                "y": 6
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/devdata/maps/rules/random5.tmx": {
+            "scale": 8,
+            "selectedLayer": -1,
+            "viewCenter": {
+                "x": 231.9375,
+                "y": 51.375
+            }
+        },
+        "F:/Projects/PhotoVsRPG/PhotoVs/devdata/test2.tmx": {
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 269.25,
+                "y": 345.75
+            }
+        },
+        "Master.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 655,
+                "y": 439
+            }
+        },
+        "Master.tmx#Cliffs-128x": {
+            "scaleInEditor": 1
+        },
+        "Master.tmx#WindowFrames-32x": {
+            "scaleInDock": 1.5
+        },
+        "Tilesets/Cliffs-64x.tsx": {
+            "scaleInDock": 1
+        },
+        "Tilesets/Flags-32_96x.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tilesets/Grassland-16x.tsx": {
+            "scaleInDock": 1.5
+        },
+        "Tilesets/Grassland-32x.tsx": {
+            "scaleInDock": 1
+        },
+        "Tilesets/Grassland-64x.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tilesets/Lanterns-32_96x.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tilesets/Terrain.tsx": {
+            "scaleInDock": 0.5
+        },
+        "Tilesets/Towers-128_512x.tsx": {
+            "scaleInDock": 1
+        },
+        "Tilesets/Towers-128x.tsx": {
+            "scaleInDock": 1
+        },
+        "Tilesets/Trees-128x.tsx": {
+            "scaleInDock": 0.75
+        },
+        "Tilesets/Vegetation-32x.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "frame.defaultDuration": 150,
+    "map.fixedSize": true,
+    "map.height": 32,
+    "map.lastUsedExportFilter": "JSON map files (*.json)",
+    "map.orientation": 1,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 32,
+    "openFiles": [
+        "Master.tmx"
+    ],
+    "project": "game.tiled-project",
+    "property.type": "object",
+    "recentFiles": [
+        "Tilesets/Vegetation-32x.tsx",
+        "Tilesets/Lanterns-32_96x.tsx",
+        "Tilesets/Flags-32_96x.tsx",
+        "Master.tmx",
+        "Tilesets/Grassland-64x.tsx"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
+    "tileset.tileSize": {
+        "height": 32,
+        "width": 32
+    },
+    "tileset.transparentColor": "#ff00ff",
+    "tileset.type": 0,
+    "tileset.useTransparentColor": false
+}

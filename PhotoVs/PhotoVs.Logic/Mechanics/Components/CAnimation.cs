@@ -29,6 +29,9 @@ namespace PhotoVs.Logic.Mechanics.Components
         private bool _isPaused;
         private float _time;
 
+        public bool Loop { get; set; }
+        public Action<string> OnComplete { get; set; }
+
         public CAnimation()
         {
             _frames = new Dictionary<string, List<AnimationFrame>>();
@@ -47,8 +50,8 @@ namespace PhotoVs.Logic.Mechanics.Components
 
         public void Play(string id)
         {
-            if (_activeAnimation == id)
-                return;
+            if (_activeAnimation != string.Empty &&_activeAnimation == id)
+               return;
 
             _activeAnimation = id;
             _frame = 0;
@@ -62,22 +65,32 @@ namespace PhotoVs.Logic.Mechanics.Components
 
         public void Stop()
         {
-            _activeAnimation = _defaultAnimation;
+            _activeAnimation = string.Empty;
+            _isPaused = true;
             _frame = 0;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (_isPaused)
+            if (_isPaused || _activeAnimation == string.Empty || _frames[_activeAnimation].Count == 1)
                 return;
 
             if (_time <= 0)
             {
                 _frame++;
                 if (_frame >= _frames[_activeAnimation].Count)
-                    _frame = 0;
+                {
+                    OnComplete?.Invoke(_activeAnimation);
 
-                _time = _frames[_activeAnimation][_frame].Duration;
+                    if (Loop)
+                        _frame = 0;
+                    else
+                        Stop();
+                }
+                else
+                {
+                    _time = _frames[_activeAnimation][_frame].Duration;
+                }
             }
 
             _time -= gameTime.GetElapsedSeconds();
@@ -85,6 +98,9 @@ namespace PhotoVs.Logic.Mechanics.Components
 
         public Rectangle GetFrame()
         {
+            if (_activeAnimation == string.Empty)
+                return Rectangle.Empty;
+
             return _frames[_activeAnimation][_frame].Source;
         }
     }

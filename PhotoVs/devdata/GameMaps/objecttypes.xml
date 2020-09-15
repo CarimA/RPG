@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objecttypes>
+ <objecttype name="Block" color="#ff0000">
+  <property name="Block" type="bool" default="true"/>
+ </objecttype>
+</objecttypes>

@@ -11,6 +11,7 @@ using PhotoVs.Logic.Filters;
 using PhotoVs.Logic.Mechanics.Components;
 using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Utils.Collections;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics
 {
@@ -42,7 +43,10 @@ namespace PhotoVs.Logic.Mechanics
         private RenderTarget2D _finalTarget;
         private RenderTarget2D _colorGradeTarget;
 
-        public DrawMap(IOverworld overworld, VirtualResolution virtualResolution, SpriteBatch spriteBatch, IRenderer renderer, IAssetLoader assetLoader, Camera camera, Primitive primitive, GameDate gameDate)
+        private GameObject _windTrail;
+        private float _nextWindTrail;
+
+        public DrawMap(GameState gameState, IOverworld overworld, VirtualResolution virtualResolution, SpriteBatch spriteBatch, IRenderer renderer, IAssetLoader assetLoader, Camera camera, Primitive primitive, GameDate gameDate)
         {
             _overworld = overworld;
             _virtualResolution = virtualResolution;
@@ -93,6 +97,31 @@ namespace PhotoVs.Logic.Mechanics
                 });
 
             CreateRenderTargets();
+
+            _windTrail = new GameObject();
+            CAnimation windTrailAnimation;
+            _windTrail.Components.Add(new CPosition(Vector2.Zero));
+            _windTrail.Components.Add(new CSprite(assetLoader.Get<Texture2D>("ui/windtrail.png"), Vector2.Zero));
+            _windTrail.Components.Add(windTrailAnimation = new CAnimation() {Loop = false, OnComplete = OnComplete});
+            windTrailAnimation.AddAnimation("effect", new List<AnimationFrame>()
+            {
+                new AnimationFrame(new Rectangle(0, 0, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 64, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 128, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 192, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 256, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 320, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 384, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 448, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 512, 512, 54), 0.15f),
+            });
+
+            gameState.Stage.GameObjects.Add(_windTrail);
+        }
+
+        private void OnComplete(string obj)
+        {
+            _nextWindTrail = 2f;
         }
 
         private void CreateRenderTargets()
@@ -110,6 +139,15 @@ namespace PhotoVs.Logic.Mechanics
         [System(RunOn.Draw)]
         public void Draw(GameTime gameTime, GameObjectList gameObjects)
         {
+            _nextWindTrail -= gameTime.GetElapsedSeconds();
+            if (_nextWindTrail <= 0f)
+            {
+                _windTrail.Components.Get<CPosition>().Position =
+                    new Vector2(_camera.VisibleArea.Center.X, _camera.VisibleArea.Center.Y);
+                _windTrail.Components.Get<CAnimation>().Play("effect");
+                //_nextWindTrail = 2f;
+            }
+
             DrawMask(ref _maskTarget, gameTime);
             DrawFringe(ref _fringeTarget, gameTime);
 

@@ -32,7 +32,7 @@ namespace PhotoVs.Logic.PlayerData
             Components.Add(new CRunning());
             Components.Add(new CSprite(assetLoader.Get<Texture2D>("sprites/player.png"), new Vector2(16, 32)));
             
-            var animation = new CAnimation();
+            var animation = new CAnimation() { Loop = true };
 
             animation.AddAnimation("idle-down", new List<AnimationFrame>()
             {
