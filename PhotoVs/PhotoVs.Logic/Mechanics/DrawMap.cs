@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +18,8 @@ namespace PhotoVs.Logic.Mechanics
 {
     public class DrawMap
     {
+        private Random _random;
+
         private readonly IOverworld _overworld;
         private readonly VirtualResolution _virtualResolution;
         private readonly SpriteBatch _spriteBatch;
@@ -48,6 +51,8 @@ namespace PhotoVs.Logic.Mechanics
 
         public DrawMap(GameState gameState, IOverworld overworld, VirtualResolution virtualResolution, SpriteBatch spriteBatch, IRenderer renderer, IAssetLoader assetLoader, Camera camera, Primitive primitive, GameDate gameDate)
         {
+            _random = new Random();
+
             _overworld = overworld;
             _virtualResolution = virtualResolution;
             _spriteBatch = spriteBatch;
@@ -105,24 +110,21 @@ namespace PhotoVs.Logic.Mechanics
             _windTrail.Components.Add(windTrailAnimation = new CAnimation() {Loop = false, OnComplete = OnComplete});
             windTrailAnimation.AddAnimation("effect", new List<AnimationFrame>()
             {
-                new AnimationFrame(new Rectangle(0, 0, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 64, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 128, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 192, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 256, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 320, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 384, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 448, 512, 54), 0.15f),
-                new AnimationFrame(new Rectangle(0, 512, 512, 54), 0.15f),
+                new AnimationFrame(new Rectangle(0, 0, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 64, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 128, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 192, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 256, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 320, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 384, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 448, 512, 54), 0.07f),
+                new AnimationFrame(new Rectangle(0, 512, 512, 54), 0.07f),
             });
+            _windTrail.Components.Add(new CFringeEntity { Opacity = 0.15f });
 
             gameState.Stage.GameObjects.Add(_windTrail);
         }
 
-        private void OnComplete(string obj)
-        {
-            _nextWindTrail = 2f;
-        }
 
         private void CreateRenderTargets()
         {
@@ -136,53 +138,84 @@ namespace PhotoVs.Logic.Mechanics
             _colorGradeTarget = _renderer.CreateRenderTarget(_virtualResolution.MaxWidth, _virtualResolution.MaxHeight);
         }
 
-        [System(RunOn.Draw)]
-        public void Draw(GameTime gameTime, GameObjectList gameObjects)
+        [System(RunOn.Update)]
+        public void UpdateWindTrailTime(GameTime gameTime, GameObjectList gameObjects)
         {
             _nextWindTrail -= gameTime.GetElapsedSeconds();
             if (_nextWindTrail <= 0f)
             {
-                _windTrail.Components.Get<CPosition>().Position =
-                    new Vector2(_camera.VisibleArea.Center.X, _camera.VisibleArea.Center.Y);
+                _windTrail.Components.Get<CPosition>().Position = _random.NextVector2(_camera.VisibleArea);
                 _windTrail.Components.Get<CAnimation>().Play("effect");
-                //_nextWindTrail = 2f;
-            }
 
+                _nextWindTrail = float.MaxValue;
+            }
+        }
+
+        private void OnComplete(string obj)
+        {
+            _nextWindTrail = _random.NextFloat(2f, 5f);
+        }
+
+        [System(RunOn.Draw)]
+        public void DrawMapBuffers(GameTime gameTime, GameObjectList gameObjectList)
+        {
             DrawMask(ref _maskTarget, gameTime);
             DrawFringe(ref _fringeTarget, gameTime);
+        }
 
+        [System(RunOn.Draw)]
+        public void SetSubRenderer(GameTime gameTime, GameObjectList gameObjectList)
+        {
             _renderer.RequestSubRenderer(_finalTarget);
+        }
 
+        [System(RunOn.Draw)]
+        public void DrawMaskBuffer(GameTime gameTime, GameObjectList gameObjects)
+        {
             _spriteBatch.Begin();
             _spriteBatch.Draw(_maskTarget, Vector2.Zero, Color.White);
             _spriteBatch.End();
+        }
 
+        [System(RunOn.Draw, typeof(CPosition), typeof(CSprite), typeof(CAnimation), typeof(CMaskEntity))]
+        public void DrawMaskEntities(GameTime gameTime, GameObjectList gameObjects)
+        {
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
                 transformMatrix: _camera.Transform);
             DrawMaskParticles(gameTime);
-            DrawEntities(gameObjects);
-            _spriteBatch.End();
-
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_fringeTarget, Vector2.Zero, Color.White);
-            _spriteBatch.End();
-
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-                transformMatrix: _camera.Transform);
-            DrawFringeParticles(gameTime);
-            DrawEntities(gameObjects, 0.25f);
-            _spriteBatch.End();
-
-            _renderer.RelinquishSubRenderer();
-
-            _dayNightFilter.Filter(ref _colorGradeTarget, _spriteBatch, _finalTarget);
-
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_colorGradeTarget, Vector2.Zero, Color.White);
+            DrawEntities<CMaskEntity>(gameObjects);
             _spriteBatch.End();
         }
 
-        private void DrawEntities(GameObjectList gameObjects, float opacity = 1f)
+        public void DrawMaskParticles(GameTime gameTime)
+        {
+            DrawParticles(gameTime, _overworld.GetMap().GetMaskEmitters(_camera));
+        }
+
+        [System(RunOn.Draw)]
+        public void DrawFringeBuffer(GameTime gameTime, GameObjectList gameObjects)
+        {
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_fringeTarget, Vector2.Zero, Color.White);
+            _spriteBatch.End();
+        }
+
+        [System(RunOn.Draw, typeof(CPosition), typeof(CSprite), typeof(CAnimation), typeof(CFringeEntity))]
+        public void DrawFringeEntities(GameTime gameTime, GameObjectList gameObjects)
+        {
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                transformMatrix: _camera.Transform);
+            DrawFringeParticles(gameTime);
+            DrawEntities<CFringeEntity>(gameObjects);
+            _spriteBatch.End();
+        }
+
+        public void DrawFringeParticles(GameTime gameTime)
+        {
+            DrawParticles(gameTime, _overworld.GetMap().GetFringeEmitters(_camera));
+        }
+
+        private void DrawEntities<T>(GameObjectList gameObjects) where T : COpacity
         {
             var mapObjects = gameObjects.All(typeof(CSprite), typeof(CAnimation), typeof(CPosition));
             foreach (var mapObject in mapObjects)
@@ -190,6 +223,11 @@ namespace PhotoVs.Logic.Mechanics
                 var sprite = mapObject.Components.Get<CSprite>();
                 var animation = mapObject.Components.Get<CAnimation>();
                 var position = mapObject.Components.Get<CPosition>();
+                var opacity = 1f;
+                
+                // todo: figure out a nice way of handling opacity when entities have both
+                if (mapObject.Components.TryGet(out T op))
+                    opacity = op.Opacity != 0 ? op.Opacity : 1;
 
                 var positionVec = position.Position;
                 if (mapObject.Components.TryGet(out CSize size))
@@ -198,6 +236,18 @@ namespace PhotoVs.Logic.Mechanics
                 _spriteBatch.Draw(sprite.Texture, positionVec, 
                     animation.GetFrame(), Color.White * opacity, 0, sprite.Origin, Vector2.One, SpriteEffects.None, 0f);
             }
+        }
+
+        [System(RunOn.Draw)]
+        public void FinaliseRender(GameTime gameTime, GameObjectList gameObjects)
+        {
+            _renderer.RelinquishSubRenderer();
+
+            _dayNightFilter.Filter(ref _colorGradeTarget, _spriteBatch, _finalTarget);
+
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_colorGradeTarget, Vector2.Zero, Color.White);
+            _spriteBatch.End();
         }
 
         public void DrawMask(ref RenderTarget2D target, GameTime gameTime)
@@ -220,11 +270,6 @@ namespace PhotoVs.Logic.Mechanics
             _renderer.RelinquishSubRenderer();
         }
 
-        public void DrawMaskParticles(GameTime gameTime)
-        {
-            DrawParticles(gameTime, _overworld.GetMap().GetMaskEmitters(_camera));
-        }
-
         public void DrawFringe(ref RenderTarget2D target, GameTime gameTime)
         {
             var fringe = DrawTilemap(false);
@@ -234,11 +279,6 @@ namespace PhotoVs.Logic.Mechanics
             _spriteBatch.Draw(fringe, Vector2.Zero, Color.White);
             _spriteBatch.End();
             _renderer.RelinquishSubRenderer();
-        }
-
-        public void DrawFringeParticles(GameTime gameTime)
-        {
-            DrawParticles(gameTime, _overworld.GetMap().GetFringeEmitters(_camera));
         }
 
         [System(RunOn.Draw, typeof(CPosition), typeof(CCollisionBound))]

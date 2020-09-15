@@ -19,7 +19,14 @@ namespace PhotoVs.Logic.Scenes
         {
             _camera = camera;
             _spriteBatch = spriteBatch;
-            RegisterSystem(drawMap.Draw);
+            RegisterSystem(drawMap.UpdateWindTrailTime);
+            RegisterSystem(drawMap.DrawMapBuffers);
+            RegisterSystem(drawMap.SetSubRenderer);
+            RegisterSystem(drawMap.DrawMaskBuffer);
+            RegisterSystem(drawMap.DrawMaskEntities);
+            RegisterSystem(drawMap.DrawFringeBuffer);
+            RegisterSystem(drawMap.DrawFringeEntities);
+            RegisterSystem(drawMap.FinaliseRender);
 
             //RegisterSystem(drawMap.DebugDrawCollidableEntities, 999);
 

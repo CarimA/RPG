@@ -13,7 +13,6 @@ using PhotoVs.Engine.ECS;
 using PhotoVs.Engine.Events.Coroutines;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Scripting;
-using PhotoVs.Logic.BuildTools;
 using PhotoVs.Logic.Debugger;
 using PhotoVs.Logic.Mechanics;
 using PhotoVs.Logic.Mechanics.World;
@@ -79,6 +78,7 @@ namespace PhotoVs.Logic
 
                 // core engine specific things
                 .Bind(_platform)
+                .Bind<WebDebugger>()
                 .Bind<ISignal, Signal>()
                 .Bind<FullscreenHandler>()
                 .Bind<ScreenshotHandler>()
@@ -139,9 +139,6 @@ namespace PhotoVs.Logic
 
             _kernel.Construct();
             _scheduler.Start();
-
-            var mapBaker2 = new MapBaker2((Kernel)_kernel, "content/maps/", "content/debug/", 16);
-            //mapBaker2.Bake();
 
             base.Initialize();
         }

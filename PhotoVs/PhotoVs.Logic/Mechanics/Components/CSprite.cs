@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 
 namespace PhotoVs.Logic.Mechanics.Components
 {
     public class CSprite
     {
+        [JsonIgnore]
         public Texture2D Texture;
         public Vector2 Origin;
 

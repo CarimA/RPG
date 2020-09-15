@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.4" tiledversion="1.4.2" name="Flags-32_96x" tilewidth="32" tileheight="96" tilecount="30" columns="10">
- <image source="Flags-32_96x.png" width="320" height="288"/>
+<tileset version="1.4" tiledversion="1.4.2" name="Flags-32_96x" tilewidth="32" tileheight="96" tilecount="80" columns="16">
+ <image source="Flags-32_96x.png" width="512" height="512"/>
  <tile id="0">
   <animation>
    <frame tileid="0" duration="100"/>
@@ -15,32 +15,32 @@
    <frame tileid="9" duration="100"/>
   </animation>
  </tile>
- <tile id="10">
+ <tile id="16">
   <animation>
-   <frame tileid="10" duration="100"/>
-   <frame tileid="11" duration="100"/>
-   <frame tileid="12" duration="100"/>
-   <frame tileid="13" duration="100"/>
-   <frame tileid="14" duration="100"/>
-   <frame tileid="15" duration="100"/>
    <frame tileid="16" duration="100"/>
    <frame tileid="17" duration="100"/>
    <frame tileid="18" duration="100"/>
    <frame tileid="19" duration="100"/>
-  </animation>
- </tile>
- <tile id="20">
-  <animation>
    <frame tileid="20" duration="100"/>
    <frame tileid="21" duration="100"/>
    <frame tileid="22" duration="100"/>
    <frame tileid="23" duration="100"/>
    <frame tileid="24" duration="100"/>
    <frame tileid="25" duration="100"/>
-   <frame tileid="26" duration="100"/>
-   <frame tileid="27" duration="100"/>
-   <frame tileid="28" duration="100"/>
-   <frame tileid="29" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="32">
+  <animation>
+   <frame tileid="32" duration="100"/>
+   <frame tileid="33" duration="100"/>
+   <frame tileid="34" duration="100"/>
+   <frame tileid="35" duration="100"/>
+   <frame tileid="36" duration="100"/>
+   <frame tileid="37" duration="100"/>
+   <frame tileid="38" duration="100"/>
+   <frame tileid="39" duration="100"/>
+   <frame tileid="40" duration="100"/>
+   <frame tileid="41" duration="100"/>
   </animation>
  </tile>
 </tileset>

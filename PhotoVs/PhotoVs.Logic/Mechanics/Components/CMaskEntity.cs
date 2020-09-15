@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PhotoVs.Logic.Mechanics.Components
 {
-    public class CAlive
+    public class CMaskEntity : COpacity
     {
     }
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhotoVs.Engine.Graphics;
 using PhotoVs.Engine.Graphics.Filters;
 using PhotoVs.Logic.Mechanics;
-using PhotoVs.Logic.Mechanics.World;
 using PhotoVs.Utils.Collections;
 
 namespace PhotoVs.Logic.Filters

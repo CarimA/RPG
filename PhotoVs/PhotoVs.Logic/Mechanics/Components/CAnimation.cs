@@ -1,25 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Logic.Mechanics.Components
 {
-    public class AnimationFrame
-    {
-        public float Duration;
-        public Rectangle Source;
-
-        public AnimationFrame(Rectangle source, float duration)
-        {
-            Source = source;
-            Duration = duration;
-        }
-    }
-
     public class CAnimation
     {
         private Dictionary<string, List<AnimationFrame>> _frames;

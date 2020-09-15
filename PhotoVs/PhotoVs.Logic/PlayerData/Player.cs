@@ -31,6 +31,9 @@ namespace PhotoVs.Logic.PlayerData
             Components.Add(new CTarget());
             Components.Add(new CRunning());
             Components.Add(new CSprite(assetLoader.Get<Texture2D>("sprites/player.png"), new Vector2(16, 32)));
+            Components.Add(new CMapEntity());
+            Components.Add(new CMaskEntity());
+            Components.Add(new CFringeEntity { Opacity = 0.35f });
             
             var animation = new CAnimation() { Loop = true };
 

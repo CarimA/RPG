@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace PhotoVs.Engine.ECS
 {
     public class ComponentList
     {
+        public IEnumerable<(string, object)> Enabled => _enabledComponents.Select(c => (c.Key.Name, c.Value));
+        public IEnumerable<(string, object)> Disabled => _disabledComponents.Select(c => (c.Key.Name, c.Value));
+
         private readonly Dictionary<Type, object> _disabledComponents;
         private readonly Dictionary<Type, object> _enabledComponents;
 

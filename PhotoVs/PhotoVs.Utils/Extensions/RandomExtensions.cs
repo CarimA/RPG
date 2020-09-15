@@ -67,9 +67,4 @@ namespace PhotoVs.Utils.Extensions
             return new Vector2((float) Math.Cos(angle), (float) Math.Sin(angle));
         }
     }
-
-    public enum Direction
-    {
-        Up, Down, Left, Right
-    }
 }

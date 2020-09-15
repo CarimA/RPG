@@ -358,15 +358,18 @@
             }
         },
         "Master.tmx": {
-            "scale": 1,
+            "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 655,
-                "y": 439
+                "x": 1389,
+                "y": 600.6666666666666
             }
         },
         "Master.tmx#Cliffs-128x": {
             "scaleInEditor": 1
+        },
+        "Master.tmx#Vegetation-32x": {
+            "scaleInDock": 1
         },
         "Master.tmx#WindowFrames-32x": {
             "scaleInDock": 1.5
@@ -375,6 +378,7 @@
             "scaleInDock": 1
         },
         "Tilesets/Flags-32_96x.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tilesets/Grassland-16x.tsx": {
@@ -388,6 +392,7 @@
             "scaleInEditor": 1
         },
         "Tilesets/Lanterns-32_96x.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tilesets/Terrain.tsx": {
@@ -421,10 +426,10 @@
     "project": "game.tiled-project",
     "property.type": "object",
     "recentFiles": [
-        "Tilesets/Vegetation-32x.tsx",
-        "Tilesets/Lanterns-32_96x.tsx",
         "Tilesets/Flags-32_96x.tsx",
         "Master.tmx",
+        "Tilesets/Vegetation-32x.tsx",
+        "Tilesets/Lanterns-32_96x.tsx",
         "Tilesets/Grassland-64x.tsx"
     ],
     "tileset.embedInMap": true,

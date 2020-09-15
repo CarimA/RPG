@@ -1,6 +1,6 @@
 ﻿namespace PhotoVs.Logic.Mechanics.Components
 {
-    class CRunning
+    public class CMapEntity
     {
     }
 }

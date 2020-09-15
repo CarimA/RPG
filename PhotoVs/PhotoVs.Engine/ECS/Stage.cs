@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using PhotoVs.Engine.Core;
+using PhotoVs.Utils.Extensions;
 
 namespace PhotoVs.Engine.ECS
 {
@@ -10,6 +11,7 @@ namespace PhotoVs.Engine.ECS
 
     public class Stage : IStartup, IHasUpdate, IHasDraw
     {
+        private readonly WebDebugger _debugger;
         private List<Scene> _scenes;
         private Scene _currentScene;
         public Scene CurrentScene => _currentScene;
@@ -19,8 +21,9 @@ namespace PhotoVs.Engine.ECS
 
         private readonly SystemList<System> _globalUpdateSystems;
 
-        public Stage()
+        public Stage(WebDebugger debugger)
         {
+            _debugger = debugger;
             _scenes = new List<Scene>();
             _gameObjects = new GameObjectList();
             _globalUpdateSystems = new SystemList<System>();
@@ -54,6 +57,7 @@ namespace PhotoVs.Engine.ECS
         public int UpdatePriority { get; set; } = 0;
         public bool UpdateEnabled { get; set; } = true;
 
+        private float _debugTime;
         public void Update(GameTime gameTime)
         {
             foreach (var system in _globalUpdateSystems)
@@ -61,6 +65,16 @@ namespace PhotoVs.Engine.ECS
                 system.Method(gameTime, system.RequiredComponents.Length == 0
                     ? GameObjects
                     : GameObjects.All(system.RequiredComponents));
+            }
+
+            _debugTime -= gameTime.GetElapsedSeconds();
+            if (_debugTime <= 0f)
+            {
+                _debugTime += 0.333f;
+                foreach (var gameObject in GameObjects)
+                {
+                    _debugger.Post("gameobjects", gameObject);
+                }
             }
 
             _currentScene?.Update(gameTime, GameObjects);
